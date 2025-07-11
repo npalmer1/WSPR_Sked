@@ -1,0 +1,1 @@
+start /b rigctld -m 1046 -r 127.0.0.1 -t 4532
