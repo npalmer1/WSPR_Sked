@@ -374,7 +374,7 @@ namespace WSPR_Sked
             liveForm.Show();
             liveForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass);
             startCount = 0;
-            rxForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath);
+            rxForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath,ver);
             if (!noRigctld) { getRigF(); }
            
             //rxForm.set_frequency(defaultF.ToString("F6"));

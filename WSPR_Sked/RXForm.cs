@@ -45,6 +45,8 @@ namespace WSPR_Sked
         public int wavno = 2;
         public int prevwav = 1;
 
+        public string version = "";
+
 
         public string output;
         public string results;
@@ -118,7 +120,7 @@ namespace WSPR_Sked
 
         }
 
-        public void set_header(string call, string serverName, string db_user, string db_pass, string loc, int audioDev, string wsprdpath)
+        public void set_header(string call, string serverName, string db_user, string db_pass, string loc, int audioDev, string wsprdpath,string ver)
         {
             this.Text = "Transmissions received by this station";
             Callsign = call;
@@ -126,6 +128,7 @@ namespace WSPR_Sked
             user = db_user;
             pass = db_pass;
             my_loc = loc;
+            version = "WS-"+ver;
             audioDevice = audioDev;
             wsprdfilepath = wsprdpath;
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -706,7 +709,7 @@ namespace WSPR_Sked
                 { "tcall", DX.tx_sign },
                 { "tgrid", DX.tx_loc },
                 { "dbm", DX.power.ToString() },
-                { "version", "WS-0.1.4" },
+                { "version", version },
                  //{ "version", "2.7.0" },
                 { "rcall", Callsign },
                 { "rgrid", my_loc },
