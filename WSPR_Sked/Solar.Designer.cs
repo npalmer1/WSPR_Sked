@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             getLatestbutton = new System.Windows.Forms.Button();
             forceUpdatebutton = new System.Windows.Forms.Button();
             textBox1 = new System.Windows.Forms.TextBox();
@@ -63,6 +63,10 @@
             conditionlabel = new System.Windows.Forms.Label();
             label17 = new System.Windows.Forms.Label();
             groupBox2 = new System.Windows.Forms.GroupBox();
+            Eventsbutton = new System.Windows.Forms.Button();
+            EventsgroupBox = new System.Windows.Forms.GroupBox();
+            textBox3 = new System.Windows.Forms.TextBox();
+            Burstbutton = new System.Windows.Forms.Button();
             flarelabel = new System.Windows.Forms.Label();
             groupBox4 = new System.Windows.Forms.GroupBox();
             Clabel = new System.Windows.Forms.Label();
@@ -119,10 +123,10 @@
             label8 = new System.Windows.Forms.Label();
             infobutton = new System.Windows.Forms.Button();
             label22 = new System.Windows.Forms.Label();
-            Burstbutton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
+            EventsgroupBox.SuspendLayout();
             groupBox4.SuspendLayout();
             groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView3).BeginInit();
@@ -432,6 +436,8 @@
             // groupBox2
             // 
             groupBox2.BackColor = System.Drawing.Color.Transparent;
+            groupBox2.Controls.Add(Eventsbutton);
+            groupBox2.Controls.Add(EventsgroupBox);
             groupBox2.Controls.Add(Burstbutton);
             groupBox2.Controls.Add(flarelabel);
             groupBox2.Controls.Add(groupBox4);
@@ -456,6 +462,52 @@
             groupBox2.Text = "Solar geophysical database";
             groupBox2.Visible = false;
             groupBox2.Enter += groupBox2_Enter;
+            // 
+            // Eventsbutton
+            // 
+            Eventsbutton.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            Eventsbutton.Location = new System.Drawing.Point(1045, 452);
+            Eventsbutton.Name = "Eventsbutton";
+            Eventsbutton.Size = new System.Drawing.Size(69, 23);
+            Eventsbutton.TabIndex = 53;
+            Eventsbutton.Text = "Summary";
+            Eventsbutton.UseVisualStyleBackColor = true;
+            Eventsbutton.Visible = false;
+            Eventsbutton.Click += Eventsbutton_Click;
+            // 
+            // EventsgroupBox
+            // 
+            EventsgroupBox.BackColor = System.Drawing.Color.LemonChiffon;
+            EventsgroupBox.Controls.Add(textBox3);
+            EventsgroupBox.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            EventsgroupBox.Location = new System.Drawing.Point(423, 105);
+            EventsgroupBox.Name = "EventsgroupBox";
+            EventsgroupBox.Size = new System.Drawing.Size(569, 332);
+            EventsgroupBox.TabIndex = 23;
+            EventsgroupBox.TabStop = false;
+            EventsgroupBox.Text = "Summary of events";
+            EventsgroupBox.Visible = false;
+            // 
+            // textBox3
+            // 
+            textBox3.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            textBox3.Location = new System.Drawing.Point(29, 25);
+            textBox3.Multiline = true;
+            textBox3.Name = "textBox3";
+            textBox3.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            textBox3.Size = new System.Drawing.Size(517, 292);
+            textBox3.TabIndex = 0;
+            // 
+            // Burstbutton
+            // 
+            Burstbutton.Location = new System.Drawing.Point(1022, 509);
+            Burstbutton.Name = "Burstbutton";
+            Burstbutton.Size = new System.Drawing.Size(92, 23);
+            Burstbutton.TabIndex = 23;
+            Burstbutton.Text = "Show bursts";
+            Burstbutton.UseVisualStyleBackColor = true;
+            Burstbutton.Visible = false;
+            Burstbutton.Click += Burstbutton_Click_1;
             // 
             // flarelabel
             // 
@@ -606,14 +658,14 @@
             // 
             dataGridView3.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView3.BackgroundColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView3.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9F);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView3.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView3.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { dataGridViewTextBoxColumn12, dataGridViewTextBoxColumn14, dataGridViewTextBoxColumn15, dataGridViewTextBoxColumn16, dataGridViewTextBoxColumn17, dataGridViewTextBoxColumn18, dataGridViewTextBoxColumn19, dataGridViewTextBoxColumn20, dataGridViewTextBoxColumn21 });
             dataGridView3.Location = new System.Drawing.Point(8, 41);
@@ -759,14 +811,14 @@
             // 
             dataGridView2.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView2.BackgroundColor = System.Drawing.Color.Lavender;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView2.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI", 9F);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView2.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView2.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewTextBoxColumn3, dataGridViewTextBoxColumn4, dataGridViewTextBoxColumn5, dataGridViewTextBoxColumn6, dataGridViewTextBoxColumn7, dataGridViewTextBoxColumn8, dataGridViewTextBoxColumn9, dataGridViewTextBoxColumn10, dataGridViewTextBoxColumn11, Column12, Column15 });
             dataGridView2.Location = new System.Drawing.Point(40, 45);
@@ -941,16 +993,6 @@
             label22.TabIndex = 22;
             label22.Text = "Lower Ap index = more stable conditions";
             // 
-            // Burstbutton
-            // 
-            Burstbutton.Location = new System.Drawing.Point(1022, 509);
-            Burstbutton.Name = "Burstbutton";
-            Burstbutton.Size = new System.Drawing.Size(92, 23);
-            Burstbutton.TabIndex = 23;
-            Burstbutton.Text = "Show bursts";
-            Burstbutton.UseVisualStyleBackColor = true;
-            Burstbutton.Click += Burstbutton_Click_1;
-            // 
             // Solar
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -978,6 +1020,8 @@
             groupBox1.PerformLayout();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
+            EventsgroupBox.ResumeLayout(false);
+            EventsgroupBox.PerformLayout();
             groupBox4.ResumeLayout(false);
             groupBox4.PerformLayout();
             groupBox3.ResumeLayout(false);
@@ -1080,5 +1124,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column11;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column14;
         private System.Windows.Forms.Button Burstbutton;
+        private System.Windows.Forms.Button Eventsbutton;
+        private System.Windows.Forms.GroupBox EventsgroupBox;
+        private System.Windows.Forms.TextBox textBox3;
     }
 }

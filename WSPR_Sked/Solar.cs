@@ -178,7 +178,7 @@ namespace WSPR_Sked
             await fetchBurstdata();
             DateTime date = DateTime.Now.ToUniversalTime();
             await findBurst();
-                  
+
             await SaveBurstdata(date); //today
             await find_burst_data(false, "", "");
         }
@@ -615,8 +615,10 @@ namespace WSPR_Sked
 
         public async Task fetchBurstdata()
         {
-            textBox2.Text = "";
+
             results = "";
+            textBox3.Text = "";
+            string line = "";
             string Url = "https://services.swpc.noaa.gov/text/solar-geophysical-event-reports.txt";
             if (stopUrl)
             {
@@ -631,6 +633,13 @@ namespace WSPR_Sked
                     try
                     {
                         results = client.DownloadString(Url);
+                        using var reader = new StringReader(results);
+                        {
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                textBox3.Text = textBox3.Text + line + "\r\n";
+                            }
+                        }
 
                     }
                     catch (WebException ex)
@@ -638,24 +647,25 @@ namespace WSPR_Sked
                         MessageBox.Show("Error: " + ex.Message);
                     }
                 }
-                
+
             }
         }
-        List<string> st= new List<string>();
+        List<string> st = new List<string>();
         public async Task findBurst()
-        {           
+        {
             string[] S;
 
             string line = "";
             string Xray = "";
-           
+
             string time = "";
             string rburst = "";
+            string part = "";
             string f = "";
             bool found = false;
             st.Clear();
 
-            if (results.Contains("RB") || results.Contains("RSP") )
+            if (results.Contains("RB") || results.Contains("RSP"))
             {
                 int index = 0;
                 using var reader = new StringReader(results);
@@ -671,7 +681,7 @@ namespace WSPR_Sked
                             if (line.Contains("Created:"))
                             {
                                 S = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                                string date = S[1]+" " + S[2] + " " + S[3];                                
+                                string date = S[1] + " " + S[2] + " " + S[3];
                                 DateTime.TryParse(date, out dt);
                                 if (dt.Day != now.Day)
                                 {
@@ -679,7 +689,7 @@ namespace WSPR_Sked
                                 }
 
                             }
-                            
+
 
                             if (line.Contains("RBR") || line.Contains("RSP"))
                             {
@@ -701,13 +711,14 @@ namespace WSPR_Sked
                                         time = S[3 + i];
                                     }
                                     rburst = S[6 + i];
+                                    part = S[8+ i];
                                     f = S[7 + i];
-                                    st.Add(time + "/" + rburst);
+                                    st.Add(time + "/" + rburst+"/"+part);
                                 }
 
                             }
                         }
-                        
+
                     }
                     catch
                     {
@@ -727,7 +738,7 @@ namespace WSPR_Sked
 
                 for (int i = 0; i < st.Count; i++)
                 {
-                    findBurstTime(i);                    
+                    findBurstTime(i);
 
                 }
 
@@ -756,7 +767,7 @@ namespace WSPR_Sked
                     }
                     rb.s00 = rb.s00 + nl + st[i];
                 }
-                if (t.Hour  >= 3 && t.Hour < 6)
+                if (t.Hour >= 3 && t.Hour < 6)
                 {
                     if (rb.s03 != "")
                     {
@@ -828,7 +839,7 @@ namespace WSPR_Sked
                     }
                     rb.s18 = rb.s18 + nl + st[i];
                 }
-                if (t.Hour >= 21 && t.Hour <=23)
+                if (t.Hour >= 21 && t.Hour <= 23)
                 {
                     if (rb.s21 != "")
                     {
@@ -909,7 +920,7 @@ namespace WSPR_Sked
                     found = true;
                     DateTime dt = (DateTime)Reader["datetime"];
                     string date = dt.ToString("yyyy-MM-dd");
-                    
+
 
                     rb.s00 = (string)Reader["s00"];
                     rb.s03 = (string)Reader["s03"];
@@ -955,31 +966,31 @@ namespace WSPR_Sked
 
             DataGridViewRow row = new DataGridViewRow();
             row.CreateCells(dataGridView3); // Initializes cells based on the grid's columns
-           
+
             int columns = dataGridView3.ColumnCount;
-                     
-           
+
+
             for (int i = 0; i < columns; i++)
             {
                 row.Cells[i].Value = cells2[i];
             }
-            
-           
+
+
             if (dataGridView3.Rows.Count > rinsert)
             {
                 if (dataGridView3.Rows[rinsert].Cells[0].Value != null)
                 {
                     string s = dataGridView3.Rows[rinsert].Cells[0].Value.ToString();
                     if (s.Contains("R. burst"))
-                    {                     
+                    {
                         dataGridView3.Rows.RemoveAt(rinsert);
                     }
-                   
+
                     dataGridView3.Rows.Insert(rinsert, row);
                     //insert on line after flares
                 }
             }
-          
+
         }
 
         private async void forceUpdatebutton_Click_1(object sender, EventArgs e)
@@ -1098,7 +1109,7 @@ namespace WSPR_Sked
             else
             {
                 return str.Substring(0, maxLength);
-            }              
+            }
         }
 
         public async Task SaveBurstdata(DateTime date)
@@ -1122,7 +1133,7 @@ namespace WSPR_Sked
 
                 MySqlCommand command = connection.CreateCommand();
                 command.CommandText = "INSERT INTO weather(datetime,s00,s03,s06,s09,s12,s15,s18,s21) ";
-                command.CommandText += "VALUES('" + datetime + "', '" + rb.s00+"', '"+rb.s03+"', '"+rb.s06+"', '"+rb.s09+"', '"+rb.s12+"', '"+rb.s15+"', '"+rb.s18+"', '"+rb.s21+"')";
+                command.CommandText += "VALUES('" + datetime + "', '" + rb.s00 + "', '" + rb.s03 + "', '" + rb.s06 + "', '" + rb.s09 + "', '" + rb.s12 + "', '" + rb.s15 + "', '" + rb.s18 + "', '" + rb.s21 + "')";
 
                 command.CommandText += " ON DUPLICATE KEY UPDATE s00 = '" + rb.s00 + "', s03 = '" + rb.s03 + "', s06 = '" + rb.s06 + "', s09 = '" + rb.s09 + "' ";
                 command.CommandText += ", s12 = '" + rb.s12 + "', s15 = '" + rb.s15 + "', s18 = '" + rb.s18 + "', s21 = '" + rb.s21 + "'";
@@ -2415,6 +2426,8 @@ namespace WSPR_Sked
                 toplabel.Text = "Proton flux >=10MeV (avg/max):";
                 flarelabel.Text = "Flares: max time/ max class/int xrlong (J/m\u00B2)";
                 flarelabel.Visible = true;
+                Eventsbutton.Visible = true;
+                Burstbutton.Visible = true;
             }
             else
             {
@@ -2425,6 +2438,8 @@ namespace WSPR_Sked
                 dataGridView3.Visible = false;
                 toplabel.Text = "Kp indices:";
                 flarelabel.Visible = false;
+                Eventsbutton.Visible = false;
+                Burstbutton.Visible = false;
             }
         }
 
@@ -2476,6 +2491,11 @@ namespace WSPR_Sked
 
         private void Burstbutton_Click_1(object sender, EventArgs e)
         {
+            showBursts();
+        }
+
+        private void showBursts()
+        {
             if (Burstbutton.Text == "Show bursts")
             {
                 updateBursts(server, user, pass);
@@ -2486,6 +2506,22 @@ namespace WSPR_Sked
                 find_extra_data(false, "", "");
                 Burstbutton.Text = "Show bursts";
             }
+        }
+
+        private void Eventsbutton_Click(object sender, EventArgs e)
+        {
+            if (Eventsbutton.Text == "Summary")
+            {
+                EventsgroupBox.Visible = true;
+                Eventsbutton.Text = "Hide summary";
+                fetchBurstdata();
+            }
+            else
+            {
+                Eventsbutton.Text = "Summary";
+                EventsgroupBox.Visible = false;
+            }
+            
         }
     }
 }
