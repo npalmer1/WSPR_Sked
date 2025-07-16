@@ -94,7 +94,7 @@ namespace WSPR_Sked
         public bool useQuick;
         public int OSD; // use Ordered Statistics Decoder if >0
 
-        public int audioDevice = 0;
+        public int audioDevice = -1;
         public float gain = 1;
         public bool finished = false;
 
@@ -841,7 +841,12 @@ namespace WSPR_Sked
         public async Task RecordLineInAsync_Gain(string outputPath, int durationMs)
         {
             //float gain = 2.0f; // 2x gain, adjust as needed
-            WaveInEvent waveIn = new WaveInEvent();
+            if (audioDevice < 0)
+            {
+                Msg.TMessageBox("Invalid audio device - check audio settings", "Audio error", 2000);
+                return;
+            }
+                WaveInEvent waveIn = new WaveInEvent();
             WaveFileWriter writer;
             try
             {

@@ -126,7 +126,7 @@ namespace WSPR_Sked
 
         DateTime currentSelectedDate;
 
-
+        bool noRigctld;
         public struct SlotData
         {
             public string Date;
@@ -285,7 +285,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.4";
+            string ver = "0.1.5";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             baseCalltextBox.Text = "";
@@ -335,16 +335,27 @@ namespace WSPR_Sked
 
             //changeDateTimes(selTime, dt.ToString(dateformat), true);
             getComports();
-            getRigList();
             readRigctl();
-            findRigCtlFolder();
-            runRigCtlD(); //strt rig ctld
-            TXrunbutton.BackColor = Color.Thistle;
-            TXrunbutton2.BackColor = Color.Thistle;
+            if (!noRigctld)
+            {
+                getRigList();
+
+                findRigCtlFolder();
+                runRigCtlD(); //strt rig ctld
+            }
+            else
+            {
+                rigrunlabel.Text = "rigctld not running";
+                Riglabel.Text = "rigctld not running";
+                Riglabel1.Text = "rigctld not running";
+            }
+
+            TXrunbutton.BackColor = Color.Olive;
+            TXrunbutton2.BackColor = Color.Olive;
 
             string process = "rigctld";
 
-            if (Process.GetProcessesByName(process).Length > 0)
+            if (Process.GetProcessesByName(process).Length > 0 && !noRigctld)
             {
                 rigrunlabel.Text = "rigctld running";
                 Riglabel.Text = "rigctld not running";
@@ -364,7 +375,8 @@ namespace WSPR_Sked
             liveForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass);
             startCount = 0;
             rxForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath);
-            getRigF();
+            if (!noRigctld) { getRigF(); }
+           
             //rxForm.set_frequency(defaultF.ToString("F6"));
             rxForm.Show();
             startCount = startCountMax - 60;
@@ -2292,50 +2304,74 @@ namespace WSPR_Sked
         private async Task activateTX(string TXFrequency)
         {
             string TXF = TXFrequency;
-
-            await changeFreq(TXF);
-            double freq = Convert.ToDouble(TXFrequency);
-            freq = freq / 1000000;
-            await rxForm.set_frequency(freq.ToString("F6"));
-
+            var c = await changeFreq(TXF);
+            if (c)
+            {
+                double freq = Convert.ToDouble(TXFrequency);
+                freq = freq / 1000000;
+                await rxForm.set_frequency(freq.ToString("F6"));
+            }
         }
 
 
-        private async Task changeFreq(string f)
+        private async Task<bool> changeFreq(string f)
         {
             string rigcmd = "F " + f; //send F <frequency> to RigCtl daemon via TCP port 4532
             double freq = 0;
             bool ok = false;
 
-            await Task.Run(() =>
+            if (noRigctld)
             {
-                var reply = sendTXRigCommand(rigcmd);
-                string R = reply.ToString();
-                if (R.StartsWith("RPRT -"))
+                if (FlistBox2.SelectedIndex > -1)
                 {
-                    Msg.TMessageBox("Error in rig comms", "", 2000);
-                }
-                else if (R == "error")
-                {
-                    blockTXonErr = true;
-                    Msg.TMessageBox("Error in rig comms", "", 2000);
-
+                    string F = FlistBox2.SelectedItem.ToString();
+                    Msg.TMessageBox("Frequency selected: " + F + " MHz", "", 1000);
+                    rxForm.set_frequency(F);
+                    return true;
                 }
                 else
                 {
-                    try
-                    {
-                        freq = Convert.ToDouble(f);
-                        freq = freq / 1000000;
-                        ok = true;
-                    }
-                    catch { }
-                    Msg.TMessageBox("Changed to: " + freq.ToString() + " MHz", "", 1000);
-
+                    Msg.TMessageBox("Don't forget to select the TX/RX frequency", "", 2000);
+                    return false;
                 }
+            }
+            else
+            {
+                await Task.Run(() =>
+                {
+                    var reply = sendTXRigCommand(rigcmd);
+                    string R = reply.ToString();
+                    if (R.StartsWith("RPRT -"))
+                    {
+                        Msg.TMessageBox("Error in rig comms", "", 2000);
+                    }
+                    else if (R == "error")
+                    {
+                        blockTXonErr = true;
+                        Msg.TMessageBox("Error in rig comms", "", 2000);
 
-            });
-            if (ok) { rxForm.set_frequency(freq.ToString("F6")); }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            freq = Convert.ToDouble(f);
+                            freq = freq / 1000000;
+                            ok = true;
+                        }
+                        catch { }
+                        Msg.TMessageBox("Changed to: " + freq.ToString() + " MHz", "", 1000);
+
+                    }
+
+                });
+                if (ok) { rxForm.set_frequency(freq.ToString("F6")); return true; }
+                else
+                {
+                    return false;
+                }
+            }
+            
 
         }
 
@@ -3352,7 +3388,7 @@ namespace WSPR_Sked
                 else
                 {
                     startCount = 0;
-                    await liveForm.get_results(CalltextBox.Text.Trim(), TXFrequency, serverName, db_user, db_pass,10);
+                    await liveForm.get_results(CalltextBox.Text.Trim(), TXFrequency, serverName, db_user, db_pass, 10);
 
                 }
 
@@ -3362,7 +3398,7 @@ namespace WSPR_Sked
             {
                 //liveForm.get_results(CalltextBox.Text.Trim(), TXFrequency,serverName,db_user,db_pass);
             }
-           
+
             if (m % 2 == 0 && (s > 2 && s < 5))
             {
                 Flag = false;
@@ -3385,9 +3421,12 @@ namespace WSPR_Sked
                 databaseError = false;
                 slotFound = false;
                 //if (await (findSlot(-1, date, nexttime)))
-                if (findSlot(-1,date,nexttime))
+                if (findSlot(-1, date, nexttime))
                 {
-
+                    if (noRigctld)
+                    {
+                        Msg.TMessageBox("Ignoring slot frequency - RigCtlD disabled", "Frequency", 1000);
+                    }
                     if (noSkedcheckBox.Checked)
                     {
                         Msg.TMessageBox("Slot schedule not enabled", "", 800);
@@ -3523,53 +3562,78 @@ namespace WSPR_Sked
         private async void getRigF()
         {
             string MHz = "";
+            double mhz = 0;
             string f = "";
             string btnText = "RX/TX Idle";
+
             try
             {
-                await Task.Run(() =>
+                if (!noRigctld)
                 {
-                    var F = sendRigCommand("f", false);
-                    if (F.Status == TaskStatus.Faulted)
+                    await Task.Run(() =>
                     {
-                        f = "";
-                    }
-                    else
-                    {
-                        f = F.Result;
-                    }
-
-                });
-                f = f.Replace('\n', ' ').Trim();
-
-                double mhz;
-
-                if (f.All(char.IsDigit))
-                {
-                    double.TryParse(f, out mhz);
-                    if (mhz > 0 && mhz != null)
-                    {
-                        mhz = mhz / 1000000;
-                        MHz = mhz.ToString();
-
-                        if ((wsprTXtimer.Enabled || testPTTtimer.Enabled) && enableTXcheckBox.Checked && slotActive) //is it transmitting?
+                        var F = sendRigCommand("f", false);
+                        if (F.Status == TaskStatus.Faulted)
                         {
-                            btnText = "TX: " + MHz + " MHz";
-                        }
-                        else if (!slotActive) //if not its receiving
-                        {
-                            btnText = "RX: " + MHz + " MHz";
-                            //rxForm.set_frequency(MHz);
+                            f = "";
                         }
                         else
                         {
-                            btnText = "RX: " + MHz + " MHz";
-                            //rxForm.set_frequency(MHz);
+                            f = F.Result;
                         }
 
+                    });
+                    f = f.Replace('\n', ' ').Trim();
+                }
+                else
+                {
+                    if (FlistBox2.SelectedIndex>-1)
+                    {
+                        f = FlistBox2.SelectedItem.ToString();
+                    }
+                    else
+                    {
+                        f = Convert.ToString(defaultF);
 
                     }
+                   
                 }
+
+                if (!noRigctld)
+                {
+                    if (f.All(char.IsDigit))
+                    {
+
+                        double.TryParse(f, out mhz);
+                        if (mhz > 0 && mhz != null)
+                        {
+                            mhz = mhz / 1000000;
+                            MHz = mhz.ToString();
+                        }
+                    }
+                }
+                else
+                {
+                    MHz = f;
+                }
+
+
+                //if ((wsprTXtimer.Enabled || testPTTtimer.Enabled) && enableTXcheckBox.Checked && slotActive) //is it transmitting?
+                if (enableTXcheckBox.Checked && slotActive) //is it transmitting?
+                {
+                    btnText = "TX: " + MHz + " MHz";
+                }    
+                if (wsprTXtimer.Enabled || testPTTtimer.Enabled)
+                {
+                    btnText = "TX: " + MHz + " MHz";
+                }
+                else
+                {
+                    btnText = "RX: " + MHz + " MHz";
+                    //rxForm.set_frequency(MHz);
+                }
+                    
+                
                 await rxForm.set_frequency(MHz);
                 //rxForm.Frequency = MHz;
                 TXrunbutton.Text = btnText;
@@ -3596,44 +3660,61 @@ namespace WSPR_Sked
         private async void PTT(bool TX)
         {
             // PTT is a value: ‘0’ (RX), ‘1’ (TX), ‘2’ (TX mic), or ‘3’ (TX data). 
-            string PTT = "T 0";
-            if (TX)
+            if (!noRigctld)
             {
-                PTT = "T 1";
-            }
-            await Task.Run(() =>
-            {
-                var reply = sendTXRigCommand(PTT);
-                string R = reply.ToString();
-                if (R.StartsWith("RPRT -"))
+                string PTT = "T 0";
+                if (TX)
                 {
-                    Msg.TMessageBox("Unable to key TX", "", 1000);
+                    PTT = "T 1";
                 }
-                else if (R == "error")
+                await Task.Run(() =>
                 {
-                    blockTXonErr = true;
-                }
+                    var reply = sendTXRigCommand(PTT);
+                    string R = reply.ToString();
+                    if (R.StartsWith("RPRT -"))
+                    {
+                        Msg.TMessageBox("Unable to key TX", "", 1000);
+                    }
+                    else if (R == "error")
+                    {
+                        blockTXonErr = true;
+                    }
 
-            });
+                });
+            }
+            else
+            {
+                Msg.TMessageBox("PTT operated by VOX", "", 1000);
+               
+            }
         }
         private async Task<string> sendTXRigCommand(string msg) //send a TX message to RigCtlD and wait for reply
         {
             string ip = RigctlIPv4;
             string port = RigctlPort;
+
             if (!blockTXonErr)
             {
-                var rig = new RigControlDaemon.RigCtlD(ip, port, msg);
-
-                if ((rig.reply == "error") && !blockTXonErr)
+                if (!noRigctld)
                 {
-                    blockTXonErr = true;
-                    Msg.TMessageBox("Error contacting RigCtlD - is it running?", "Warning", 4000);
-                    return rig.reply;
+                    var rig = new RigControlDaemon.RigCtlD(ip, port, msg);
+
+                    if ((rig.reply == "error") && !blockTXonErr)
+                    {
+                        blockTXonErr = true;
+                        Msg.TMessageBox("Error contacting RigCtlD - is it running?", "Warning", 4000);
+                        return rig.reply;
+                    }
+                    else
+                    {
+                        return "ok";
+                    }
                 }
                 else
                 {
                     return "ok";
                 }
+
 
             }
             else
@@ -3682,23 +3763,30 @@ namespace WSPR_Sked
 
         private async void startRigCtlbutton_Click(object sender, EventArgs e)
         {
-            runRigCtlD();
-            //Task.Delay(300);           
-            await Task.Delay(1000);
-            bool found = false;
-            if (checkRigctld())
+            try
             {
-                found = true;
-            }
+                runRigCtlD();
+                //Task.Delay(300);           
+                await Task.Delay(1000);
+                bool found = false;
+                if (checkRigctld())
+                {
+                    found = true;
+                }
 
-            if (found)
-            {
-                Msg.OKMessageBox("RigCtlD started successfully", "");
+                if (found)
+                {
+                    Msg.OKMessageBox("RigCtlD started successfully", "");
 
+                }
+                else
+                {
+                    //Msg.OKMessageBox("Unable to start RigCtlD", "");
+                }
             }
-            else
+            catch
             {
-                //Msg.OKMessageBox("Unable to start RigCtlD", "");
+
             }
 
 
@@ -3719,45 +3807,49 @@ namespace WSPR_Sked
             string process1 = "rigctld";
             string process2 = "rigctld.exe";
             bool running = false;
-
-            if (createRigFile(rigctldfile))
+            try
             {
-                await Task.Delay(1000);
-                await Task.Run(() =>
-                 {
-                     //runAsyncProcess("C:\\WSPR_Sked\\RIGCTLD_Launch.bat");
-                     runAsyncProcess(rigctldfile);
+
+                if (createRigFile(rigctldfile))
+                {
+                    await Task.Delay(1000);
+                    await Task.Run(() =>
+                     {
+                         //runAsyncProcess("C:\\WSPR_Sked\\RIGCTLD_Launch.bat");
+                         runAsyncProcess(rigctldfile);
 
 
-                 });
-                await Task.Delay(500);
-                if (Process.GetProcessesByName(process1).Length > 0)
-                {
-                    running = true;
-                }
-                if (Process.GetProcessesByName(process2).Length > 0)
-                {
-                    running = true;
-                }
-                if (running)
-                {
-                    rigrunlabel.Text = "rigctld running";
+                     });
+                    await Task.Delay(500);
+                    if (Process.GetProcessesByName(process1).Length > 0)
+                    {
+                        running = true;
+                    }
+                    if (Process.GetProcessesByName(process2).Length > 0)
+                    {
+                        running = true;
+                    }
+                    if (running)
+                    {
+                        rigrunlabel.Text = "rigctld running";
 
+                    }
+                    else
+                    {
+                        rigrunlabel.Text = "rigctld not running";
+                    }
+                    Riglabel.Text = rigrunlabel.Text;
+                    Riglabel1.Text = rigrunlabel.Text;
                 }
                 else
                 {
+                    Msg.TMessageBox("Unable to start RigCtlD - check Hamlib path", "", 3000);
                     rigrunlabel.Text = "rigctld not running";
+                    Riglabel.Text = rigrunlabel.Text;
+                    Riglabel1.Text = rigrunlabel.Text;
                 }
-                Riglabel.Text = rigrunlabel.Text;
-                Riglabel1.Text = rigrunlabel.Text;
             }
-            else
-            {
-                Msg.TMessageBox("Unable to start RigCtlD - check Hamlib path", "", 3000);
-                rigrunlabel.Text = "rigctld not running";
-                Riglabel.Text = rigrunlabel.Text;
-                Riglabel1.Text = rigrunlabel.Text;
-            }
+            catch { }
         }
         private bool createRigFile(string filepath)
         {
@@ -3859,6 +3951,10 @@ namespace WSPR_Sked
         }
         private bool checkRigctld()
         {
+            if (noRigctld)
+            {
+                return true;
+            }
             bool found = false;
             string process = "rigctld.exe";
             foreach (Process proc in Process.GetProcessesByName(process))
@@ -3991,9 +4087,17 @@ namespace WSPR_Sked
                 }
                 else
                 {
-                    TXrunbutton.BackColor = Color.RoyalBlue;
-                    TXrunbutton2.BackColor = Color.RoyalBlue;
-                    TXRX = "RX: ";
+                    if (noRigctld)
+                    {
+                        TXrunbutton.BackColor = Color.DarkKhaki;
+                        TXrunbutton2.BackColor = Color.DarkKhaki;
+                    }
+                    else
+                    {
+                        TXrunbutton.BackColor = Color.RoyalBlue;
+                        TXrunbutton2.BackColor = Color.RoyalBlue;
+                    }
+                        TXRX = "RX: ";
                 }
 
                 if (slotActive)
@@ -4013,9 +4117,9 @@ namespace WSPR_Sked
             }
             else
             {
-                TXrunbutton.BackColor = Color.Thistle;
+                TXrunbutton.BackColor = Color.Olive;
                 TXrunbutton.Text = "TX/RX idle";
-                TXrunbutton2.BackColor = Color.Thistle;
+                TXrunbutton2.BackColor = Color.Olive;
                 TXrunbutton2.Text = "TX/RX idle";
                 countdownlabel.Text = "";
                 countdownlabel2.Text = "";
@@ -4115,21 +4219,31 @@ namespace WSPR_Sked
         {
             if (SaveRigctl())
             {
-                RigctlCOM = COMcomboBox.SelectedItem.ToString();
-                Rigctlbaud = baudcomboBox.SelectedItem.ToString();
-                RigctlPort = PorttextBox.Text;
-                RigctlIPv4 = IPtextBox.Text;
-                Radio = RigcomboBox.SelectedItem.ToString();
+                if (!rigctldcheckBox.Checked)
+                {
+                    RigctlCOM = COMcomboBox.SelectedItem.ToString();
+                    Rigctlbaud = baudcomboBox.SelectedItem.ToString();
+                    RigctlPort = PorttextBox.Text;
+                    RigctlIPv4 = IPtextBox.Text;
+                    Radio = RigcomboBox.SelectedItem.ToString();
+                }
+                Msg.TMessageBox("Settings saved", "rigctld", 2000);
             }
         }
 
         private bool SaveRigctl()
         {
-            if (RigcomboBox.SelectedIndex < 0 || COMcomboBox.SelectedIndex < 0 || baudcomboBox.SelectedIndex < 0 || IPtextBox.Text == "" || PorttextBox.Text == "")
+
+            if (!rigctldcheckBox.Checked)
             {
-                Msg.OKMessageBox("Error: some items not selected", "");
-                return false; ;
+                if (RigcomboBox.SelectedIndex < 0 || COMcomboBox.SelectedIndex < 0 || baudcomboBox.SelectedIndex < 0 || IPtextBox.Text == "" || PorttextBox.Text == "")
+                {
+                    Msg.OKMessageBox("Error: some items not selected", "");
+                    return false;
+
+                }
             }
+
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             lock (_lock)
@@ -4137,8 +4251,8 @@ namespace WSPR_Sked
                 try
                 {
                     MySqlCommand command = connection.CreateCommand();
-                    command.CommandText = "INSERT INTO rigctl(RigctlID, Radio, COMport, Baud, IPv4, Port) ";
-                    command.CommandText += "VALUES(@RigctlID, @Radio, @COMport, @Baud, @IPv4, @Port)";
+                    command.CommandText = "INSERT INTO rigctl(RigctlID, Radio, COMport, Baud, IPv4, Port,norigctld) ";
+                    command.CommandText += "VALUES(@RigctlID, @Radio, @COMport, @Baud, @IPv4, @Port,@norigctld)";
 
                     connection.Open();
 
@@ -4148,6 +4262,7 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@Baud", baudcomboBox.SelectedItem);
                     command.Parameters.AddWithValue("@IPv4", IPtextBox.Text);
                     command.Parameters.AddWithValue("@Port", PorttextBox.Text);
+                    command.Parameters.AddWithValue("@norigctld", noRigctld);
 
 
                     command.ExecuteNonQuery();
@@ -4171,7 +4286,7 @@ namespace WSPR_Sked
             {
                 MySqlCommand command = connection.CreateCommand();
                 c = "UPDATE rigctl SET Radio = '" + RigcomboBox.SelectedItem + "', COMport = '" + COMcomboBox.SelectedItem + "', ";
-                c = c + "Baud = '" + baudcomboBox.SelectedItem + "', IPv4 = '" + IPtextBox.Text + "', Port = '" + PorttextBox.Text + "'";
+                c = c + "Baud = '" + baudcomboBox.SelectedItem + "', IPv4 = '" + IPtextBox.Text + "', Port = '" + PorttextBox.Text + "', norigctld = " + noRigctld;
                 c = c + " WHERE RigctlID = 0";
 
                 command.CommandText = c;
@@ -4211,6 +4326,7 @@ namespace WSPR_Sked
                     Rigctlbaud = (string)Reader["Baud"];
                     RigctlIPv4 = (string)Reader["IPv4"];
                     RigctlPort = (string)Reader["Port"];
+                    rigctldcheckBox.Checked = (bool)Reader["norigctld"];
                     RigcomboBox.SelectedItem = Radio;
                     COMcomboBox.SelectedItem = RigctlCOM;
                     baudcomboBox.SelectedItem = Rigctlbaud;
@@ -4438,7 +4554,7 @@ namespace WSPR_Sked
             if (startCount > startCountMax)  //X minutes
             {
                 startCount = 0;
-                await liveForm.get_results(CalltextBox.Text.Trim(), TXFrequency, serverName, db_user, db_pass,10);
+                await liveForm.get_results(CalltextBox.Text.Trim(), TXFrequency, serverName, db_user, db_pass, 10);
 
             }
             string time = Convert.ToString(h).PadLeft(2, '0');
@@ -6137,8 +6253,8 @@ namespace WSPR_Sked
         {
             if (slotActive)
             {
-                if (TXrunbutton.BackColor == Color.Thistle)
-                {
+                if (TXrunbutton.BackColor == Color.Olive)
+                {   
                     return;
                 }
                 DialogResult res = Msg.ynMessageBox("Stop TX (y/n)?", "Stop TX");
@@ -6947,7 +7063,7 @@ namespace WSPR_Sked
             keypresses = 0;
         }
 
-        void testFreq(bool change_IdleF)
+        async void testFreq(bool change_IdleF)
         {
             try
             {
@@ -6956,13 +7072,16 @@ namespace WSPR_Sked
                 double freq = Convert.ToDouble(testFtextBox.Text);
 
                 TXFrequency = (freq * 1000000).ToString();
-                changeFreq(TXFrequency);
-                if (change_IdleF)
+                var c = await changeFreq(TXFrequency);               
+                if (c)
                 {
-                    TXrunbutton.Text = "TX: " + testFtextBox.Text + "MHz";
-                    TXrunbutton2.Text = TXrunbutton.Text;
-                    //rxForm.Frequency = testFtextBox.Text.Trim();
-                    //rxForm.set_frequency(testFtextBox.Text.Trim());
+                    if (change_IdleF)
+                    {
+                        TXrunbutton.Text = "TX: " + testFtextBox.Text + "MHz";
+                        TXrunbutton2.Text = TXrunbutton.Text;
+                        //rxForm.Frequency = testFtextBox.Text.Trim();
+                        //rxForm.set_frequency(testFtextBox.Text.Trim());
+                    }
                 }
             }
             catch { }
@@ -6998,17 +7117,24 @@ namespace WSPR_Sked
         }
         private void findSound()
         {
-            audioInlistBox.Items.Clear();
-            audioOutlistBox.Items.Clear();
-            for (int i = 0; i < WaveOut.DeviceCount; i++)
+            try
             {
-                var caps = WaveOut.GetCapabilities(i);
-                audioOutlistBox.Items.Add($"{i}: {caps.ProductName}");
+                audioInlistBox.Items.Clear();
+                audioOutlistBox.Items.Clear();
+                for (int i = 0; i < WaveOut.DeviceCount; i++)
+                {
+                    var caps = WaveOut.GetCapabilities(i);
+                    audioOutlistBox.Items.Add($"{i}: {caps.ProductName}");
+                }
+                for (int b = 0; b < WaveIn.DeviceCount; b++)
+                {
+                    var caps = WaveIn.GetCapabilities(b);
+                    audioInlistBox.Items.Add($"{b}: {caps.ProductName}");
+                }
             }
-            for (int b = 0; b < WaveIn.DeviceCount; b++)
+            catch
             {
-                var caps = WaveIn.GetCapabilities(b);
-                audioInlistBox.Items.Add($"{b}: {caps.ProductName}");
+
             }
         }
 
@@ -7037,42 +7163,55 @@ namespace WSPR_Sked
 
         public void MonitorMic()
         {
-            // Setup mic input
-            waveIn = new WaveInEvent
-            {
-                WaveFormat = new WaveFormat(44100, 1)
-            };
+            try
+            {            // Setup mic input
+                waveIn = new WaveInEvent
+                {
+                    WaveFormat = new WaveFormat(44100, 1)
+                };
 
-            waveIn.DataAvailable += OnDataAvailable;
-            waveIn.StartRecording();
+                waveIn.DataAvailable += OnDataAvailable;
+                waveIn.StartRecording();
 
-            // Setup gain slider
-            trackBarGain.Minimum = 1;  // 0.01x
-            trackBarGain.Maximum = 500; // 3.0x
-            //trackBarGain.Value = 100;   // 1.0x
+                // Setup gain slider
+                trackBarGain.Minimum = 1;  // 0.01x
+                trackBarGain.Maximum = 500; // 3.0x
+                                            //trackBarGain.Value = 100;   // 1.0x
 
-            if (inLevel < 1)
-            {
-                inLevel = 1;
-            }
-            trackBarGain.Value = inLevel;
-            gain = trackBarGain.Value / 100f;
-            trackBarGain.Scroll += (s, e) =>
-            {
+                if (inLevel < 1)
+                {
+                    inLevel = 1;
+                }
+                trackBarGain.Value = inLevel;
                 gain = trackBarGain.Value / 100f;
-            };
+                trackBarGain.Scroll += (s, e) =>
+                {
+                    gain = trackBarGain.Value / 100f;
+                };
+            }
+            catch
+            {
+
+            }
         }
 
         private void OnDataAvailable(object sender, WaveInEventArgs e)
         {
             float max = 0;
 
-            for (int i = 0; i < e.BytesRecorded; i += 2)
+            try
             {
-                short sample = (short)((e.Buffer[i + 1] << 8) | e.Buffer[i]);
-                float sample32 = (sample / 32768f) * gain;
-                sample32 = Math.Max(-1.0f, Math.Min(1.0f, sample32)); // Clamp
-                if (Math.Abs(sample32) > max) max = Math.Abs(sample32);
+                for (int i = 0; i < e.BytesRecorded; i += 2)
+                {
+                    short sample = (short)((e.Buffer[i + 1] << 8) | e.Buffer[i]);
+                    float sample32 = (sample / 32768f) * gain;
+                    sample32 = Math.Max(-1.0f, Math.Min(1.0f, sample32)); // Clamp
+                    if (Math.Abs(sample32) > max) max = Math.Abs(sample32);
+                }
+            }
+            catch
+            {
+
             }
 
             // Update volume meter on UI thread
@@ -7381,6 +7520,35 @@ namespace WSPR_Sked
                 rxForm.stopUrl = false;
                 liveForm.stopUrl = false;
             }
+        }
+
+        private void rigctldcheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rigctldcheckBox.Checked)
+            {
+                noRigctld = true;
+                FlistBox2.Visible = true;
+                Flabel.Visible = true;
+                Fhelplabel.Visible = true;  
+            }
+            else
+            {
+                FlistBox2.Visible = false;
+                Flabel.Visible = false;
+                Fhelplabel.Visible = false;
+                noRigctld = false;
+                getRigList();
+
+                findRigCtlFolder();
+                runRigCtlD(); //strt rig ctld
+            }
+        }
+
+        private void FlistBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TXrunbutton.Text = FlistBox2.SelectedItem.ToString() + " MHz";
+            TXrunbutton2.Text = FlistBox2.SelectedItem.ToString() + " MHz";
+
         }
     }
 

@@ -119,6 +119,7 @@
             label8 = new System.Windows.Forms.Label();
             infobutton = new System.Windows.Forms.Button();
             label22 = new System.Windows.Forms.Label();
+            Burstbutton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -431,6 +432,7 @@
             // groupBox2
             // 
             groupBox2.BackColor = System.Drawing.Color.Transparent;
+            groupBox2.Controls.Add(Burstbutton);
             groupBox2.Controls.Add(flarelabel);
             groupBox2.Controls.Add(groupBox4);
             groupBox2.Controls.Add(changebutton);
@@ -939,6 +941,16 @@
             label22.TabIndex = 22;
             label22.Text = "Lower Ap index = more stable conditions";
             // 
+            // Burstbutton
+            // 
+            Burstbutton.Location = new System.Drawing.Point(1022, 509);
+            Burstbutton.Name = "Burstbutton";
+            Burstbutton.Size = new System.Drawing.Size(92, 23);
+            Burstbutton.TabIndex = 23;
+            Burstbutton.Text = "Show bursts";
+            Burstbutton.UseVisualStyleBackColor = true;
+            Burstbutton.Click += Burstbutton_Click_1;
+            // 
             // Solar
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1067,5 +1079,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column10;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column11;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column14;
+        private System.Windows.Forms.Button Burstbutton;
     }
 }
