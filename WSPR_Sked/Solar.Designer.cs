@@ -63,6 +63,7 @@
             conditionlabel = new System.Windows.Forms.Label();
             label17 = new System.Windows.Forms.Label();
             groupBox2 = new System.Windows.Forms.GroupBox();
+            RBlabel = new System.Windows.Forms.Label();
             Eventsbutton = new System.Windows.Forms.Button();
             EventsgroupBox = new System.Windows.Forms.GroupBox();
             textBox3 = new System.Windows.Forms.TextBox();
@@ -436,6 +437,7 @@
             // groupBox2
             // 
             groupBox2.BackColor = System.Drawing.Color.Transparent;
+            groupBox2.Controls.Add(RBlabel);
             groupBox2.Controls.Add(Eventsbutton);
             groupBox2.Controls.Add(EventsgroupBox);
             groupBox2.Controls.Add(Burstbutton);
@@ -456,17 +458,28 @@
             groupBox2.Controls.Add(dataGridView2);
             groupBox2.Location = new System.Drawing.Point(7, 36);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(1133, 551);
+            groupBox2.Size = new System.Drawing.Size(1156, 551);
             groupBox2.TabIndex = 15;
             groupBox2.TabStop = false;
             groupBox2.Text = "Solar geophysical database";
             groupBox2.Visible = false;
             groupBox2.Enter += groupBox2_Enter;
             // 
+            // RBlabel
+            // 
+            RBlabel.AutoSize = true;
+            RBlabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            RBlabel.Location = new System.Drawing.Point(477, 43);
+            RBlabel.Name = "RBlabel";
+            RBlabel.Size = new System.Drawing.Size(308, 13);
+            RBlabel.TabIndex = 54;
+            RBlabel.Text = "Radio bursts: swept S/start-end/info, burst R/maxtime/info";
+            RBlabel.Visible = false;
+            // 
             // Eventsbutton
             // 
             Eventsbutton.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            Eventsbutton.Location = new System.Drawing.Point(1045, 452);
+            Eventsbutton.Location = new System.Drawing.Point(1045, 463);
             Eventsbutton.Name = "Eventsbutton";
             Eventsbutton.Size = new System.Drawing.Size(69, 23);
             Eventsbutton.TabIndex = 53;
@@ -482,7 +495,7 @@
             EventsgroupBox.FlatStyle = System.Windows.Forms.FlatStyle.System;
             EventsgroupBox.Location = new System.Drawing.Point(423, 105);
             EventsgroupBox.Name = "EventsgroupBox";
-            EventsgroupBox.Size = new System.Drawing.Size(569, 332);
+            EventsgroupBox.Size = new System.Drawing.Size(602, 345);
             EventsgroupBox.TabIndex = 23;
             EventsgroupBox.TabStop = false;
             EventsgroupBox.Text = "Summary of events";
@@ -491,11 +504,11 @@
             // textBox3
             // 
             textBox3.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            textBox3.Location = new System.Drawing.Point(29, 25);
+            textBox3.Location = new System.Drawing.Point(29, 19);
             textBox3.Multiline = true;
             textBox3.Name = "textBox3";
             textBox3.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            textBox3.Size = new System.Drawing.Size(517, 292);
+            textBox3.Size = new System.Drawing.Size(549, 307);
             textBox3.TabIndex = 0;
             // 
             // Burstbutton
@@ -512,7 +525,7 @@
             // flarelabel
             // 
             flarelabel.AutoSize = true;
-            flarelabel.Location = new System.Drawing.Point(478, 22);
+            flarelabel.Location = new System.Drawing.Point(477, 27);
             flarelabel.Name = "flarelabel";
             flarelabel.Size = new System.Drawing.Size(273, 15);
             flarelabel.TabIndex = 52;
@@ -668,9 +681,9 @@
             dataGridView3.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView3.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { dataGridViewTextBoxColumn12, dataGridViewTextBoxColumn14, dataGridViewTextBoxColumn15, dataGridViewTextBoxColumn16, dataGridViewTextBoxColumn17, dataGridViewTextBoxColumn18, dataGridViewTextBoxColumn19, dataGridViewTextBoxColumn20, dataGridViewTextBoxColumn21 });
-            dataGridView3.Location = new System.Drawing.Point(8, 41);
+            dataGridView3.Location = new System.Drawing.Point(8, 60);
             dataGridView3.Name = "dataGridView3";
-            dataGridView3.Size = new System.Drawing.Size(1119, 396);
+            dataGridView3.Size = new System.Drawing.Size(1136, 396);
             dataGridView3.TabIndex = 48;
             dataGridView3.Visible = false;
             // 
@@ -679,7 +692,7 @@
             dataGridViewTextBoxColumn12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             dataGridViewTextBoxColumn12.HeaderText = "Date";
             dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
-            dataGridViewTextBoxColumn12.Width = 80;
+            dataGridViewTextBoxColumn12.Width = 90;
             // 
             // dataGridViewTextBoxColumn14
             // 
@@ -740,7 +753,7 @@
             // datecheckBox
             // 
             datecheckBox.AutoSize = true;
-            datecheckBox.Location = new System.Drawing.Point(303, 458);
+            datecheckBox.Location = new System.Drawing.Point(302, 467);
             datecheckBox.Name = "datecheckBox";
             datecheckBox.Size = new System.Drawing.Size(114, 19);
             datecheckBox.TabIndex = 39;
@@ -750,7 +763,7 @@
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new System.Drawing.Point(190, 460);
+            label11.Location = new System.Drawing.Point(189, 469);
             label11.Name = "label11";
             label11.Size = new System.Drawing.Size(41, 15);
             label11.TabIndex = 38;
@@ -758,7 +771,7 @@
             // 
             // filterbutton
             // 
-            filterbutton.Location = new System.Drawing.Point(790, 456);
+            filterbutton.Location = new System.Drawing.Point(789, 465);
             filterbutton.Name = "filterbutton";
             filterbutton.Size = new System.Drawing.Size(66, 23);
             filterbutton.TabIndex = 37;
@@ -769,7 +782,7 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new System.Drawing.Point(423, 460);
+            label9.Location = new System.Drawing.Point(422, 469);
             label9.Name = "label9";
             label9.Size = new System.Drawing.Size(38, 15);
             label9.TabIndex = 36;
@@ -778,7 +791,7 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new System.Drawing.Point(610, 460);
+            label10.Location = new System.Drawing.Point(609, 469);
             label10.Name = "label10";
             label10.Size = new System.Drawing.Size(21, 15);
             label10.TabIndex = 35;
@@ -786,14 +799,14 @@
             // 
             // dateTimePicker2
             // 
-            dateTimePicker2.Location = new System.Drawing.Point(637, 456);
+            dateTimePicker2.Location = new System.Drawing.Point(636, 465);
             dateTimePicker2.Name = "dateTimePicker2";
             dateTimePicker2.Size = new System.Drawing.Size(137, 23);
             dateTimePicker2.TabIndex = 34;
             // 
             // dateTimePicker1
             // 
-            dateTimePicker1.Location = new System.Drawing.Point(467, 456);
+            dateTimePicker1.Location = new System.Drawing.Point(466, 465);
             dateTimePicker1.Name = "dateTimePicker1";
             dateTimePicker1.Size = new System.Drawing.Size(137, 23);
             dateTimePicker1.TabIndex = 33;
@@ -801,7 +814,7 @@
             // toplabel
             // 
             toplabel.AutoSize = true;
-            toplabel.Location = new System.Drawing.Point(250, 23);
+            toplabel.Location = new System.Drawing.Point(182, 41);
             toplabel.Name = "toplabel";
             toplabel.Size = new System.Drawing.Size(61, 15);
             toplabel.TabIndex = 15;
@@ -821,9 +834,9 @@
             dataGridView2.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView2.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewTextBoxColumn3, dataGridViewTextBoxColumn4, dataGridViewTextBoxColumn5, dataGridViewTextBoxColumn6, dataGridViewTextBoxColumn7, dataGridViewTextBoxColumn8, dataGridViewTextBoxColumn9, dataGridViewTextBoxColumn10, dataGridViewTextBoxColumn11, Column12, Column15 });
-            dataGridView2.Location = new System.Drawing.Point(40, 45);
+            dataGridView2.Location = new System.Drawing.Point(40, 61);
             dataGridView2.Name = "dataGridView2";
-            dataGridView2.Size = new System.Drawing.Size(876, 396);
+            dataGridView2.Size = new System.Drawing.Size(876, 380);
             dataGridView2.TabIndex = 14;
             // 
             // dataGridViewTextBoxColumn1
@@ -998,7 +1011,7 @@
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.Color.SeaShell;
-            ClientSize = new System.Drawing.Size(1152, 677);
+            ClientSize = new System.Drawing.Size(1175, 677);
             ControlBox = false;
             Controls.Add(label22);
             Controls.Add(infobutton);
@@ -1092,15 +1105,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label flarelabel;
         private System.Windows.Forms.Label Clabel;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn14;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn15;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn16;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn17;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn18;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn19;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn20;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn21;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label conditionlabel;
@@ -1127,5 +1131,15 @@
         private System.Windows.Forms.Button Eventsbutton;
         private System.Windows.Forms.GroupBox EventsgroupBox;
         private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Label RBlabel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn14;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn15;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn16;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn17;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn18;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn19;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn20;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn21;
     }
 }

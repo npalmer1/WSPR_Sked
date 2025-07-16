@@ -651,6 +651,7 @@ namespace WSPR_Sked
             }
         }
         List<string> st = new List<string>();
+        List<string> st2 = new List<string>();
         public async Task findBurst()
         {
             string[] S;
@@ -659,11 +660,13 @@ namespace WSPR_Sked
             string Xray = "";
 
             string time = "";
+            string timend = "";
             string rburst = "";
             string part = "";
             string f = "";
             bool found = false;
             st.Clear();
+            st2.Clear();
 
             if (results.Contains("RB") || results.Contains("RSP"))
             {
@@ -702,18 +705,33 @@ namespace WSPR_Sked
                                         i = 1;
                                     }
                                     time = S[2 + i];
-                                    if (time.Contains("///"))
+                                    timend = "";
+                                    if (S[2 + i].Contains("///"))
                                     {
                                         time = S[1 + i];
                                     }
-                                    if (time.Contains("///"))
+                                    if (S[2 + i].Contains("///"))
                                     {
-                                        time = S[3 + i];
+                                        timend = S[3 + i];
                                     }
-                                    rburst = S[6 + i];
-                                    part = S[8+ i];
+                                    else
+                                    {
+                                        timend = "";
+                                    }
+                                        rburst = S[6 + i];
+                                    part = S[8 + i];
                                     f = S[7 + i];
-                                    st.Add(time + "/" + rburst+"/"+part);
+                                    //st.Add(time + "/" + rburst+"/"+part);
+                                    if (timend == "")
+                                    {
+                                        st.Add("R/"+time + "/" + part);
+                                    }
+                                    else
+                                    {
+                                        st.Add("S/"+time + "-" + timend + "/" + part);
+
+                                    }
+                                    st2.Add(timend);
                                 }
 
                             }
@@ -748,13 +766,53 @@ namespace WSPR_Sked
         private void findBurstTime(int i)
         {
             string nl;
+            bool rsp = false;
+            string S = "";
+            string[] s;
             try
             {
+                DateTime te = new DateTime();
                 string[] T = st[i].Split('/');
-                T[0] = T[0].Insert(2, ":");
+                if (T[1].Contains("-"))
+                {
+                    s = T[1].Split('-');
+                    S = s[0];
+                }
+                else
+                {
+                    S = T[1];
+                }
+                   
+                string time = S.Insert(2, ":");
                 DateTime t;
-                DateTime.TryParse(T[0], out t);
+                DateTime.TryParse(time, out t);
+                te = t;
+                if (st2[i] != "") //not used
+                {
+                    string TE = st2[i];
+                    TE = TE.Insert(2, ":");                  
+                    DateTime.TryParse(TE, out te);
+                    rsp = true;
+                }
+                else
+                {
+                    rsp = false;
+                }
 
+                findBurstTimeSlot(st[i], t);
+                //if (rsp) { findBurstTimeSlot(T[0] +"-"+st2[i]+"rsp", te); }
+
+            }
+            catch
+            {
+
+            }
+        }
+        private void findBurstTimeSlot(string S, DateTime t)
+        {
+            string nl = "";
+            try
+            {
                 if (t.Hour >= 0 && t.Hour < 3)
                 {
                     if (rb.s00 != "")
@@ -765,7 +823,8 @@ namespace WSPR_Sked
                     {
                         nl = "";
                     }
-                    rb.s00 = rb.s00 + nl + st[i];
+
+                    rb.s00 = rb.s00 + nl + S;
                 }
                 if (t.Hour >= 3 && t.Hour < 6)
                 {
@@ -777,7 +836,7 @@ namespace WSPR_Sked
                     {
                         nl = "";
                     }
-                    rb.s03 = rb.s03 + nl + st[i];
+                    rb.s03 = rb.s03 + nl + S;
                 }
                 if (t.Hour >= 6 && t.Hour < 9)
                 {
@@ -789,7 +848,7 @@ namespace WSPR_Sked
                     {
                         nl = "";
                     }
-                    rb.s06 = rb.s06 + nl + st[i];
+                    rb.s06 = rb.s06 + nl + S;
                 }
                 if (t.Hour >= 9 && t.Hour < 12)
                 {
@@ -801,7 +860,7 @@ namespace WSPR_Sked
                     {
                         nl = "";
                     }
-                    rb.s09 = rb.s09 + nl + st[i];
+                    rb.s09 = rb.s09 + nl + S;
                 }
                 if (t.Hour >= 12 && t.Hour < 15)
                 {
@@ -813,7 +872,7 @@ namespace WSPR_Sked
                     {
                         nl = "";
                     }
-                    rb.s12 = rb.s12 + nl + st[i];
+                    rb.s12 = rb.s12 + nl + S;
                 }
                 if (t.Hour >= 15 && t.Hour < 18)
                 {
@@ -825,7 +884,7 @@ namespace WSPR_Sked
                     {
                         nl = "";
                     }
-                    rb.s15 = rb.s15 + nl + st[i];
+                    rb.s15 = rb.s15 + nl + S;
                 }
                 if (t.Hour >= 18 && t.Hour < 21)
                 {
@@ -837,7 +896,7 @@ namespace WSPR_Sked
                     {
                         nl = "";
                     }
-                    rb.s18 = rb.s18 + nl + st[i];
+                    rb.s18 = rb.s18 + nl + S;
                 }
                 if (t.Hour >= 21 && t.Hour <= 23)
                 {
@@ -849,7 +908,7 @@ namespace WSPR_Sked
                     {
                         nl = "";
                     }
-                    rb.s21 = rb.s21 + nl + st[i];
+                    rb.s21 = rb.s21 + nl + S;
                 }
             }
             catch
@@ -931,7 +990,7 @@ namespace WSPR_Sked
                     rb.s18 = (string)Reader["s18"];
                     rb.s21 = (string)Reader["s21"];
 
-                    cells2[0] = "R. bursts:";
+                    cells2[0] = "Radio bursts:";
                     cells2[1] = rb.s00;
                     cells2[2] = rb.s03;
                     cells2[3] = rb.s06;
@@ -981,7 +1040,7 @@ namespace WSPR_Sked
                 if (dataGridView3.Rows[rinsert].Cells[0].Value != null)
                 {
                     string s = dataGridView3.Rows[rinsert].Cells[0].Value.ToString();
-                    if (s.Contains("R. burst"))
+                    if (s.Contains("Radio burst"))
                     {
                         dataGridView3.Rows.RemoveAt(rinsert);
                     }
@@ -2428,6 +2487,7 @@ namespace WSPR_Sked
                 flarelabel.Visible = true;
                 Eventsbutton.Visible = true;
                 Burstbutton.Visible = true;
+                RBlabel.Visible = true;
             }
             else
             {
@@ -2440,6 +2500,7 @@ namespace WSPR_Sked
                 flarelabel.Visible = false;
                 Eventsbutton.Visible = false;
                 Burstbutton.Visible = false;
+                RBlabel.Visible = false;
             }
         }
 
