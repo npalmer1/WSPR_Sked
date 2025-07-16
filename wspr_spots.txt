@@ -1,3 +1,10 @@
-_Sked\ emp3   5 -10  0.2   7.040077  G4HSB IO94 23           0     1    0
-_Sked\ emp3   1 -21  3.3   7.040087  F6KPL IN99 30           0  1214    0
-_Sked\ emp3   1 -21  1.3   7.040111  DK9ES JO31 23           0   789    0
+_Sked\ emp2   2 -20 -0.4   7.040011  2E0CIT JO01 37          0     3    0
+_Sked\ emp2   2 -25 -0.7   7.040018  G4HSB IO94 23           0  3359    8
+_Sked\ emp2   2 -18 -0.4   7.040064  PA7D JO23 23            0     1    0
+_Sked\ emp2   2 -20 -1.6   7.040069  PA1RVL JO32 10         -1  3097    8
+_Sked\ emp2   4 -16 -0.7   7.040088  GM4DTH IO85 23          0     1    0
+_Sked\ emp2   7   4 -0.7   7.040118  G4HSB IO94 23           0     1    0
+_Sked\ emp2   2 -21 -0.5   7.040141  2E0JJI IO93 20          0     5    0
+_Sked\ emp2   3 -14 -0.8   7.040145  <F6FUZ> JN05ID 23       0     1    0
+_Sked\ emp2   2 -18 -0.4   7.040176  ON7AN JO20 27          -1     2    0
+_Sked\ emp2   2 -27 -0.3   7.040207  <EA6URP> JM19IN 23      0    63    0

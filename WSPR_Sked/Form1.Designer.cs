@@ -36,6 +36,7 @@
             timelistBox = new System.Windows.Forms.ListBox();
             dataGridView1 = new System.Windows.Forms.DataGridView();
             slotgroupBox = new System.Windows.Forms.GroupBox();
+            label110 = new System.Windows.Forms.Label();
             label109 = new System.Windows.Forms.Label();
             editslotcheckBox = new System.Windows.Forms.CheckBox();
             msgTlabel = new System.Windows.Forms.Label();
@@ -71,6 +72,9 @@
             label13 = new System.Windows.Forms.Label();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            Fhelplabel = new System.Windows.Forms.Label();
+            Flabel = new System.Windows.Forms.Label();
+            FlistBox2 = new System.Windows.Forms.ListBox();
             stopInternetcheckBox = new System.Windows.Forms.CheckBox();
             showRXbutton = new System.Windows.Forms.Button();
             label96 = new System.Windows.Forms.Label();
@@ -183,6 +187,7 @@
             label14 = new System.Windows.Forms.Label();
             CalltextBox = new System.Windows.Forms.TextBox();
             tabPage3 = new System.Windows.Forms.TabPage();
+            rigctldcheckBox = new System.Windows.Forms.CheckBox();
             SaveRPathbutton = new System.Windows.Forms.Button();
             label73 = new System.Windows.Forms.Label();
             PathAddbutton = new System.Windows.Forms.Button();
@@ -416,6 +421,7 @@
             // slotgroupBox
             // 
             slotgroupBox.BackColor = System.Drawing.Color.FromArgb(255, 192, 192);
+            slotgroupBox.Controls.Add(label110);
             slotgroupBox.Controls.Add(label109);
             slotgroupBox.Controls.Add(editslotcheckBox);
             slotgroupBox.Controls.Add(msgTlabel);
@@ -453,6 +459,15 @@
             slotgroupBox.TabStop = false;
             slotgroupBox.Text = "Timeslot Configuration";
             slotgroupBox.Visible = false;
+            // 
+            // label110
+            // 
+            label110.AutoSize = true;
+            label110.Location = new System.Drawing.Point(650, 133);
+            label110.Name = "label110";
+            label110.Size = new System.Drawing.Size(47, 13);
+            label110.TabIndex = 43;
+            label110.Text = "label110";
             // 
             // label109
             // 
@@ -792,6 +807,9 @@
             // tabPage1
             // 
             tabPage1.BackColor = System.Drawing.SystemColors.Info;
+            tabPage1.Controls.Add(Fhelplabel);
+            tabPage1.Controls.Add(Flabel);
+            tabPage1.Controls.Add(FlistBox2);
             tabPage1.Controls.Add(stopInternetcheckBox);
             tabPage1.Controls.Add(showRXbutton);
             tabPage1.Controls.Add(label96);
@@ -835,6 +853,38 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Slots";
             tabPage1.Click += tabPage1_Click;
+            // 
+            // Fhelplabel
+            // 
+            Fhelplabel.AutoSize = true;
+            Fhelplabel.BackColor = System.Drawing.Color.AntiqueWhite;
+            Fhelplabel.Location = new System.Drawing.Point(1014, 364);
+            Fhelplabel.Name = "Fhelplabel";
+            Fhelplabel.Size = new System.Drawing.Size(76, 78);
+            Fhelplabel.TabIndex = 89;
+            Fhelplabel.Text = "Select freq of \r\ntx/rx manually\r\n- operate PTT \r\nby VOX\r\n(slot freq will \r\nbe ignored)";
+            Fhelplabel.Visible = false;
+            // 
+            // Flabel
+            // 
+            Flabel.AutoSize = true;
+            Flabel.Location = new System.Drawing.Point(941, 105);
+            Flabel.Name = "Flabel";
+            Flabel.Size = new System.Drawing.Size(61, 13);
+            Flabel.TabIndex = 88;
+            Flabel.Text = "Select freq:";
+            Flabel.Visible = false;
+            // 
+            // FlistBox2
+            // 
+            FlistBox2.FormattingEnabled = true;
+            FlistBox2.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "50.293", "70.091", "144.489", "432.300", "1296.500" });
+            FlistBox2.Location = new System.Drawing.Point(1014, 104);
+            FlistBox2.Name = "FlistBox2";
+            FlistBox2.Size = new System.Drawing.Size(58, 251);
+            FlistBox2.TabIndex = 87;
+            FlistBox2.Visible = false;
+            FlistBox2.SelectedIndexChanged += FlistBox2_SelectedIndexChanged;
             // 
             // stopInternetcheckBox
             // 
@@ -1050,7 +1100,7 @@
             // 
             // TXrunbutton
             // 
-            TXrunbutton.BackColor = System.Drawing.Color.Thistle;
+            TXrunbutton.BackColor = System.Drawing.Color.Olive;
             TXrunbutton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             TXrunbutton.ForeColor = System.Drawing.Color.White;
             TXrunbutton.Location = new System.Drawing.Point(745, 104);
@@ -1991,6 +2041,7 @@
             // tabPage3
             // 
             tabPage3.BackColor = System.Drawing.SystemColors.Info;
+            tabPage3.Controls.Add(rigctldcheckBox);
             tabPage3.Controls.Add(SaveRPathbutton);
             tabPage3.Controls.Add(label73);
             tabPage3.Controls.Add(PathAddbutton);
@@ -2021,6 +2072,17 @@
             tabPage3.Size = new System.Drawing.Size(1121, 629);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
+            // 
+            // rigctldcheckBox
+            // 
+            rigctldcheckBox.AutoSize = true;
+            rigctldcheckBox.Location = new System.Drawing.Point(270, 285);
+            rigctldcheckBox.Name = "rigctldcheckBox";
+            rigctldcheckBox.Size = new System.Drawing.Size(289, 17);
+            rigctldcheckBox.TabIndex = 71;
+            rigctldcheckBox.Text = "Do not use rigctld (use if tcvr not compatible with rigctld)";
+            rigctldcheckBox.UseVisualStyleBackColor = true;
+            rigctldcheckBox.CheckedChanged += rigctldcheckBox_CheckedChanged;
             // 
             // SaveRPathbutton
             // 
@@ -2148,7 +2210,7 @@
             // 
             // SaveRigctlbutton
             // 
-            SaveRigctlbutton.Location = new System.Drawing.Point(265, 314);
+            SaveRigctlbutton.Location = new System.Drawing.Point(265, 326);
             SaveRigctlbutton.Name = "SaveRigctlbutton";
             SaveRigctlbutton.Size = new System.Drawing.Size(75, 36);
             SaveRigctlbutton.TabIndex = 57;
@@ -3913,6 +3975,11 @@
         private System.Windows.Forms.Timer RXblocktimer;
         private System.Windows.Forms.CheckBox stopInternetcheckBox;
         private System.Windows.Forms.Label label109;
+        private System.Windows.Forms.CheckBox rigctldcheckBox;
+        private System.Windows.Forms.ListBox FlistBox2;
+        private System.Windows.Forms.Label Flabel;
+        private System.Windows.Forms.Label label110;
+        private System.Windows.Forms.Label Fhelplabel;
     }
 }
 
