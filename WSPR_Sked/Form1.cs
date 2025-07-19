@@ -1045,13 +1045,9 @@ namespace WSPR_Sked
                     Msg.TCMessageBox("Saving .. please wait", "Save slot", 3000, mForm);
                     if ((msgT == 2 || msgT == 3) && !asOnecheckBox.Checked && checkNextSlot(EditRow))
                     {
-                        int MT = msgT;
-                        if (!asOnecheckBox.Checked)
-                        {
-                            MT = 1;
-                        }                       
+                                       
                      
-                        SaveSlot(false, MT, this_slot);
+                        SaveSlot(false, msgT, this_slot);
                         EditRow++;
 
                         slotNo = 2;
@@ -1201,7 +1197,9 @@ namespace WSPR_Sked
 
                 Slot.SwPort = Convert.ToInt32(selSwPorttextBox.Text);
                 Slot.SwPort++; //zeroise it
-                cells[15] = msgT.ToString();
+                string MT = msgT.ToString();
+
+                cells[15] = MT;
 
                 if (locateSlotMembersDT(date1, time1, enddate, endtime, this_slot)) //if able to save data
                 {
@@ -1543,6 +1541,7 @@ namespace WSPR_Sked
             int i = 0;
             int slot = 0;
             string msgT = "1";
+           
             for (i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 try
@@ -1552,12 +1551,15 @@ namespace WSPR_Sked
                         date = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
 
                         time = Convert.ToString(dataGridView1.Rows[i].Cells[1].Value);
-                        msgT = Convert.ToString(dataGridView1.Rows[i].Cells[15].Value);
+                        string MT = dataGridView1.Rows[i].Cells[15].Value.ToString();
+                       
+                        msgT = MT;
                         slot = i; break;
                     }
                 }
                 catch { }
             }
+            
             DialogResult res;
             if (rightbutton)
             {
