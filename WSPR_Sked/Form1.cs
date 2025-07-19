@@ -123,6 +123,8 @@ namespace WSPR_Sked
         string Results;
         bool stopUrl = false;
 
+        bool stopSolar = false;
+
 
         DateTime currentSelectedDate;
 
@@ -299,6 +301,8 @@ namespace WSPR_Sked
 
             getUserandPassword();
             GridHeading();
+            dataGridView1.DataSource = dtable;
+            setColumnWidth();
 
             //selectedTime = dt.Date; //.ToString("hh:mm");
             daytimer.Enabled = true;
@@ -374,24 +378,25 @@ namespace WSPR_Sked
             liveForm.Show();
             liveForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass);
             startCount = 0;
-            rxForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath,ver);
+            rxForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath, ver);
             if (!noRigctld) { getRigF(); }
-           
+
             //rxForm.set_frequency(defaultF.ToString("F6"));
             rxForm.Show();
             startCount = startCountMax - 60;
 
             random = randno.Next(0, 7); //random number to spread uploads to wsprnet
 
-            solarForm.Show();
-            solarForm.setConfig(serverName, db_user, db_pass);
-            await solarForm.getLatestSolar(serverName, db_user, db_pass);
-            await solarForm.updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
-            await solarForm.updateSolar(serverName, db_user, db_pass);
-            await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, true); //update yesterday
-            await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //update today
-
-            //solarDB.Show();
+            if (!stopSolar)
+            {
+                solarForm.Show();
+                solarForm.setConfig(serverName, db_user, db_pass);
+                await solarForm.getLatestSolar(serverName, db_user, db_pass);
+                await solarForm.updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
+                await solarForm.updateSolar(serverName, db_user, db_pass);
+                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, true); //update yesterday
+                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //update today
+            }
 
 
         }
@@ -695,6 +700,7 @@ namespace WSPR_Sked
 
         private void GridHeading()
         {
+            
             dtable.Columns.Add("Date   "); //0
             dtable.Columns.Add("Time"); //1
             dtable.Columns.Add("Frequency"); //2
@@ -713,6 +719,45 @@ namespace WSPR_Sked
             dtable.Columns.Add("rptT"); //13
             dtable.Columns.Add("Slot"); //14
             dtable.Columns.Add("Type"); //15 msg type
+            dataGridView1.Columns.Clear();  //delete existing cells in datagrid view - to replace them with dtable
+        }
+
+        private void setColumnWidth()
+        {
+            for (int i = 0; i < dataGridView1.Columns.Count; i++)
+            {
+                dataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; //set all columns to fixed width
+                
+            }
+            dataGridView1.Columns[0].Width = 80; //date
+            dataGridView1.Columns[1].Width = 50; //time
+            dataGridView1.Columns[2].Width = 70; //frequency
+            dataGridView1.Columns[3].Width = 40; //offset
+            dataGridView1.Columns[4].Width = 56; //power dBm
+            dataGridView1.Columns[5].Width = 56; //power W
+            dataGridView1.Columns[6].Width = 120; //antenna
+            dataGridView1.Columns[7].Width = 50; //tuner
+            dataGridView1.Columns[8].Width = 50; //switch
+            //dataGridView1.Columns[9].Width = 60; //rotator
+            //dataGridView1.Columns[10].Width = 60; //azimuth
+            dataGridView1.Columns[9].Width = 80; //end date
+            dataGridView1.Columns[10].Width = 44; //repeat
+            dataGridView1.Columns[11].Width = 44; //active
+            dataGridView1.Columns[12].Width = 50; //end time
+            dataGridView1.Columns[13].Width = 45; //repeat time
+            dataGridView1.Columns[14].Width = 44; //slot no
+            dataGridView1.Columns[15].Width = 44; //message type
+            dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns[10].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns[11].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns[14].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns[15].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.AllowUserToAddRows = false;
+
         }
 
         private void deleteNextslot(int slot)
@@ -933,6 +978,8 @@ namespace WSPR_Sked
         private void CancelSlotbutton_Click(object sender, EventArgs e)
         {
             slotgroupBox.Visible = false;
+            this.Focus();
+            dataGridView1.Focus();
         }
 
         private bool checkNextSlot(int i)
@@ -998,7 +1045,13 @@ namespace WSPR_Sked
                     Msg.TCMessageBox("Saving .. please wait", "Save slot", 3000, mForm);
                     if ((msgT == 2 || msgT == 3) && !asOnecheckBox.Checked && checkNextSlot(EditRow))
                     {
-                        SaveSlot(false, msgT, this_slot);
+                        int MT = msgT;
+                        if (!asOnecheckBox.Checked)
+                        {
+                            MT = 1;
+                        }                       
+                     
+                        SaveSlot(false, MT, this_slot);
                         EditRow++;
 
                         slotNo = 2;
@@ -1015,7 +1068,8 @@ namespace WSPR_Sked
                 }
             }
             catch { }
-            this.Activate();
+            this.Focus();
+            dataGridView1.Focus();
 
         }
         private bool validateSlot()
@@ -1156,13 +1210,25 @@ namespace WSPR_Sked
                         if (cells[i] != null)
                         {
                             DataRow.Cells[i].Value = cells[i];
-
+                           
                         }
                     }
                 }
+                string act = DataRow.Cells[11].Value.ToString();
+                if (act.Contains(tick))
+                {
+                    dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Red;
+                }
+                else
+                {
+                    dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Blue;
+                }
+                DataGridViewCell cell = dataGridView1.Rows[EditRow].Cells[11];
+                cell.Style.Font = new System.Drawing.Font(dataGridView1.Font, FontStyle.Bold);              
+
                 dataGridView1.Columns[12].Visible = false; // Hide the repeat time column
                 dataGridView1.Columns[13].Visible = false; // Hide the end time column
-                dataGridView1.Columns[15].Visible = false; // Hide the end time column
+                //dataGridView1.Columns[15].Visible = false; // Hide the end time column
 
 
                 //will need to add function to find all slots in curren set to end
@@ -1535,7 +1601,8 @@ namespace WSPR_Sked
                     Msg.TMessageBox("Error deleting slot", "", 1000);
                 }
             }
-            this.Activate();
+            this.Focus();
+            dataGridView1.Focus();
         }
 
         private void DeleteRow(int slot)
@@ -1747,10 +1814,10 @@ namespace WSPR_Sked
             //levels = WSPR_Encode();
             //startF = TXFrequency;
 
-            getRigF();
+
             daytimer.Stop();
             daytimer.Enabled = false;
-
+            getRigF();
             daytimer2.Enabled = true;
             daytimer2.Start();
 
@@ -1810,14 +1877,18 @@ namespace WSPR_Sked
                 if (slotActive && enableTXcheckBox.Checked)
                 {
                     PTT(true);
+
                 }
                 wsprTXtimer.Enabled = true;
                 wsprTXtimer.Start();
             }
 
-
             if (slotActive && (levels != null) && enableTXcheckBox.Checked)
             {
+                if (TXrunbutton.Text.Contains("RX"))
+                {
+                    getRigF();
+                }
                 try
                 {
                     //rxForm.blockDecodes = true;
@@ -2371,7 +2442,7 @@ namespace WSPR_Sked
                     return false;
                 }
             }
-            
+
 
         }
 
@@ -2687,8 +2758,8 @@ namespace WSPR_Sked
                 {
 
                     MySqlCommand command = connection.CreateCommand();
-                    command.CommandText = "INSERT INTO settings(ConfigID,Callsign,BaseCall,Offset,DefaultF,Power,PowerW,Locator,LocatorLong,DefaultAnt,Alpha,DefaultAudio,HamlibPath,MsgType,AllowType2,oneMsg,WsprmsgPath) ";
-                    command.CommandText += "VALUES(@ConfigID,@Callsign,@BaseCall,@Offset,@DefaultF,@Power,@PowerW,@Locator,@LocatorLong,@DefaultAnt,@Alpha,@DefaultAudio,@HamlibPath,@MsgType,@AllowType2,@oneMsg,@WsprmsgPath)";
+                    command.CommandText = "INSERT INTO settings(ConfigID,Callsign,BaseCall,Offset,DefaultF,Power,PowerW,Locator,LocatorLong,DefaultAnt,Alpha,DefaultAudio,HamlibPath,MsgType,AllowType2,oneMsg,WsprmsgPath,stopsolar) ";
+                    command.CommandText += "VALUES(@ConfigID,@Callsign,@BaseCall,@Offset,@DefaultF,@Power,@PowerW,@Locator,@LocatorLong,@DefaultAnt,@Alpha,@DefaultAudio,@HamlibPath,@MsgType,@AllowType2,@oneMsg,@WsprmsgPath,@stopsolar)";
 
                     connection.Open();
 
@@ -2717,6 +2788,7 @@ namespace WSPR_Sked
                     string wsprmsgP = wsprmsgtextBox.Text;
                     wsprmsgP = wsprmsgP.Replace("\\", "/");
                     command.Parameters.AddWithValue("@WsprmsgPath", wsprmsgP);
+                    command.Parameters.AddWithValue("@stopsolar", stopsolarcheckBox.Checked);
                     string zone = "UTC";
                     if (LTcheckBox.Checked)
                     {
@@ -2765,7 +2837,7 @@ namespace WSPR_Sked
                 c = "UPDATE settings SET ConfigID = " + configID + ", Callsign = '" + callsign + "', BaseCall = '" + baseC + "', Offset = " + defaultoffset + ", DefaultF = " + defaultF + ", ";
                 c = c + "Power = " + defaultdB + ", PowerW = " + defaultW + ", Locator = '" + full_location + "', LocatorLong = " + L + ", DefaultAnt = '" + defaultAnt + "'";
                 c = c + ", Alpha = " + defaultAlpha + ", DefaultAudio = " + defA + ", HamlibPath = '" + HL + "', MsgType = " + msgT;
-                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "' WHERE settings.ConfigID = " + configID;
+                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopsolarcheckBox.Checked + " WHERE settings.ConfigID = " + configID;
                 //UPDATE `slots` SET `Antenna` = 'GP' WHERE `slots`.`Date` = '2025-02-28' AND `slots`.`Time` = '16:02:00'; 
                 command.CommandText = c;
                 connection.Open();
@@ -2848,6 +2920,8 @@ namespace WSPR_Sked
                     Type2checkBox.Checked = (bool)Reader["AllowType2"];
                     asOnecheckBox.Checked = (bool)Reader["oneMsg"];
                     string wsprmsgP = (string)Reader["WsprmsgPath"];
+                    stopsolarcheckBox.Checked = (bool)Reader["stopsolar"];
+                    stopSolar = stopsolarcheckBox.Checked;
                     wsprmsgP = wsprmsgP.Replace('/', '\\');
                     wsprmsgtextBox.Text = wsprmsgP;
                     if (zone == "LT")
@@ -3454,91 +3528,100 @@ namespace WSPR_Sked
                 justLoaded = false;
                 //}
             }
-            if (m % 30 == 0 && !stopUrl) //every 15 mins
+            if (!stopSolar)
             {
-                solarForm.checkNOAA();
-            }
-
-            if (h == 0 && m == 46 && s == 25 + random)
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
+                if (m == 39 && s == 27 + random)
+                {
+                    await solarForm.getLatestSolar(serverName, db_user, db_pass); //update 
 
 
-            }
-            if (h == 2 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, true); //get results for 2100-2400 yesterday
+                }
+                if (m % 30 == 0 && !stopUrl) //every 15 mins
+                {
+                    solarForm.checkNOAA();
+                }
 
-            }
-            if (h == 3 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                if (h == 0 && m == 46 && s == 25 + random)
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
 
-            }
-            if (h == 4 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-            }
 
-            if (h == 4 && m == 21 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-                await solarForm.updateSolar(serverName, db_user, db_pass);
-            }
+                }
+                if (h == 2 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, true); //get results for 2100-2400 yesterday
 
-            if (h == 6 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-                await solarForm.updateSolar(serverName, db_user, db_pass);
-            }
-            if (h == 7 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                await solarForm.updateSolar(serverName, db_user, db_pass);
-            }
+                }
+                if (h == 3 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
 
-            if (h == 9 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                }
+                if (h == 4 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
 
-            }
-            if (h == 10 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-            }
-            if (h == 12 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                if (h == 4 && m == 21 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                    await solarForm.updateSolar(serverName, db_user, db_pass);
+                }
 
-            }
-            if (h == 13 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-            }
-            if (h == 15 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                if (h == 6 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                    await solarForm.updateSolar(serverName, db_user, db_pass);
+                }
+                if (h == 7 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                    await solarForm.updateSolar(serverName, db_user, db_pass);
+                }
 
-            }
-            if (h == 16 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-            }
-            if (h == 18 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-            }
-            if (h == 19 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-            }
-            if (h == 21 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-            }
-            if (h == 22 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                if (h == 9 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+
+                }
+                if (h == 10 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
+                if (h == 12 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+
+                }
+                if (h == 13 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
+                if (h == 15 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+
+                }
+                if (h == 16 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
+                if (h == 18 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                }
+                if (h == 19 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
+                if (h == 21 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                }
+                if (h == 22 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
             }
 
         }
@@ -3587,7 +3670,7 @@ namespace WSPR_Sked
                 }
                 else
                 {
-                    if (FlistBox2.SelectedIndex>-1)
+                    if (FlistBox2.SelectedIndex > -1)
                     {
                         f = FlistBox2.SelectedItem.ToString();
                     }
@@ -3596,7 +3679,7 @@ namespace WSPR_Sked
                         f = Convert.ToString(defaultF);
 
                     }
-                   
+
                 }
 
                 if (!noRigctld)
@@ -3622,7 +3705,7 @@ namespace WSPR_Sked
                 if (enableTXcheckBox.Checked && slotActive) //is it transmitting?
                 {
                     btnText = "TX: " + MHz + " MHz";
-                }    
+                }
                 if (wsprTXtimer.Enabled || testPTTtimer.Enabled)
                 {
                     btnText = "TX: " + MHz + " MHz";
@@ -3632,8 +3715,8 @@ namespace WSPR_Sked
                     btnText = "RX: " + MHz + " MHz";
                     //rxForm.set_frequency(MHz);
                 }
-                    
-                
+
+
                 await rxForm.set_frequency(MHz);
                 //rxForm.Frequency = MHz;
                 TXrunbutton.Text = btnText;
@@ -3685,7 +3768,7 @@ namespace WSPR_Sked
             else
             {
                 Msg.TMessageBox("PTT operated by VOX", "", 1000);
-               
+
             }
         }
         private async Task<string> sendTXRigCommand(string msg) //send a TX message to RigCtlD and wait for reply
@@ -4097,7 +4180,7 @@ namespace WSPR_Sked
                         TXrunbutton.BackColor = Color.RoyalBlue;
                         TXrunbutton2.BackColor = Color.RoyalBlue;
                     }
-                        TXRX = "RX: ";
+                    TXRX = "RX: ";
                 }
 
                 if (slotActive)
@@ -4613,85 +4696,88 @@ namespace WSPR_Sked
             }
 
 
-            if (h == 0 && m == 46 && s == 25 + random)
+            if (!stopSolar)
             {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
+                if (h == 0 && m == 46 && s == 25 + random)
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
 
 
-            }
-            if (h == 2 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, true); //get results for 2100-2400 yesterday
+                }
+                if (h == 2 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, true); //get results for 2100-2400 yesterday
 
-            }
-            if (h == 3 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                }
+                if (h == 3 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
 
-            }
-            if (h == 4 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-            }
+                }
+                if (h == 4 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
 
-            if (h == 4 && m == 21 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-                await solarForm.updateSolar(serverName, db_user, db_pass);
-            }
+                if (h == 4 && m == 21 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                    await solarForm.updateSolar(serverName, db_user, db_pass);
+                }
 
-            if (h == 6 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-                await solarForm.updateSolar(serverName, db_user, db_pass);
-            }
-            if (h == 7 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-            }
+                if (h == 6 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                    await solarForm.updateSolar(serverName, db_user, db_pass);
+                }
+                if (h == 7 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
 
-            if (h == 9 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                if (h == 9 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
 
-            }
-            if (h == 10 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-            }
-            if (h == 12 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                }
+                if (h == 10 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
+                if (h == 12 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
 
-            }
-            if (h == 13 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-            }
-            if (h == 15 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                }
+                if (h == 13 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
+                if (h == 15 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
 
-            }
-            if (h == 16 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-            }
-            if (h == 18 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-            }
-            if (h == 19 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-            }
-            if (h == 21 && m == 46 && s == (22 + random))
-            {
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-            }
-            if (h == 22 && m == 10 && s == (20 + random))
-            {
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
+                if (h == 16 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
+                if (h == 18 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                }
+                if (h == 19 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
+                if (h == 21 && m == 46 && s == (22 + random))
+                {
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
+                }
+                if (h == 22 && m == 10 && s == (20 + random))
+                {
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
+                }
             }
         }
 
@@ -6254,7 +6340,7 @@ namespace WSPR_Sked
             if (slotActive)
             {
                 if (TXrunbutton.BackColor == Color.Olive)
-                {   
+                {
                     return;
                 }
                 DialogResult res = Msg.ynMessageBox("Stop TX (y/n)?", "Stop TX");
@@ -6885,10 +6971,12 @@ namespace WSPR_Sked
                     }
 
                 }
-                dataGridView1.DataSource = dtable;
+                //dataGridView1.DataSource = dtable;
+                
+              
                 dataGridView1.Columns[12].Visible = false;
                 dataGridView1.Columns[13].Visible = false;
-                dataGridView1.Columns[15].Visible = false;
+                //dataGridView1.Columns[15].Visible = false;
 
 
                 for (slot = 0; slot < dataGridView1.Rows.Count - 1; slot++)
@@ -6963,7 +7051,18 @@ namespace WSPR_Sked
                 }
                 dataGridView1.Columns[12].Visible = false; //hide end time
                 dataGridView1.Columns[13].Visible = false; //amd rpr time flag
-                dataGridView1.Columns[15].Visible = false; //and msg type
+                                                           //dataGridView1.Columns[15].Visible = false; //and msg type
+                string act = DataRow.Cells[11].Value.ToString();
+                if (act.Contains(tick))
+                {
+                    dataGridView1.Rows[s].Cells[11].Style.ForeColor = Color.Red;
+                }
+                else
+                {
+                    dataGridView1.Rows[s].Cells[11].Style.ForeColor = Color.Blue;
+                }
+                DataGridViewCell cell = dataGridView1.Rows[s].Cells[11];
+                cell.Style.Font = new System.Drawing.Font(dataGridView1.Font, FontStyle.Bold);
             }
             catch
             {
@@ -7072,7 +7171,7 @@ namespace WSPR_Sked
                 double freq = Convert.ToDouble(testFtextBox.Text);
 
                 TXFrequency = (freq * 1000000).ToString();
-                var c = await changeFreq(TXFrequency);               
+                var c = await changeFreq(TXFrequency);
                 if (c)
                 {
                     if (change_IdleF)
@@ -7529,7 +7628,7 @@ namespace WSPR_Sked
                 noRigctld = true;
                 FlistBox2.Visible = true;
                 Flabel.Visible = true;
-                Fhelplabel.Visible = true;  
+                Fhelplabel.Visible = true;
             }
             else
             {
@@ -7549,6 +7648,32 @@ namespace WSPR_Sked
             TXrunbutton.Text = FlistBox2.SelectedItem.ToString() + " MHz";
             TXrunbutton2.Text = FlistBox2.SelectedItem.ToString() + " MHz";
 
+        }
+
+        private async void stopsolarcheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (stopsolarcheckBox.Checked)
+            {
+                stopSolar = true;
+                solarForm.Hide();
+
+            }
+            else
+            {
+               
+                solarForm.Show();
+                if (stopSolar)
+                {
+                    solarForm.setConfig(serverName, db_user, db_pass);
+                    await solarForm.getLatestSolar(serverName, db_user, db_pass);
+                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
+                    await solarForm.updateSolar(serverName, db_user, db_pass);
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, true); //update yesterday
+                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //update today
+                }
+                stopSolar = false;
+
+            }
         }
     }
 

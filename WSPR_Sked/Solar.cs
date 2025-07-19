@@ -116,6 +116,8 @@ namespace WSPR_Sked
 
         public string results = "";
 
+        bool hamqslopened = false;
+
         public SolarIndexes solar = new SolarIndexes();
         public Solar()
         {
@@ -208,6 +210,8 @@ namespace WSPR_Sked
             await fetchGeodata();
             await fetchSolardata();
             dataGridView1.Rows.Clear();
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.Rows.Add();
             dataGridView1.Rows.Add();
             await findSolar();
             await findGeo(datetime, "Planetary");
@@ -354,7 +358,7 @@ namespace WSPR_Sked
                 {
                     solar.Xray = Xray;
                 }
-                conditionlabel.Text = "Propagation: " + findConditions(solar.flux);
+                conditionlabel.Text = "Higher HF propagation: " + findConditions(solar.flux);
 
             }
         }
@@ -393,7 +397,10 @@ namespace WSPR_Sked
 
         private async Task populateGrid(int row)
         {
-
+            if (row > dataGridView1.RowCount)
+            {
+                return;
+            }
             cells1[0] = solar.Ap;
             double A = Convert.ToDouble(solar.Ap);
             string L = find_activity_level(A);
@@ -609,8 +616,8 @@ namespace WSPR_Sked
 
             // Automatically adjust row height to fit content
             dataGridView3.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-
-
+          
+           
         }
 
         public async Task fetchBurstdata()
@@ -694,7 +701,7 @@ namespace WSPR_Sked
                             }
 
 
-                            if (line.Contains("RBR") || line.Contains("RSP"))
+                            if (line.Contains("RBR") || line.Contains("RSP") || line.Contains("RNS"))
                             {
                                 S = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                                 if (S.Count() > 8)
@@ -718,17 +725,17 @@ namespace WSPR_Sked
                                     {
                                         timend = "";
                                     }
-                                        rburst = S[6 + i];
+                                    rburst = S[6 + i];
                                     part = S[8 + i];
                                     f = S[7 + i];
                                     //st.Add(time + "/" + rburst+"/"+part);
                                     if (timend == "")
                                     {
-                                        st.Add("R/"+time + "/" + part);
+                                        st.Add(rburst + "/" + time + "/" + part);
                                     }
                                     else
                                     {
-                                        st.Add("S/"+time + "-" + timend + "/" + part);
+                                        st.Add(rburst + "/" + time + "-" + timend + "/" + part);
 
                                     }
                                     st2.Add(timend);
@@ -782,7 +789,7 @@ namespace WSPR_Sked
                 {
                     S = T[1];
                 }
-                   
+
                 string time = S.Insert(2, ":");
                 DateTime t;
                 DateTime.TryParse(time, out t);
@@ -790,7 +797,7 @@ namespace WSPR_Sked
                 if (st2[i] != "") //not used
                 {
                     string TE = st2[i];
-                    TE = TE.Insert(2, ":");                  
+                    TE = TE.Insert(2, ":");
                     DateTime.TryParse(TE, out te);
                     rsp = true;
                 }
@@ -1350,6 +1357,10 @@ namespace WSPR_Sked
             }
 
             dataGridView2.Rows.Add(row);
+            if (dataGridView2.Rows.Count > 0)
+            {
+                dataGridView2.AllowUserToAddRows = false;
+            }
         }
 
         private void filterbutton_Click(object sender, EventArgs e)
@@ -1422,8 +1433,8 @@ namespace WSPR_Sked
                 find_data(false, "", "");
 
             }
-            dataGridView2.Sort(dataGridView2.Columns[0], ListSortDirection.Descending);  //order by date
-
+            dataGridView2.Sort(dataGridView2.Columns[0], ListSortDirection.Descending);  //order by date        
+               
         }
 
         private void filter_results()
@@ -1573,7 +1584,7 @@ namespace WSPR_Sked
                 }
             }
         }
-        private void setpflux(int h)
+        private async Task setpflux(int h, string fluxdata)
         {
             switch (h)
             {
@@ -1589,7 +1600,7 @@ namespace WSPR_Sked
 
         }
 
-        private void setflare(int h)
+        private async Task setflare(int h, string flaredata)
         {
             switch (h)
             {
@@ -1817,7 +1828,6 @@ namespace WSPR_Sked
             while (h < 24)
             {
 
-
                 satErr = false;
                 await getProtonFlux(h, yesterday, true); //yesterday = false, primary = true
 
@@ -1825,9 +1835,12 @@ namespace WSPR_Sked
                 {
                     await getProtonFlux(h, yesterday, false); //yesterday = false, primary = false (secondary)
                 }
-                setpflux(h);
-
-
+                await setpflux(h, fluxdata);
+                h = h + 3;
+            }
+            h = 0;
+            while (h < 24)
+            {
                 satErr = false;
                 await getSolarFlares(h, yesterday, true); //yesterday = false, primary = true
 
@@ -1836,7 +1849,7 @@ namespace WSPR_Sked
                     await getSolarFlares(h, yesterday, false);
                 }
 
-                setflare(h);
+                await setflare(h, flaredata);
                 h = h + 3;
             }
 
@@ -1852,6 +1865,7 @@ namespace WSPR_Sked
             Rlevel = 0;
             Slevel = 0;
             await find_extra_data(false, "", "");
+           
             findstormlevels();
             stormlabels();
 
@@ -1964,7 +1978,7 @@ namespace WSPR_Sked
             {
                 await getProtonFlux(h, yesterday, false); //yesterday = false, primary = false (secondary)
             }
-            setpflux(h);
+            await setpflux(h, fluxdata);
 
 
             satErr = false;
@@ -1975,7 +1989,7 @@ namespace WSPR_Sked
                 await getSolarFlares(h, yesterday, false);
             }
 
-            setflare(h);
+            await setflare(h, flaredata);
 
             DateTime date = DateTime.Now.ToUniversalTime();
             if (yesterday)
@@ -1983,6 +1997,8 @@ namespace WSPR_Sked
                 date = date.AddDays(-1);
             }
             date = date.Date;
+            flaredata = "";
+            fluxdata = "";
             await SavePFdata(date);
             await SaveFlaredata(date);
             Glevel = 0;
@@ -2219,6 +2235,10 @@ namespace WSPR_Sked
             }
 
             dataGridView3.Rows.Add(row2);
+            if (dataGridView3.Rows.Count > 0)
+            {
+                dataGridView3.AllowUserToAddRows = false;
+            }
 
         }
         /*private class ProtonFluxData
@@ -2245,86 +2265,87 @@ namespace WSPR_Sked
             {
                 return;
             }
-            if (await Msg.IsUrlReachable(url))
+
+            using HttpClient client = new HttpClient();
+            string satno = "";
+            try
             {
-                using HttpClient client = new HttpClient();
-                string satno = "";
-                try
+
+                int h2 = h1 + 2; //do this for 2h55mins
+                int m1 = 0;
+                int m2 = 55;    //measure proton flux from 5 min data from GOES in 3 hour periods
+                string json = await client.GetStringAsync(url);
+                JsonArray array = JsonNode.Parse(json).AsArray();
+                if (array == null)
                 {
-
-                    int h2 = h1 + 2; //do this for 2h55mins
-                    int m1 = 0;
-                    int m2 = 55;    //measure proton flux from 5 min data from GOES in 3 hour periods
-                    string json = await client.GetStringAsync(url);
-                    JsonArray array = JsonNode.Parse(json).AsArray();
-                    string time = "";
-                    string energy = "";
-                    string flux = "";
-
-                    double fluxmax = 0;
-                    double fluxtotal = 0;
-                    double fluxav = 0;
-                    double fluxfig = 0;
-
-                    int count = 0;
-                    foreach (var item in array)
-                    {
-                        energy = item["energy"]?.ToString();
-                        time = item["time_tag"]?.ToString();
-                        satno = item["satellite"]?.ToString();
-                        flux = item["flux"]?.ToString();
-                        string[] s = time.Split('T');
-                        time = s[0] + " " + s[1];
-                        DateTime t = Convert.ToDateTime(time).ToUniversalTime();
-
-                        DateTime dt1 = DateTime.Now.ToUniversalTime();
-                        DateTime dt2 = DateTime.Now.ToUniversalTime();
-                        if (yesterday)
-                        {
-                            dt1 = dt1.AddDays(-1);
-                            dt2 = dt2.AddDays(-1);
-                        }
-                        dt1 = new DateTime(dt1.Year, dt1.Month, dt1.Day, h1, m1, 0);
-
-                        dt2 = new DateTime(dt2.Year, dt2.Month, dt2.Day, h2, m2, 0);
-
-
-                        if (energy == ">=10 MeV" && t >= dt1 && t <= dt2) // Filter for S-level relevant band                    
-                        {
-
-                            //fluxdata = time + " " + sat + " " + energy + " " + flux + " " ;
-                            fluxfig = Convert.ToDouble(flux);
-                            if (fluxfig > fluxmax)
-                            {
-                                count++;
-                            }
-                            if (fluxfig > fluxmax && count > 2)   //take max flux over 10 minutes
-                            {
-                                fluxmax = fluxfig;  //max proton flux (sampled in 2 x 5 minute intervals to avoid glitch in data)
-                                count = 0;
-                            }
-
-                            fluxtotal = fluxtotal + fluxfig;
-                            satErr = false;
-                        }
-                    }
-                    fluxav = fluxtotal / 35; //average of 35 five min samples
-
-                    if (fluxav > 0 && fluxtotal > 0)
-                    {
-                        fluxdata = Math.Round(fluxav, 4) + "/" + Math.Round(fluxmax, 4);
-                    }
-                    else
-                    {
-                        fluxdata = " ";
-                    }
-
+                    Msg.TMessageBox("Not responding", "", 1500);
+                    return;
                 }
-                catch
+                string time = "";
+                string energy = "";
+                string flux = "";
+
+                double fluxmax = 0;
+                double fluxtotal = 0;
+                double fluxav = 0;
+                double fluxfig = 0;
+
+                int count = 0;
+                foreach (var item in array)
                 {
-                    satErr = true;
-                    //Msg.TMessageBox("Error reading satellite data", "GOES " + satno, 1000);
+                    energy = item["energy"]?.ToString();
+                    time = item["time_tag"]?.ToString();
+                    satno = item["satellite"]?.ToString();
+                    flux = item["flux"]?.ToString();
+                    string[] s = time.Split('T');
+                    time = s[0] + " " + s[1];
+                    DateTime t = Convert.ToDateTime(time).ToUniversalTime();
+
+                    DateTime dt1 = DateTime.Now.ToUniversalTime();
+                    DateTime dt2 = DateTime.Now.ToUniversalTime();
+                    if (yesterday)
+                    {
+                        dt1 = dt1.AddDays(-1);
+                        dt2 = dt2.AddDays(-1);
+                    }
+                    dt1 = new DateTime(dt1.Year, dt1.Month, dt1.Day, h1, m1, 0);
+
+                    dt2 = new DateTime(dt2.Year, dt2.Month, dt2.Day, h2, m2, 0);
+
+
+                    if (energy == ">=10 MeV" && t >= dt1 && t <= dt2) // Filter for S-level relevant band                    
+                    {
+
+                        //fluxdata = time + " " + sat + " " + energy + " " + flux + " " ;
+                        fluxfig = Convert.ToDouble(flux);
+                        if (fluxfig > fluxmax)
+                        {
+                            count++;
+                        }
+                        if (fluxfig > fluxmax && count > 2)   //take max flux over 10 minutes
+                        {
+                            fluxmax = fluxfig;  //max proton flux (sampled in 2 x 5 minute intervals to avoid glitch in data)
+                            count = 0;
+                        }
+
+                        fluxtotal = fluxtotal + fluxfig;
+                        satErr = false;
+                    }
                 }
+                fluxav = fluxtotal / 35; //average of 35 five min samples
+
+                if (fluxav > 0 && fluxtotal > 0)
+                {
+                    fluxdata = Math.Round(fluxav, 4) + "/" + Math.Round(fluxmax, 4);
+                    return;
+                }
+
+
+            }
+            catch
+            {
+                satErr = true;
+                //Msg.TMessageBox("Error reading satellite data", "GOES " + satno, 1000);
             }
         }
 
@@ -2351,6 +2372,11 @@ namespace WSPR_Sked
                     int m2 = 55;    //measure proton flux from 5 min data from GOES in 3 hour periods
                     string json = await client.GetStringAsync(url);
                     JsonArray array = JsonNode.Parse(json).AsArray();
+                    if (array == null)
+                    {
+                        Msg.TMessageBox("Not responding", "", 1500);
+                        return;
+                    }
                     string begin_time = "";
                     string begin_class = "";
                     string max_time = "";
@@ -2362,6 +2388,7 @@ namespace WSPR_Sked
                     string end_time = "";
                     string end_class = "";
                     string maxHM = "";
+
 
                     int count = 0;
                     foreach (var item in array)
@@ -2487,11 +2514,11 @@ namespace WSPR_Sked
                 flarelabel.Visible = true;
                 Eventsbutton.Visible = true;
                 Burstbutton.Visible = true;
-                RBlabel.Visible = true;
+                if (Burstbutton.Text.Contains("Hide")) { RBlabel.Visible = true; }
             }
             else
             {
-                changebutton.Text = "PF/flare data";
+                changebutton.Text = "PF/flare/burst data";
                 groupBox3.Visible = true;
                 groupBox4.Visible = false;
                 dataGridView2.Visible = true;
@@ -2561,11 +2588,13 @@ namespace WSPR_Sked
             {
                 updateBursts(server, user, pass);
                 Burstbutton.Text = "Hide bursts";
+                RBlabel.Visible = true;
             }
             else
             {
                 find_extra_data(false, "", "");
                 Burstbutton.Text = "Show bursts";
+                RBlabel.Visible = false;
             }
         }
 
@@ -2574,7 +2603,7 @@ namespace WSPR_Sked
             if (Eventsbutton.Text == "Summary")
             {
                 EventsgroupBox.Visible = true;
-                Eventsbutton.Text = "Hide summary";
+                Eventsbutton.Text = "Hide";
                 fetchBurstdata();
             }
             else
@@ -2582,8 +2611,95 @@ namespace WSPR_Sked
                 Eventsbutton.Text = "Summary";
                 EventsgroupBox.Visible = false;
             }
-            
+
+        }
+
+
+        private async void Solar_Activated(object sender, EventArgs e)
+        {
+            //await getLatestSolar(server, user, pass);
+        }
+
+        private void Solar_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void hamqslbutton_Click(object sender, EventArgs e)
+        {
+            if (stopUrl)
+            {
+                Msg.TMessageBox("No Internet connection", "Info", 1000);
+                return;
+            }
+            string url = "https://www.hamqsl.com/solar2.html";
+            if (await Msg.IsUrlReachable(url))
+            {
+                //OpenBrowser(url);
+                showHamqsl();
+            }
+            else
+            {
+                Msg.TMessageBox("No Internet connection", "Info", 1000);
+            }
+            if (hamqslbutton.Text == "Forecast")
+            {
+                hamqslbutton.Text = "Hide";
+            }
+            else
+            {
+                hamqslbutton.Text = "Forecast";
+                hamqslgroupBox.Visible = false;
+
+            }
+        }
+
+        private void showHamqsl()
+        {
+            hamqslopened = false;
+            hamqslgroupBox.Text = "Solar-Terrestrial Data - courtesy of hamqsl.com";
+            WebBrowser browser = new WebBrowser();
+            browser.Size = new Size(hamqslgroupBox.Width - 20, hamqslgroupBox.Height - 30);
+            browser.Location = new Point(10, 20);
+            browser.ScrollBarsEnabled = false;
+            browser.ScriptErrorsSuppressed = true;
+           
+          
+            hamqslgroupBox.Controls.Add(browser);
+            string html = @"<center><a href='https://www.hamqsl.com/solar.html' ";
+            html = html + @"title='Click to add Solar-Terrestrial Data to your website!'>";
+            html = html + @"<img src='https://www.hamqsl.com/solar101vhf.php'></a></center>";
+            browser.DocumentText = html;
+            hamqslgroupBox.Visible = true;
+            hamqslgroupBox.BringToFront();
+            hamqslgroupBox.Focus();
+            browser.Navigating += browser_Navigating;
+
+        }
+        private async void browser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
+        {
+            // Cancel navigation inside the WebBrowser control
+            e.Cancel = true;
+
+            if (stopUrl)
+            {
+                Msg.TMessageBox("No Internet connection", "Info", 1000);
+                return;
+            }
+            string url = "https://www.hamqsl.com/solar2.html";
+            if (await Msg.IsUrlReachable(url))
+            {
+                if (hamqslopened)
+                {                  
+                    return;
+                }
+                OpenBrowser(url);
+                hamqslopened = true;
+            }
+            // Open the URL in the default browser
+            //System.Diagnostics.Process.Start(new ProcessStartInfo(e.Url.ToString()) { UseShellExecute = true });
         }
     }
+        
 }
 

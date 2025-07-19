@@ -29,12 +29,28 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
             dataGridView1 = new System.Windows.Forms.DataGridView();
+            Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             slotgroupBox = new System.Windows.Forms.GroupBox();
             label110 = new System.Windows.Forms.Label();
             label109 = new System.Windows.Forms.Label();
@@ -105,6 +121,7 @@
             label22 = new System.Windows.Forms.Label();
             countdownlabel2 = new System.Windows.Forms.Label();
             tabPage2 = new System.Windows.Forms.TabPage();
+            stopsolarcheckBox = new System.Windows.Forms.CheckBox();
             asOnecheckBox = new System.Windows.Forms.CheckBox();
             label106 = new System.Windows.Forms.Label();
             slotlistBox = new System.Windows.Forms.ListBox();
@@ -187,6 +204,7 @@
             label14 = new System.Windows.Forms.Label();
             CalltextBox = new System.Windows.Forms.TextBox();
             tabPage3 = new System.Windows.Forms.TabPage();
+            label111 = new System.Windows.Forms.Label();
             rigctldcheckBox = new System.Windows.Forms.CheckBox();
             SaveRPathbutton = new System.Windows.Forms.Button();
             label73 = new System.Windows.Forms.Label();
@@ -341,7 +359,6 @@
             wsprmsgfolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
-            label111 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             tabControl1.SuspendLayout();
@@ -393,22 +410,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle6;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -418,6 +436,133 @@
             dataGridView1.RowHeaderMouseClick += dataGridView1_RowHeaderMouseClick;
             dataGridView1.RowHeaderMouseDoubleClick += dataGridView1_RowHeaderMouseDoubleClick;
             dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
+            // 
+            // Column1
+            // 
+            Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column1.HeaderText = "Date";
+            Column1.Name = "Column1";
+            Column1.ReadOnly = true;
+            Column1.Width = 70;
+            // 
+            // Column2
+            // 
+            Column2.HeaderText = "Time";
+            Column2.Name = "Column2";
+            Column2.ReadOnly = true;
+            Column2.Width = 55;
+            // 
+            // Column3
+            // 
+            Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column3.HeaderText = "Frequency";
+            Column3.Name = "Column3";
+            Column3.ReadOnly = true;
+            Column3.Width = 90;
+            // 
+            // Column4
+            // 
+            Column4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column4.HeaderText = "Offset";
+            Column4.Name = "Column4";
+            Column4.ReadOnly = true;
+            Column4.Width = 50;
+            // 
+            // Column5
+            // 
+            Column5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column5.HeaderText = "Pwr dBm";
+            Column5.Name = "Column5";
+            Column5.ReadOnly = true;
+            Column5.Width = 55;
+            // 
+            // Column6
+            // 
+            Column6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column6.HeaderText = "Pwr W";
+            Column6.Name = "Column6";
+            Column6.ReadOnly = true;
+            Column6.Width = 55;
+            // 
+            // Column7
+            // 
+            Column7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column7.HeaderText = "Antenna";
+            Column7.Name = "Column7";
+            Column7.ReadOnly = true;
+            Column7.Width = 110;
+            // 
+            // Column8
+            // 
+            Column8.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column8.HeaderText = "Tuner";
+            Column8.Name = "Column8";
+            Column8.ReadOnly = true;
+            Column8.Width = 60;
+            // 
+            // Column9
+            // 
+            Column9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column9.HeaderText = "Switch";
+            Column9.Name = "Column9";
+            Column9.ReadOnly = true;
+            Column9.Width = 60;
+            // 
+            // Column10
+            // 
+            Column10.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column10.HeaderText = "End";
+            Column10.Name = "Column10";
+            Column10.ReadOnly = true;
+            Column10.Width = 70;
+            // 
+            // Column11
+            // 
+            Column11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column11.HeaderText = "Rpt";
+            Column11.Name = "Column11";
+            Column11.ReadOnly = true;
+            Column11.Width = 40;
+            // 
+            // Column12
+            // 
+            Column12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column12.HeaderText = "Active";
+            Column12.Name = "Column12";
+            Column12.ReadOnly = true;
+            Column12.Width = 40;
+            // 
+            // Column13
+            // 
+            Column13.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column13.HeaderText = "End time";
+            Column13.Name = "Column13";
+            Column13.ReadOnly = true;
+            Column13.Width = 50;
+            // 
+            // Column14
+            // 
+            Column14.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column14.HeaderText = "RptT";
+            Column14.Name = "Column14";
+            Column14.ReadOnly = true;
+            Column14.Width = 40;
+            // 
+            // Column15
+            // 
+            Column15.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column15.HeaderText = "Slot";
+            Column15.Name = "Column15";
+            Column15.ReadOnly = true;
+            Column15.Width = 40;
+            // 
+            // Column16
+            // 
+            Column16.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column16.HeaderText = "Type";
+            Column16.Name = "Column16";
+            Column16.ReadOnly = true;
+            Column16.Width = 40;
             // 
             // slotgroupBox
             // 
@@ -801,7 +946,7 @@
             tabControl1.Location = new System.Drawing.Point(3, -1);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new System.Drawing.Size(1129, 657);
+            tabControl1.Size = new System.Drawing.Size(1161, 657);
             tabControl1.TabIndex = 0;
             tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
@@ -850,7 +995,7 @@
             tabPage1.Location = new System.Drawing.Point(4, 22);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            tabPage1.Size = new System.Drawing.Size(1121, 631);
+            tabPage1.Size = new System.Drawing.Size(1153, 631);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Slots";
             tabPage1.Click += tabPage1_Click;
@@ -859,7 +1004,7 @@
             // 
             Fhelplabel.AutoSize = true;
             Fhelplabel.BackColor = System.Drawing.Color.AntiqueWhite;
-            Fhelplabel.Location = new System.Drawing.Point(1014, 364);
+            Fhelplabel.Location = new System.Drawing.Point(1057, 363);
             Fhelplabel.Name = "Fhelplabel";
             Fhelplabel.Size = new System.Drawing.Size(76, 78);
             Fhelplabel.TabIndex = 89;
@@ -869,7 +1014,7 @@
             // Flabel
             // 
             Flabel.AutoSize = true;
-            Flabel.Location = new System.Drawing.Point(941, 105);
+            Flabel.Location = new System.Drawing.Point(981, 105);
             Flabel.Name = "Flabel";
             Flabel.Size = new System.Drawing.Size(61, 13);
             Flabel.TabIndex = 88;
@@ -880,7 +1025,7 @@
             // 
             FlistBox2.FormattingEnabled = true;
             FlistBox2.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "50.293", "70.091", "144.489", "432.300", "1296.500" });
-            FlistBox2.Location = new System.Drawing.Point(1014, 104);
+            FlistBox2.Location = new System.Drawing.Point(1057, 104);
             FlistBox2.Name = "FlistBox2";
             FlistBox2.Size = new System.Drawing.Size(58, 251);
             FlistBox2.TabIndex = 87;
@@ -900,7 +1045,7 @@
             // 
             // showRXbutton
             // 
-            showRXbutton.Location = new System.Drawing.Point(1023, 579);
+            showRXbutton.Location = new System.Drawing.Point(1041, 583);
             showRXbutton.Name = "showRXbutton";
             showRXbutton.Size = new System.Drawing.Size(92, 20);
             showRXbutton.TabIndex = 85;
@@ -1173,6 +1318,7 @@
             // tabPage2
             // 
             tabPage2.BackColor = System.Drawing.SystemColors.Info;
+            tabPage2.Controls.Add(stopsolarcheckBox);
             tabPage2.Controls.Add(asOnecheckBox);
             tabPage2.Controls.Add(label106);
             tabPage2.Controls.Add(slotlistBox);
@@ -1254,12 +1400,23 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 22);
+            tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1121, 631);
+            tabPage2.Size = new System.Drawing.Size(1121, 629);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
+            // 
+            // stopsolarcheckBox
+            // 
+            stopsolarcheckBox.AutoSize = true;
+            stopsolarcheckBox.Location = new System.Drawing.Point(26, 314);
+            stopsolarcheckBox.Name = "stopsolarcheckBox";
+            stopsolarcheckBox.Size = new System.Drawing.Size(144, 17);
+            stopsolarcheckBox.TabIndex = 103;
+            stopsolarcheckBox.Text = "Stop recording solar data";
+            stopsolarcheckBox.UseVisualStyleBackColor = true;
+            stopsolarcheckBox.CheckedChanged += stopsolarcheckBox_CheckedChanged;
             // 
             // asOnecheckBox
             // 
@@ -2068,12 +2225,21 @@
             tabPage3.Controls.Add(label30);
             tabPage3.Controls.Add(label29);
             tabPage3.Controls.Add(label28);
-            tabPage3.Location = new System.Drawing.Point(4, 22);
+            tabPage3.Location = new System.Drawing.Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1121, 631);
+            tabPage3.Size = new System.Drawing.Size(1121, 629);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
+            // 
+            // label111
+            // 
+            label111.AutoSize = true;
+            label111.Location = new System.Drawing.Point(565, 286);
+            label111.Name = "label111";
+            label111.Size = new System.Drawing.Size(324, 13);
+            label111.TabIndex = 72;
+            label111.Text = "- you will need to select the frequency manually and use VOX to TX";
             // 
             // rigctldcheckBox
             // 
@@ -3612,15 +3778,6 @@
             RXblocktimer.Interval = 30000;
             RXblocktimer.Tick += RXblocktimer_Tick;
             // 
-            // label111
-            // 
-            label111.AutoSize = true;
-            label111.Location = new System.Drawing.Point(565, 286);
-            label111.Name = "label111";
-            label111.Size = new System.Drawing.Size(324, 13);
-            label111.TabIndex = 72;
-            label111.Text = "- you will need to select the frequency manually and use VOX to TX";
-            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3628,7 +3785,7 @@
             AutoSize = true;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             BackColor = System.Drawing.Color.Beige;
-            ClientSize = new System.Drawing.Size(1144, 658);
+            ClientSize = new System.Drawing.Size(1167, 658);
             Controls.Add(LTlabel2);
             Controls.Add(LTlabel);
             Controls.Add(Datelabel);
@@ -3992,6 +4149,23 @@
         private System.Windows.Forms.Label label110;
         private System.Windows.Forms.Label Fhelplabel;
         private System.Windows.Forms.Label label111;
+        private System.Windows.Forms.CheckBox stopsolarcheckBox;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column10;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column11;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column13;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column14;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column15;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column16;
     }
 }
 

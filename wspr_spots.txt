@@ -1,1 +1,7 @@
-_Sked\ emp3   4 -16 -0.1  50.294515  G4SHS IO90 40           0     1    0
+_Sked\ emp3   3 -20  0.5  14.097019  DD2NU JN49 23           0     1    0
+_Sked\ emp3   3 -17  0.2  14.097089  IU1PPC JN44 30         -1     1    0
+_Sked\ emp3   3 -13  0.7  14.097105  S57MK JN75 30           0     1    0
+_Sked\ emp3   4 -12  0.6  14.097119  9H2RA JM75 23          -1     1    0
+_Sked\ emp3   2 -20  0.9  14.097121  SM7EQL JO65 23          0  3699    0
+_Sked\ emp3   4  -2  0.3  14.097143  <DL1FX> JN49GR 20       0     1    0
+_Sked\ emp3   7  -8  0.6  14.097203  DK8JP JO31 30           0     1    0

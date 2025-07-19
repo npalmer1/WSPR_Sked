@@ -604,6 +604,10 @@ namespace WSPR_Sked
             }
 
             dataGridView1.Rows.Add(row);
+            if (dataGridView1.Rows.Count > 0)
+            {
+                dataGridView1.AllowUserToAddRows = false;
+            }
         }
         public async Task Save_Received(string serverName, string db_user, string db_pass)
         {
@@ -908,7 +912,7 @@ namespace WSPR_Sked
 
         private void LiveForm_Load(object sender, EventArgs e)
         {
-
+            
         }
 
         private void PlistBox_SelectedIndexChanged(object sender, EventArgs e)
