@@ -117,7 +117,7 @@ namespace WSPR_Sked
 
         private void RXForm_Load(object sender, EventArgs e)
         {
-
+           
         }
 
         public void set_header(string call, string serverName, string db_user, string db_pass, string loc, int audioDev, string wsprdpath,string ver)
@@ -345,6 +345,10 @@ namespace WSPR_Sked
             finished = true;
             RXblock = false;
             started = false;
+            if (dataGridView1.Rows.Count > 0)
+            {
+                dataGridView1.AllowUserToAddRows = false;
+            }
 
         }
 
