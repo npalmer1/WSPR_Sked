@@ -756,7 +756,7 @@ namespace WSPR_Sked
             dataGridView1.Columns[11].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[14].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[15].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridView1.AllowUserToAddRows = false;
+            //dataGridView1.AllowUserToAddRows = false;
 
         }
 
@@ -979,6 +979,7 @@ namespace WSPR_Sked
         {
             slotgroupBox.Visible = false;
             this.Focus();
+            this.BringToFront();
             dataGridView1.Focus();
         }
 
@@ -1065,6 +1066,7 @@ namespace WSPR_Sked
             }
             catch { }
             this.Focus();
+            this.BringToFront();
             dataGridView1.Focus();
 
         }
@@ -1604,6 +1606,7 @@ namespace WSPR_Sked
                 }
             }
             this.Focus();
+            this.BringToFront();
             dataGridView1.Focus();
         }
 
@@ -6949,6 +6952,7 @@ namespace WSPR_Sked
             }
             try
             {
+                dataGridView1.AllowUserToAddRows = true;
                 dtable.Rows.Clear();
                 parents.Clear();
                 string[] hr = selTime.Split(':');
@@ -7004,6 +7008,7 @@ namespace WSPR_Sked
                     }
 
                 }
+                dataGridView1.AllowUserToAddRows = false;
             }
             catch
             {
