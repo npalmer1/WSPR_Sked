@@ -460,7 +460,7 @@ namespace WSPR_Sked
             if (band == -2) //all bands
             {
                 bandstr = "-1";
-                q = ">";
+                q = ">=";
             }
             else
             {
