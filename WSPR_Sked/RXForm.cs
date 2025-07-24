@@ -34,6 +34,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using Maidenhead;
 
 namespace WSPR_Sked
 {
@@ -801,50 +802,7 @@ namespace WSPR_Sked
         }
 
 
-        /*
-        public async Task RecordLineInAsync(string outputPath, int durationMs)
-        {
-
-            WaveInEvent waveIn = new WaveInEvent();
-            WaveFileWriter writer;
-            try
-            {
-
-                waveIn.WaveFormat = new WaveFormat(12000, 1); // 44.1kHz mono
-
-                waveIn.DeviceNumber = audioDevice;
-
-                writer = new WaveFileWriter(outputPath, waveIn.WaveFormat);
-                try
-                {
-                    waveIn.DataAvailable += (s, e) =>
-                    {
-
-                        writer.Write(e.Buffer, 0, e.BytesRecorded);
-
-                    };
-                }
-                catch
-                {
-
-                }
-
-                waveIn.RecordingStopped += (s, e) =>
-                {
-                    writer?.Dispose();
-                    waveIn.Dispose();
-                };
-
-                waveIn.StartRecording();
-                await Task.Delay(durationMs);
-                waveIn.StopRecording();
-            }
-            catch
-            {
-                waveIn.StopRecording();
-            }
-        }*/
-
+       
         public async Task RecordLineInAsync_Gain(string outputPath, int durationMs)
         {
             //float gain = 2.0f; // 2x gain, adjust as needed
@@ -982,7 +940,7 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@distance", DX.distance);
                     command.Parameters.AddWithValue("@azimuth", DX.azimuth);
                     command.Parameters.AddWithValue("@reporter", DX.reporter);
-                    command.Parameters.AddWithValue("@reporter_loc", DX.reporter_loc);
+                    command.Parameters.AddWithValue("@reporter_loc", my_loc);
                     command.Parameters.AddWithValue("@dt", DX.dt);
 
                     command.ExecuteNonQuery();
@@ -1194,111 +1152,13 @@ namespace WSPR_Sked
             return m.ToString();
         }
 
-
         private static (int km, int az) Calculate_km_az(string tx_loc, string my_loc)
-        {
-            double txlat;
-            double txlon;
-            double mylat;
-            double mylon;
-            if (tx_loc.Length == 4)
-            {
-                (txlat, txlon) = Locator4ToLatLon(tx_loc);
-                if (my_loc.Length == 4)
-                {
-                    (mylat, mylon) = Locator4ToLatLon(my_loc);
-                }
-                else if (my_loc.Length == 6)
-                {
-                    (mylat, mylon) = Locator6ToLatLon(my_loc);
-                }
-                else
-                {
-                    return (-1, -1);
-                }
-
-            }
-            else if (tx_loc.Length == 6)
-            {
-                (txlat, txlon) = Locator6ToLatLon(tx_loc);
-                if (my_loc.Length == 4)
-                {
-                    (mylat, mylon) = Locator4ToLatLon(my_loc);
-                }
-                else if (my_loc.Length == 6)
-                {
-                    (mylat, mylon) = Locator6ToLatLon(my_loc);
-                }
-                else
-                {
-                    return (-1, -1);
-                }
-            }
-            else
-            {
-                return (-1, -1);
-            }
-            int km = (int)Calculatekm(mylat, mylon, txlat, txlon);
-            int az = (int)CalculateAz(mylat, mylon, txlat, txlon);
-            return (km, az);
-
+        {          
+            double km = MaidenheadLocator.Distance(tx_loc, my_loc);
+            double az = MaidenheadLocator.Azimuth(tx_loc, my_loc);
+            return ((int)km, (int)az);
         }
-
-
-        public static double Calculatekm(double lat1, double lon1, double lat2, double lon2)
-        {
-            double R = 6371; // Earth's radius in km
-            double dLat = (lat2 - lat1) * Math.PI / 180;
-            double dLon = (lon2 - lon1) * Math.PI / 180;
-            double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                       Math.Cos(lat1 * Math.PI / 180) * Math.Cos(lat2 * Math.PI / 180) *
-                       Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            return R * c; // Distance in km
-        }
-
-        private static double CalculateAz(double lat1, double lon1, double lat2, double lon2)
-        {
-            double dLon = (lon2 - lon1) * Math.PI / 180;
-            double y = Math.Sin(dLon) * Math.Cos(lat2 * Math.PI / 180);
-            double x = Math.Cos(lat1 * Math.PI / 180) * Math.Sin(lat2 * Math.PI / 180) -
-                       Math.Sin(lat1 * Math.PI / 180) * Math.Cos(lat2 * Math.PI / 180) * Math.Cos(dLon);
-            return (Math.Atan2(y, x) * 180 / Math.PI + 360) % 360; // Azimuth in degrees
-        }
-
-        private static (double lat, double lon) Locator4ToLatLon(string locator)
-        {
-            if (locator.Length < 4) throw new ArgumentException("Invalid Maidenhead locator");
-
-            int lonField = locator[0] - 'A';
-            int latField = locator[1] - 'A';
-            int lonSquare = locator[2] - '0';
-            int latSquare = locator[3] - '0';
-
-            double lon = (lonField * 20) + (lonSquare * 2) - 180 + 1;
-            double lat = (latField * 10) + latSquare - 90 + 0.5;
-
-            return (lat, lon);
-        }
-
-        private static (double lat, double lon) Locator6ToLatLon(string locator)
-        {
-            if (locator.Length < 6) throw new ArgumentException("Invalid Maidenhead locator");
-
-            int lonField = locator[0] - 'A';
-            int latField = locator[1] - 'A';
-            int lonSquare = locator[2] - '0';
-            int latSquare = locator[3] - '0';
-            int lonSubSquare = locator[4] - 'A';
-            int latSubSquare = locator[5] - 'A';
-
-            double lon = (lonField * 20) + (lonSquare * 2) + (lonSubSquare * 5.0 / 60) - 180 + (5.0 / 120);
-            double lat = (latField * 10) + latSquare + (latSubSquare * 2.5 / 60) - 90 + (2.5 / 120);
-
-            return (lat, lon);
-        }
-
-
+       
 
 
         private void DeepcheckBox_CheckedChanged(object sender, EventArgs e)

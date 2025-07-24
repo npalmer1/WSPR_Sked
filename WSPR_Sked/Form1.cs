@@ -4279,6 +4279,9 @@ namespace WSPR_Sked
                     }
                 }
 
+                int index = RigcomboBox.Items.IndexOf(RigcomboBox.Text);
+                RigcomboBox.SelectedIndex = index;
+
             }
             catch (Exception e)
             {
@@ -4416,6 +4419,8 @@ namespace WSPR_Sked
                     RigctlPort = (string)Reader["Port"];
                     rigctldcheckBox.Checked = (bool)Reader["norigctld"];
                     RigcomboBox.SelectedItem = Radio;
+                    RigcomboBox.Text = Radio;   
+                   
                     COMcomboBox.SelectedItem = RigctlCOM;
                     baudcomboBox.SelectedItem = Rigctlbaud;
                     IPtextBox.Text = RigctlIPv4;
