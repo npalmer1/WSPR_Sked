@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
@@ -121,7 +121,8 @@
             label22 = new System.Windows.Forms.Label();
             countdownlabel2 = new System.Windows.Forms.Label();
             tabPage2 = new System.Windows.Forms.TabPage();
-            stopsolarcheckBox = new System.Windows.Forms.CheckBox();
+            locationbutton = new System.Windows.Forms.Button();
+            solarcheckBox = new System.Windows.Forms.CheckBox();
             asOnecheckBox = new System.Windows.Forms.CheckBox();
             label106 = new System.Windows.Forms.Label();
             slotlistBox = new System.Windows.Forms.ListBox();
@@ -359,6 +360,9 @@
             wsprmsgfolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
+            rigtextBox = new System.Windows.Forms.TextBox();
+            rigsearchbutton = new System.Windows.Forms.Button();
+            label112 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             tabControl1.SuspendLayout();
@@ -410,23 +414,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -1318,7 +1322,8 @@
             // tabPage2
             // 
             tabPage2.BackColor = System.Drawing.SystemColors.Info;
-            tabPage2.Controls.Add(stopsolarcheckBox);
+            tabPage2.Controls.Add(locationbutton);
+            tabPage2.Controls.Add(solarcheckBox);
             tabPage2.Controls.Add(asOnecheckBox);
             tabPage2.Controls.Add(label106);
             tabPage2.Controls.Add(slotlistBox);
@@ -1400,23 +1405,34 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 24);
+            tabPage2.Location = new System.Drawing.Point(4, 22);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1121, 629);
+            tabPage2.Size = new System.Drawing.Size(1153, 631);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
-            // stopsolarcheckBox
+            // locationbutton
             // 
-            stopsolarcheckBox.AutoSize = true;
-            stopsolarcheckBox.Location = new System.Drawing.Point(26, 314);
-            stopsolarcheckBox.Name = "stopsolarcheckBox";
-            stopsolarcheckBox.Size = new System.Drawing.Size(144, 17);
-            stopsolarcheckBox.TabIndex = 103;
-            stopsolarcheckBox.Text = "Stop recording solar data";
-            stopsolarcheckBox.UseVisualStyleBackColor = true;
-            stopsolarcheckBox.CheckedChanged += stopsolarcheckBox_CheckedChanged;
+            locationbutton.Location = new System.Drawing.Point(991, 380);
+            locationbutton.Name = "locationbutton";
+            locationbutton.Size = new System.Drawing.Size(118, 23);
+            locationbutton.TabIndex = 104;
+            locationbutton.Text = "Get position from IP";
+            locationbutton.UseVisualStyleBackColor = true;
+            locationbutton.Visible = false;
+            locationbutton.Click += locationbutton_Click;
+            // 
+            // solarcheckBox
+            // 
+            solarcheckBox.AutoSize = true;
+            solarcheckBox.Location = new System.Drawing.Point(29, 307);
+            solarcheckBox.Name = "solarcheckBox";
+            solarcheckBox.Size = new System.Drawing.Size(110, 17);
+            solarcheckBox.TabIndex = 103;
+            solarcheckBox.Text = "Record solar data";
+            solarcheckBox.UseVisualStyleBackColor = true;
+            solarcheckBox.CheckedChanged += solarcheckBox_CheckedChanged;
             // 
             // asOnecheckBox
             // 
@@ -2199,6 +2215,9 @@
             // tabPage3
             // 
             tabPage3.BackColor = System.Drawing.SystemColors.Info;
+            tabPage3.Controls.Add(label112);
+            tabPage3.Controls.Add(rigsearchbutton);
+            tabPage3.Controls.Add(rigtextBox);
             tabPage3.Controls.Add(label111);
             tabPage3.Controls.Add(rigctldcheckBox);
             tabPage3.Controls.Add(SaveRPathbutton);
@@ -2225,17 +2244,17 @@
             tabPage3.Controls.Add(label30);
             tabPage3.Controls.Add(label29);
             tabPage3.Controls.Add(label28);
-            tabPage3.Location = new System.Drawing.Point(4, 24);
+            tabPage3.Location = new System.Drawing.Point(4, 22);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1121, 629);
+            tabPage3.Size = new System.Drawing.Size(1153, 631);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
             // 
             // label111
             // 
             label111.AutoSize = true;
-            label111.Location = new System.Drawing.Point(565, 286);
+            label111.Location = new System.Drawing.Point(567, 322);
             label111.Name = "label111";
             label111.Size = new System.Drawing.Size(324, 13);
             label111.TabIndex = 72;
@@ -2244,7 +2263,7 @@
             // rigctldcheckBox
             // 
             rigctldcheckBox.AutoSize = true;
-            rigctldcheckBox.Location = new System.Drawing.Point(270, 285);
+            rigctldcheckBox.Location = new System.Drawing.Point(272, 321);
             rigctldcheckBox.Name = "rigctldcheckBox";
             rigctldcheckBox.Size = new System.Drawing.Size(289, 17);
             rigctldcheckBox.TabIndex = 71;
@@ -2254,7 +2273,7 @@
             // 
             // SaveRPathbutton
             // 
-            SaveRPathbutton.Location = new System.Drawing.Point(976, 314);
+            SaveRPathbutton.Location = new System.Drawing.Point(978, 350);
             SaveRPathbutton.Name = "SaveRPathbutton";
             SaveRPathbutton.Size = new System.Drawing.Size(68, 19);
             SaveRPathbutton.TabIndex = 70;
@@ -2265,7 +2284,7 @@
             // label73
             // 
             label73.AutoSize = true;
-            label73.Location = new System.Drawing.Point(565, 352);
+            label73.Location = new System.Drawing.Point(567, 388);
             label73.Name = "label73";
             label73.Size = new System.Drawing.Size(234, 65);
             label73.TabIndex = 69;
@@ -2273,7 +2292,7 @@
             // 
             // PathAddbutton
             // 
-            PathAddbutton.Location = new System.Drawing.Point(834, 364);
+            PathAddbutton.Location = new System.Drawing.Point(836, 400);
             PathAddbutton.Name = "PathAddbutton";
             PathAddbutton.Size = new System.Drawing.Size(96, 23);
             PathAddbutton.TabIndex = 68;
@@ -2284,7 +2303,7 @@
             // label72
             // 
             label72.AutoSize = true;
-            label72.Location = new System.Drawing.Point(444, 320);
+            label72.Location = new System.Drawing.Point(446, 356);
             label72.Name = "label72";
             label72.Size = new System.Drawing.Size(108, 13);
             label72.TabIndex = 67;
@@ -2293,7 +2312,7 @@
             // RigCtlPbutton
             // 
             RigCtlPbutton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            RigCtlPbutton.Location = new System.Drawing.Point(915, 314);
+            RigCtlPbutton.Location = new System.Drawing.Point(917, 350);
             RigCtlPbutton.Name = "RigCtlPbutton";
             RigCtlPbutton.Size = new System.Drawing.Size(28, 23);
             RigCtlPbutton.TabIndex = 66;
@@ -2304,7 +2323,7 @@
             // RigCtlPathtextBox
             // 
             RigCtlPathtextBox.Enabled = false;
-            RigCtlPathtextBox.Location = new System.Drawing.Point(565, 317);
+            RigCtlPathtextBox.Location = new System.Drawing.Point(567, 353);
             RigCtlPathtextBox.Name = "RigCtlPathtextBox";
             RigCtlPathtextBox.Size = new System.Drawing.Size(344, 20);
             RigCtlPathtextBox.TabIndex = 65;
@@ -2312,7 +2331,7 @@
             // rigrunlabel
             // 
             rigrunlabel.AutoSize = true;
-            rigrunlabel.Location = new System.Drawing.Point(362, 400);
+            rigrunlabel.Location = new System.Drawing.Point(364, 436);
             rigrunlabel.Name = "rigrunlabel";
             rigrunlabel.Size = new System.Drawing.Size(91, 13);
             rigrunlabel.TabIndex = 64;
@@ -2320,7 +2339,7 @@
             // 
             // stopRigCtlDbutton
             // 
-            stopRigCtlDbutton.Location = new System.Drawing.Point(265, 416);
+            stopRigCtlDbutton.Location = new System.Drawing.Point(267, 452);
             stopRigCtlDbutton.Name = "stopRigCtlDbutton";
             stopRigCtlDbutton.Size = new System.Drawing.Size(80, 23);
             stopRigCtlDbutton.TabIndex = 63;
@@ -2330,7 +2349,7 @@
             // 
             // startRigCtlbutton
             // 
-            startRigCtlbutton.Location = new System.Drawing.Point(265, 383);
+            startRigCtlbutton.Location = new System.Drawing.Point(267, 419);
             startRigCtlbutton.Name = "startRigCtlbutton";
             startRigCtlbutton.Size = new System.Drawing.Size(80, 23);
             startRigCtlbutton.TabIndex = 62;
@@ -2378,7 +2397,7 @@
             // 
             // SaveRigctlbutton
             // 
-            SaveRigctlbutton.Location = new System.Drawing.Point(265, 326);
+            SaveRigctlbutton.Location = new System.Drawing.Point(267, 362);
             SaveRigctlbutton.Name = "SaveRigctlbutton";
             SaveRigctlbutton.Size = new System.Drawing.Size(75, 36);
             SaveRigctlbutton.TabIndex = 57;
@@ -2503,7 +2522,7 @@
             tabPage4.Location = new System.Drawing.Point(4, 24);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1121, 629);
+            tabPage4.Size = new System.Drawing.Size(1153, 629);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
@@ -3026,7 +3045,7 @@
             tabPage5.Location = new System.Drawing.Point(4, 24);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            tabPage5.Size = new System.Drawing.Size(1121, 629);
+            tabPage5.Size = new System.Drawing.Size(1153, 629);
             tabPage5.TabIndex = 4;
             tabPage5.Text = "Switches&Tuners";
             // 
@@ -3460,7 +3479,7 @@
             tabPage6.Controls.Add(audioInlistBox);
             tabPage6.Location = new System.Drawing.Point(4, 24);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new System.Drawing.Size(1121, 629);
+            tabPage6.Size = new System.Drawing.Size(1153, 629);
             tabPage6.TabIndex = 5;
             tabPage6.Text = "RX & Sound config";
             // 
@@ -3777,6 +3796,32 @@
             // 
             RXblocktimer.Interval = 30000;
             RXblocktimer.Tick += RXblocktimer_Tick;
+            // 
+            // rigtextBox
+            // 
+            rigtextBox.Location = new System.Drawing.Point(420, 279);
+            rigtextBox.Name = "rigtextBox";
+            rigtextBox.Size = new System.Drawing.Size(134, 20);
+            rigtextBox.TabIndex = 73;
+            // 
+            // rigsearchbutton
+            // 
+            rigsearchbutton.Location = new System.Drawing.Point(567, 277);
+            rigsearchbutton.Name = "rigsearchbutton";
+            rigsearchbutton.Size = new System.Drawing.Size(75, 23);
+            rigsearchbutton.TabIndex = 74;
+            rigsearchbutton.Text = "Search";
+            rigsearchbutton.UseVisualStyleBackColor = true;
+            rigsearchbutton.Click += rigsearchbutton_Click;
+            // 
+            // label112
+            // 
+            label112.AutoSize = true;
+            label112.Location = new System.Drawing.Point(313, 282);
+            label112.Name = "label112";
+            label112.Size = new System.Drawing.Size(101, 13);
+            label112.TabIndex = 75;
+            label112.Text = "Search by rig name:";
             // 
             // Form1
             // 
@@ -4149,7 +4194,7 @@
         private System.Windows.Forms.Label label110;
         private System.Windows.Forms.Label Fhelplabel;
         private System.Windows.Forms.Label label111;
-        private System.Windows.Forms.CheckBox stopsolarcheckBox;
+        private System.Windows.Forms.CheckBox solarcheckBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
@@ -4166,6 +4211,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column14;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column15;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column16;
+        private System.Windows.Forms.Button locationbutton;
+        private System.Windows.Forms.Label label112;
+        private System.Windows.Forms.Button rigsearchbutton;
+        private System.Windows.Forms.TextBox rigtextBox;
     }
 }
 

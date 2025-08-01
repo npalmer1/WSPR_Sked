@@ -1,11 +1,6 @@
-_Sked\ emp1   4  -3  0.5  14.096995  M6DPY IO90 43          -4     1    0
-_Sked\ emp1   5 -15  0.5  14.097044  SA6BSS JO68 30          0     1    0
-_Sked\ emp1   2 -22  1.9  14.097051  JW1WSP JQ77 20          0     4    0
-_Sked\ emp1   1 -23  1.1  14.097069  DL2ARL JN59  0         -3  6268   -8
-_Sked\ emp1   2 -14  0.7  14.097082  R2ASY KO85 23           0  5620    0
-_Sked\ emp1   6   3  0.8  14.097083  OZ9ACF JO65 37          0     1    0
-_Sked\ emp1   3 -14  0.8  14.097094  LA1ITS JO59 37          0     6    0
-_Sked\ emp1   4  -8  0.5  14.097122  EA6ALL JM19 23         -1     1    0
-_Sked\ emp1   4 -14  0.5  14.097146  WA3ITR FN42 33          0     2    0
-_Sked\ emp1   2 -21  0.6  14.097165  SP6MPL/3 43             0  1255    0
-_Sked\ emp1   5 -13  0.5  14.097184  OH3FZQ KP11 33          0     1    0
+_Sked\ emp2   1 -22  0.2  14.097017  2E0CIT JO01 37          0     4    0
+_Sked\ emp2   3 -20  0.3  14.097062  SA7RST JO78 23          0     1    0
+_Sked\ emp2   1 -13  0.5  14.097104  UA1ZFG KO46 30         -2  1325   24
+_Sked\ emp2   4 -12  0.2  14.097137  OH3FR KP20 33           0     1    0
+_Sked\ emp2   2 -22  0.0  14.097149  WA3ITR FN42 33          0     3    0
+_Sked\ emp2   7   3  3.4  14.097184  OH3FZQ KP11 33          0     1    0

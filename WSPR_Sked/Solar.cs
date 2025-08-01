@@ -118,29 +118,76 @@ namespace WSPR_Sked
 
         bool hamqslopened = false;
 
+        int timercount = 0;
+
         public SolarIndexes solar = new SolarIndexes();
         public Solar()
         {
             InitializeComponent();
         }
 
-        public async void setConfig(string serverName, string db_user, string db_pass)
+        public async Task setConfig(string serverName, string db_user, string db_pass)
         {
             server = serverName;
             user = db_user;
             pass = db_pass;
+            bool check = await checkNOAA();
+            if (!check)
+            {
+                Msg.TMessageBox("Warning: unable to connect to NOAA", "Solar data", 1500);
+            }
+            else
+            {
+                await getLatestSolar(serverName, db_user, db_pass);
+                await updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
+                await updateSolar(serverName, db_user, db_pass);
+                await updateAllProtonandFlare(serverName, db_user, db_pass, true); //update yesterday
+                await updateAllProtonandFlare(serverName, db_user, db_pass, false); //update today
+            }
+           
+        }
+
+        private void Solar_Load(object sender, EventArgs e)
+        {
+            //solarstartuptimer.Enabled = true;
+            //solarstartuptimer.Start();
+            solartimer.Enabled = true;
+            solartimer.Start();
+
+            for (int i = 0; i < dataGridView1.Columns.Count; i++)
+            {
+                dataGridView1.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+            for (int i = 0; i < dataGridView2.Columns.Count; i++)
+            {
+                dataGridView2.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+            dataGridView1.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 8);
+            dataGridView2.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 8);
             dataGridView3.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 8);
-            //solarDB.setConfig(server, user, pass);
-            await checkNOAA();
+            dataGridView3.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+
+            // Automatically adjust row height to fit content
+            dataGridView3.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+
 
         }
 
-        public async Task checkNOAA()
+        public async Task<bool> checkNOAA()
         {
+            if (stopUrl)
+            {
+                return false;
+            }
             string url = "https://services.swpc.noaa.gov/";
             if (!await Msg.IsUrlReachable(url))
             {
                 Msg.TMessageBox("Unable to connect to NOAA url", "Solar data", 3000);
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
         public async Task updateGeo(string server, string user, string pass, bool updateyesterday)
@@ -600,25 +647,7 @@ namespace WSPR_Sked
             }
         }
 
-        private void Solar_Load(object sender, EventArgs e)
-        {
-            for (int i = 0; i < dataGridView1.Columns.Count; i++)
-            {
-                dataGridView1.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            }
-            for (int i = 0; i < dataGridView2.Columns.Count; i++)
-            {
-                dataGridView2.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            }
-            dataGridView1.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 8);
-            dataGridView3.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 8);
-            dataGridView3.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-
-            // Automatically adjust row height to fit content
-            dataGridView3.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-          
-           
-        }
+       
 
         public async Task fetchBurstdata()
         {
@@ -1434,7 +1463,7 @@ namespace WSPR_Sked
 
             }
             dataGridView2.Sort(dataGridView2.Columns[0], ListSortDirection.Descending);  //order by date        
-               
+
         }
 
         private void filter_results()
@@ -1865,7 +1894,7 @@ namespace WSPR_Sked
             Rlevel = 0;
             Slevel = 0;
             await find_extra_data(false, "", "");
-           
+
             findstormlevels();
             stormlabels();
 
@@ -2663,8 +2692,8 @@ namespace WSPR_Sked
             browser.Location = new Point(10, 20);
             browser.ScrollBarsEnabled = false;
             browser.ScriptErrorsSuppressed = true;
-           
-          
+
+
             hamqslgroupBox.Controls.Add(browser);
             string html = @"<center><a href='https://www.hamqsl.com/solar.html' ";
             html = html + @"title='Click to add Solar-Terrestrial Data to your website!'>";
@@ -2690,7 +2719,7 @@ namespace WSPR_Sked
             if (await Msg.IsUrlReachable(url))
             {
                 if (hamqslopened)
-                {                  
+                {
                     return;
                 }
                 OpenBrowser(url);
@@ -2699,7 +2728,61 @@ namespace WSPR_Sked
             // Open the URL in the default browser
             //System.Diagnostics.Process.Start(new ProcessStartInfo(e.Url.ToString()) { UseShellExecute = true });
         }
+
+        private async void solartimer_Tick(object sender, EventArgs e)
+        {
+            await solartimer_action();
+        }
+        private async Task solartimer_action()
+        {
+            timercount++;
+            DateTime dt = DateTime.Now.ToUniversalTime();
+            if (timercount == 9) //45 mins
+            {
+                await getLatestSolar(server, user, pass); //update 
+
+            }
+
+            await checkNOAA();
+
+
+            if (timercount == 8)    //40 mins
+            {
+                await updateGeo(server, user, pass, true); //true - update yesterday as well
+
+
+            }
+            if (timercount == 6)  //30 mins
+            {
+                await updateAllProtonandFlare(server, user, pass, false); 
+
+            }
+            if (timercount == 5 && dt.Hour == 3)  //25 mins
+            {
+                await updateAllProtonandFlare(server, user, pass, true); //get results for 2100-2400 yesterday
+
+            }
+
+            if (timercount == 7)  //35 mins
+            {
+                //await updateGeo(server, user, pass, true); //false - don't update yesterday as well
+                await updateSolar(server, user, pass);
+            }
+            if (timercount == 11) //55 mins
+            {
+                timercount = 0; //reset timer
+               
+            }
+        }
+
+        private void solarstartuptimer_Tick(object sender, EventArgs e)
+        {
+            getLatestSolar(server, user, pass);
+            solarstartuptimer.Enabled = false;
+            solarstartuptimer.Stop();
+            
+        }
     }
-        
+
 }
 
