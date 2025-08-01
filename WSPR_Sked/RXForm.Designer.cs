@@ -479,6 +479,7 @@
             myloclabel.Size = new System.Drawing.Size(17, 15);
             myloclabel.TabIndex = 47;
             myloclabel.Text = "--";
+           
             // 
             // Timelabel
             // 

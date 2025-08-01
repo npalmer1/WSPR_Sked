@@ -118,10 +118,10 @@ namespace WSPR_Sked
 
         private void RXForm_Load(object sender, EventArgs e)
         {
-           
+
         }
 
-        public void set_header(string call, string serverName, string db_user, string db_pass, string loc, int audioDev, string wsprdpath,string ver)
+        public void set_header(string call, string serverName, string db_user, string db_pass, string loc, int audioDev, string wsprdpath, string ver)
         {
             this.Text = "Transmissions received by this station";
             Callsign = call;
@@ -129,7 +129,7 @@ namespace WSPR_Sked
             user = db_user;
             pass = db_pass;
             my_loc = loc;
-            version = "WS-"+ver;
+            version = "WS-" + ver;
             audioDevice = audioDev;
             wsprdfilepath = wsprdpath;
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -189,7 +189,7 @@ namespace WSPR_Sked
 
         private async void Record_Decode()
         {
-           
+
             if (prevwav == wavno)
             {
                 return;
@@ -216,21 +216,21 @@ namespace WSPR_Sked
                 catch { }
             }
 
-            
+
             await Task.Delay(200);
             statuslabel.Text = "receiving";
             Msg.TMessageBox("Recording: " + wsprdfilepath + "\\temp" + wavno + ".wav", "", 3000);
 
             string args = "";
-            int mS = 110000; 
-                       
+            int mS = 110000;
+
             DateTime now = DateTime.Now.ToUniversalTime();
             int s = now.Second;
             int m = now.Minute;
 
             if (now.Minute % 2 == 1)
             {
-                nextDT= now.AddMinutes(-1); //about odd min+51 so make it start time of last spot
+                nextDT = now.AddMinutes(-1); //about odd min+51 so make it start time of last spot
             }
             else
             {
@@ -238,7 +238,7 @@ namespace WSPR_Sked
             }
 
             startTime = now;
-            
+
             int even = m % 2;
             if (s == 0 && even == 0)
             {
@@ -248,10 +248,10 @@ namespace WSPR_Sked
             {
                 mS = 111000;
             }
-            else if (even ==0 && s ==1)
+            else if (even == 0 && s == 1)
             {
                 mS = 109000;
-               //mS = mS -(s * 1000); //if not starting at 0s deduct seconds
+                //mS = mS -(s * 1000); //if not starting at 0s deduct seconds
             }
             else
             {
@@ -259,89 +259,89 @@ namespace WSPR_Sked
             }
 
 
-                await RecordLineInAsync_Gain(outpath, mS);
-                DateTime originalDT = DateTime.Now.ToUniversalTime();
-                if (originalDT.Minute % 2 == 1)
-                {
-                    originalDT = originalDT.AddMinutes(-1); //about odd min+51 so make it start time of last spot
-                }
-                else
-                {
-                    originalDT = originalDT.AddMinutes(-2); //should never get here unles a delay
-                }
-                
-                //string content = outpath;
+            await RecordLineInAsync_Gain(outpath, mS);
+            DateTime originalDT = DateTime.Now.ToUniversalTime();
+            if (originalDT.Minute % 2 == 1)
+            {
+                originalDT = originalDT.AddMinutes(-1); //about odd min+51 so make it start time of last spot
+            }
+            else
+            {
+                originalDT = originalDT.AddMinutes(-2); //should never get here unles a delay
+            }
 
-                await Task.Delay(100);
-                statuslabel.Text = "decoding";
-                string d = "";
-                if (useDeep)
-                {
-                    d = " -d";
-                }
-                else if (useQuick)
-                {
-                    d = " -q";
-                }
-                else //== normal depth
-                {
-                    d = "";
-                }
-                string o = "";
-                if (OSD > 0)
-                {
-                    o = " -o " + OSD.ToString();
-                }
-                if (finished)
-                {
-                    //prevwav = wavno;
-                }
-                results = "";
+            //string content = outpath;
+
+            await Task.Delay(100);
+            statuslabel.Text = "decoding";
+            string d = "";
+            if (useDeep)
+            {
+                d = " -d";
+            }
+            else if (useQuick)
+            {
+                d = " -q";
+            }
+            else //== normal depth
+            {
+                d = "";
+            }
+            string o = "";
+            if (OSD > 0)
+            {
+                o = " -o " + OSD.ToString();
+            }
+            if (finished)
+            {
+                //prevwav = wavno;
+            }
+            results = "";
 
 
-                if (wavno == 1)
+            if (wavno == 1)
+            {
+                prevwav = 1;
+                wavno = 2;
+            }
+            else if (wavno == 2)
+            {
+                prevwav = 2;
+                wavno = 3;
+            }
+            else
+            {
+                prevwav = 3;
+                wavno = 1;
+            }
+            string content = wsprdfilepath + "\\temp" + prevwav + ".wav";
+
+            args = "/c " + wsprdfilepath + "\\wsprd.exe -a " + wsprdfilepath + " -f " + Frequency + d + o + " " + content;
+
+            string path = wsprdfilepath + "\\temp" + prevwav + ".wav";
+            var fileInfo = new FileInfo(path);
+
+            if (fileInfo.Exists && fileInfo.Length == 0)
+            {
+                return;
+            }
+            output = "";
+            if (!blockDecodes)    //block decodes whilst transmitting - from Wspr_transmit on form1
+            {
+                Msg.TMessageBox("Decoding: " + wsprdfilepath + "\\temp" + prevwav + ".wav", "", 3000);
+                await Task.Run(() =>
                 {
-                    prevwav = 1;
-                    wavno = 2;
-                }
-                else if (wavno == 2)
-                {
-                    prevwav = 2;
-                    wavno = 3;
-                }
-                else
-                {
-                    prevwav = 3;
-                    wavno = 1;
-                }
-                string content = wsprdfilepath + "\\temp" + prevwav + ".wav";
+                    runDecoder(args);
 
-                args = "/c " + wsprdfilepath + "\\wsprd.exe -a " + wsprdfilepath + " -f " + Frequency + d + o + " " + content;
+                });
 
-                string path = wsprdfilepath + "\\temp" + prevwav + ".wav";
-                var fileInfo = new FileInfo(path);
+                results = output;
 
-                if (fileInfo.Exists && fileInfo.Length == 0)
-                {
-                    return;
-                }
-                output = "";
-                if (!blockDecodes)    //block decodes whilst transmitting - from Wspr_transmit on form1
-                {
-                    Msg.TMessageBox("Decoding: " + wsprdfilepath + "\\temp" + prevwav + ".wav", "", 3000);
-                    await Task.Run(() =>
-                    {
-                        runDecoder(args);
+                statuslabel.Text = "saving";
+                await SaveReceived(originalDT);
+            }
 
-                    });
 
-                    results = output;
-
-                    statuslabel.Text = "saving";
-                    await SaveReceived(originalDT);
-                }
-            
-           
             //statuslabel.Text = "idle";
             finished = true;
             RXblock = false;
@@ -360,10 +360,10 @@ namespace WSPR_Sked
                 return;
             }
 
-           
+
             DateTime startT = new DateTime(originalDT.Year, originalDT.Month, originalDT.Day,
                                             originalDT.Hour, originalDT.Minute, 0); //set seconds to zero
-          
+
             try
             {
                 await save_result_lines(startT, wsprdfilepath);
@@ -694,7 +694,7 @@ namespace WSPR_Sked
             }
         }
 
-   
+
         private async Task Post_wsprdata(string date, string time)  //uploads single spot to the new wsprnet database
         {
             string url = "http://wsprnet.org/post/";
@@ -726,7 +726,7 @@ namespace WSPR_Sked
             client.DefaultRequestHeaders.Add(Callsign, my_loc);
 
             //client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("WS/0.1.3");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("WS/0.1.5");
 
             var content = new FormUrlEncodedContent(formData);
 
@@ -787,7 +787,7 @@ namespace WSPR_Sked
                 {
                     StartInfo = processInfo
                 };
-             
+
                 process.Start();
                 Task.Delay(200);
                 output = process.StandardOutput.ReadToEnd();
@@ -802,7 +802,7 @@ namespace WSPR_Sked
         }
 
 
-       
+
         public async Task RecordLineInAsync_Gain(string outputPath, int durationMs)
         {
             //float gain = 2.0f; // 2x gain, adjust as needed
@@ -811,7 +811,7 @@ namespace WSPR_Sked
                 Msg.TMessageBox("Invalid audio device - check audio settings", "Audio error", 2000);
                 return;
             }
-                WaveInEvent waveIn = new WaveInEvent();
+            WaveInEvent waveIn = new WaveInEvent();
             WaveFileWriter writer;
             try
             {
@@ -1153,12 +1153,12 @@ namespace WSPR_Sked
         }
 
         private static (int km, int az) Calculate_km_az(string tx_loc, string my_loc)
-        {          
+        {
             double km = MaidenheadLocator.Distance(tx_loc, my_loc);
             double az = MaidenheadLocator.Azimuth(tx_loc, my_loc);
             return ((int)km, (int)az);
         }
-       
+
 
 
         private void DeepcheckBox_CheckedChanged(object sender, EventArgs e)
@@ -1803,6 +1803,13 @@ namespace WSPR_Sked
         {
 
         }
+        public void updateLabels(string loc)
+        {
+            my_loc = loc;
+            myloclabel.Text = my_loc;
+        }
+
+      
     }
 }
 

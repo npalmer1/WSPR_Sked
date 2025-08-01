@@ -38,8 +38,7 @@ namespace RigControl
                 startInfo.WorkingDirectory = files[0];
             }
            
-            //startInfo.WorkingDirectory = @"C:\Program Files\hamlib-w64-4.6.2\bin\";
-            //startInfo.FileName = @"C:\Program Files\hamlib-w64-4.6.2\bin\rigctl.exe";       
+             
             startInfo.Arguments = commandline;        // Start the process.
             startInfo.WindowStyle = ProcessWindowStyle.Normal;
             startInfo.UseShellExecute = false;

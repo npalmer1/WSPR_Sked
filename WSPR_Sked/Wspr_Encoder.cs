@@ -39,8 +39,7 @@ namespace Wspr_Encode
                 string filename = "echo";
                 try
                 {
-                    //commandline = "/c echo "+commandline + " | " + filepath + "wsprmsg.exe";
-                    //commandline = filepath + "wsprmsg.exe < wspr.txt";
+                   
                     content = callsign + " " + loc + " " + power;
                     runWsprMsg(filepath, content);
                     if (output != "")
@@ -113,43 +112,7 @@ namespace Wspr_Encode
             }
 
         }
-        /*
-        public byte[] findslot2Levels(string fileoutput)
-        {
-            byte[] levels = new byte[162];
-            string symbols = "";
-            try
-            {
-                int e = fileoutput.IndexOf("End of WSPR data");
-                //int d = 
-                string end = "End of WSPR data";
-                if (e > -1)
-                {
-                    e = e + end.Length;
-                    symbols = fileoutput.Substring(e, fileoutput.Length - e);
-                    int d = symbols.IndexOf("de");
-                    if (d > -1)
-                    {
-                        symbols = symbols.Substring(0, d);
-                        symbols = symbols.Trim();
-                        string[] sym = symbols.Split(',');
-                        if (sym.Length > 161)
-                        {
-                            for (int i = 0; i < 162; i++)
-                            {
-                                levels[i] = Convert.ToByte(sym[i]);
-                            }
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                levels = null;
-            }
-
-            return levels;
-        }*/
+     
 
         public byte[] findslotLevels(string fileoutput, int slotNo)
         {

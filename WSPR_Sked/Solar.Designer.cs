@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             getLatestbutton = new System.Windows.Forms.Button();
@@ -127,6 +128,8 @@
             infobutton = new System.Windows.Forms.Button();
             label22 = new System.Windows.Forms.Label();
             sqlCommandBuilder1 = new Microsoft.Data.SqlClient.SqlCommandBuilder();
+            solartimer = new System.Windows.Forms.Timer(components);
+            solarstartuptimer = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -1052,6 +1055,16 @@
             label22.TabIndex = 22;
             label22.Text = "Lower Ap index = more stable conditions";
             // 
+            // solartimer
+            // 
+            solartimer.Interval = 300000;
+            solartimer.Tick += solartimer_Tick;
+            // 
+            // solarstartuptimer
+            // 
+            solarstartuptimer.Interval = 5000;
+            solarstartuptimer.Tick += solarstartuptimer_Tick;
+            // 
             // Solar
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1192,5 +1205,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column12;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column15;
+        private System.Windows.Forms.Timer solartimer;
+        private System.Windows.Forms.Timer solarstartuptimer;
     }
 }

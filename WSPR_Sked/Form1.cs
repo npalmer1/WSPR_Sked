@@ -1,7 +1,6 @@
 ﻿using Arduino;
 using FSK;
 using Google.Protobuf.WellKnownTypes;
-using HashCallsign;
 using Logging;
 using M0LTE.WsjtxUdpLib.Messages;
 using MathNet.Numerics;
@@ -34,6 +33,8 @@ using System.Drawing;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Management;
+using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -45,7 +46,6 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using Type2;
 using W410A;
 using Wspr_Encode;
 using WsprSharp;
@@ -60,6 +60,12 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using static WSPR_Sked.Form1;
+using Maidenhead;
+
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
+
+
 
 //solar data source:
 //https://services.swpc.noaa.gov/text/daily-geomagnetic-indices.txt
@@ -125,6 +131,8 @@ namespace WSPR_Sked
 
         bool stopSolar = false;
 
+        bool solarStarted = false;
+
 
         DateTime currentSelectedDate;
 
@@ -188,7 +196,9 @@ namespace WSPR_Sked
         int startCount = 0;
         int startCountMax = 360; //<5 mins
 
-
+        int OpSystem = 0; //Windows = 0, Linux = 1, MacOS = 2
+        string slash = "\\"; //default to Windows
+        string root = "C:\\"; //default to Windows root
         public struct Hardware
         {
             public int Id;
@@ -250,8 +260,12 @@ namespace WSPR_Sked
         int audioInDevice;
         int inLevel = 1;
         int outLevel = 1;
-
+      
+        
+        
         string wsprdfilepath = "C:\\WSPR_Sked";
+
+        string userdir = Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
 
         Random randno = new Random();
 
@@ -287,9 +301,37 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.5";
+            string ver = "0.1.6";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
+            OpSystem = 0; //default to Windows
+            slash = "\\"; //default to Windows
+            root = "C:\\";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                OpSystem = 0; //Windows
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                OpSystem = 1; //Linux
+                slash = "/"; //Linux uses forward slash
+                root = "/"; //Linux root
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                OpSystem = 2; //MacOS
+                slash = "/"; //MacOS uses forward slash
+                root = "/"; //MacOS root
+            }
+            else if (OperatingSystem.IsAndroid())
+            {
+                OpSystem = 3; //Android
+                slash = "/"; //Android uses forward slash
+                root = "/"; //Android root
+            }
+            
+            wsprdfilepath = root + "WSPR_Sked"; //default path to WSPR_Sked folder
+
             baseCalltextBox.Text = "";
             defaultF = 14.0956;
             defaultOfftextBox.Text = Convert.ToString(defaultoffset);
@@ -387,28 +429,50 @@ namespace WSPR_Sked
 
             random = randno.Next(0, 7); //random number to spread uploads to wsprnet
 
+
+            /*
             if (!stopSolar)
             {
                 solarForm.Show();
-                solarForm.setConfig(serverName, db_user, db_pass);
-                await solarForm.getLatestSolar(serverName, db_user, db_pass);
-                await solarForm.updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
-                await solarForm.updateSolar(serverName, db_user, db_pass);
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, true); //update yesterday
-                await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //update today
-            }
+                
+                if (!stopUrl)
+                {
+                    solarForm.setConfig(serverName, db_user, db_pass);
+                    //await solarForm.updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
+                    //await solarForm.updateSolar(serverName, db_user, db_pass);
+                    //await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, true); //update yesterday
+                    //await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //update today
+                    //await solarForm.getLatestSolar(serverName, db_user, db_pass);
+                }
+                else
+                {
+                    Msg.TMessageBox("Note: Internet connection is stopped", "Solar data", 1000);
+                }
+            }*/
 
 
         }
 
 
-        /*private bool findSlot(int slot, string date, string time)
-        {           
-           var S = findSlotDB(slot, date, time);
-            return Convert.ToBoolean(S);
-        }*/
 
+        private void startSolar()
+        {
+            Process.Start(@"C:\WSPR_Sked\WSPR_SolarEXE\WSPR_Solar.exe");
 
+        }
+
+        string FindAppPath(string appName)
+        {
+            string query = "SELECT * FROM Win32_Product WHERE Name LIKE '%" + appName + "%'";
+            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(query))
+            {
+                foreach (ManagementObject obj in searcher.Get())
+                {
+                    return obj["InstallLocation"]?.ToString();
+                }
+            }
+            return null;
+        }
 
 
         //private  async Task<bool> findSlot(int slot, string date, string time) //find a slot in the database corresponding to the date/time from the slot to transmit/receive
@@ -700,7 +764,7 @@ namespace WSPR_Sked
 
         private void GridHeading()
         {
-            
+
             dtable.Columns.Add("Date   "); //0
             dtable.Columns.Add("Time"); //1
             dtable.Columns.Add("Frequency"); //2
@@ -727,7 +791,7 @@ namespace WSPR_Sked
             for (int i = 0; i < dataGridView1.Columns.Count; i++)
             {
                 dataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; //set all columns to fixed width
-                
+
             }
             dataGridView1.Columns[0].Width = 80; //date
             dataGridView1.Columns[1].Width = 50; //time
@@ -1009,6 +1073,8 @@ namespace WSPR_Sked
             slotNo = 1;
             int msgT = 1;
             bool this_slot = false;
+            this.Focus();
+            this.BringToFront();
             try
             {
                 if (validateSlot())
@@ -1046,8 +1112,8 @@ namespace WSPR_Sked
                     Msg.TCMessageBox("Saving .. please wait", "Save slot", 3000, mForm);
                     if ((msgT == 2 || msgT == 3) && !asOnecheckBox.Checked && checkNextSlot(EditRow))
                     {
-                                       
-                     
+
+
                         SaveSlot(false, msgT, this_slot);
                         EditRow++;
 
@@ -1210,7 +1276,7 @@ namespace WSPR_Sked
                         if (cells[i] != null)
                         {
                             DataRow.Cells[i].Value = cells[i];
-                           
+
                         }
                     }
                 }
@@ -1224,7 +1290,7 @@ namespace WSPR_Sked
                     dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Blue;
                 }
                 DataGridViewCell cell = dataGridView1.Rows[EditRow].Cells[11];
-                cell.Style.Font = new System.Drawing.Font(dataGridView1.Font, FontStyle.Bold);              
+                cell.Style.Font = new System.Drawing.Font(dataGridView1.Font, FontStyle.Bold);
 
                 dataGridView1.Columns[12].Visible = false; // Hide the repeat time column
                 dataGridView1.Columns[13].Visible = false; // Hide the end time column
@@ -1543,7 +1609,8 @@ namespace WSPR_Sked
             int i = 0;
             int slot = 0;
             string msgT = "1";
-           
+            this.Focus();
+            this.BringToFront();
             for (i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 try
@@ -1554,14 +1621,14 @@ namespace WSPR_Sked
 
                         time = Convert.ToString(dataGridView1.Rows[i].Cells[1].Value);
                         string MT = dataGridView1.Rows[i].Cells[15].Value.ToString();
-                       
+
                         msgT = MT;
                         slot = i; break;
                     }
                 }
                 catch { }
             }
-            
+
             DialogResult res;
             if (rightbutton)
             {
@@ -1822,7 +1889,8 @@ namespace WSPR_Sked
 
             daytimer.Stop();
             daytimer.Enabled = false;
-            getRigF();
+            if (!rigctldcheckBox.Checked)
+            { getRigF(); }
             daytimer2.Enabled = true;
             daytimer2.Start();
 
@@ -2261,8 +2329,12 @@ namespace WSPR_Sked
             slotNo = 1;
             Slot.Offset = defaultoffset;
             TXAntenna = defaultAnt;
+            if (rigctldcheckBox.Checked)
+            {
+                testFtextBox.Text = defaultF.ToString();
+            }
             //TXFrequency = Convert.ToString(defaultF * 1000000);
-            if (testFtextBox.Text == "")
+            if (testFtextBox.Text == "" && !rigctldcheckBox.Checked)
             {
                 Msg.OKMessageBox("Select frequency from list first", "");
                 return;
@@ -2630,7 +2702,51 @@ namespace WSPR_Sked
             return ok;
         }
 
+        async Task GetLocationFromIP()
+        {
+            string url = "https://ipinfo.io/json"; // No token needed for basic usage
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string response = await client.GetStringAsync(url);
+                    JObject locationData = JObject.Parse(response);
+                    string location = (string)locationData["loc"];
+                    string[] S = location.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    if (S.Length > 1)
+                    {
+                        try
+                        {
+                            double lat = Convert.ToDouble(S[0]);
+                            double lon = Convert.ToDouble(S[1]);
 
+                            string L = MaidenheadLocator.LatLngToLocator(lat, lon);
+
+
+                            DialogResult res = Msg.ynMessageBox("Locator: " + L + " - save this location (Y/N)?", "Update location");
+                            if (res == DialogResult.No)
+                            {
+                                location = L;
+                                LocatortextBox.Text = L;
+                            }
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+        }
+
+        private void locationbutton_Click(object sender, EventArgs e)
+        {
+            GetLocationFromIP();
+        }
 
         private void saveConfigbutton_Click(object sender, EventArgs e)
         {
@@ -2644,6 +2760,7 @@ namespace WSPR_Sked
 
             string C = CalltextBox.Text;
             string L = LocatortextBox.Text;
+            rxForm.updateLabels(L);
 
             if (C == "")
             {
@@ -2736,7 +2853,14 @@ namespace WSPR_Sked
                 }
                 else
                 {
-                    location = LocatortextBox.Text.Trim().Substring(0, 6);
+                    if (LocatortextBox.Text.Length > 5)
+                    {
+                        location = LocatortextBox.Text.Trim().Substring(0, 6);
+                    }
+                    if (!longcheckBox.Checked)
+                    {
+                        location = LocatortextBox.Text.Trim().Substring(0, 4);
+                    }
                 }
                 Slot.PowerdB = defaultdB;
                 if (SaveConfig(msgT))
@@ -2793,7 +2917,8 @@ namespace WSPR_Sked
                     string wsprmsgP = wsprmsgtextBox.Text;
                     wsprmsgP = wsprmsgP.Replace("\\", "/");
                     command.Parameters.AddWithValue("@WsprmsgPath", wsprmsgP);
-                    command.Parameters.AddWithValue("@stopsolar", stopsolarcheckBox.Checked);
+
+                    command.Parameters.AddWithValue("@stopsolar", stopSolar);
                     string zone = "UTC";
                     if (LTcheckBox.Checked)
                     {
@@ -2842,7 +2967,7 @@ namespace WSPR_Sked
                 c = "UPDATE settings SET ConfigID = " + configID + ", Callsign = '" + callsign + "', BaseCall = '" + baseC + "', Offset = " + defaultoffset + ", DefaultF = " + defaultF + ", ";
                 c = c + "Power = " + defaultdB + ", PowerW = " + defaultW + ", Locator = '" + full_location + "', LocatorLong = " + L + ", DefaultAnt = '" + defaultAnt + "'";
                 c = c + ", Alpha = " + defaultAlpha + ", DefaultAudio = " + defA + ", HamlibPath = '" + HL + "', MsgType = " + msgT;
-                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopsolarcheckBox.Checked + " WHERE settings.ConfigID = " + configID;
+                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopSolar + " WHERE settings.ConfigID = " + configID;
                 //UPDATE `slots` SET `Antenna` = 'GP' WHERE `slots`.`Date` = '2025-02-28' AND `slots`.`Time` = '16:02:00'; 
                 command.CommandText = c;
                 connection.Open();
@@ -2925,8 +3050,8 @@ namespace WSPR_Sked
                     Type2checkBox.Checked = (bool)Reader["AllowType2"];
                     asOnecheckBox.Checked = (bool)Reader["oneMsg"];
                     string wsprmsgP = (string)Reader["WsprmsgPath"];
-                    stopsolarcheckBox.Checked = (bool)Reader["stopsolar"];
-                    stopSolar = stopsolarcheckBox.Checked;
+                    stopSolar = (bool)Reader["stopsolar"];
+                    solarcheckBox.Checked = !stopSolar;
                     wsprmsgP = wsprmsgP.Replace('/', '\\');
                     wsprmsgtextBox.Text = wsprmsgP;
                     if (zone == "LT")
@@ -3421,6 +3546,25 @@ namespace WSPR_Sked
                     prevDayofYear = now.DayOfYear;
                 }
             }
+
+            if (s > 9 && s < 46 && !solarStarted)
+            {
+
+                solarStarted = true;
+                solarForm.Show();
+                this.Activate();
+
+                if (!stopUrl)
+                {
+                    await solarForm.setConfig(serverName, db_user, db_pass);
+
+                }
+                else
+                {
+                    Msg.TMessageBox("Note: Internet connection is stopped", "Solar data", 1000);
+                }
+
+            }
             if (m % 2 == 1 && s == 27)
             {
                 random = randno.Next(0, 7); //random number to spread uploads to wsprnet
@@ -3533,7 +3677,7 @@ namespace WSPR_Sked
                 justLoaded = false;
                 //}
             }
-            if (!stopSolar)
+            /*if (!stopSolar)
             {
                 if (m == 39 && s == 27 + random)
                 {
@@ -3627,7 +3771,7 @@ namespace WSPR_Sked
                 {
                     await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
                 }
-            }
+            }*/
 
         }
 
@@ -3890,7 +4034,7 @@ namespace WSPR_Sked
         private async void startRigCtlD()
         {
             //rigctld -m <rig> -r <ip address> -t <port> - 1046=FT450, 127.0.0.1, 4532
-            string userdir = Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
+           
             string rigctldfile = userdir + "\\rigctld_launch.bat";
             string process1 = "rigctld";
             string process2 = "rigctld.exe";
@@ -3903,7 +4047,7 @@ namespace WSPR_Sked
                     await Task.Delay(1000);
                     await Task.Run(() =>
                      {
-                         //runAsyncProcess("C:\\WSPR_Sked\\RIGCTLD_Launch.bat");
+                       
                          runAsyncProcess(rigctldfile);
 
 
@@ -4101,7 +4245,11 @@ namespace WSPR_Sked
         private async void TestTXbutton_Click(object sender, EventArgs e)
         {
 
-            if (testFtextBox.Text == "")
+            if (rigctldcheckBox.Checked)
+            {
+                testFtextBox.Text = defaultF.ToString();
+            }
+            if (testFtextBox.Text == "" && !rigctldcheckBox.Checked)
             {
                 Msg.OKMessageBox("No frequency selected", "");
                 return;
@@ -4216,18 +4364,14 @@ namespace WSPR_Sked
         }
         private void getComports()
         {
-            string[] portNames = SerialPort.GetPortNames();
-
-            // Print the list of serial port names.
-
+          
+            string[] ports = SerialPort.GetPortNames();
             COMcomboBox.Items.Clear();
+            COMcomboBox.Items.AddRange(ports);
             HwPortcomboBox.Items.Clear();
-            foreach (string port in portNames)
-            {
-                //COMlistBox.Items.Add(port);
-                COMcomboBox.Items.Add(port);
-                HwPortcomboBox.Items.Add(port);
-            }
+            HwPortcomboBox.Items.AddRange(ports);
+
+           
         }
 
         private void comRbutton_Click(object sender, EventArgs e)
@@ -4306,7 +4450,7 @@ namespace WSPR_Sked
             e.Handled = true;
         }
 
-        private void SaveRigctlbutton_Click(object sender, EventArgs e)
+        private async void SaveRigctlbutton_Click(object sender, EventArgs e)
         {
             if (SaveRigctl())
             {
@@ -4317,6 +4461,17 @@ namespace WSPR_Sked
                     RigctlPort = PorttextBox.Text;
                     RigctlIPv4 = IPtextBox.Text;
                     Radio = RigcomboBox.SelectedItem.ToString();
+                  
+                    string rigctldfile = userdir + "\\rigctld_launch.bat";
+                    createRigFile(rigctldfile);
+                   
+                    await Task.Run(() =>    //update rigctld file and run it
+                    {
+                        
+                        runAsyncProcess(rigctldfile);
+
+
+                    });
                 }
                 Msg.TMessageBox("Settings saved", "rigctld", 2000);
             }
@@ -4419,8 +4574,8 @@ namespace WSPR_Sked
                     RigctlPort = (string)Reader["Port"];
                     rigctldcheckBox.Checked = (bool)Reader["norigctld"];
                     RigcomboBox.SelectedItem = Radio;
-                    RigcomboBox.Text = Radio;   
-                   
+                    RigcomboBox.Text = Radio;
+
                     COMcomboBox.SelectedItem = RigctlCOM;
                     baudcomboBox.SelectedItem = Rigctlbaud;
                     IPtextBox.Text = RigctlIPv4;
@@ -4706,7 +4861,7 @@ namespace WSPR_Sked
             }
 
 
-            if (!stopSolar)
+            /*if (!stopSolar)
             {
                 if (h == 0 && m == 46 && s == 25 + random)
                 {
@@ -4788,7 +4943,7 @@ namespace WSPR_Sked
                 {
                     await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
                 }
-            }
+            }*/
         }
 
         private void FreqlistBox_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -6369,25 +6524,7 @@ namespace WSPR_Sked
             Task.Delay(1000);
         }
 
-        private int Type2Hash(string callsign)
-        {
-            ComputeHashCall hashcall = new ComputeHashCall();
-            int callhash = hashcall.ComputeHash(callsign);
-            //Msg.OKMessageBox("Call hash: " + callhash.ToString(), "");
-
-
-            // Iterate through bits (assuming 8 bits for simplicity)
-
-            string bits = "";
-            for (int i = 14; i >= 0; i--)
-            {
-                int bit = (callhash >> i) & 1; // Shift and mask to extract the bit
-                bits = bits + bit.ToString();
-
-            }
-            return callhash;
-            //Msg.OKMessageBox("In bits: " + bits, "");
-        }
+      
 
 
         private string findBaseCall(string call)
@@ -6983,8 +7120,8 @@ namespace WSPR_Sked
 
                 }
                 //dataGridView1.DataSource = dtable;
-                
-              
+
+
                 dataGridView1.Columns[12].Visible = false;
                 dataGridView1.Columns[13].Visible = false;
                 //dataGridView1.Columns[15].Visible = false;
@@ -7146,12 +7283,13 @@ namespace WSPR_Sked
 
         private void wsprmsgbutton_Click(object sender, EventArgs e)
         {
-            wsprmsgfolderBrowserDialog.InitialDirectory = "C:\\"; //Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+           
+            wsprmsgfolderBrowserDialog.InitialDirectory = root; //Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
 
             wsprmsgfolderBrowserDialog.ShowDialog();
             var wsprmsgPath = wsprmsgfolderBrowserDialog.SelectedPath;
             wsprmsgtextBox.Text = wsprmsgPath;
-            string filename = wsprmsgPath + "\\wspr_enc.exe";
+            string filename = wsprmsgPath + slash + "wspr_enc.exe";
             if (!File.Exists(filename))
             {
                 Msg.TMessageBox("Path does not contain wspr_enc.exe", "", 3000);
@@ -7178,6 +7316,11 @@ namespace WSPR_Sked
         {
             try
             {
+                if (rigctldcheckBox.Checked)
+                {
+                    Msg.TMessageBox("Rig control not enabled - set freq manually", "Using default F", 2000);
+                    return;
+                }
                 testFtextBox.Text = FlistBox.SelectedItem.ToString();
 
                 double freq = Convert.ToDouble(testFtextBox.Text);
@@ -7256,16 +7399,22 @@ namespace WSPR_Sked
 
         private void audioOutlistBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            AudioOutlabel.Text = audioOutlistBox.SelectedItem.ToString();
-            audioOutName = AudioOutlabel.Text;
-            audioOutDevice = audioOutlistBox.SelectedIndex;
+            if (audioOutlistBox.SelectedIndex > -1)
+            {
+                AudioOutlabel.Text = audioOutlistBox.SelectedItem.ToString();
+                audioOutName = AudioOutlabel.Text;
+                audioOutDevice = audioOutlistBox.SelectedIndex;
+            }
         }
 
         private void audioInlistBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            AudioInlabel.Text = audioInlistBox.SelectedItem.ToString();
-            audioInName = AudioInlabel.Text;
-            audioInDevice = audioInlistBox.SelectedIndex;
+            if (audioInlistBox.SelectedIndex > -1)
+            {
+                AudioInlabel.Text = audioInlistBox.SelectedItem.ToString();
+                audioInName = AudioInlabel.Text;
+                audioInDevice = audioInlistBox.SelectedIndex;
+            }
         }
 
 
@@ -7620,14 +7769,14 @@ namespace WSPR_Sked
             if (stopInternetcheckBox.Checked)
             {
                 stopUrl = true;
-                solarForm.stopUrl = true;
+                //solarForm.stopUrl = true;
                 rxForm.stopUrl = true;
                 liveForm.stopUrl = true;
             }
             else
             {
                 stopUrl = false;
-                solarForm.stopUrl = false;
+                //solarForm.stopUrl = false;
                 rxForm.stopUrl = false;
                 liveForm.stopUrl = false;
             }
@@ -7662,6 +7811,60 @@ namespace WSPR_Sked
 
         }
 
+        private async void solarcheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+
+            if (solarcheckBox.Checked)
+            {
+                if (!solarStarted)
+                {
+                    return;
+                }
+                solarForm.Show();
+                if (stopSolar)
+                {
+
+                    if (!stopUrl)
+                    {
+                        solarForm.stopUrl = false;
+                        solarForm.setConfig(serverName, db_user, db_pass);
+                    }
+                    else
+                    {
+                        Msg.TMessageBox("Note: internet connection is stopped", "Solar data", 1500);
+                    }
+
+
+                }
+                stopSolar = false;
+            }
+            else
+            {
+                stopSolar = true;
+                solarForm.stopUrl = true;
+                solarForm.Hide();
+
+            }
+        }
+
+        private void rigsearchbutton_Click(object sender, EventArgs e)
+        {
+            string search = rigtextBox.Text.ToUpper();
+            for (int i =0; i < RigcomboBox.Items.Count; i++)
+            {
+                if (RigcomboBox.Items[i].ToString().ToUpper().Contains(search))
+                {
+                    RigcomboBox.SelectedIndex = i;
+                    return;
+                }
+            }
+                    
+        }
+
+
+
+
+        /*
         private async void stopsolarcheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (stopsolarcheckBox.Checked)
@@ -7686,7 +7889,7 @@ namespace WSPR_Sked
                 stopSolar = false;
 
             }
-        }
+        }*/
     }
 
 
