@@ -1,10 +1,37 @@
-﻿using System;
+﻿using MathNet.Numerics;
+using System;
 using System.CodeDom.Compiler;
 using System.Linq;
 using System.Text;
-using WsprSharp;
-using Wspr_Encode;
 using System.Windows.Forms;
+using Wspr_Encode;
+using WsprSharp;
+
+/*
+MIT License
+
+Copyright (c) 2021 Scott W Harden
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Modifications by N. Palmer 2025
+ */
 
 namespace WsprSharp
 {
@@ -24,17 +51,15 @@ namespace WsprSharp
         public  string ErrorMessageDetails = string.Empty;
         public string wsprmsgPath = "";
 
-        /// <summary>
-        /// Create a new single-packet WSPR transmission
-        /// </summary>
+
+        /// Create a new single-packet WSPR transmission     
         /// <param name="callsign">standard length (6 character max) callsign</param>
         /// <param name="location">4-character grid square</param>
         /// <param name="power">transmission power (dB units)</param>
-        public WsprTransmission() //, byte[] type2Message)
-        {
-            //WsprTxn(callsign, location, power, slotNo, msgNo);
-        }
-        public byte[] WsprTxn(string callsign, string location, double power, int slotNo, int msgType, bool onetx) //, byte[] type2Message)
+        ///  /// <summary>
+       
+       
+        public byte[] WsprTxn(string callsign, string location, double power, int slotNo, int msgType, bool onetx, int opsys) //, byte[] type2Message)
         {
             bool normalCall = true;
             if (callsign.Length > 6 || callsign.Contains("/"))
@@ -62,10 +87,7 @@ namespace WsprSharp
             }
             else //slotNo == 1 or2 and msgType ==2 or 3
             {              
-                /*for (int i = 0; i < type2Message.Length; i++)
-                {
-                    Message[i] = type2Message[i];
-                }*/
+              
                 try
                 {
                     Callsign = Encode.SanitizeCallsign2(callsign);
@@ -86,7 +108,7 @@ namespace WsprSharp
             }
             try
             {
-                //MessageBox.Show("MsgType: " + msgType.ToString() + " slot no: " + slotNo.ToString());
+               
                
                 if (slotNo == 1 && msgType == 1 )
                 {
@@ -122,9 +144,8 @@ namespace WsprSharp
                     }
                   
                     WsprMsg wspr = new WsprMsg();
-                    Levels = wspr.getWsprLevels(wsprmsgPath, callsign, location, power,slotNo);
-                    
-                    //Message = Encode2a.GetMessageBytes(callsign, location, power);
+                    Levels = wspr.getWsprLevels(wsprmsgPath, callsign, location, power,slotNo,opsys);
+                                       
                   
                     LevelsString = GetLevelsString(",");
                     if (Levels == null)

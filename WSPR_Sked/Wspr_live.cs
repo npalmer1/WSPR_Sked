@@ -111,7 +111,7 @@ namespace WSPRlive
 
         public async Task Get_Weather()
         {
-            //note: band not currently used
+            //note: not currently used
             Info = "";
             try
             {

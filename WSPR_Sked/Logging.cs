@@ -9,29 +9,35 @@ namespace Logging
 {
     public class Log
     {
-        public Log(string filepath, string filename, string content)
-        {            
-            if (Path.Exists(filepath))
+        public Log(string filepath, string filename, string content, int OpSystem)
+        {
+            string slash = "\\";
+            if (OpSystem != 0) // eg. Linux or MacOS
             {
-                string slash = "\\";
-                if (filepath.EndsWith("\\"))
+                slash = "/";
+            }           
+                if (Path.Exists(filepath))
                 {
-                    slash = "";
-                }
-                filepath = filepath + slash + filename;
-                try
-                {
-                    using (StreamWriter writer = new StreamWriter(filepath, true)) //true = append to file
+                   
+                    if (filepath.EndsWith(slash))
                     {
-                        writer.WriteLine(content);
-                        writer.Close();
+                        slash = "";
                     }
-                }
-                catch (Exception ex)
-                {
+                    filepath = filepath + slash + filename;
+                    try
+                    {
+                        using (StreamWriter writer = new StreamWriter(filepath, true)) //true = append to file
+                        {
+                            writer.WriteLine(content);
+                            writer.Close();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
 
-                }
-            }
+                    }
+                }            
+           
         }
 
     }

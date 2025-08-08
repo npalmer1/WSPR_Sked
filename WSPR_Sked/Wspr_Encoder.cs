@@ -16,13 +16,15 @@ namespace Wspr_Encode
 {
     internal class WsprMsg
     {
+
         public WsprMsg()
         {
             
 
         }
         public string output = "";
-        public byte[] getWsprLevels(string filepath, string callsign, string loc, double power, int slotNo)
+        int OpSystem = 0;
+        public byte[] getWsprLevels(string filepath, string callsign, string loc, double power, int slotNo, int opsys)
         {
             byte[] levels = null;
             //string output;
@@ -31,7 +33,11 @@ namespace Wspr_Encode
             if (Path.Exists(filepath))
             {
                 string slash = "\\";
-                if (filepath.EndsWith("\\"))
+                if (opsys != 0) // eg. Linux or MacOS
+                {
+                    slash = "/";
+                }
+                if (filepath.EndsWith(slash))
                 {
                     slash = "";
                 }
@@ -41,7 +47,7 @@ namespace Wspr_Encode
                 {
                    
                     content = callsign + " " + loc + " " + power;
-                    runWsprMsg(filepath, content);
+                    runWsprMsg(filepath, content,opsys);
                     if (output != "")
                     {                      
                             levels = findslotLevels(output, slotNo);                        
@@ -60,30 +66,40 @@ namespace Wspr_Encode
             }
         }
        
-        public async void runWsprMsg(string filepath, string content)
+        public async void runWsprMsg(string filepath, string content, int opsys)
         {
 
             output = "";
-
+            string c = "/c ";
+            if (opsys != 0)
+            {
+                c = "-c ";
+            }
             //string args = "/c echo " + content + " | " + filepath + "wsprmsg.exe";
-            string args = "/c " + filepath + "wspr_enc.exe " + content;
+            string args = c + filepath + "wspr_enc.exe " + content;
             
             //await Task.Run(() =>
             //{
-                runAsynProcess(args);
+                runAsynProcess(args,opsys);
 
             //});            
 
         }
 
-        public async Task runAsynProcess(string args)
+        public async Task runAsynProcess(string args, int opsys)
         {
-           
+            string cmd = "cmd.exe";
+            if (opsys != 0)
+            {
+                cmd = "/bin/bash";
+            }
             try
             {
                 ProcessStartInfo processInfo = new ProcessStartInfo()
                 {
-                    FileName = "cmd.exe", // Command to run
+                  
+                    FileName = cmd, // Command to run
+                        
                                      //Arguments = args, // Arguments for the command
                     Arguments = args,
                     RedirectStandardOutput = true, // Redirect output if needed

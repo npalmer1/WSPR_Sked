@@ -12,9 +12,7 @@ namespace Security
     {
 
 
-        /*public Encryption()
-        {
-        }*/
+      
         public string Encrypt(string plainText, string key)
         {
             byte[] keyBytes = Encoding.UTF8.GetBytes(key);

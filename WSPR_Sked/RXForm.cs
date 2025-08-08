@@ -103,6 +103,8 @@ namespace WSPR_Sked
 
         public bool stopUrl = false;
 
+        string slash = "\\";
+
         DateTime nextDT;
 
 
@@ -121,7 +123,7 @@ namespace WSPR_Sked
 
         }
 
-        public void set_header(string call, string serverName, string db_user, string db_pass, string loc, int audioDev, string wsprdpath, string ver)
+        public void set_header(string call, string serverName, string db_user, string db_pass, string loc, int audioDev, string wsprdpath, string ver, int opsys)
         {
             this.Text = "Transmissions received by this station";
             Callsign = call;
@@ -129,6 +131,10 @@ namespace WSPR_Sked
             user = db_user;
             pass = db_pass;
             my_loc = loc;
+            if (opsys !=0) //if not windows
+            {
+                slash = "/";
+            }
             version = "WS-" + ver;
             audioDevice = audioDev;
             wsprdfilepath = wsprdpath;
@@ -149,7 +155,7 @@ namespace WSPR_Sked
             {
                 for (int i = 1; i <= 3; i++)    //delete all existimg wav files 
                 {
-                    string outpath = wsprdfilepath + "\\temp" + i + ".wav";
+                    string outpath = wsprdfilepath + slash+"temp" + i + ".wav";
                     if (File.Exists(outpath))
                     {
                         try
@@ -187,14 +193,14 @@ namespace WSPR_Sked
 
 
 
-        private async void Record_Decode()
+        private async void Record_Decode(int opsys)
         {
 
             if (prevwav == wavno)
             {
                 return;
             }
-            if (!File.Exists(wsprdfilepath + "\\wsprd.exe"))
+            if (!File.Exists(wsprdfilepath + slash +"wsprd.exe"))
             {
                 Msg.TMessageBox("Error: wsprd.exe not found! - see RX & Sound", "WSPR daemon error", 2000);
                 return;
@@ -204,9 +210,9 @@ namespace WSPR_Sked
                 finished = false;
             }
 
-            //wsprdfilepath = "C:\\WSPR_Sked";
+        
 
-            string outpath = wsprdfilepath + "\\temp" + wavno + ".wav";
+            string outpath = wsprdfilepath + slash +"temp" + wavno + ".wav";
             if (File.Exists(outpath))
             {
                 try
@@ -219,7 +225,7 @@ namespace WSPR_Sked
 
             await Task.Delay(200);
             statuslabel.Text = "receiving";
-            Msg.TMessageBox("Recording: " + wsprdfilepath + "\\temp" + wavno + ".wav", "", 3000);
+            Msg.TMessageBox("Recording: " + wsprdfilepath + slash+ "temp" + wavno + ".wav", "", 3000);
 
             string args = "";
             int mS = 110000;
@@ -314,11 +320,16 @@ namespace WSPR_Sked
                 prevwav = 3;
                 wavno = 1;
             }
-            string content = wsprdfilepath + "\\temp" + prevwav + ".wav";
+            string content = wsprdfilepath + slash + "temp" + prevwav + ".wav";
 
-            args = "/c " + wsprdfilepath + "\\wsprd.exe -a " + wsprdfilepath + " -f " + Frequency + d + o + " " + content;
+            string c = "/c ";
+            if (opsys !=0)
+            {
+                c = "-c ";
+            }
+            args = c + wsprdfilepath + slash+ "wsprd.exe -a " + wsprdfilepath + " -f " + Frequency + d + o + " " + content;
 
-            string path = wsprdfilepath + "\\temp" + prevwav + ".wav";
+            string path = wsprdfilepath + slash + "temp" + prevwav + ".wav";
             var fileInfo = new FileInfo(path);
 
             if (fileInfo.Exists && fileInfo.Length == 0)
@@ -328,10 +339,10 @@ namespace WSPR_Sked
             output = "";
             if (!blockDecodes)    //block decodes whilst transmitting - from Wspr_transmit on form1
             {
-                Msg.TMessageBox("Decoding: " + wsprdfilepath + "\\temp" + prevwav + ".wav", "", 3000);
+                Msg.TMessageBox("Decoding: " + wsprdfilepath + slash + "temp" + prevwav + ".wav", "", 3000);
                 await Task.Run(() =>
                 {
-                    runDecoder(args);
+                    runDecoder(args,opsys);
 
                 });
 
@@ -384,7 +395,7 @@ namespace WSPR_Sked
 
 
 
-        public async Task Start_Receive()
+        public async Task Start_Receive(int opsys)
         {
             if (stopRXcheckBox.Checked)
             {
@@ -397,7 +408,7 @@ namespace WSPR_Sked
             {
                 OSD = 0;
             }
-            Record_Decode();
+            Record_Decode(opsys);
         }
 
         private async Task process_decoded(string data, double TXf, DateTime startT, bool containsData)
@@ -622,7 +633,7 @@ namespace WSPR_Sked
                                     }
                                     else
                                     {
-                                        //await Save_WSPR_Textfile(startT, filepath+ "\\RX_WSPR.TXT", append);
+                                       
                                         append = true;
                                         await Save_Received_DB(server, user, pass);
                                         if (!DX.tx_sign.Contains("nil rcvd") || DX.tx_sign != "")
@@ -765,14 +776,19 @@ namespace WSPR_Sked
             }
         }
 
-        public async Task runDecoder(string args)
+        public async Task runDecoder(string args, int opsys)
         {
             output = "";
+            string cmd = "cmd.exe";
+            if (opsys !=0)
+            {
+                cmd = "/bin/bash";
+            }
             try
             {
                 ProcessStartInfo processInfo = new ProcessStartInfo()
                 {
-                    FileName = "cmd.exe", // Command to run
+                    FileName = cmd, // Command to run
                                           //Arguments = args, // Arguments for the command
                     Arguments = args,
                     RedirectStandardOutput = true, // Redirect output if needed

@@ -18,7 +18,7 @@ using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 using System.Windows.Forms;
 using System.Media;
 using System.Security.Cryptography.X509Certificates;
-using NAudio.Wave;
+
 
 namespace FSK
 {
@@ -208,50 +208,10 @@ namespace FSK
         }
 
 
-            /*
-        private void PlayWSPR(double[] signal)
-        {
-            using (MemoryStream memoryStream = new MemoryStream())
-            using (BinaryWriter writer = new BinaryWriter(memoryStream))
-            {
-                // WAV header
-                writer.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
-                writer.Write(36 + signal.Length * 2); // File size
-                writer.Write(System.Text.Encoding.ASCII.GetBytes("WAVE"));
-                writer.Write(System.Text.Encoding.ASCII.GetBytes("fmt "));
-                writer.Write(16); // Subchunk1 size
-                writer.Write((short)1); // Audio format (PCM)
-                writer.Write((short)1); // Number of channels
-                writer.Write(SampleRate); // Sample rate
-                writer.Write(SampleRate * 2); // Byte rate
-                writer.Write((short)2); // Block align
-                writer.Write((short)16); // Bits per sample
-                writer.Write(System.Text.Encoding.ASCII.GetBytes("data"));
-                writer.Write(signal.Length * 2); // Data chunk size
-
-                // Write signal data
-                foreach (double sample in signal)
-                {
-                    short intSample = (short)(sample * 32767); // Convert to 16-bit integer
-                    writer.Write(intSample);
-                }
-                Play the sine wave
-                memoryStream.Seek(0, SeekOrigin.Begin); // Reset stream position
-                using (SoundPlayer player = new SoundPlayer(memoryStream))
-                {                  
-                    player.Play();
-
-                }
-               
-
-                }
+         
 
 
-            }*/
-
-
-
-            //-------------Alternative method to play WSPR audio----------------:
+            //-------------Alternative method to play WSPR audio-----not used-----------:
 
             static void SaveToWav(string filePath, double[] signal)
         {
