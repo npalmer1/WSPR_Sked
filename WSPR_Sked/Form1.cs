@@ -420,7 +420,7 @@ namespace WSPR_Sked
             liveForm.Show();
             liveForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass);
             startCount = 0;
-            rxForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath, ver);
+            rxForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath, ver,OpSystem);
             if (!noRigctld) { getRigF(); }
 
             //rxForm.set_frequency(defaultF.ToString("F6"));
@@ -428,27 +428,6 @@ namespace WSPR_Sked
             startCount = startCountMax - 60;
 
             random = randno.Next(0, 7); //random number to spread uploads to wsprnet
-
-
-            /*
-            if (!stopSolar)
-            {
-                solarForm.Show();
-                
-                if (!stopUrl)
-                {
-                    solarForm.setConfig(serverName, db_user, db_pass);
-                    //await solarForm.updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
-                    //await solarForm.updateSolar(serverName, db_user, db_pass);
-                    //await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, true); //update yesterday
-                    //await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //update today
-                    //await solarForm.getLatestSolar(serverName, db_user, db_pass);
-                }
-                else
-                {
-                    Msg.TMessageBox("Note: Internet connection is stopped", "Solar data", 1000);
-                }
-            }*/
 
 
         }
@@ -479,7 +458,7 @@ namespace WSPR_Sked
         private bool findSlot(int slot, string date, string time)
         {
             DataTable Slots = new DataTable();
-            //DateTime d = new DateTime();
+        
             bool slotFound = false;
             bool read = false;
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
@@ -820,7 +799,7 @@ namespace WSPR_Sked
             dataGridView1.Columns[11].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[14].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[15].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            //dataGridView1.AllowUserToAddRows = false;
+         
 
         }
 
@@ -1594,7 +1573,7 @@ namespace WSPR_Sked
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
-            // findSlot(); //find slot in database
+           
         }
 
         private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -2004,7 +1983,7 @@ namespace WSPR_Sked
                         cs = callsign;
                     }
                     content = dt.ToString("yyyy-MM-dd HH:mm") + " UTC, " + cs + ", " + F.ToString() + " MHz, " + location + ", " + Slot.PowerdB + " dBm, Antenna: " + TXRXAntlabel.Text;
-                    var TXlog = new Log(filepath, filename, content);
+                    var TXlog = new Log(filepath, filename, content,OpSystem);
 
                 }
                 catch (Exception e)
@@ -2060,84 +2039,7 @@ namespace WSPR_Sked
 
 
 
-        /*
-        Two-Message Format
-
-       Messages with a compound callsign and/or 6 digit locator use a two-transmission sequence.
-       The first transmission carries callsign + callsign + power or callsign + locator + power
-
-       The second transmission carries Hashed callsign + locator + power
-       */
-        /*private int[] WSPR_Encode_V1() //encode the message into a byte array of wspr Levels (0,1,2 or 3) of 161 bytes length
-        {
-            string call = callsign;
-            string loc = location;
-
-            if (CalltextBox.Text == "" || LocatortextBox.Text == "")
-            {
-                Msg.OKMessageBox("Invalid callsign or locator", "");
-                return null;
-            }
-
-            if (location.Length > 4)
-            {
-                location = location.Substring(0, 4);
-            }
-            if (msgType == 2)
-            {
-                if (slotNo == 1)
-                {
-                    string C = CalltextBox.Text;
-                    call = C.Substring(0, 6); //first part of c/s
-                    loc = C.Substring(6, C.Length - 6);  //second part of c/s
-                }
-                else if (slotNo == 2)
-                {
-                    call = Type2Hash(call + loc).ToString(); //hashed call
-                    loc = location;  //6 digit locator
-                }
-            }
-            else //type 1
-            {
-                //type 1 where cal = callsign and loc = location
-            }
-            bool sanitize = false;
-            var wspr = new WsprSharp.WsprTransmission(call, loc, powerdB, 1, null);
-
-            try
-            {
-                if (wspr.IsValid == true)
-                {
-                    wsprLevels = wspr.Levels;
-                    int[] intlevels = new int[wsprLevels.Length];
-                    for (int i = 0; i < wsprLevels.Length; i++)
-                    {
-                        if (flatcode) //use single unmod tone
-                        {
-                            intlevels[i] = 0;
-                        }
-                        else
-                        {
-                            intlevels[i] = (Convert.ToInt32(wsprLevels[i]));
-                        }
-                    }
-                    flatcode = false;
-
-                    return intlevels;
-                }
-                else
-                {
-                    Msg.OKMessageBox("Error: " + wspr.ErrorMessage, "");
-                    return null;
-                }
-            }
-            catch
-            {
-                Msg.OKMessageBox("Error encoding WSPR data", "");
-                return null;
-            }
-        }*/
-
+      
         private void showMsgType(int type)
         {
             string S = "Message type ";
@@ -2182,7 +2084,7 @@ namespace WSPR_Sked
 
                 var wspr = new WsprTransmission();
                 wspr.wsprmsgPath = wsprmsgtextBox.Text;
-                wsprLevels = wspr.WsprTxn(callsign, loc, Slot.PowerdB, slotNo, msgType, asOnecheckBox.Checked);
+                wsprLevels = wspr.WsprTxn(callsign, loc, Slot.PowerdB, slotNo, msgType, asOnecheckBox.Checked, OpSystem);
 
                 if (wspr.IsValid)
                 {
@@ -2225,7 +2127,7 @@ namespace WSPR_Sked
                 {
                     var wspr = new WsprTransmission();
                     wspr.wsprmsgPath = wsprmsgtextBox.Text;
-                    wsprLevels = wspr.WsprTxn(call, loc, Slot.PowerdB, slotNo, msgType, asOnecheckBox.Checked);
+                    wsprLevels = wspr.WsprTxn(call, loc, Slot.PowerdB, slotNo, msgType, asOnecheckBox.Checked, OpSystem);
 
                     if (wspr.IsValid)
                     {
@@ -2254,12 +2156,12 @@ namespace WSPR_Sked
                 ok = false;
             }
 
-            //List<int> intlevels = new List<int>();
+         
             try
             {
                 if (ok)
                 {
-                    //wsprLevels = wspr.Levels;
+                  
                     int[] intlevels = new int[wsprLevels.Length];
                     for (int i = 0; i < wsprLevels.Length; i++)
                     {
@@ -2616,9 +2518,8 @@ namespace WSPR_Sked
             string filepath = homeDirectory;
             string content = "db_user: " + user + " db_pass: " + encryptedpassword;
             if (Path.Exists(filepath))
-            {
-                string slash = "\\";
-                if (filepath.EndsWith("\\"))
+            {               
+                if (filepath.EndsWith(slash))
                 {
                     slash = "";
                 }
@@ -2653,8 +2554,8 @@ namespace WSPR_Sked
 
             if (Path.Exists(filepath))
             {
-                string slash = "\\";
-                if (filepath.EndsWith("\\"))
+               
+                if (filepath.EndsWith(slash))
                 {
                     slash = "";
                 }
@@ -2803,12 +2704,7 @@ namespace WSPR_Sked
             }
             else if (msgT == 2 || msgT == 3)  //type 2 or 3 message
             {
-
-                //Msg.TMessageBox("Type 2/3 messages experimental only", "", 1500); //work in progress on type 2
-                //msgType = 1;
-
-
-                //Msg.OKMessageBox("Type 2 message format", "WSPR message format");
+              
                 string baseC = findBaseCall(C);
 
                 if (baseC.Trim() == "")
@@ -2899,7 +2795,7 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@DefaultF", defaultF);
                     command.Parameters.AddWithValue("@Power", defaultdB);
                     command.Parameters.AddWithValue("@PowerW", defaultW);
-                    //command.Parameters.AddWithValue("@FList", FList);
+                  
                     command.Parameters.AddWithValue("@Locator", full_location);
                     bool L = longcheckBox.Checked;
                     command.Parameters.AddWithValue("@Locator", L);
@@ -2968,7 +2864,7 @@ namespace WSPR_Sked
                 c = c + "Power = " + defaultdB + ", PowerW = " + defaultW + ", Locator = '" + full_location + "', LocatorLong = " + L + ", DefaultAnt = '" + defaultAnt + "'";
                 c = c + ", Alpha = " + defaultAlpha + ", DefaultAudio = " + defA + ", HamlibPath = '" + HL + "', MsgType = " + msgT;
                 c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopSolar + " WHERE settings.ConfigID = " + configID;
-                //UPDATE `slots` SET `Antenna` = 'GP' WHERE `slots`.`Date` = '2025-02-28' AND `slots`.`Time` = '16:02:00'; 
+               
                 command.CommandText = c;
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -3052,7 +2948,10 @@ namespace WSPR_Sked
                     string wsprmsgP = (string)Reader["WsprmsgPath"];
                     stopSolar = (bool)Reader["stopsolar"];
                     solarcheckBox.Checked = !stopSolar;
-                    wsprmsgP = wsprmsgP.Replace('/', '\\');
+                    if (OpSystem == 0)
+                    {
+                        wsprmsgP = wsprmsgP.Replace('/', '\\');
+                    }                   
                     wsprmsgtextBox.Text = wsprmsgP;
                     if (zone == "LT")
                     {
@@ -3070,8 +2969,15 @@ namespace WSPR_Sked
                     msgTypelabel2.Text = msgTypelabel.Text;
 
 
-
-                    HamlibPath = HL.Replace('/', '\\');
+                    if (OpSystem == 0) //windows
+                    {
+                        HamlibPath = HL.Replace('/', '\\');
+                    }
+                    else //linux
+                    {
+                        HamlibPath = HL;
+                    }
+                  
                     RigCtlPathtextBox.Text = HamlibPath;
 
                     CalltextBox.Text = callsign;
@@ -3209,7 +3115,7 @@ namespace WSPR_Sked
                 c = "UPDATE antennas SET Antenna = '" + ant + "', Description = '" + desc + "', Switch = " + sw + ", ";
                 c = c + "Tuner = " + tu + ", SwitchPort = " + swP;
                 c = c + " WHERE antennas.AntNo = " + antNo;
-                //UPDATE `slots` SET `Antenna` = 'GP' WHERE `slots`.`Date` = '2025-02-28' AND `slots`.`Time` = '16:02:00'; 
+               
                 command.CommandText = c;
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -3547,7 +3453,7 @@ namespace WSPR_Sked
                 }
             }
 
-            if (s > 9 && s < 46 && !solarStarted)
+            if (s > 9 && s < 46 && !solarStarted && !stopSolar)
             {
 
                 solarStarted = true;
@@ -3585,7 +3491,7 @@ namespace WSPR_Sked
                     }
                     else
                     {
-                        await rxForm.Start_Receive();   //start recording from RX
+                        await rxForm.Start_Receive(OpSystem);   //start recording from RX
                     }
                 }
 
@@ -3616,11 +3522,7 @@ namespace WSPR_Sked
                 }
 
             }
-
-            if (m % 5 == 0 && s == 40) //every five minutes //change to m % 5 later
-            {
-                //liveForm.get_results(CalltextBox.Text.Trim(), TXFrequency,serverName,db_user,db_pass);
-            }
+           
 
             if (m % 2 == 0 && (s > 2 && s < 5))
             {
@@ -3628,18 +3530,16 @@ namespace WSPR_Sked
             }
 
             if ((m % 2 == 1 && (s == 52 || s == 53 || s == 54) && !Flag) || justLoaded) //if odd minute and 53/4 second past minute
-            //if ((m % 2 == 1 && s == 52) || justLoaded) //if odd minute and 53/4 second past minute
             {
                 nextT = now.AddMinutes(1);
                 string nexttime = nextT.ToString("HH:mm:00");
-                //if (!Flag) //allow two attempts to find slot
-                //{
+               
                 Flag = true;
                 DateTime d = now.Date;
 
                 string date = d.ToString("yyyy-MM-dd");
 
-                //showmsg = false;
+              
                 showmsg = true;
                 databaseError = false;
                 slotFound = false;
@@ -3671,107 +3571,13 @@ namespace WSPR_Sked
                         WSPRtimer.Enabled = true;
                         WSPRtimer.Start(); //start the time to starty the TX 
                         prepDone = false;
-                        //Flag = false;
+                        
                     }
                 }
                 justLoaded = false;
-                //}
+                
             }
-            /*if (!stopSolar)
-            {
-                if (m == 39 && s == 27 + random)
-                {
-                    await solarForm.getLatestSolar(serverName, db_user, db_pass); //update 
-
-
-                }
-                if (m % 30 == 0 && !stopUrl) //every 15 mins
-                {
-                    solarForm.checkNOAA();
-                }
-
-                if (h == 0 && m == 46 && s == 25 + random)
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
-
-
-                }
-                if (h == 2 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, true); //get results for 2100-2400 yesterday
-
-                }
-                if (h == 3 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-
-                }
-                if (h == 4 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                }
-
-                if (h == 4 && m == 21 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-                    await solarForm.updateSolar(serverName, db_user, db_pass);
-                }
-
-                if (h == 6 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-                    await solarForm.updateSolar(serverName, db_user, db_pass);
-                }
-                if (h == 7 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                    await solarForm.updateSolar(serverName, db_user, db_pass);
-                }
-
-                if (h == 9 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-
-                }
-                if (h == 10 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                }
-                if (h == 12 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-
-                }
-                if (h == 13 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                }
-                if (h == 15 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-
-                }
-                if (h == 16 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                }
-                if (h == 18 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-                }
-                if (h == 19 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                }
-                if (h == 21 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-                }
-                if (h == 22 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                }
-            }*/
+           
 
         }
 
@@ -4035,7 +3841,7 @@ namespace WSPR_Sked
         {
             //rigctld -m <rig> -r <ip address> -t <port> - 1046=FT450, 127.0.0.1, 4532
            
-            string rigctldfile = userdir + "\\rigctld_launch.bat";
+            string rigctldfile = userdir + slash+"rigctld_launch.bat";
             string process1 = "rigctld";
             string process2 = "rigctld.exe";
             bool running = false;
@@ -4393,6 +4199,15 @@ namespace WSPR_Sked
             //riglistBox.Items.Clear();
             RigcomboBox.Items.Clear();
             string command = "cmd.exe";
+            if (OpSystem !=0)
+            {
+               command = "/bin/bash";
+            }
+            string c = "/c ";
+            if (OpSystem !=0)
+            {
+               c = "-c ";
+            }
 
 
             try
@@ -4400,7 +4215,7 @@ namespace WSPR_Sked
                 // Start the process
                 Process process = new Process();
                 process.StartInfo.FileName = command; //"rigctl";
-                process.StartInfo.Arguments = "/C rigctl -l"; // " -l"; ///C " + command;
+                process.StartInfo.Arguments = c+"rigctl -l"; // " -l"; ///C " + command;
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
@@ -4462,7 +4277,7 @@ namespace WSPR_Sked
                     RigctlIPv4 = IPtextBox.Text;
                     Radio = RigcomboBox.SelectedItem.ToString();
                   
-                    string rigctldfile = userdir + "\\rigctld_launch.bat";
+                    string rigctldfile = userdir + slash+"rigctld_launch.bat";
                     createRigFile(rigctldfile);
                    
                     await Task.Run(() =>    //update rigctld file and run it
@@ -4837,7 +4652,7 @@ namespace WSPR_Sked
                     }
                     else
                     {
-                        await rxForm.Start_Receive();   //start recording from RX
+                        await rxForm.Start_Receive(OpSystem);   //start recording from RX
                     }
                 }
             }
@@ -4859,91 +4674,7 @@ namespace WSPR_Sked
             {
                 Flag = false;
             }
-
-
-            /*if (!stopSolar)
-            {
-                if (h == 0 && m == 46 && s == 25 + random)
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
-
-
-                }
-                if (h == 2 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, true); //get results for 2100-2400 yesterday
-
-                }
-                if (h == 3 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-
-                }
-                if (h == 4 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                }
-
-                if (h == 4 && m == 21 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-                    await solarForm.updateSolar(serverName, db_user, db_pass);
-                }
-
-                if (h == 6 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-                    await solarForm.updateSolar(serverName, db_user, db_pass);
-                }
-                if (h == 7 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                }
-
-                if (h == 9 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-
-                }
-                if (h == 10 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                }
-                if (h == 12 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-
-                }
-                if (h == 13 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                }
-                if (h == 15 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-
-                }
-                if (h == 16 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                }
-                if (h == 18 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-                }
-                if (h == 19 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                }
-                if (h == 21 && m == 46 && s == (22 + random))
-                {
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //false - don't update yesterday as well
-                }
-                if (h == 22 && m == 10 && s == (20 + random))
-                {
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //get results for 00-03 today
-                }
-            }*/
+         
         }
 
         private void FreqlistBox_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -6451,8 +6182,8 @@ namespace WSPR_Sked
             }
             else
             {
-                HamlibPath = @"" + Rpath + "\\bin";
-                RigCtlPathtextBox.Text = Rpath + "\\bin";
+                HamlibPath = @"" + Rpath + slash+"bin";
+                RigCtlPathtextBox.Text = Rpath + slash+"bin";
             }
 
         }
@@ -6464,7 +6195,7 @@ namespace WSPR_Sked
             {
                 if (P != "" && Directory.Exists(P))
                 {
-                    if (File.Exists(P + "\\rigctl.exe"))
+                    if (File.Exists(P + slash+"rigctl.exe"))
                     {
 
                         // Get the current PATH environment variable
@@ -7573,8 +7304,15 @@ namespace WSPR_Sked
                     inLevel = (int)Reader["inlevel"];
 
                     string wpath = (string)Reader["wsprdpath"];
-                    wsprdfilepath = wpath.Replace('/', '\\');
-                    wsprdtextBox.Text = wsprdfilepath;
+                    if (OpSystem == 0)
+                    {
+                        wsprdfilepath = wpath.Replace('/', '\\');
+                    }
+                    else
+                    {
+                        wsprdfilepath = wpath;
+                    }
+                        wsprdtextBox.Text = wsprdfilepath;
 
                 }
                 Reader.Close();
@@ -7636,7 +7374,7 @@ namespace WSPR_Sked
             wsprdBrowserDialog.ShowDialog();
             wsprdfilepath = wsprdBrowserDialog.SelectedPath;
             wsprdtextBox.Text = wsprdfilepath;
-            string filename = wsprdfilepath + "\\wsprd.exe";
+            string filename = wsprdfilepath + slash+"wsprd.exe";
             if (!File.Exists(filename))
             {
                 Msg.TMessageBox("Path does not contain wsprd.exe", "", 3000);
@@ -7667,7 +7405,7 @@ namespace WSPR_Sked
 
             var wspr = new WsprTransmission();
             wspr.wsprmsgPath = wsprmsgtextBox.Text;
-            levels = wspr.WsprTxn(cs, location, defaultdB, slot, msgT, asOnecheckBox.Checked);
+            levels = wspr.WsprTxn(cs, location, defaultdB, slot, msgT, asOnecheckBox.Checked,OpSystem);
             leveltextBox.Text = wspr.LevelsString;
         }
 
@@ -7816,10 +7554,8 @@ namespace WSPR_Sked
 
             if (solarcheckBox.Checked)
             {
-                if (!solarStarted)
-                {
-                    return;
-                }
+                solarStarted = false;
+                stopSolar = false;
                 solarForm.Show();
                 if (stopSolar)
                 {
@@ -7836,7 +7572,7 @@ namespace WSPR_Sked
 
 
                 }
-                stopSolar = false;
+                
             }
             else
             {
@@ -7861,35 +7597,6 @@ namespace WSPR_Sked
                     
         }
 
-
-
-
-        /*
-        private async void stopsolarcheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (stopsolarcheckBox.Checked)
-            {
-                stopSolar = true;
-                solarForm.Hide();
-
-            }
-            else
-            {
-               
-                solarForm.Show();
-                if (stopSolar)
-                {
-                    solarForm.setConfig(serverName, db_user, db_pass);
-                    await solarForm.getLatestSolar(serverName, db_user, db_pass);
-                    await solarForm.updateGeo(serverName, db_user, db_pass, true); //true - update yesterday as well
-                    await solarForm.updateSolar(serverName, db_user, db_pass);
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, true); //update yesterday
-                    await solarForm.updateAllProtonandFlare(serverName, db_user, db_pass, false); //update today
-                }
-                stopSolar = false;
-
-            }
-        }*/
     }
 
 

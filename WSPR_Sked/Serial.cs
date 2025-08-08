@@ -56,9 +56,7 @@ namespace SerialComms
             }
             catch (Exception ex)
             {
-                ErrorMessage = ex.Message;
-               // ErrorMessageDetails = ex.ToString();
-                //Message = Array.Empty<byte>();
+                ErrorMessage = ex.Message;             
                 return;
 
             }

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -149,8 +150,7 @@ namespace WSPR_Sked
 
         private void Solar_Load(object sender, EventArgs e)
         {
-            //solarstartuptimer.Enabled = true;
-            //solarstartuptimer.Start();
+          
             solartimer.Enabled = true;
             solartimer.Start();
 
@@ -210,8 +210,7 @@ namespace WSPR_Sked
         }
         public async Task updateSolar(string server, string user, string pass)
         {
-            //DateTime dt = DateTime.Now.ToUniversalTime();           
-            //string date = dt.ToString("yyyy-MM-dd");
+          
             await fetchSolardata();
             DateTime date = DateTime.Now.ToUniversalTime();
             await findSolar();
@@ -222,8 +221,7 @@ namespace WSPR_Sked
 
         public async Task updateBursts(string server, string user, string pass)
         {
-            //DateTime dt = DateTime.Now.ToUniversalTime();           
-            //string date = dt.ToString("yyyy-MM-dd");
+          
             await fetchBurstdata();
             DateTime date = DateTime.Now.ToUniversalTime();
             await findBurst();
@@ -448,10 +446,19 @@ namespace WSPR_Sked
             {
                 return;
             }
-            cells1[0] = solar.Ap;
-            double A = Convert.ToDouble(solar.Ap);
-            string L = find_activity_level(A);
-            cells1[1] = L;
+            if (row == 0 || (row == 1 && solar.Ap != "-1")) //planetary)
+            {
+                cells1[0] = solar.Ap;
+                double A = Convert.ToDouble(solar.Ap);
+                string L = find_activity_level(A);
+                cells1[1] = L;
+            }
+            else //if Boulder
+            {
+                cells1[0] = "n/a";
+                cells1[1] = "n/a";
+            }
+
 
             cells1[2] = solar.K00 + findKplevel(solar.K00);
             cells1[3] = solar.K03 + findKplevel(solar.K03);
@@ -462,14 +469,23 @@ namespace WSPR_Sked
             cells1[7] = solar.K15 + findKplevel(solar.K15);
             cells1[8] = solar.K18 + findKplevel(solar.K18);
             cells1[9] = solar.K21 + findKplevel(solar.K21);
-            cells1[10] = solar.flux;
-            cells1[11] = solar.SSN;
-            cells1[12] = solar.Xray;
-
-            for (int i = 0; i < dataGridView1.Columns.Count; i++)
+            if (row == 0) //planetary
             {
-                dataGridView1.Rows[row].Cells[i].Value = cells1[i];
+                cells1[10] = solar.flux;
+                cells1[11] = solar.SSN;
+                cells1[12] = solar.Xray;
             }
+            else //boulder
+            {
+                cells1[10] = "-";
+                cells1[11] = "-";
+                cells1[12] = "-";
+            }
+
+                for (int i = 0; i < dataGridView1.Columns.Count; i++)
+                {
+                    dataGridView1.Rows[row].Cells[i].Value = cells1[i];
+                }
 
         }
 
@@ -538,14 +554,7 @@ namespace WSPR_Sked
                 s = "Unknown";
             }
             return s;
-        }
-
-        /* private async Task saveGeoData(DateTime date)
-         {
-
-             SaveGeoDB(date);
-
-         }*/
+        }       
 
 
         public async Task fetchGeodata()
@@ -1000,7 +1009,7 @@ namespace WSPR_Sked
                         if (C != "")
                         { and = " AND "; }
                     }
-                    //command.CommandText = "SELECT * FROM received WHERE datetime >= '" + datetime1 + "' AND datetime <= '" + datetime2 + "' AND " + bandstr + callstr + fromstr + tostr + " ORDER BY datetime DESC LIMIT " + maxrows;
+                   
                     command.CommandText = "SELECT * FROM weather WHERE " + D + and + C + order;
                 }
                 MySqlDataReader Reader;
@@ -1150,7 +1159,7 @@ namespace WSPR_Sked
 
             }
             catch
-            {         //if row already exists then try updating it in database
+            {         
 
             }
 
@@ -1177,9 +1186,7 @@ namespace WSPR_Sked
                 command.CommandText += ", Kp03 = '" + solar.K03 + "', Kp06 = '" + solar.K06 + "', Kp09 = '" + solar.K09 + "'";
                 command.CommandText += ", Kp12 = '" + solar.K12 + "', Kp15 = '" + solar.K15 + "', Kp18 = '" + solar.K18 + "'";
                 command.CommandText += ", Kp21 = '" + solar.K21 + "'";
-                /*command.CommandText = "INSERT IGNORE INTO weather(datetime,Ap,Kp00,Kp03,Kp06,Kp09,Kp12,Kp15,Kp18,Kp21)";
-
-                command.CommandText += " VALUES(@datetime,@Ap,@Kp00,@Kp03,@Kp06,@Kp09,@Kp12,@Kp15,@Kp18,@Kp21)";*/
+             
                 connection.Open();
 
 
@@ -1239,7 +1246,7 @@ namespace WSPR_Sked
 
             }
             catch
-            {         //if row already exists then try updating it in database
+            {       
 
             }
 
@@ -1304,6 +1311,8 @@ namespace WSPR_Sked
                 MySqlDataReader Reader;
                 Reader = command.ExecuteReader();
 
+                DateTime Today = DateTime.Now.ToUniversalTime();
+                string today = Today.ToString("yyyy-MM-dd");
                 while (Reader.Read())
                 {
                     found = true;
@@ -1334,9 +1343,18 @@ namespace WSPR_Sked
                     cells1[7] = zeros(solar.K15) + findKplevel(solar.K15);
                     cells1[8] = zeros(solar.K18) + findKplevel(solar.K18);
                     cells1[9] = zeros(solar.K21) + findKplevel(solar.K21);
-                    cells1[10] = zeros(solar.flux);
-                    cells1[11] = solar.SSN;
-                    cells1[12] = solar.Xray;
+                    if (date == today)
+                    {
+                        cells1[10] = "-";
+                        cells1[11] = "-";
+                        cells1[12] = "-";
+                    }
+                    else
+                    {
+                        cells1[10] = zeros(solar.flux);
+                        cells1[11] = solar.SSN;
+                        cells1[12] = solar.Xray;
+                    }  
 
                     update_grid2(); //add this row to the datagridview
 
@@ -1453,9 +1471,7 @@ namespace WSPR_Sked
         {
             dataGridView2.Rows.Clear();
             dataGridView2.Sort(dataGridView2.Columns[0], ListSortDirection.Descending);  //order by date
-                                                                                         //DateTime dt = DateTime.Now.ToUniversalTime();
-                                                                                         //dt = dt.AddHours(-2);
-                                                                                         // string date = dt.ToString("yyyy-MM-dd HH:mm:00");
+                                                                                       
             int rows = table_count();
             if (rows > 0)
             {
@@ -2431,26 +2447,7 @@ namespace WSPR_Sked
                         current_int_xrlong = item["current_int_xrlong"]?.ToString();
                         double intXR = Convert.ToDouble(current_int_xrlong);
                         intXR = Math.Round(intXR, 4);
-
-
-                        /*double beginFlux = ClassToFlux(begin_class);   //convert class to xray flux
-                        double endFlux = ClassToFlux(end_class);
-                        double avgFlux = (beginFlux + endFlux) / 2;
-                        string avgClass = FluxToClass(avgFlux);
-
-                        string[] m = max_time.Split('T');
-                        max_time = m[0] + " " + m[1];
-
-                        string[] b = begin_time.Split('T');
-                        begin_time = b[0] + " " + b[1];
-                        string[] e = end_time.Split('T');
-                        end_time = e[0] + " " + e[1];
-                        DateTime bt = Convert.ToDateTime(begin_time);
-                        DateTime et = Convert.ToDateTime(end_time);
-                        TimeSpan duration = et - bt;
-                        int durMin = duration.Minutes;*/
-
-
+                    
                         DateTime maxt = Convert.ToDateTime(max_time).ToUniversalTime();
                         maxHM = maxt.Hour.ToString().PadLeft(2, '0') + ":" + maxt.Minute.ToString().PadLeft(2, '0');
 
@@ -2725,8 +2722,7 @@ namespace WSPR_Sked
                 OpenBrowser(url);
                 hamqslopened = true;
             }
-            // Open the URL in the default browser
-            //System.Diagnostics.Process.Start(new ProcessStartInfo(e.Url.ToString()) { UseShellExecute = true });
+          
         }
 
         private async void solartimer_Tick(object sender, EventArgs e)

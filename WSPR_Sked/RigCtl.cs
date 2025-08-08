@@ -46,10 +46,10 @@ namespace RigControl
             startInfo.RedirectStandardOutput = true;            // This is required to get STDOUT
             startInfo.RedirectStandardError = true;               // This is required to get STDERR
             // Create a new Process object.
-            //Process myProcess = Process.Start("NotePad.exe"
+          
             Process process = Process.Start(startInfo);        // Set the StartInfo.FileName property to the path of the CMD executable.
                        // Do not use the OS shell to start the process
-            //process.StartInfo = startInfo;
+           
             process.Start();        // Wait for the process to finish.
            process.WaitForExit();        // Read the output of the process.
            

@@ -1,6 +1,0 @@
-_Sked\ emp2   1 -22  0.2  14.097017  2E0CIT JO01 37          0     4    0
-_Sked\ emp2   3 -20  0.3  14.097062  SA7RST JO78 23          0     1    0
-_Sked\ emp2   1 -13  0.5  14.097104  UA1ZFG KO46 30         -2  1325   24
-_Sked\ emp2   4 -12  0.2  14.097137  OH3FR KP20 33           0     1    0
-_Sked\ emp2   2 -22  0.0  14.097149  WA3ITR FN42 33          0     3    0
-_Sked\ emp2   7   3  3.4  14.097184  OH3FZQ KP11 33          0     1    0
