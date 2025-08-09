@@ -105,18 +105,6 @@
             dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             toplabel = new System.Windows.Forms.Label();
             dataGridView2 = new System.Windows.Forms.DataGridView();
-            label18 = new System.Windows.Forms.Label();
-            label16 = new System.Windows.Forms.Label();
-            Switchbutton = new System.Windows.Forms.Button();
-            label19 = new System.Windows.Forms.Label();
-            label20 = new System.Windows.Forms.Label();
-            label5 = new System.Windows.Forms.Label();
-            label8 = new System.Windows.Forms.Label();
-            infobutton = new System.Windows.Forms.Button();
-            label22 = new System.Windows.Forms.Label();
-            sqlCommandBuilder1 = new Microsoft.Data.SqlClient.SqlCommandBuilder();
-            solartimer = new System.Windows.Forms.Timer(components);
-            solarstartuptimer = new System.Windows.Forms.Timer(components);
             dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -130,6 +118,18 @@
             dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            label18 = new System.Windows.Forms.Label();
+            label16 = new System.Windows.Forms.Label();
+            Switchbutton = new System.Windows.Forms.Button();
+            label19 = new System.Windows.Forms.Label();
+            label20 = new System.Windows.Forms.Label();
+            label5 = new System.Windows.Forms.Label();
+            label8 = new System.Windows.Forms.Label();
+            infobutton = new System.Windows.Forms.Button();
+            label22 = new System.Windows.Forms.Label();
+            sqlCommandBuilder1 = new Microsoft.Data.SqlClient.SqlCommandBuilder();
+            solartimer = new System.Windows.Forms.Timer(components);
+            solarstartuptimer = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -146,7 +146,7 @@
             getLatestbutton.Name = "getLatestbutton";
             getLatestbutton.Size = new System.Drawing.Size(75, 23);
             getLatestbutton.TabIndex = 0;
-            getLatestbutton.Text = "Get Latest";
+            getLatestbutton.Text = "Get Update";
             getLatestbutton.UseVisualStyleBackColor = true;
             getLatestbutton.Click += getLatestbutton_Click;
             // 
@@ -519,9 +519,9 @@
             Eventsbutton.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
             Eventsbutton.Location = new System.Drawing.Point(1045, 463);
             Eventsbutton.Name = "Eventsbutton";
-            Eventsbutton.Size = new System.Drawing.Size(69, 23);
+            Eventsbutton.Size = new System.Drawing.Size(109, 23);
             Eventsbutton.TabIndex = 53;
-            Eventsbutton.Text = "Summary";
+            Eventsbutton.Text = "Current Summary";
             Eventsbutton.UseVisualStyleBackColor = true;
             Eventsbutton.Visible = false;
             Eventsbutton.Click += Eventsbutton_Click;
@@ -878,6 +878,97 @@
             dataGridView2.Size = new System.Drawing.Size(1008, 380);
             dataGridView2.TabIndex = 14;
             // 
+            // dataGridViewTextBoxColumn1
+            // 
+            dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewTextBoxColumn1.HeaderText = "Date";
+            dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            dataGridViewTextBoxColumn1.Width = 90;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewTextBoxColumn2.HeaderText = "Ap";
+            dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            dataGridViewTextBoxColumn2.Width = 70;
+            // 
+            // dataGridViewTextBoxColumn3
+            // 
+            dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewTextBoxColumn3.HeaderText = "00-03";
+            dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            dataGridViewTextBoxColumn3.Width = 75;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewTextBoxColumn4.HeaderText = "03-06";
+            dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            dataGridViewTextBoxColumn4.Width = 75;
+            // 
+            // dataGridViewTextBoxColumn5
+            // 
+            dataGridViewTextBoxColumn5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewTextBoxColumn5.HeaderText = "06-09";
+            dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            dataGridViewTextBoxColumn5.Width = 75;
+            // 
+            // dataGridViewTextBoxColumn6
+            // 
+            dataGridViewTextBoxColumn6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewTextBoxColumn6.HeaderText = "09-12";
+            dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
+            dataGridViewTextBoxColumn6.Width = 75;
+            // 
+            // dataGridViewTextBoxColumn7
+            // 
+            dataGridViewTextBoxColumn7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewTextBoxColumn7.HeaderText = "12-15";
+            dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
+            dataGridViewTextBoxColumn7.Width = 75;
+            // 
+            // dataGridViewTextBoxColumn8
+            // 
+            dataGridViewTextBoxColumn8.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewTextBoxColumn8.HeaderText = "15-18";
+            dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
+            dataGridViewTextBoxColumn8.Width = 75;
+            // 
+            // dataGridViewTextBoxColumn9
+            // 
+            dataGridViewTextBoxColumn9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewTextBoxColumn9.HeaderText = "18-21";
+            dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
+            dataGridViewTextBoxColumn9.Width = 75;
+            // 
+            // dataGridViewTextBoxColumn10
+            // 
+            dataGridViewTextBoxColumn10.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewTextBoxColumn10.HeaderText = "21-00";
+            dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
+            dataGridViewTextBoxColumn10.Width = 75;
+            // 
+            // dataGridViewTextBoxColumn11
+            // 
+            dataGridViewTextBoxColumn11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewTextBoxColumn11.HeaderText = "SFI";
+            dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
+            dataGridViewTextBoxColumn11.Width = 60;
+            // 
+            // Column12
+            // 
+            Column12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column12.HeaderText = "SSN";
+            Column12.Name = "Column12";
+            Column12.Width = 60;
+            // 
+            // Column15
+            // 
+            Column15.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column15.HeaderText = "X-ray";
+            Column15.Name = "Column15";
+            Column15.Width = 60;
+            // 
             // label18
             // 
             label18.AutoSize = true;
@@ -976,97 +1067,6 @@
             // 
             solarstartuptimer.Interval = 5000;
             solarstartuptimer.Tick += solarstartuptimer_Tick;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewTextBoxColumn1.HeaderText = "Date";
-            dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            dataGridViewTextBoxColumn1.Width = 90;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewTextBoxColumn2.HeaderText = "Ap";
-            dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            dataGridViewTextBoxColumn2.Width = 70;
-            // 
-            // dataGridViewTextBoxColumn3
-            // 
-            dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewTextBoxColumn3.HeaderText = "00-03";
-            dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            dataGridViewTextBoxColumn3.Width = 75;
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewTextBoxColumn4.HeaderText = "03-06";
-            dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            dataGridViewTextBoxColumn4.Width = 75;
-            // 
-            // dataGridViewTextBoxColumn5
-            // 
-            dataGridViewTextBoxColumn5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewTextBoxColumn5.HeaderText = "06-09";
-            dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            dataGridViewTextBoxColumn5.Width = 75;
-            // 
-            // dataGridViewTextBoxColumn6
-            // 
-            dataGridViewTextBoxColumn6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewTextBoxColumn6.HeaderText = "09-12";
-            dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            dataGridViewTextBoxColumn6.Width = 75;
-            // 
-            // dataGridViewTextBoxColumn7
-            // 
-            dataGridViewTextBoxColumn7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewTextBoxColumn7.HeaderText = "12-15";
-            dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
-            dataGridViewTextBoxColumn7.Width = 75;
-            // 
-            // dataGridViewTextBoxColumn8
-            // 
-            dataGridViewTextBoxColumn8.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewTextBoxColumn8.HeaderText = "15-18";
-            dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
-            dataGridViewTextBoxColumn8.Width = 75;
-            // 
-            // dataGridViewTextBoxColumn9
-            // 
-            dataGridViewTextBoxColumn9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewTextBoxColumn9.HeaderText = "18-21";
-            dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
-            dataGridViewTextBoxColumn9.Width = 75;
-            // 
-            // dataGridViewTextBoxColumn10
-            // 
-            dataGridViewTextBoxColumn10.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewTextBoxColumn10.HeaderText = "21-00";
-            dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
-            dataGridViewTextBoxColumn10.Width = 75;
-            // 
-            // dataGridViewTextBoxColumn11
-            // 
-            dataGridViewTextBoxColumn11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewTextBoxColumn11.HeaderText = "SFI";
-            dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
-            dataGridViewTextBoxColumn11.Width = 60;
-            // 
-            // Column12
-            // 
-            Column12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column12.HeaderText = "SSN";
-            Column12.Name = "Column12";
-            Column12.Width = 60;
-            // 
-            // Column15
-            // 
-            Column15.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column15.HeaderText = "X-ray";
-            Column15.Name = "Column15";
-            Column15.Width = 60;
             // 
             // Solar
             // 
