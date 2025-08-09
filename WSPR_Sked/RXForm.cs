@@ -320,48 +320,57 @@ namespace WSPR_Sked
                 prevwav = 3;
                 wavno = 1;
             }
-            string content = wsprdfilepath + slash + "temp" + prevwav + ".wav";
+            string wavfile = wsprdfilepath + slash + "temp" + prevwav + ".wav";
 
-            string c = "/c ";
-            if (opsys !=0)
+            string c = "";
+            string cmd = "";
+
+            if (opsys == 0)  //windows
             {
+                c = "/c ";
+                cmd = "cmd.exe";
+                args = c + wsprdfilepath + slash + "wsprd.exe -a " + wsprdfilepath + " -f " + Frequency + d + o + " " + wavfile;
+            }
+            else
+            {
+                //Linux etc.
+                cmd = "/bin/bash";
                 c = "-c ";
-            }
-            args = c + wsprdfilepath + slash+ "wsprd.exe -a " + wsprdfilepath + " -f " + Frequency + d + o + " " + content;
+                args = c + wsprdfilepath + slash + "wsprd -a " + wsprdfilepath + " -f " + Frequency + d + o + " " + wavfile;
 
-            string path = wsprdfilepath + slash + "temp" + prevwav + ".wav";
-            var fileInfo = new FileInfo(path);
-
-            if (fileInfo.Exists && fileInfo.Length == 0)
-            {
-                return;
             }
-            output = "";
-            if (!blockDecodes)    //block decodes whilst transmitting - from Wspr_transmit on form1
-            {
-                Msg.TMessageBox("Decoding: " + wsprdfilepath + slash + "temp" + prevwav + ".wav", "", 3000);
-                await Task.Run(() =>
+                var fileInfo = new FileInfo(wavfile);
+
+                if (fileInfo.Exists && fileInfo.Length == 0)
                 {
-                    runDecoder(args,opsys);
+                    return;
+                }
+                output = "";
+                if (!blockDecodes)    //block decodes whilst transmitting - from Wspr_transmit on form1
+                {
+                    Msg.TMessageBox("Decoding: " + wsprdfilepath + slash + "temp" + prevwav + ".wav", "", 3000);
+                    await Task.Run(() =>
+                    {
+                        runDecoder(cmd, args);
 
-                });
+                    });
 
-                results = output;
+                    results = output;
 
-                statuslabel.Text = "saving";
-                await SaveReceived(originalDT);
-            }
+                    statuslabel.Text = "saving";
+                    await SaveReceived(originalDT);
+                }
 
 
-            //statuslabel.Text = "idle";
-            finished = true;
-            RXblock = false;
-            started = false;
-            if (dataGridView1.Rows.Count > 0)
-            {
-                dataGridView1.AllowUserToAddRows = false;
-            }
-
+                //statuslabel.Text = "idle";
+                finished = true;
+                RXblock = false;
+                started = false;
+                if (dataGridView1.Rows.Count > 0)
+                {
+                    dataGridView1.AllowUserToAddRows = false;
+                }
+            
         }
 
         public async Task SaveReceived(DateTime originalDT)
@@ -776,14 +785,10 @@ namespace WSPR_Sked
             }
         }
 
-        public async Task runDecoder(string args, int opsys)
+        public async Task runDecoder(string cmd, string args)
         {
             output = "";
-            string cmd = "cmd.exe";
-            if (opsys !=0)
-            {
-                cmd = "/bin/bash";
-            }
+           
             try
             {
                 ProcessStartInfo processInfo = new ProcessStartInfo()

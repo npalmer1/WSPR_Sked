@@ -3,6 +3,7 @@ using FSK;
 using Google.Protobuf.WellKnownTypes;
 using Logging;
 using M0LTE.WsjtxUdpLib.Messages;
+using Maidenhead;
 using MathNet.Numerics;
 using MathNet.Numerics.Providers.LinearAlgebra;
 using MessagePack.Formatters;
@@ -16,13 +17,16 @@ using MySqlX.XDevAPI.Relational;
 using NAudio.CoreAudioApi;
 using NAudio.Gui;
 using NAudio.Wave;
+using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.Cms;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Bcpg.Sig;
 using Org.BouncyCastle.Ocsp;
+using RigControlDaemon;
 using Security;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -60,9 +64,6 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using static WSPR_Sked.Form1;
-using Maidenhead;
-
-using Newtonsoft.Json.Linq;
 
 
 
@@ -3810,7 +3811,7 @@ namespace WSPR_Sked
 
                 if (found)
                 {
-                    Msg.OKMessageBox("RigCtlD started successfully", "");
+                    Msg.TMessageBox("RigCtlD started successfully", "",3000);
 
                 }
                 else
@@ -3827,11 +3828,16 @@ namespace WSPR_Sked
         }
 
         private void runRigCtlD()
-        {
-            //if (!checkRigctld())
-            //{
-            startRigCtlD();
-            //}
+        {           
+            if (OpSystem == 0) //windows
+            {
+                startRigCtlD();
+            }
+            else //linux
+            {
+                startRigCtlDLinux();
+            }
+          
         }
         private async void startRigCtlD()
         {
@@ -3850,7 +3856,7 @@ namespace WSPR_Sked
                     await Task.Run(() =>
                      {
                        
-                         runAsyncProcess(rigctldfile);
+                         runAsyncProcess(rigctldfile,"");
 
 
                      });
@@ -3885,6 +3891,53 @@ namespace WSPR_Sked
             }
             catch { }
         }
+
+        private async void startRigCtlDLinux()
+        {
+            //rigctld -m <rig> -r <ip address> -t <port> - 1046=FT450, 127.0.0.1, 4532
+
+            string rigctldfile = userdir + slash + "rigctld_launch.bat";
+            string process1 = "rigctld";
+            string process2 = "rigctld.exe";
+            bool running = false;
+            try
+            {
+                string radio = Radio.Trim(' ');
+                string[] str = radio.Split(' ');
+                radio = str[0].Trim(' ');
+                string rigctld = "rigctld";
+                string args = "-m " + radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort + " &";
+                await Task.Run(() =>
+                {
+
+                    runAsyncProcess(rigctld, args);
+
+
+                });
+                if (Process.GetProcessesByName(process1).Length > 0)
+                    {
+                        running = true;
+                    }
+                    if (Process.GetProcessesByName(process2).Length > 0)
+                    {
+                        running = true;
+                    }
+                if (running)
+                {
+                    rigrunlabel.Text = "rigctld running";
+
+                }
+                else
+                {
+                    rigrunlabel.Text = "rigctld not running";
+                    Msg.TMessageBox("Unable to start RigCtlD - check Hamlib path", "", 3000);
+                }
+                    Riglabel.Text = rigrunlabel.Text;
+                    Riglabel1.Text = rigrunlabel.Text;
+               
+            }
+            catch { }
+        }
         private bool createRigFile(string filepath)
         {
             bool ok = false;
@@ -3902,12 +3955,14 @@ namespace WSPR_Sked
                 string radio = Radio.Trim(' ');
                 string[] str = radio.Split(' ');
                 radio = str[0].Trim(' ');
-
+                string content = "";
                 //need to allow config for each setup:
-                string content = "start /b " + rigctld + " -m " + radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort;
+               
+                content = "start /b " + rigctld + " -m " + radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort;
+              
 
-                // Create file and write content (will overwrite if file exists)
-                File.WriteAllText(filepath, content);
+                    // Create file and write content (will overwrite if file exists)
+                    File.WriteAllText(filepath, content);
                 ok = true;
 
             }
@@ -3942,14 +3997,14 @@ namespace WSPR_Sked
         }
 
 
-        private async Task runAsyncProcess(string args)
+        private async Task runAsyncProcess(string cmd, string args)
         {
             try
             {
                 ProcessStartInfo processInfo = new ProcessStartInfo()
                 {
-                    FileName = args, // Command to run
-                                     //Arguments = args, // Arguments for the command
+                    FileName = cmd, // Command to run
+                    Arguments = args, // Arguments for the command
                     RedirectStandardOutput = false, // Redirect output if needed
                     RedirectStandardError = false,  // Redirect error stream if needed
                     UseShellExecute = false,       // Necessary for redirection
@@ -4032,7 +4087,7 @@ namespace WSPR_Sked
 
                 if (found)
                 {
-                    Msg.OKMessageBox("Stopped RigCtlD", "");
+                    Msg.TMessageBox("Stopped RigCtlD", "", 3000);
                 }
                 else
                 {
@@ -4195,23 +4250,25 @@ namespace WSPR_Sked
             //riglistBox.Items.Clear();
             RigcomboBox.Items.Clear();
             string command = "cmd.exe";
-            if (OpSystem !=0)
+            string args = "";
+            if (OpSystem ==0) //windows
             {
-               command = "/bin/bash";
+                command = "cmd.exe";
+                args = "/c rigctl -l";
             }
-            string c = "/c ";
-            if (OpSystem !=0)
+            else
             {
-               c = "-c ";
-            }
-
+                //Linux etc.
+                command = "rigctl";
+                args = "-l";
+            }          
 
             try
             {
                 // Start the process
                 Process process = new Process();
                 process.StartInfo.FileName = command; //"rigctl";
-                process.StartInfo.Arguments = c+"rigctl -l"; // " -l"; ///C " + command;
+                process.StartInfo.Arguments = args;
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
@@ -4263,6 +4320,10 @@ namespace WSPR_Sked
 
         private async void SaveRigctlbutton_Click(object sender, EventArgs e)
         {
+            SaveRigctlButton_Action();
+        }     
+        private async void SaveRigctlButton_Action()
+        {
             if (SaveRigctl())
             {
                 if (!rigctldcheckBox.Checked)
@@ -4272,17 +4333,30 @@ namespace WSPR_Sked
                     RigctlPort = PorttextBox.Text;
                     RigctlIPv4 = IPtextBox.Text;
                     Radio = RigcomboBox.SelectedItem.ToString();
-                  
-                    string rigctldfile = userdir + slash+"rigctld_launch.bat";
-                    createRigFile(rigctldfile);
-                   
-                    await Task.Run(() =>    //update rigctld file and run it
+
+                    string rigctldfile = "";
+                    string content = "";
+                    string args = "";
+                    if (OpSystem == 0)
                     {
-                        
-                        runAsyncProcess(rigctldfile);
+                        rigctldfile = userdir + slash + "rigctld_launch.bat";
+                        content = rigctldfile;
+                        createRigFile(rigctldfile);
+                    }
+                    else
+                    {
+                        //Linux etc.
+                        content = "rigctld";
+                        args = "-m " + Radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort + " &";
+                    }
+                   
+                        await Task.Run(() =>    //update rigctld file and run it
+                        {
+
+                            runAsyncProcess(content, args);
 
 
-                    });
+                        });
                 }
                 Msg.TMessageBox("Settings saved", "rigctld", 2000);
             }
