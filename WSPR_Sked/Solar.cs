@@ -1125,7 +1125,7 @@ namespace WSPR_Sked
         {
             if (Switchbutton.Text == "Database")
             {
-                Switchbutton.Text = "Live data";
+                Switchbutton.Text = "Current data";
                 groupBox1.Visible = false;
                 groupBox2.Visible = true;
                 await find_data(false, "", ""); //do not filter
@@ -2626,7 +2626,7 @@ namespace WSPR_Sked
 
         private void Eventsbutton_Click(object sender, EventArgs e)
         {
-            if (Eventsbutton.Text == "Summary")
+            if (Eventsbutton.Text == "Current Summary")
             {
                 EventsgroupBox.Visible = true;
                 Eventsbutton.Text = "Hide";
@@ -2634,7 +2634,7 @@ namespace WSPR_Sked
             }
             else
             {
-                Eventsbutton.Text = "Summary";
+                Eventsbutton.Text = "Current Summary";
                 EventsgroupBox.Visible = false;
             }
 

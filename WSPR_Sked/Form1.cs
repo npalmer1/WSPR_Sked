@@ -62,7 +62,6 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using static WSPR_Sked.Form1;
 using Maidenhead;
 
-using System.Net.Http;
 using Newtonsoft.Json.Linq;
 
 
@@ -288,7 +287,7 @@ namespace WSPR_Sked
 
         private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
         {
-            bool showmsg = true;
+          
             databaseError = false;
             DateTime prevDate = selectedDate;
             selectedDate = monthCalendar1.SelectionStart;
@@ -1879,11 +1878,11 @@ namespace WSPR_Sked
         {
             int offS = 15; //set by sender as the offset from the base frequency in the wspr window
             double basefreq = 1400; //wspr base frequency (window from 1400-1600 Hz)
-            double mod = 1.46; //FSK modulation frequency offset
+            //double mod = 1.46; //FSK modulation frequency offset
             //int bitlen = 683; //length of each bit is 0.683 seconds (x 161 bits = 110.6 second message duration)
-            int bitlen = 675; //shorten to account for delay in switching tone
+           
             double freq = basefreq + Slot.Offset; //basefreq 1400 + offset from 0-200 Hz
-            int bitcount = 161; //161 bits in wspr message
+            //int bitcount = 161; //161 bits in wspr message
                                 //countdownlabel.Text = "TX started";
                                 //countdownlabel2.Text = "TX started";
             int[] levels = null;
@@ -2283,8 +2282,7 @@ namespace WSPR_Sked
             }
             int h = now.Hour;
             int m = now.Minute;
-            int s = now.Second;
-            byte[] levels;
+            int s = now.Second;           
 
             int down = 0;
             int even = 0;
@@ -2462,8 +2460,7 @@ namespace WSPR_Sked
             {
 
                 setAllPasswords(password);
-                db_user = password;
-                db_user = db_user;
+                db_pass = password;               
                 saveUserandPassword(db_user, password);
                 return true;
 
@@ -2656,8 +2653,7 @@ namespace WSPR_Sked
         private void SaveAll()
         {
             int msgT = 1;
-            FList = "";
-            string first = "";
+            FList = "";           
 
             string C = CalltextBox.Text;
             string L = LocatortextBox.Text;
