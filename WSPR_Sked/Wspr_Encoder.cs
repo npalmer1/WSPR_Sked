@@ -70,29 +70,40 @@ namespace Wspr_Encode
         {
 
             output = "";
-            string c = "/c ";
-            if (opsys != 0)
+            string c = "";
+            string args = "";
+            if (opsys == 0)
             {
-                c = "-c ";
+                c = "/c ";
             }
-            //string args = "/c echo " + content + " | " + filepath + "wsprmsg.exe";
-            string args = c + filepath + "wspr_enc.exe " + content;
-            
-            //await Task.Run(() =>
-            //{
-                runAsynProcess(args,opsys);
+            else
+            {
+                c = "-c";
+            }
+            string cmd = "";
+            if (opsys ==0) //Windows
+            {
+                args = c + filepath + "wspr_enc.exe " + content;
+                cmd = "cmd.exe";
+            }
+            else
+            {
+                args = c + filepath + "wspr_enc " + content;
+                cmd = "/bin/bash";
+            }
+
+
+                //await Task.Run(() =>
+                //{
+                runAsynProcess(cmd,args);
 
             //});            
 
         }
 
-        public async Task runAsynProcess(string args, int opsys)
+        public async Task runAsynProcess(string cmd, string args)
         {
-            string cmd = "cmd.exe";
-            if (opsys != 0)
-            {
-                cmd = "/bin/bash";
-            }
+            
             try
             {
                 ProcessStartInfo processInfo = new ProcessStartInfo()
