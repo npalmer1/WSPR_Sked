@@ -361,3 +361,12 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# ignore txt files etc
+*.txt
+*.bat
+*.dat
+*.wav
+!LICENSE.TXT
+*.out
+*.bak
