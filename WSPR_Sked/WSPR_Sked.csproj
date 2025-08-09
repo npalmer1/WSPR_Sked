@@ -15,7 +15,6 @@
     <Compile Remove="Encode2a.cs" />
     <Compile Remove="HRDComms.cs" />
     <Compile Remove="RigCtl.cs" />
-    <Compile Remove="Version.cs" />
     <Compile Remove="WSJT - Copy.cs" />
     <Compile Remove="WsprEncoders.cs" />
     <Compile Remove="Wspr_receive.cs" />
