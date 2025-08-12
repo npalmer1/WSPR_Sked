@@ -1912,8 +1912,11 @@ namespace WSPR_Sked
             await find_extra_data(false, "", "");
 
             findstormlevels();
-            stormlabels();
-
+            if (!yesterday)
+            {
+                stormlabels();
+            }
+          
         }
 
 
@@ -2050,7 +2053,10 @@ namespace WSPR_Sked
             Rlevel = 0;
             Slevel = 0;
             await find_extra_data(false, "", "");
-            stormlabels();
+            if (!yesterday)
+            {
+                stormlabels();
+            }
         }
 
         public async Task SavePFdata(DateTime date)
