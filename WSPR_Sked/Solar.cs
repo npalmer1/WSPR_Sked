@@ -2668,19 +2668,22 @@ namespace WSPR_Sked
             if (await Msg.IsUrlReachable(url))
             {
                 //OpenBrowser(url);
-                showHamqsl();
+                
             }
             else
             {
                 Msg.TMessageBox("No Internet connection", "Info", 1000);
+                return;
             }
             if (hamqslbutton.Text == "Forecast")
             {
                 hamqslbutton.Text = "Hide";
+                showHamqsl();
             }
             else
             {
                 hamqslbutton.Text = "Forecast";
+                
                 hamqslgroupBox.Visible = false;
 
             }
@@ -2689,14 +2692,16 @@ namespace WSPR_Sked
         private void showHamqsl()
         {
             hamqslopened = false;
-            hamqslgroupBox.Text = "Solar-Terrestrial Data - courtesy of hamqsl.com";
+            hamqslgroupBox.Text = "Solar-Terrestrial Data - courtesy of N0NBH at hamqsl.com";
             WebBrowser browser = new WebBrowser();
             browser.Size = new Size(hamqslgroupBox.Width - 20, hamqslgroupBox.Height - 30);
             browser.Location = new Point(10, 20);
             browser.ScrollBarsEnabled = false;
             browser.ScriptErrorsSuppressed = true;
 
-
+         
+                hamqslgroupBox.Controls.Clear();
+            
             hamqslgroupBox.Controls.Add(browser);
             string html = @"<center><a href='https://www.hamqsl.com/solar.html' ";
             html = html + @"title='Click to add Solar-Terrestrial Data to your website!'>";
