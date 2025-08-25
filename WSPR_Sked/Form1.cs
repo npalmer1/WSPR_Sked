@@ -7666,7 +7666,32 @@ namespace WSPR_Sked
             }
                     
         }
+      
 
+        static async Task Sunrise_Sunset(double latitude, double longitude)
+        {
+            latitude = 53.6458;   // Huddersfield
+           longitude = -1.7850;
+            string date = DateTime.UtcNow.ToString("yyyy-MM-dd");
+
+            string url = $"https://api.sunrise-sunset.org/json?lat={latitude}&lng={longitude}&date={date}&formatted=0";
+
+            using HttpClient client = new HttpClient();
+            string response = await client.GetStringAsync(url);
+
+            JObject json = JObject.Parse(response);
+            var results = json["results"];
+
+            DateTime sunriseUtc = DateTime.Parse(results["sunrise"].ToString());
+            DateTime sunsetUtc = DateTime.Parse(results["sunset"].ToString());
+
+            // Convert to local time
+            //DateTime sunriseLocal = sunriseUtc.ToLocalTime();
+            //DateTime sunsetLocal = sunsetUtc.ToLocalTime();
+
+            //Console.WriteLine($"🌅 Sunrise: {sunriseLocal}");
+            //Console.WriteLine($"🌇 Sunset: {sunsetLocal}");
+        }
     }
 
 
