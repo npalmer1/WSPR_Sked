@@ -52,6 +52,10 @@
             Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             slotgroupBox = new System.Windows.Forms.GroupBox();
+            greygroupBox = new System.Windows.Forms.GroupBox();
+            greylistBox = new System.Windows.Forms.ListBox();
+            NightcheckBox = new System.Windows.Forms.CheckBox();
+            DaycheckBox = new System.Windows.Forms.CheckBox();
             label110 = new System.Windows.Forms.Label();
             label109 = new System.Windows.Forms.Label();
             editslotcheckBox = new System.Windows.Forms.CheckBox();
@@ -88,6 +92,7 @@
             label13 = new System.Windows.Forms.Label();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            Savelabel = new System.Windows.Forms.Label();
             Fhelplabel = new System.Windows.Forms.Label();
             Flabel = new System.Windows.Forms.Label();
             FlistBox2 = new System.Windows.Forms.ListBox();
@@ -205,6 +210,9 @@
             label14 = new System.Windows.Forms.Label();
             CalltextBox = new System.Windows.Forms.TextBox();
             tabPage3 = new System.Windows.Forms.TabPage();
+            label112 = new System.Windows.Forms.Label();
+            rigsearchbutton = new System.Windows.Forms.Button();
+            rigtextBox = new System.Windows.Forms.TextBox();
             label111 = new System.Windows.Forms.Label();
             rigctldcheckBox = new System.Windows.Forms.CheckBox();
             SaveRPathbutton = new System.Windows.Forms.Button();
@@ -360,11 +368,9 @@
             wsprmsgfolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
-            rigtextBox = new System.Windows.Forms.TextBox();
-            rigsearchbutton = new System.Windows.Forms.Button();
-            label112 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
+            greygroupBox.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             tabPage2.SuspendLayout();
@@ -571,6 +577,9 @@
             // slotgroupBox
             // 
             slotgroupBox.BackColor = System.Drawing.Color.FromArgb(255, 192, 192);
+            slotgroupBox.Controls.Add(greygroupBox);
+            slotgroupBox.Controls.Add(NightcheckBox);
+            slotgroupBox.Controls.Add(DaycheckBox);
             slotgroupBox.Controls.Add(label110);
             slotgroupBox.Controls.Add(label109);
             slotgroupBox.Controls.Add(editslotcheckBox);
@@ -604,11 +613,55 @@
             slotgroupBox.Controls.Add(OffsettextBox);
             slotgroupBox.Location = new System.Drawing.Point(372, 234);
             slotgroupBox.Name = "slotgroupBox";
-            slotgroupBox.Size = new System.Drawing.Size(653, 312);
+            slotgroupBox.Size = new System.Drawing.Size(653, 342);
             slotgroupBox.TabIndex = 8;
             slotgroupBox.TabStop = false;
             slotgroupBox.Text = "Timeslot Configuration";
             slotgroupBox.Visible = false;
+            // 
+            // greygroupBox
+            // 
+            greygroupBox.Controls.Add(greylistBox);
+            greygroupBox.Location = new System.Drawing.Point(31, 262);
+            greygroupBox.Name = "greygroupBox";
+            greygroupBox.Size = new System.Drawing.Size(95, 49);
+            greygroupBox.TabIndex = 48;
+            greygroupBox.TabStop = false;
+            greygroupBox.Text = "Offset hours";
+            greygroupBox.Visible = false;
+            // 
+            // greylistBox
+            // 
+            greylistBox.FormattingEnabled = true;
+            greylistBox.Items.AddRange(new object[] { "0", "1", "2" });
+            greylistBox.Location = new System.Drawing.Point(13, 19);
+            greylistBox.Name = "greylistBox";
+            greylistBox.Size = new System.Drawing.Size(42, 17);
+            greylistBox.TabIndex = 46;
+            // 
+            // NightcheckBox
+            // 
+            NightcheckBox.AutoSize = true;
+            NightcheckBox.Location = new System.Drawing.Point(143, 293);
+            NightcheckBox.Name = "NightcheckBox";
+            NightcheckBox.Size = new System.Drawing.Size(165, 30);
+            NightcheckBox.TabIndex = 45;
+            NightcheckBox.Text = "Repeat for same minute each\r\nhour between  sunset-sunrise\r\n";
+            NightcheckBox.UseVisualStyleBackColor = true;
+            NightcheckBox.Visible = false;
+            NightcheckBox.CheckedChanged += NightcheckBox_CheckedChanged;
+            // 
+            // DaycheckBox
+            // 
+            DaycheckBox.AutoSize = true;
+            DaycheckBox.Location = new System.Drawing.Point(143, 262);
+            DaycheckBox.Name = "DaycheckBox";
+            DaycheckBox.Size = new System.Drawing.Size(165, 30);
+            DaycheckBox.TabIndex = 44;
+            DaycheckBox.Text = "Repeat for same minute each\r\nhour between  sunrise-sunset";
+            DaycheckBox.UseVisualStyleBackColor = true;
+            DaycheckBox.Visible = false;
+            DaycheckBox.CheckedChanged += DaycheckBox_CheckedChanged;
             // 
             // label110
             // 
@@ -622,7 +675,7 @@
             // label109
             // 
             label109.AutoSize = true;
-            label109.Location = new System.Drawing.Point(327, 214);
+            label109.Location = new System.Drawing.Point(335, 253);
             label109.Name = "label109";
             label109.Size = new System.Drawing.Size(142, 13);
             label109.TabIndex = 42;
@@ -631,7 +684,7 @@
             // editslotcheckBox
             // 
             editslotcheckBox.AutoSize = true;
-            editslotcheckBox.Location = new System.Drawing.Point(600, 270);
+            editslotcheckBox.Location = new System.Drawing.Point(608, 315);
             editslotcheckBox.Name = "editslotcheckBox";
             editslotcheckBox.Size = new System.Drawing.Size(43, 17);
             editslotcheckBox.TabIndex = 41;
@@ -651,7 +704,7 @@
             // repeatTimecheckBox
             // 
             repeatTimecheckBox.AutoSize = true;
-            repeatTimecheckBox.Location = new System.Drawing.Point(169, 227);
+            repeatTimecheckBox.Location = new System.Drawing.Point(143, 200);
             repeatTimecheckBox.Name = "repeatTimecheckBox";
             repeatTimecheckBox.Size = new System.Drawing.Size(139, 56);
             repeatTimecheckBox.TabIndex = 39;
@@ -711,7 +764,7 @@
             timeEnd.CustomFormat = "HH:mm";
             timeEnd.Enabled = false;
             timeEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            timeEnd.Location = new System.Drawing.Point(71, 246);
+            timeEnd.Location = new System.Drawing.Point(42, 219);
             timeEnd.Name = "timeEnd";
             timeEnd.ShowUpDown = true;
             timeEnd.Size = new System.Drawing.Size(84, 20);
@@ -722,7 +775,7 @@
             // repeatcheckBox
             // 
             repeatcheckBox.AutoSize = true;
-            repeatcheckBox.Location = new System.Drawing.Point(169, 180);
+            repeatcheckBox.Location = new System.Drawing.Point(173, 151);
             repeatcheckBox.Name = "repeatcheckBox";
             repeatcheckBox.Size = new System.Drawing.Size(101, 30);
             repeatcheckBox.TabIndex = 30;
@@ -736,7 +789,7 @@
             dateEnd.CustomFormat = "\"yyyy-MM-dd\"";
             dateEnd.Enabled = false;
             dateEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            dateEnd.Location = new System.Drawing.Point(36, 187);
+            dateEnd.Location = new System.Drawing.Point(40, 158);
             dateEnd.Name = "dateEnd";
             dateEnd.Size = new System.Drawing.Size(119, 20);
             dateEnd.TabIndex = 29;
@@ -792,7 +845,7 @@
             // CancelSlotbutton
             // 
             CancelSlotbutton.BackColor = System.Drawing.Color.Beige;
-            CancelSlotbutton.Location = new System.Drawing.Point(478, 264);
+            CancelSlotbutton.Location = new System.Drawing.Point(486, 309);
             CancelSlotbutton.Name = "CancelSlotbutton";
             CancelSlotbutton.Size = new System.Drawing.Size(75, 23);
             CancelSlotbutton.TabIndex = 18;
@@ -803,7 +856,7 @@
             // SaveSlotbutton
             // 
             SaveSlotbutton.BackColor = System.Drawing.Color.Beige;
-            SaveSlotbutton.Location = new System.Drawing.Point(373, 264);
+            SaveSlotbutton.Location = new System.Drawing.Point(381, 309);
             SaveSlotbutton.Name = "SaveSlotbutton";
             SaveSlotbutton.Size = new System.Drawing.Size(75, 23);
             SaveSlotbutton.TabIndex = 17;
@@ -814,7 +867,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new System.Drawing.Point(36, 164);
+            label8.Location = new System.Drawing.Point(40, 135);
             label8.Name = "label8";
             label8.Size = new System.Drawing.Size(152, 13);
             label8.TabIndex = 16;
@@ -897,7 +950,7 @@
             ActivecheckBox.AutoSize = true;
             ActivecheckBox.Checked = true;
             ActivecheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            ActivecheckBox.Location = new System.Drawing.Point(347, 183);
+            ActivecheckBox.Location = new System.Drawing.Point(355, 222);
             ActivecheckBox.Name = "ActivecheckBox";
             ActivecheckBox.Size = new System.Drawing.Size(90, 17);
             ActivecheckBox.TabIndex = 7;
@@ -957,6 +1010,7 @@
             // tabPage1
             // 
             tabPage1.BackColor = System.Drawing.SystemColors.Info;
+            tabPage1.Controls.Add(Savelabel);
             tabPage1.Controls.Add(Fhelplabel);
             tabPage1.Controls.Add(Flabel);
             tabPage1.Controls.Add(FlistBox2);
@@ -1003,6 +1057,16 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Slots";
             tabPage1.Click += tabPage1_Click;
+            // 
+            // Savelabel
+            // 
+            Savelabel.AutoSize = true;
+            Savelabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            Savelabel.Location = new System.Drawing.Point(256, 608);
+            Savelabel.Name = "Savelabel";
+            Savelabel.Size = new System.Drawing.Size(15, 13);
+            Savelabel.TabIndex = 90;
+            Savelabel.Text = "--";
             // 
             // Fhelplabel
             // 
@@ -1405,10 +1469,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 22);
+            tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1153, 631);
+            tabPage2.Size = new System.Drawing.Size(1153, 629);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -2244,12 +2308,38 @@
             tabPage3.Controls.Add(label30);
             tabPage3.Controls.Add(label29);
             tabPage3.Controls.Add(label28);
-            tabPage3.Location = new System.Drawing.Point(4, 22);
+            tabPage3.Location = new System.Drawing.Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1153, 631);
+            tabPage3.Size = new System.Drawing.Size(1153, 629);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
+            // 
+            // label112
+            // 
+            label112.AutoSize = true;
+            label112.Location = new System.Drawing.Point(313, 282);
+            label112.Name = "label112";
+            label112.Size = new System.Drawing.Size(101, 13);
+            label112.TabIndex = 75;
+            label112.Text = "Search by rig name:";
+            // 
+            // rigsearchbutton
+            // 
+            rigsearchbutton.Location = new System.Drawing.Point(567, 277);
+            rigsearchbutton.Name = "rigsearchbutton";
+            rigsearchbutton.Size = new System.Drawing.Size(75, 23);
+            rigsearchbutton.TabIndex = 74;
+            rigsearchbutton.Text = "Search";
+            rigsearchbutton.UseVisualStyleBackColor = true;
+            rigsearchbutton.Click += rigsearchbutton_Click;
+            // 
+            // rigtextBox
+            // 
+            rigtextBox.Location = new System.Drawing.Point(420, 279);
+            rigtextBox.Name = "rigtextBox";
+            rigtextBox.Size = new System.Drawing.Size(134, 20);
+            rigtextBox.TabIndex = 73;
             // 
             // label111
             // 
@@ -3797,32 +3887,6 @@
             RXblocktimer.Interval = 30000;
             RXblocktimer.Tick += RXblocktimer_Tick;
             // 
-            // rigtextBox
-            // 
-            rigtextBox.Location = new System.Drawing.Point(420, 279);
-            rigtextBox.Name = "rigtextBox";
-            rigtextBox.Size = new System.Drawing.Size(134, 20);
-            rigtextBox.TabIndex = 73;
-            // 
-            // rigsearchbutton
-            // 
-            rigsearchbutton.Location = new System.Drawing.Point(567, 277);
-            rigsearchbutton.Name = "rigsearchbutton";
-            rigsearchbutton.Size = new System.Drawing.Size(75, 23);
-            rigsearchbutton.TabIndex = 74;
-            rigsearchbutton.Text = "Search";
-            rigsearchbutton.UseVisualStyleBackColor = true;
-            rigsearchbutton.Click += rigsearchbutton_Click;
-            // 
-            // label112
-            // 
-            label112.AutoSize = true;
-            label112.Location = new System.Drawing.Point(313, 282);
-            label112.Name = "label112";
-            label112.Size = new System.Drawing.Size(101, 13);
-            label112.TabIndex = 75;
-            label112.Text = "Search by rig name:";
-            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3848,6 +3912,7 @@
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             slotgroupBox.ResumeLayout(false);
             slotgroupBox.PerformLayout();
+            greygroupBox.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
@@ -4215,6 +4280,11 @@
         private System.Windows.Forms.Label label112;
         private System.Windows.Forms.Button rigsearchbutton;
         private System.Windows.Forms.TextBox rigtextBox;
+        private System.Windows.Forms.CheckBox NightcheckBox;
+        private System.Windows.Forms.CheckBox DaycheckBox;
+        private System.Windows.Forms.ListBox greylistBox;
+        private System.Windows.Forms.GroupBox greygroupBox;
+        private System.Windows.Forms.Label Savelabel;
     }
 }
 

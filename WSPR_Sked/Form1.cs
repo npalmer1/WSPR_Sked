@@ -65,8 +65,6 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using static WSPR_Sked.Form1;
 
-
-
 //solar data source:
 //https://services.swpc.noaa.gov/text/daily-geomagnetic-indices.txt
 //https://www.swpc.noaa.gov/products/station-k-and-indices
@@ -132,6 +130,9 @@ namespace WSPR_Sked
         bool stopSolar = false;
 
         bool solarStarted = false;
+
+        int sunriseoffset = 1;
+        int sunsetoffset = 1;
 
 
         DateTime currentSelectedDate;
@@ -260,9 +261,9 @@ namespace WSPR_Sked
         int audioInDevice;
         int inLevel = 1;
         int outLevel = 1;
-      
-        
-        
+
+
+
         string wsprdfilepath = "C:\\WSPR_Sked";
 
         string userdir = Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
@@ -288,7 +289,7 @@ namespace WSPR_Sked
 
         private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
         {
-          
+
             databaseError = false;
             DateTime prevDate = selectedDate;
             selectedDate = monthCalendar1.SelectionStart;
@@ -301,7 +302,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.6";
+            string ver = "0.1.7";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -329,7 +330,7 @@ namespace WSPR_Sked
                 slash = "/"; //Android uses forward slash
                 root = "/"; //Android root
             }
-            
+
             wsprdfilepath = root + "WSPR_Sked"; //default path to WSPR_Sked folder
 
             baseCalltextBox.Text = "";
@@ -420,7 +421,7 @@ namespace WSPR_Sked
             liveForm.Show();
             liveForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass);
             startCount = 0;
-            rxForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath, ver,OpSystem);
+            rxForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath, ver, OpSystem);
             if (!noRigctld) { getRigF(); }
 
             //rxForm.set_frequency(defaultF.ToString("F6"));
@@ -458,7 +459,7 @@ namespace WSPR_Sked
         private bool findSlot(int slot, string date, string time)
         {
             DataTable Slots = new DataTable();
-        
+
             bool slotFound = false;
             bool read = false;
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
@@ -799,7 +800,7 @@ namespace WSPR_Sked
             dataGridView1.Columns[11].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[14].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[15].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-         
+
 
         }
 
@@ -1047,7 +1048,7 @@ namespace WSPR_Sked
             return true;
         }
 
-        private void SaveSlotbutton_Click(object sender, EventArgs e)
+        private async void SaveSlotbutton_Click(object sender, EventArgs e)
         {
             slotNo = 1;
             int msgT = 1;
@@ -1088,23 +1089,42 @@ namespace WSPR_Sked
                             this_slot = true;
                         }
                     }
-                    Msg.TCMessageBox("Saving .. please wait", "Save slot", 3000, mForm);
+                    Msg.TCMessageBox("Saving .. please wait", "Save slot", 5000, mForm);
+                    Savelabel.Text = "Saving - please wait....";
                     if ((msgT == 2 || msgT == 3) && !asOnecheckBox.Checked && checkNextSlot(EditRow))
                     {
+                        if (DaycheckBox.Checked || NightcheckBox.Checked)
+                        {
+                            await SaveSlot_Sun(false, msgT, this_slot);
+                            EditRow++;
 
+                            slotNo = 2;
+                            await SaveSlot_Sun(true, msgT, this_slot);
+                        }
+                        else
+                        {
 
-                        SaveSlot(false, msgT, this_slot);
-                        EditRow++;
+                            await SaveSlot(false, msgT, this_slot);
+                            EditRow++;
 
-                        slotNo = 2;
-                        SaveSlot(true, msgT, this_slot);
+                            slotNo = 2;
+                            await SaveSlot(true, msgT, this_slot);
+                        }
 
                         //EditRow--;
                     }
                     else //if (msgT != 2 || (msgT == 3 && asOnecheckBox.Checked))
                     {
-                        SaveSlot(false, msgT, this_slot);
+                        if (DaycheckBox.Checked || NightcheckBox.Checked)
+                        {
+                            await SaveSlot_Sun(false, msgT, this_slot);
+                        }
+                        else
+                        {
+                            await SaveSlot(false, msgT, this_slot);
+                        }
                     }
+                    Savelabel.Text = "--";
                     slotgroupBox.Visible = false;
                     mForm.Dispose();
                 }
@@ -1143,21 +1163,23 @@ namespace WSPR_Sked
             DateTime.TryParse(dateEnd.Value.ToString("yyyy-MM-dd"), out endD);
             DateTime.TryParse(timeEnd.Value.ToString("HH:mm"), out endT);
 
-            if (endD < date && repeatcheckBox.Checked)
+            if (!DaycheckBox.Checked && !NightcheckBox.Checked)
             {
-                Msg.OKMessageBox("End date must be >= slot start date", "");
-                return false;
+                if (endD < date && repeatcheckBox.Checked)
+                {
+                    Msg.OKMessageBox("End date must be >= slot start date", "");
+                    return false;
+                }
+                if (endT < T && repeatTimecheckBox.Checked)
+                {
+                    Msg.OKMessageBox("End date must be >= slot start date", "");
+                    return false;
+                }
             }
-            if (endT < T && repeatTimecheckBox.Checked)
-            {
-                Msg.OKMessageBox("End date must be >= slot start date", "");
-                return false;
-            }
-
 
             return true;
         }
-        private void SaveSlot(bool slot2, int msgT, bool this_slot) //update the gridview
+        private async Task SaveSlot(bool slot2, int msgT, bool this_slot) //update the gridview
         {
             int i = EditRow;
             DataGridViewRow DataRow = dataGridView1.Rows[i];
@@ -1284,6 +1306,165 @@ namespace WSPR_Sked
             }
         }
 
+        private async Task SaveSlot_Sun(bool slot2, int msgT, bool this_slot) //update the gridview
+        {
+            int i = EditRow;
+            DataGridViewRow DataRow = dataGridView1.Rows[i];
+
+
+            try
+            {
+                DateTime rise;
+                DateTime set;
+                LatLng latlon;
+
+                bool show = true;
+
+                DateTime dt;
+                bool isValid = DateTime.TryParse(datetimelabel.Text, out dt);
+
+                latlon = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
+                var sunTimes = await Sunrise_Sunset(latlon.Lat, latlon.Long, dt);
+                rise = sunTimes.R;
+                set = sunTimes.S;
+
+                if (DaycheckBox.Checked)
+                {
+                    rise = rise.AddHours(sunriseoffset * -1);
+                    set = set.AddHours(sunsetoffset);
+                    if (dt.Hour <rise.Hour || dt.Hour > set.Hour)
+                    {
+                        show = false;
+                    }
+                }
+                else if (NightcheckBox.Checked)
+                {
+                    rise = rise.AddHours(sunriseoffset);
+                    set = set.AddHours(sunsetoffset*-1);
+                    if (dt.Hour > rise.Hour && dt.Hour < set.Hour)
+                    {
+                        show = false;
+                    }
+                }
+               
+
+
+                if (slot2)
+                {
+                    dt = dt.AddMinutes(2);
+                }
+                string date1 = dt.ToString(dateformat);
+                cells[0] = date1;
+                Slot.Date = date1;
+                string time1 = dt.ToString("HH:mm"); //current time
+                cells[1] = time1;
+                Slot.Time = time1;
+
+                double f = Convert.ToDouble(FreqcomboBox.Text);
+                f = Math.Round(f, 4);
+                cells[2] = f.ToString();
+                Slot.Freq = f;
+                cells[3] = OffsettextBox.Text;
+                Slot.Offset = Convert.ToInt32(OffsettextBox.Text);
+                cells[4] = dBmcomboBox.Text;
+                Slot.PowerdB = Convert.ToInt32(dBmcomboBox.Text);
+                cells[5] = PowertextBox.Text;
+                Slot.PowerW = Convert.ToInt32(PowertextBox.Text);
+                if (AntselcomboBox.SelectedIndex > -1)
+                {
+                    cells[6] = AntselcomboBox.SelectedItem.ToString();
+                }
+                Slot.Ant = AntselcomboBox.SelectedItem.ToString();
+
+                cells[7] = selTunertextBox.Text;
+                Slot.Tuner = Convert.ToInt32(selTunertextBox.Text);
+
+                cells[8] = selSwitchtextBox.Text;
+                Slot.Switch = Convert.ToInt32(selSwitchtextBox.Text);
+
+
+                //cells[9] = null; //rotator
+                //cells[10] = null; //azimuth
+                string enddate;
+                string endtime;
+                if (repeatcheckBox.Checked)
+                {
+                    enddate = dateEnd.Value.ToString(dateformat);
+                }
+                else
+                {
+                    enddate = date1;
+                }
+                if (repeatTimecheckBox.Checked)
+                {
+                    endtime = timeEnd.Value.ToString("HH:mm");
+                }
+                else
+                {
+                    endtime = time1;
+                }
+                Slot.EndTime = endtime;
+                cells[12] = endtime;
+
+                cells[9] = enddate;
+                Slot.Endslot = enddate;
+                Slot.EndTime = endtime;
+                if (ActivecheckBox.Checked) { cells[11] = tick; Slot.Active = tick; }
+                else { cells[11] = cross; Slot.Active = cross; }
+                if (repeatcheckBox.Checked) { cells[10] = tick; Slot.Rpt = tick; }
+                else { cells[10] = cross; Slot.Rpt = cross; }
+                cells[13] = "0"; //repeat time?
+                Slot.RptTime = "0";
+                if (repeatTimecheckBox.Checked)
+                {
+                    cells[13] = "1"; Slot.RptTime = "1";
+                }
+                cells[14] = slotNo.ToString();
+                Slot.SlotNo = slotNo;
+
+                Slot.SwPort = Convert.ToInt32(selSwPorttextBox.Text);
+                Slot.SwPort++; //zeroise it
+                string MT = msgT.ToString();
+
+                cells[15] = MT;
+
+                bool ok = await locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot);
+                if (ok && show) //if able to save data
+                {
+                    for (i = 0; i < maxcol; i++)
+                    {
+                        if (cells[i] != null)
+                        {
+                            DataRow.Cells[i].Value = cells[i];
+
+                        }
+                    }
+                }
+                string act = DataRow.Cells[11].Value.ToString();
+                if (act.Contains(tick))
+                {
+                    dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Red;
+                }
+                else
+                {
+                    dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Blue;
+                }
+                DataGridViewCell cell = dataGridView1.Rows[EditRow].Cells[11];
+                cell.Style.Font = new System.Drawing.Font(dataGridView1.Font, FontStyle.Bold);
+
+                dataGridView1.Columns[12].Visible = false; // Hide the repeat time column
+                dataGridView1.Columns[13].Visible = false; // Hide the end time column
+                //dataGridView1.Columns[15].Visible = false; // Hide the end time column
+
+
+                //will need to add function to find all slots in curren set to end
+            }
+            catch
+            {
+                Msg.OKMessageBox("Error updating cells", "");
+            }
+        }
+
 
 
 
@@ -1304,6 +1485,7 @@ namespace WSPR_Sked
                 isValid = DateTime.TryParse(enddate, out Dend); //ditto but end date
 
 
+                //calculate sunrise-sunset times
 
                 bool isValidT = DateTime.TryParse(timeEnd.Value.ToString("HH:mm"), out endT); //endtime
                 isValidT = DateTime.TryParse(time1, out T); //current time
@@ -1361,6 +1543,168 @@ namespace WSPR_Sked
                                 dt = dt.AddDays(1);
                                 break;
                             }
+                        }
+                    }
+
+                }
+                else
+                {
+                    string newdate = dt.ToString(dateformat);
+                    if (!SaveSlotData(newdate, time1))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
+        private async Task<bool> locateSlotMembersDT_Sun(string date1, string time1, string enddate, string endtime, bool this_slot)
+        {
+            DateTime dt;
+            DateTime Dend;
+
+            DateTime endT;
+            DateTime T;
+
+
+            LatLng latlon;
+            DateTime rise;
+            DateTime set;
+
+            bool night = false;
+            int count = 0;
+
+            try
+            {
+                string o = greylistBox.Text;
+                sunriseoffset = Convert.ToInt32(o);
+                sunsetoffset = Convert.ToInt32(o);
+            }
+            catch
+            {
+                sunriseoffset = 0;
+                sunsetoffset = 0;   
+            }
+
+            latlon = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
+
+            // time1 is current time
+            try
+            {
+                bool isValid = DateTime.TryParse(date1, out dt); //dt is output of checking datatime label (current) date
+                isValid = DateTime.TryParse(enddate, out Dend); //ditto but end date
+
+
+
+                bool isValidT = DateTime.TryParse(timeEnd.Value.ToString("HH:mm"), out endT); //endtime
+                isValidT = DateTime.TryParse(time1, out T); //current time
+                DateTime mins = T; //keep current minute
+
+                DateTime StartCount = dt.AddHours(T.Hour).AddMinutes(T.Minute);
+                DateTime End = Dend.AddHours(endT.Hour).AddMinutes(endT.Minute);
+
+
+                if (DaycheckBox.Checked)
+                {
+                    night = false;
+                }
+                else if (NightcheckBox.Checked)
+                {
+                    night = true;
+                }
+                DateTime startT = DateTime.UtcNow;
+               
+
+
+                //TimeSpan TS = End - StartCount;
+
+                if (this_slot) //only update this slot
+                {
+                    Dend = dt;
+                }
+
+               
+                if (dt <= Dend)
+                {
+
+                    var sunTimes = await Sunrise_Sunset(latlon.Lat, latlon.Long, dt);
+                    rise = sunTimes.R;
+                    set = sunTimes.S;
+                    if (!night)
+                    {
+                        startT = rise.AddHours(sunriseoffset * -1);
+                        endT = set.AddHours(sunsetoffset);
+
+                    }
+                    else //night
+                    {
+                        startT = DateTime.MinValue.AddHours(0).AddMinutes(0); //midnight
+                        endT = rise.AddHours(sunriseoffset);
+
+                    }
+                    if (startT.Minute % 2 != 0)
+                    {
+                        startT = startT.AddMinutes(-1);
+                    }
+
+                    if (endT.Minute % 2 != 0)
+                    {
+                        endT = endT.AddMinutes(1);
+                    }
+                    T = startT;
+                    while (dt <= Dend)
+                    {
+
+                        if (night)
+                        {
+                            count = 0;  //if night need to run from midinight to sunrise and sunset to midnight
+                        }
+                        else
+                        {
+                            count = 1; //else just run once during day
+                        }
+                        //T = startT;                       
+                           
+                        while (T <= endT  && count <2)
+                        {
+                            
+                            string newdate = dt.ToString(dateformat);
+                           
+                            T = new DateTime(T.Year, T.Month, T.Day, T.Hour, mins.Minute, 0); // set minutes to same as curr time
+                            time1 = T.ToString("HH:mm"); //update time by one hour
+
+                            if (!SaveSlotData(newdate, time1))
+                            {
+                                return false;
+                            }
+
+                            T = T.AddHours(1);
+                            if (T >= endT)
+                            {
+                                if (!night || (night && count == 1))
+                                { dt = dt.AddDays(1);
+                                    T = startT;
+                                }
+                                break;
+                            }
+                            if (T.Hour == 0)
+                            {
+                                dt = dt.AddDays(1);
+                                
+                                break;
+                            }
+                            if (T.Hour>endT.Hour && night)
+                            {
+                                T = set.AddHours(sunsetoffset *-1);
+                                endT = new DateTime(endT.Year, endT.Month, endT.Day, 23, 59, 0);
+                            }
+                            count++;
                         }
                     }
 
@@ -1573,7 +1917,7 @@ namespace WSPR_Sked
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
-           
+
         }
 
         private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -1855,6 +2199,16 @@ namespace WSPR_Sked
             dateEnd.Enabled = repeatcheckBox.Checked;
             timeEnd.Visible = repeatcheckBox.Checked;
             repeatTimecheckBox.Visible = repeatcheckBox.Checked;
+            DaycheckBox.Visible= repeatcheckBox.Checked;
+            NightcheckBox.Visible = repeatcheckBox.Checked;
+            if ((NightcheckBox.Checked || DaycheckBox.Checked) && repeatcheckBox.Checked)
+            {
+                greygroupBox.Visible = true;
+            }
+            else
+            {
+                greygroupBox.Visible = false;
+            }
         }
 
         //--------------------------------WSPR Sharp encoding------------------------------------
@@ -1879,13 +2233,13 @@ namespace WSPR_Sked
         {
             int offS = 15; //set by sender as the offset from the base frequency in the wspr window
             double basefreq = 1400; //wspr base frequency (window from 1400-1600 Hz)
-            //double mod = 1.46; //FSK modulation frequency offset
-            //int bitlen = 683; //length of each bit is 0.683 seconds (x 161 bits = 110.6 second message duration)
-           
+                                    //double mod = 1.46; //FSK modulation frequency offset
+                                    //int bitlen = 683; //length of each bit is 0.683 seconds (x 161 bits = 110.6 second message duration)
+
             double freq = basefreq + Slot.Offset; //basefreq 1400 + offset from 0-200 Hz
-            //int bitcount = 161; //161 bits in wspr message
-                                //countdownlabel.Text = "TX started";
-                                //countdownlabel2.Text = "TX started";
+                                                  //int bitcount = 161; //161 bits in wspr message
+                                                  //countdownlabel.Text = "TX started";
+                                                  //countdownlabel2.Text = "TX started";
             int[] levels = null;
             stopPlay = false;
             if (flatcode)  //tx test
@@ -1983,7 +2337,7 @@ namespace WSPR_Sked
                         cs = callsign;
                     }
                     content = dt.ToString("yyyy-MM-dd HH:mm") + " UTC, " + cs + ", " + F.ToString() + " MHz, " + location + ", " + Slot.PowerdB + " dBm, Antenna: " + TXRXAntlabel.Text;
-                    var TXlog = new Log(filepath, filename, content,OpSystem);
+                    var TXlog = new Log(filepath, filename, content, OpSystem);
 
                 }
                 catch (Exception e)
@@ -2039,7 +2393,7 @@ namespace WSPR_Sked
 
 
 
-      
+
         private void showMsgType(int type)
         {
             string S = "Message type ";
@@ -2156,12 +2510,12 @@ namespace WSPR_Sked
                 ok = false;
             }
 
-         
+
             try
             {
                 if (ok)
                 {
-                  
+
                     int[] intlevels = new int[wsprLevels.Length];
                     for (int i = 0; i < wsprLevels.Length; i++)
                     {
@@ -2283,7 +2637,7 @@ namespace WSPR_Sked
             }
             int h = now.Hour;
             int m = now.Minute;
-            int s = now.Second;           
+            int s = now.Second;
 
             int down = 0;
             int even = 0;
@@ -2461,7 +2815,7 @@ namespace WSPR_Sked
             {
 
                 setAllPasswords(password);
-                db_pass = password;               
+                db_pass = password;
                 saveUserandPassword(db_user, password);
                 return true;
 
@@ -2516,7 +2870,7 @@ namespace WSPR_Sked
             string filepath = homeDirectory;
             string content = "db_user: " + user + " db_pass: " + encryptedpassword;
             if (Path.Exists(filepath))
-            {               
+            {
                 if (filepath.EndsWith(slash))
                 {
                     slash = "";
@@ -2552,7 +2906,7 @@ namespace WSPR_Sked
 
             if (Path.Exists(filepath))
             {
-               
+
                 if (filepath.EndsWith(slash))
                 {
                     slash = "";
@@ -2654,7 +3008,7 @@ namespace WSPR_Sked
         private void SaveAll()
         {
             int msgT = 1;
-            FList = "";           
+            FList = "";
 
             string C = CalltextBox.Text;
             string L = LocatortextBox.Text;
@@ -2701,7 +3055,7 @@ namespace WSPR_Sked
             }
             else if (msgT == 2 || msgT == 3)  //type 2 or 3 message
             {
-              
+
                 string baseC = findBaseCall(C);
 
                 if (baseC.Trim() == "")
@@ -2792,7 +3146,7 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@DefaultF", defaultF);
                     command.Parameters.AddWithValue("@Power", defaultdB);
                     command.Parameters.AddWithValue("@PowerW", defaultW);
-                  
+
                     command.Parameters.AddWithValue("@Locator", full_location);
                     bool L = longcheckBox.Checked;
                     command.Parameters.AddWithValue("@Locator", L);
@@ -2861,7 +3215,7 @@ namespace WSPR_Sked
                 c = c + "Power = " + defaultdB + ", PowerW = " + defaultW + ", Locator = '" + full_location + "', LocatorLong = " + L + ", DefaultAnt = '" + defaultAnt + "'";
                 c = c + ", Alpha = " + defaultAlpha + ", DefaultAudio = " + defA + ", HamlibPath = '" + HL + "', MsgType = " + msgT;
                 c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopSolar + " WHERE settings.ConfigID = " + configID;
-               
+
                 command.CommandText = c;
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -2948,7 +3302,7 @@ namespace WSPR_Sked
                     if (OpSystem == 0)
                     {
                         wsprmsgP = wsprmsgP.Replace('/', '\\');
-                    }                   
+                    }
                     wsprmsgtextBox.Text = wsprmsgP;
                     if (zone == "LT")
                     {
@@ -2974,7 +3328,7 @@ namespace WSPR_Sked
                     {
                         HamlibPath = HL;
                     }
-                  
+
                     RigCtlPathtextBox.Text = HamlibPath;
 
                     CalltextBox.Text = callsign;
@@ -3112,7 +3466,7 @@ namespace WSPR_Sked
                 c = "UPDATE antennas SET Antenna = '" + ant + "', Description = '" + desc + "', Switch = " + sw + ", ";
                 c = c + "Tuner = " + tu + ", SwitchPort = " + swP;
                 c = c + " WHERE antennas.AntNo = " + antNo;
-               
+
                 command.CommandText = c;
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -3519,7 +3873,7 @@ namespace WSPR_Sked
                 }
 
             }
-           
+
 
             if (m % 2 == 0 && (s > 2 && s < 5))
             {
@@ -3530,13 +3884,13 @@ namespace WSPR_Sked
             {
                 nextT = now.AddMinutes(1);
                 string nexttime = nextT.ToString("HH:mm:00");
-               
+
                 Flag = true;
                 DateTime d = now.Date;
 
                 string date = d.ToString("yyyy-MM-dd");
 
-              
+
                 showmsg = true;
                 databaseError = false;
                 slotFound = false;
@@ -3568,13 +3922,13 @@ namespace WSPR_Sked
                         WSPRtimer.Enabled = true;
                         WSPRtimer.Start(); //start the time to starty the TX 
                         prepDone = false;
-                        
+
                     }
                 }
                 justLoaded = false;
-                
+
             }
-           
+
 
         }
 
@@ -3811,7 +4165,7 @@ namespace WSPR_Sked
 
                 if (found)
                 {
-                    Msg.TMessageBox("RigCtlD started successfully", "",3000);
+                    Msg.TMessageBox("RigCtlD started successfully", "", 3000);
 
                 }
                 else
@@ -3828,7 +4182,7 @@ namespace WSPR_Sked
         }
 
         private void runRigCtlD()
-        {           
+        {
             if (OpSystem == 0) //windows
             {
                 startRigCtlD();
@@ -3837,13 +4191,13 @@ namespace WSPR_Sked
             {
                 startRigCtlDLinux();
             }
-          
+
         }
         private async void startRigCtlD()
         {
             //rigctld -m <rig> -r <ip address> -t <port> - 1046=FT450, 127.0.0.1, 4532
-           
-            string rigctldfile = userdir + slash+"rigctld_launch.bat";
+
+            string rigctldfile = userdir + slash + "rigctld_launch.bat";
             string process1 = "rigctld";
             string process2 = "rigctld.exe";
             bool running = false;
@@ -3855,8 +4209,8 @@ namespace WSPR_Sked
                     await Task.Delay(1000);
                     await Task.Run(() =>
                      {
-                       
-                         runAsyncProcess(rigctldfile,"");
+
+                         runAsyncProcess(rigctldfile, "");
 
 
                      });
@@ -3915,13 +4269,13 @@ namespace WSPR_Sked
 
                 });
                 if (Process.GetProcessesByName(process1).Length > 0)
-                    {
-                        running = true;
-                    }
-                    if (Process.GetProcessesByName(process2).Length > 0)
-                    {
-                        running = true;
-                    }
+                {
+                    running = true;
+                }
+                if (Process.GetProcessesByName(process2).Length > 0)
+                {
+                    running = true;
+                }
                 if (running)
                 {
                     rigrunlabel.Text = "rigctld running";
@@ -3932,9 +4286,9 @@ namespace WSPR_Sked
                     rigrunlabel.Text = "rigctld not running";
                     Msg.TMessageBox("Unable to start RigCtlD - check Hamlib path", "", 3000);
                 }
-                    Riglabel.Text = rigrunlabel.Text;
-                    Riglabel1.Text = rigrunlabel.Text;
-               
+                Riglabel.Text = rigrunlabel.Text;
+                Riglabel1.Text = rigrunlabel.Text;
+
             }
             catch { }
         }
@@ -3957,12 +4311,12 @@ namespace WSPR_Sked
                 radio = str[0].Trim(' ');
                 string content = "";
                 //need to allow config for each setup:
-               
-                content = "start /b " + rigctld + " -m " + radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort;
-              
 
-                    // Create file and write content (will overwrite if file exists)
-                    File.WriteAllText(filepath, content);
+                content = "start /b " + rigctld + " -m " + radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort;
+
+
+                // Create file and write content (will overwrite if file exists)
+                File.WriteAllText(filepath, content);
                 ok = true;
 
             }
@@ -4221,14 +4575,14 @@ namespace WSPR_Sked
         }
         private void getComports()
         {
-          
+
             string[] ports = SerialPort.GetPortNames();
             COMcomboBox.Items.Clear();
             COMcomboBox.Items.AddRange(ports);
             HwPortcomboBox.Items.Clear();
             HwPortcomboBox.Items.AddRange(ports);
 
-           
+
         }
 
         private void comRbutton_Click(object sender, EventArgs e)
@@ -4251,7 +4605,7 @@ namespace WSPR_Sked
             RigcomboBox.Items.Clear();
             string command = "cmd.exe";
             string args = "";
-            if (OpSystem ==0) //windows
+            if (OpSystem == 0) //windows
             {
                 command = "cmd.exe";
                 args = "/c rigctl -l";
@@ -4261,7 +4615,7 @@ namespace WSPR_Sked
                 //Linux etc.
                 command = "rigctl";
                 args = "-l";
-            }          
+            }
 
             try
             {
@@ -4321,7 +4675,7 @@ namespace WSPR_Sked
         private async void SaveRigctlbutton_Click(object sender, EventArgs e)
         {
             SaveRigctlButton_Action();
-        }     
+        }
         private async void SaveRigctlButton_Action()
         {
             if (SaveRigctl())
@@ -4349,14 +4703,14 @@ namespace WSPR_Sked
                         content = "rigctld";
                         args = "-m " + Radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort + " &";
                     }
-                   
-                        await Task.Run(() =>    //update rigctld file and run it
-                        {
 
-                            runAsyncProcess(content, args);
+                    await Task.Run(() =>    //update rigctld file and run it
+                    {
+
+                        runAsyncProcess(content, args);
 
 
-                        });
+                    });
                 }
                 Msg.TMessageBox("Settings saved", "rigctld", 2000);
             }
@@ -4744,7 +5098,7 @@ namespace WSPR_Sked
             {
                 Flag = false;
             }
-         
+
         }
 
         private void FreqlistBox_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -6204,7 +6558,17 @@ namespace WSPR_Sked
 
         private void repeatTimecheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            timeEnd.Enabled = repeatTimecheckBox.Checked;
+            
+            if (repeatTimecheckBox.Checked)
+            {
+                timeEnd.Enabled = repeatTimecheckBox.Checked;
+
+                DaycheckBox.Checked = false;
+                NightcheckBox.Checked = false;
+                greygroupBox.Visible = false;
+                
+            }
+
 
         }
 
@@ -6252,8 +6616,8 @@ namespace WSPR_Sked
             }
             else
             {
-                HamlibPath = @"" + Rpath + slash+"bin";
-                RigCtlPathtextBox.Text = Rpath + slash+"bin";
+                HamlibPath = @"" + Rpath + slash + "bin";
+                RigCtlPathtextBox.Text = Rpath + slash + "bin";
             }
 
         }
@@ -6265,7 +6629,7 @@ namespace WSPR_Sked
             {
                 if (P != "" && Directory.Exists(P))
                 {
-                    if (File.Exists(P + slash+"rigctl.exe"))
+                    if (File.Exists(P + slash + "rigctl.exe"))
                     {
 
                         // Get the current PATH environment variable
@@ -6325,7 +6689,7 @@ namespace WSPR_Sked
             Task.Delay(1000);
         }
 
-      
+
 
 
         private string findBaseCall(string call)
@@ -7084,7 +7448,7 @@ namespace WSPR_Sked
 
         private void wsprmsgbutton_Click(object sender, EventArgs e)
         {
-           
+
             wsprmsgfolderBrowserDialog.InitialDirectory = root; //Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
 
             wsprmsgfolderBrowserDialog.ShowDialog();
@@ -7382,7 +7746,7 @@ namespace WSPR_Sked
                     {
                         wsprdfilepath = wpath;
                     }
-                        wsprdtextBox.Text = wsprdfilepath;
+                    wsprdtextBox.Text = wsprdfilepath;
 
                 }
                 Reader.Close();
@@ -7444,7 +7808,7 @@ namespace WSPR_Sked
             wsprdBrowserDialog.ShowDialog();
             wsprdfilepath = wsprdBrowserDialog.SelectedPath;
             wsprdtextBox.Text = wsprdfilepath;
-            string filename = wsprdfilepath + slash+"wsprd.exe";
+            string filename = wsprdfilepath + slash + "wsprd.exe";
             if (!File.Exists(filename))
             {
                 Msg.TMessageBox("Path does not contain wsprd.exe", "", 3000);
@@ -7475,7 +7839,7 @@ namespace WSPR_Sked
 
             var wspr = new WsprTransmission();
             wspr.wsprmsgPath = wsprmsgtextBox.Text;
-            levels = wspr.WsprTxn(cs, location, defaultdB, slot, msgT, asOnecheckBox.Checked,OpSystem);
+            levels = wspr.WsprTxn(cs, location, defaultdB, slot, msgT, asOnecheckBox.Checked, OpSystem);
             leveltextBox.Text = wspr.LevelsString;
         }
 
@@ -7642,7 +8006,7 @@ namespace WSPR_Sked
 
 
                 }
-                
+
             }
             else
             {
@@ -7656,7 +8020,7 @@ namespace WSPR_Sked
         private void rigsearchbutton_Click(object sender, EventArgs e)
         {
             string search = rigtextBox.Text.ToUpper();
-            for (int i =0; i < RigcomboBox.Items.Count; i++)
+            for (int i = 0; i < RigcomboBox.Items.Count; i++)
             {
                 if (RigcomboBox.Items[i].ToString().ToUpper().Contains(search))
                 {
@@ -7664,15 +8028,13 @@ namespace WSPR_Sked
                     return;
                 }
             }
-                    
-        }
-      
 
-        static async Task Sunrise_Sunset(double latitude, double longitude)
+        }
+
+
+        static async Task<(DateTime R, DateTime S)> Sunrise_Sunset(double latitude, double longitude, DateTime Date)
         {
-            latitude = 53.6458;   // Huddersfield
-           longitude = -1.7850;
-            string date = DateTime.UtcNow.ToString("yyyy-MM-dd");
+            string date = Date.ToString("yyyy-MM-dd");
 
             string url = $"https://api.sunrise-sunset.org/json?lat={latitude}&lng={longitude}&date={date}&formatted=0";
 
@@ -7685,12 +8047,36 @@ namespace WSPR_Sked
             DateTime sunriseUtc = DateTime.Parse(results["sunrise"].ToString());
             DateTime sunsetUtc = DateTime.Parse(results["sunset"].ToString());
 
-            // Convert to local time
-            //DateTime sunriseLocal = sunriseUtc.ToLocalTime();
-            //DateTime sunsetLocal = sunsetUtc.ToLocalTime();
+            return (sunriseUtc, sunsetUtc);
 
-            //Console.WriteLine($"🌅 Sunrise: {sunriseLocal}");
-            //Console.WriteLine($"🌇 Sunset: {sunsetLocal}");
+        }
+
+        private void DaycheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (DaycheckBox.Checked)
+            {              
+                NightcheckBox.Checked = false;
+                repeatTimecheckBox.Checked = false;
+                timeEnd.Enabled = false;
+                greygroupBox.Visible = true;
+                greylistBox.Text = "1";
+
+            }
+           
+        }
+
+        private void NightcheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (NightcheckBox.Checked)
+            {
+                DaycheckBox.Checked = false;
+
+                repeatTimecheckBox.Checked = false;
+                timeEnd.Enabled = false;
+                greygroupBox.Visible = true;
+                greylistBox.Text = "1";
+
+            }
         }
     }
 
