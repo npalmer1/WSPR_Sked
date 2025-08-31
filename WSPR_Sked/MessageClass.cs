@@ -27,6 +27,8 @@ namespace WSPR_Sked
             mForm.delay = delay;
             mForm.StartPosition = FormStartPosition.CenterParent;
             mForm.ShowDialog();
+            mForm.BringToFront();
+           
         }
         public async void TMessageBox(string text, string caption, int delay)
         {
