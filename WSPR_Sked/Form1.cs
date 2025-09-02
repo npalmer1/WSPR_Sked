@@ -42,6 +42,7 @@ using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -61,6 +62,7 @@ using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using static WSPR_Sked.Form1;
@@ -91,6 +93,9 @@ namespace WSPR_Sked
         int msgType = 1;
         int currentMsgType = 1;
         int slotNo = 1; //type 1 or 2 slot no.
+
+        int greyoffset = 0;
+        int rpt_type = 0;
 
 
         string TXFrequency = "140956";
@@ -430,7 +435,11 @@ namespace WSPR_Sked
 
             random = randno.Next(0, 7); //random number to spread uploads to wsprnet
 
-
+            LatLng ll;
+            ll = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
+            var sunTimes = await Sunrise_Sunset(ll.Lat, ll.Long, dt);
+            riselabel.Text = sunTimes.R.ToString("HH:mm");
+            setlabel.Text = sunTimes.S.ToString("HH:mm");
         }
 
 
@@ -577,6 +586,17 @@ namespace WSPR_Sked
                         Slot.MessageType = currentMsgType;
                         msgType = currentMsgType;
 
+                        rpt_type = (sbyte)Reader["RptType"];
+                        findRptType(rpt_type);
+                        greyoffset = (sbyte)Reader["GreyOffset"];
+                        if (greyoffset != null)
+                        {
+                            greylistBox.Text = greyoffset.ToString();
+                        }
+                        else
+                        {
+                            greylistBox.Text = "1";
+                        }
 
                     }
                     Reader.Close();
@@ -599,6 +619,42 @@ namespace WSPR_Sked
                 }
             }
             return slotFound;
+        }
+
+        private void findRptType(int type)
+        {
+            switch (type)
+            {
+                case 0:
+                    {
+                        repeatcheckBox.Checked = false;
+                        break;
+                    }
+                case 1:
+                    {
+                        repeatTimecheckBox.Checked = true;
+                        break;
+                    }
+                case 2:
+                    {
+                        DaycheckBox.Checked = true;
+                        break;
+                    }
+                case 3:
+                    {
+                        NightcheckBox.Checked = true;
+                        break;
+                    }
+                case 4:
+                    {
+                        AllcheckBox.Checked = true;
+                        break;
+                    }
+                default:
+                    repeatcheckBox.Checked = false;
+                    break;
+            }
+
         }
 
         private bool findSlotRow(int slot, string date, string time) //find a slot row for display in grid from the database corresponding to the date/time from the slot
@@ -719,6 +775,18 @@ namespace WSPR_Sked
                         int msgT = (int)Reader["MsgType"];
                         SlotRow.MessageType = msgT;
 
+                        rpt_type = (sbyte)Reader["RptType"];
+                        findRptType(rpt_type);
+                        greyoffset = (sbyte)Reader["GreyOffset"];
+                        if (greyoffset != null)
+                        {
+                            greylistBox.Text = greyoffset.ToString();
+                        }
+                        else
+                        {
+                            greylistBox.Text = "1";
+                        }
+
 
                     }
                     Reader.Close();
@@ -821,7 +889,7 @@ namespace WSPR_Sked
 
         private void dataGridView1_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-
+            greygroupBox.Visible = false;
             for (int s = 0; s < dataGridView1.Rows.Count; s++)
             {
                 if (dataGridView1.Rows[s].Selected)
@@ -1053,6 +1121,7 @@ namespace WSPR_Sked
             slotNo = 1;
             int msgT = 1;
             bool this_slot = false;
+
             this.Focus();
             this.BringToFront();
             try
@@ -1126,6 +1195,7 @@ namespace WSPR_Sked
                     }
                     Savelabel.Text = "--";
                     slotgroupBox.Visible = false;
+                    greygroupBox.Visible = false;
                     mForm.Dispose();
                 }
             }
@@ -1163,7 +1233,7 @@ namespace WSPR_Sked
             DateTime.TryParse(dateEnd.Value.ToString("yyyy-MM-dd"), out endD);
             DateTime.TryParse(timeEnd.Value.ToString("HH:mm"), out endT);
 
-            if (!DaycheckBox.Checked && !NightcheckBox.Checked)
+            if (!DaycheckBox.Checked && !NightcheckBox.Checked && !AllcheckBox.Checked)
             {
                 if (endD < date && repeatcheckBox.Checked)
                 {
@@ -1314,25 +1384,35 @@ namespace WSPR_Sked
 
             try
             {
-                DateTime rise;
-                DateTime set;
+                DateTime rise = DateTime.MinValue;
+                DateTime set = DateTime.MinValue;
                 LatLng latlon;
 
                 bool show = true;
+                string loc = LocatortextBox.Text.Trim().Substring(0, 4);
 
                 DateTime dt;
                 bool isValid = DateTime.TryParse(datetimelabel.Text, out dt);
 
-                latlon = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
-                var sunTimes = await Sunrise_Sunset(latlon.Lat, latlon.Long, dt);
-                rise = sunTimes.R;
-                set = sunTimes.S;
+                string date = dt.ToString("yyyy-MM-dd");
+                try
+                {
+                    var sunTimes = find_sunrise_sunset(loc, date);
+
+                    rise = sunTimes.Result.R;
+                    set = sunTimes.Result.S;
+                }
+                catch
+                {
+                    Msg.TMessageBox("Error: no sunrise/set times - see TX Config", "Error: no sunrise/set times", 3000);
+                    return;
+                }
 
                 if (DaycheckBox.Checked)
                 {
                     rise = rise.AddHours(sunriseoffset * -1);
                     set = set.AddHours(sunsetoffset);
-                    if (dt.Hour <rise.Hour || dt.Hour > set.Hour)
+                    if (dt.Hour < rise.Hour || dt.Hour > set.Hour)
                     {
                         show = false;
                     }
@@ -1340,13 +1420,13 @@ namespace WSPR_Sked
                 else if (NightcheckBox.Checked)
                 {
                     rise = rise.AddHours(sunriseoffset);
-                    set = set.AddHours(sunsetoffset*-1);
+                    set = set.AddHours(sunsetoffset * -1);
                     if (dt.Hour > rise.Hour && dt.Hour < set.Hour)
                     {
                         show = false;
                     }
                 }
-               
+
 
 
                 if (slot2)
@@ -1440,6 +1520,10 @@ namespace WSPR_Sked
                         }
                     }
                 }
+                else if (!ok)
+                {
+                    return;
+                }
                 string act = DataRow.Cells[11].Value.ToString();
                 if (act.Contains(tick))
                 {
@@ -1508,7 +1592,11 @@ namespace WSPR_Sked
                     endT = T;
                 }
                 DateTime startT = T;
-
+                if (AllcheckBox.Checked) //all day
+                {
+                    startT = DateTime.MinValue.AddHours(0).AddMinutes(0); //midnight
+                    endT = DateTime.MinValue.AddHours(23).AddMinutes(59); //23:59
+                }
 
                 TimeSpan TS = End - StartCount;
 
@@ -1574,8 +1662,8 @@ namespace WSPR_Sked
 
 
             LatLng latlon;
-            DateTime rise;
-            DateTime set;
+            DateTime rise = DateTime.MinValue;
+            DateTime set = DateTime.MinValue;
 
             bool night = false;
             int count = 0;
@@ -1589,7 +1677,7 @@ namespace WSPR_Sked
             catch
             {
                 sunriseoffset = 0;
-                sunsetoffset = 0;   
+                sunsetoffset = 0;
             }
 
             latlon = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
@@ -1619,7 +1707,7 @@ namespace WSPR_Sked
                     night = true;
                 }
                 DateTime startT = DateTime.UtcNow;
-               
+
 
 
                 //TimeSpan TS = End - StartCount;
@@ -1629,13 +1717,34 @@ namespace WSPR_Sked
                     Dend = dt;
                 }
 
-               
+
                 if (dt <= Dend)
                 {
 
-                    var sunTimes = await Sunrise_Sunset(latlon.Lat, latlon.Long, dt);
-                    rise = sunTimes.R;
-                    set = sunTimes.S;
+
+
+                    string loc = LocatortextBox.Text.Trim().Substring(0, 4);
+
+                    isValid = DateTime.TryParse(datetimelabel.Text, out dt);
+
+                    string date = dt.ToString("yyyy-MM-dd");
+
+
+
+                    try
+                    {
+                        var sunTimes = find_sunrise_sunset(loc, date);
+
+                        rise = sunTimes.Result.R;
+                        set = sunTimes.Result.S;
+                    }
+                    catch
+                    {
+                        Msg.TMessageBox("Error: no sunrise/set times - see TX Config", "Error: no sunrise/set times", 3000);
+                        return false;
+                    }
+
+
                     if (!night)
                     {
                         startT = rise.AddHours(sunriseoffset * -1);
@@ -1658,7 +1767,7 @@ namespace WSPR_Sked
                         endT = endT.AddMinutes(1);
                     }
                     T = startT;
-                    while (dt <= Dend)
+                    while (dt.Date <= Dend.Date)
                     {
 
                         if (night)
@@ -1670,12 +1779,12 @@ namespace WSPR_Sked
                             count = 1; //else just run once during day
                         }
                         //T = startT;                       
-                           
-                        while (T <= endT  && count <2)
+
+                        while (T <= endT && count < 2)
                         {
-                            
+
                             string newdate = dt.ToString(dateformat);
-                           
+
                             T = new DateTime(T.Year, T.Month, T.Day, T.Hour, mins.Minute, 0); // set minutes to same as curr time
                             time1 = T.ToString("HH:mm"); //update time by one hour
 
@@ -1688,7 +1797,8 @@ namespace WSPR_Sked
                             if (T >= endT)
                             {
                                 if (!night || (night && count == 1))
-                                { dt = dt.AddDays(1);
+                                {
+                                    dt = dt.AddDays(1);
                                     T = startT;
                                 }
                                 break;
@@ -1696,12 +1806,12 @@ namespace WSPR_Sked
                             if (T.Hour == 0)
                             {
                                 dt = dt.AddDays(1);
-                                
+
                                 break;
                             }
-                            if (T.Hour>endT.Hour && night)
+                            if (T.Hour > endT.Hour && night)
                             {
-                                T = set.AddHours(sunsetoffset *-1);
+                                T = set.AddHours(sunsetoffset * -1);
                                 endT = new DateTime(endT.Year, endT.Month, endT.Day, 23, 59, 0);
                             }
                             count++;
@@ -1736,6 +1846,39 @@ namespace WSPR_Sked
             string e = "";
             string p = "";
             int msgT = 1;
+            rpt_type = 0;
+            greyoffset = 0;
+            if (repeatcheckBox.Checked)
+            {
+                if (repeatTimecheckBox.Checked)
+                {
+                    rpt_type = 1;
+                }
+                else if (DaycheckBox.Checked)
+                {
+                    rpt_type = 2;
+                }
+                else if (NightcheckBox.Checked)
+                {
+                    rpt_type = 3;
+                }
+                else if (AllcheckBox.Checked)
+                {
+                    rpt_type = 4;
+                }
+            }
+            else
+            {
+                rpt_type = 0;
+            }
+            try
+            {
+                greyoffset = Convert.ToInt32(greylistBox.Text.Trim());
+            }
+            catch
+            {
+
+            }
             lock (_lock)
             {
                 try
@@ -1743,8 +1886,8 @@ namespace WSPR_Sked
 
 
                     MySqlCommand command = connection.CreateCommand();
-                    command.CommandText = "INSERT INTO slots(Date,Time,Frequency,Offset,Power,PowerW,Antenna,Tuner,Switch,SwitchPort,End,Active,Repeating,TimeEnd,RptTime,Parent,SlotNo,MsgType) ";
-                    command.CommandText += "VALUES(@Date,@Time,@Frequency,@Offset,@Power,@PowerW,@Antenna,@Tuner,@Switch,@SwitchPort,@End,@Active,@Repeating,@TimeEnd,@RptTime,@Parent,@SlotNo,@MsgType)";
+                    command.CommandText = "INSERT INTO slots(Date,Time,Frequency,Offset,Power,PowerW,Antenna,Tuner,Switch,SwitchPort,End,Active,Repeating,TimeEnd,RptTime,Parent,SlotNo,MsgType,RptType,GreyOffset) ";
+                    command.CommandText += "VALUES(@Date,@Time,@Frequency,@Offset,@Power,@PowerW,@Antenna,@Tuner,@Switch,@SwitchPort,@End,@Active,@Repeating,@TimeEnd,@RptTime,@Parent,@SlotNo,@MsgType,@RptType,@GreyOffset)";
 
                     connection.Open();
 
@@ -1793,6 +1936,8 @@ namespace WSPR_Sked
                     }
 
                     command.Parameters.AddWithValue("@MsgType", msgT);
+                    command.Parameters.AddWithValue("@RptType", rpt_type);
+                    command.Parameters.AddWithValue("@GreyOffset", greyoffset);
 
                     command.ExecuteNonQuery();
                     connection.Close();
@@ -1830,8 +1975,8 @@ namespace WSPR_Sked
                     c = c + ", PowerW = " + Slot.PowerW + ", Antenna = '" + Slot.Ant + "', Tuner = " + Slot.Tuner + ", Switch = " + Slot.Switch;
                     c = c + ", SwitchPort = " + Slot.SwPort + ", End = '" + e + "', Active = " + act + ", Repeating = " + r + ", TimeEnd = '" + Slot.EndTime;
                     c = c + "', RptTime = " + Slot.RptTime + ", Parent = '" + p + "'";
-                    c = c + ", SlotNo = " + slotNo + ", MsgType = " + msgT + " WHERE slots.Date = '" + d + "' AND slots.Time = '" + t + "'"; // + ";";              
-                                                                                                                                             //UPDATE `slots` SET `Antenna` = 'GP' WHERE `slots`.`Date` = '2025-02-28' AND `slots`.`Time` = '16:02:00'; 
+                    c = c + ", SlotNo = " + slotNo + ", MsgType = " + msgT + ", RptType = " + rpt_type + ", GreyOffset = " + greyoffset + " WHERE slots.Date = '" + d + "' AND slots.Time = '" + t + "'"; // + ";";              
+                                                                                                                                                                                                          //UPDATE `slots` SET `Antenna` = 'GP' WHERE `slots`.`Date` = '2025-02-28' AND `slots`.`Time` = '16:02:00'; 
                     command.CommandText = c;
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -2199,8 +2344,9 @@ namespace WSPR_Sked
             dateEnd.Enabled = repeatcheckBox.Checked;
             timeEnd.Visible = repeatcheckBox.Checked;
             repeatTimecheckBox.Visible = repeatcheckBox.Checked;
-            DaycheckBox.Visible= repeatcheckBox.Checked;
+            DaycheckBox.Visible = repeatcheckBox.Checked;
             NightcheckBox.Visible = repeatcheckBox.Checked;
+            AllcheckBox.Visible = repeatcheckBox.Checked;
             if ((NightcheckBox.Checked || DaycheckBox.Checked) && repeatcheckBox.Checked)
             {
                 greygroupBox.Visible = true;
@@ -3005,10 +3151,11 @@ namespace WSPR_Sked
         {
             SaveAll();
         }
-        private void SaveAll()
+        private async void SaveAll()
         {
             int msgT = 1;
             FList = "";
+            bool saved = false;
 
             string C = CalltextBox.Text;
             string L = LocatortextBox.Text;
@@ -3112,9 +3259,12 @@ namespace WSPR_Sked
                 Slot.PowerdB = defaultdB;
                 if (SaveConfig(msgT))
                 {
-                    Msg.OKMessageBox("Settings saved", "");
+                    saved = true;
                 }
             }
+
+            Msg.OKMessageBox("Settings saved", "");
+
 
         }
 
@@ -3777,6 +3927,10 @@ namespace WSPR_Sked
             rxForm.set_time(fulltime);
 
 
+            if (now.DayOfYear % 10 == 0 && h == 2 && m == 11 && s ==20)
+            {
+                updateSunriseSunset();
+            }
             if (s == 30)
             {
                 string process = "rigctld";
@@ -6558,7 +6712,7 @@ namespace WSPR_Sked
 
         private void repeatTimecheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            
+
             if (repeatTimecheckBox.Checked)
             {
                 timeEnd.Enabled = repeatTimecheckBox.Checked;
@@ -6566,7 +6720,7 @@ namespace WSPR_Sked
                 DaycheckBox.Checked = false;
                 NightcheckBox.Checked = false;
                 greygroupBox.Visible = false;
-                
+
             }
 
 
@@ -8030,23 +8184,64 @@ namespace WSPR_Sked
             }
 
         }
+        private async Task SaveSunRiseSunset(DateTime date, int days)
+        {
+            int count = 0;
+            LatLng ll;
+            string sunrise = "";
+            string sunset = "";
+            string locator = LocatortextBox.Text.Trim().Substring(0, 4).ToUpper();
 
+            try
+            {
+                ll = MaidenheadLocator.LocatorToLatLng(locator);
+
+                for (int i = 0; i < days; i++)
+                {
+                    if (i % 7 == 0) //get sunrise/set every week
+                    {
+                        var sunTimes = await Sunrise_Sunset(ll.Lat, ll.Long, date);
+                        sunrise = sunTimes.R.ToString("HH:mm");
+                        sunset = sunTimes.S.ToString("HH:mm");
+                    }
+                    string Date = date.ToString("yyyy-MM-dd");
+
+                    Save_SunSet_SunRise(locator, Date, sunrise, sunset);
+                    date = date.AddDays(1);
+                }
+            }
+            catch
+            {
+
+                Msg.TMessageBox("Error while saving sunrise/sunset times", "Sunrise/set", 2000);
+            }
+
+        }
 
         static async Task<(DateTime R, DateTime S)> Sunrise_Sunset(double latitude, double longitude, DateTime Date)
         {
-            string date = Date.ToString("yyyy-MM-dd");
+            DateTime sunriseUtc = DateTime.MinValue;
+            DateTime sunsetUtc = DateTime.MinValue;
+            try
+            {
+                string date = Date.ToString("yyyy-MM-dd");
 
-            string url = $"https://api.sunrise-sunset.org/json?lat={latitude}&lng={longitude}&date={date}&formatted=0";
+                string url = $"https://api.sunrise-sunset.org/json?lat={latitude}&lng={longitude}&date={date}&formatted=0";
 
-            using HttpClient client = new HttpClient();
-            string response = await client.GetStringAsync(url);
+                using HttpClient client = new HttpClient();
+                string response = await client.GetStringAsync(url);
 
-            JObject json = JObject.Parse(response);
-            var results = json["results"];
+                JObject json = JObject.Parse(response);
+                var results = json["results"];
 
-            DateTime sunriseUtc = DateTime.Parse(results["sunrise"].ToString());
-            DateTime sunsetUtc = DateTime.Parse(results["sunset"].ToString());
-
+                sunriseUtc = DateTime.Parse(results["sunrise"].ToString());
+                sunsetUtc = DateTime.Parse(results["sunset"].ToString());
+            }
+            catch
+            {
+                sunriseUtc = DateTime.MinValue;
+                sunsetUtc = DateTime.MinValue;
+            }
             return (sunriseUtc, sunsetUtc);
 
         }
@@ -8054,15 +8249,16 @@ namespace WSPR_Sked
         private void DaycheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (DaycheckBox.Checked)
-            {              
+            {
                 NightcheckBox.Checked = false;
                 repeatTimecheckBox.Checked = false;
+                AllcheckBox.Checked = false;
                 timeEnd.Enabled = false;
                 greygroupBox.Visible = true;
                 greylistBox.Text = "1";
 
             }
-           
+
         }
 
         private void NightcheckBox_CheckedChanged(object sender, EventArgs e)
@@ -8073,10 +8269,183 @@ namespace WSPR_Sked
 
                 repeatTimecheckBox.Checked = false;
                 timeEnd.Enabled = false;
+                AllcheckBox.Checked = false;
                 greygroupBox.Visible = true;
                 greylistBox.Text = "1";
 
             }
+        }
+
+        private void AllcheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (AllcheckBox.Checked)
+            {
+                DaycheckBox.Checked = false;
+                NightcheckBox.Checked = false;
+                repeatTimecheckBox.Checked = false;
+                timeEnd.Enabled = false;
+                greygroupBox.Visible = false;
+
+            }
+        }
+
+        private async Task<bool> Save_SunSet_SunRise(string locator, string date, string sunrise, string sunset)
+        {
+
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
+
+
+            lock (_lock)
+            {
+                try
+                {
+                    MySqlCommand command = connection.CreateCommand();
+                    command.CommandText = "INSERT IGNORE INTO sunrise_sunset(locator,date,sunrise,sunset) ";
+                    command.CommandText += "VALUES(@locator,@date,@sunrise,@sunset)";
+
+                    connection.Open();
+
+                    //TimeSpan time = Convert.ToDateTime(cells[1]);
+                    command.Parameters.AddWithValue("@locator", locator);
+                    command.Parameters.AddWithValue("@date", date);
+                    command.Parameters.AddWithValue("@sunrise", sunrise);
+                    command.Parameters.AddWithValue("@sunset", sunset);
+
+                    command.ExecuteNonQuery();
+
+
+                    connection.Close();
+                    return true;
+
+                }
+                catch
+                {         //if row already exists then try updating it in database
+                    return false;
+                }
+            }
+
+        }
+
+        private async Task<(DateTime R, DateTime S)> find_sunrise_sunset(string locator, string date) //find sunsrise/set times form database
+        {
+            DataTable Slots = new DataTable();
+            //DateTime d = new DateTime();
+            int i = 0;
+            bool found = false;
+            string sunrise = "";
+            string sunset = "";
+
+
+
+            DateTime sunriseUtc = DateTime.MinValue;
+            DateTime sunsetUtc = DateTime.MinValue;
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
+
+
+            try
+            {
+
+
+                MySqlConnection connection = new MySqlConnection(myConnectionString);
+
+                connection.Open();
+
+                MySqlCommand command = connection.CreateCommand();
+
+
+                command.CommandText = "SELECT * FROM sunrise_sunset WHERE locator = '" + locator + "' AND date = '" + date + "'";
+
+
+                MySqlDataReader Reader;
+                Reader = command.ExecuteReader();
+                while (Reader.Read())
+                {
+                    sunrise = (string)Reader["sunrise"];
+                    sunset = (string)Reader["sunset"];
+                }
+
+
+
+                Reader.Close();
+                connection.Close();
+                databaseError = false;
+
+            }
+            catch
+            {
+                sunriseUtc = DateTime.MinValue;
+                sunsetUtc = DateTime.MinValue;
+            }
+
+            sunriseUtc = DateTime.Parse(sunrise.ToString());
+            sunsetUtc = DateTime.Parse(sunset.ToString());
+            return (sunriseUtc, sunsetUtc);
+
+        }
+
+
+        private async Task<(DateTime R, DateTime S)> find_sunrise_sunset_Test(string locator, string date) //find sunsrise/set times form database
+        {
+            DataTable Slots = new DataTable();
+            //DateTime d = new DateTime();
+            int i = 0;
+            bool found = false;
+            string sunrise = "";
+            string sunset = "";
+
+
+
+            DateTime sunriseUtc = DateTime.MinValue;
+            DateTime sunsetUtc = DateTime.MinValue;
+            string connectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
+
+
+            try
+            {
+
+
+                using var connection = new MySqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                using var command = new MySqlCommand("SELECT * FROM sunrise_sunset WHERE locator = '" + locator + "' AND date = '" + date + "'", connection);
+                using var reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    sunrise = reader["sunrise"].ToString();
+                    sunset = reader["sunset"].ToString();
+
+                }
+                reader.Close();
+                connection.Close();
+
+            }
+            catch
+            {
+                sunriseUtc = DateTime.MinValue;
+                sunsetUtc = DateTime.MinValue;
+            }
+
+            sunriseUtc = DateTime.Parse(sunrise.ToString());
+            sunsetUtc = DateTime.Parse(sunset.ToString());
+            return (sunriseUtc, sunsetUtc);
+
+        }
+
+        private async void sunrisebutton_Click(object sender, EventArgs e)
+        {
+            updateSunriseSunset();
+        }
+        private async void updateSunriseSunset()
+        {
+            LatLng ll;
+            ll = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
+            var sunTimes = await Sunrise_Sunset(ll.Lat, ll.Long, dt);
+            riselabel.Text = sunTimes.R.ToString("HH:mm");
+            setlabel.Text = sunTimes.S.ToString("HH:mm");
+            DateTime today = DateTime.Now;
+            await SaveSunRiseSunset(today, 365);
         }
     }
 

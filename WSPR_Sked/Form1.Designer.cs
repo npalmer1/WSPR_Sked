@@ -52,6 +52,7 @@
             Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             slotgroupBox = new System.Windows.Forms.GroupBox();
+            AllcheckBox = new System.Windows.Forms.CheckBox();
             greygroupBox = new System.Windows.Forms.GroupBox();
             greylistBox = new System.Windows.Forms.ListBox();
             NightcheckBox = new System.Windows.Forms.CheckBox();
@@ -92,6 +93,11 @@
             label13 = new System.Windows.Forms.Label();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            label115 = new System.Windows.Forms.Label();
+            setlabel = new System.Windows.Forms.Label();
+            riselabel = new System.Windows.Forms.Label();
+            label114 = new System.Windows.Forms.Label();
+            label113 = new System.Windows.Forms.Label();
             Savelabel = new System.Windows.Forms.Label();
             Fhelplabel = new System.Windows.Forms.Label();
             Flabel = new System.Windows.Forms.Label();
@@ -126,6 +132,8 @@
             label22 = new System.Windows.Forms.Label();
             countdownlabel2 = new System.Windows.Forms.Label();
             tabPage2 = new System.Windows.Forms.TabPage();
+            sunrisebutton = new System.Windows.Forms.Button();
+            label116 = new System.Windows.Forms.Label();
             locationbutton = new System.Windows.Forms.Button();
             solarcheckBox = new System.Windows.Forms.CheckBox();
             asOnecheckBox = new System.Windows.Forms.CheckBox();
@@ -577,6 +585,7 @@
             // slotgroupBox
             // 
             slotgroupBox.BackColor = System.Drawing.Color.FromArgb(255, 192, 192);
+            slotgroupBox.Controls.Add(AllcheckBox);
             slotgroupBox.Controls.Add(greygroupBox);
             slotgroupBox.Controls.Add(NightcheckBox);
             slotgroupBox.Controls.Add(DaycheckBox);
@@ -611,13 +620,25 @@
             slotgroupBox.Controls.Add(label1);
             slotgroupBox.Controls.Add(ActivecheckBox);
             slotgroupBox.Controls.Add(OffsettextBox);
-            slotgroupBox.Location = new System.Drawing.Point(372, 234);
+            slotgroupBox.Location = new System.Drawing.Point(389, 203);
             slotgroupBox.Name = "slotgroupBox";
-            slotgroupBox.Size = new System.Drawing.Size(653, 342);
+            slotgroupBox.Size = new System.Drawing.Size(653, 363);
             slotgroupBox.TabIndex = 8;
             slotgroupBox.TabStop = false;
             slotgroupBox.Text = "Timeslot Configuration";
             slotgroupBox.Visible = false;
+            // 
+            // AllcheckBox
+            // 
+            AllcheckBox.AutoSize = true;
+            AllcheckBox.Location = new System.Drawing.Point(143, 329);
+            AllcheckBox.Name = "AllcheckBox";
+            AllcheckBox.Size = new System.Drawing.Size(141, 30);
+            AllcheckBox.TabIndex = 49;
+            AllcheckBox.Text = "Repeat for same minute \r\neach hour over 24Hrs";
+            AllcheckBox.UseVisualStyleBackColor = true;
+            AllcheckBox.Visible = false;
+            AllcheckBox.CheckedChanged += AllcheckBox_CheckedChanged;
             // 
             // greygroupBox
             // 
@@ -634,7 +655,7 @@
             // 
             greylistBox.FormattingEnabled = true;
             greylistBox.Items.AddRange(new object[] { "0", "1", "2" });
-            greylistBox.Location = new System.Drawing.Point(13, 19);
+            greylistBox.Location = new System.Drawing.Point(16, 19);
             greylistBox.Name = "greylistBox";
             greylistBox.Size = new System.Drawing.Size(42, 17);
             greylistBox.TabIndex = 46;
@@ -646,7 +667,7 @@
             NightcheckBox.Name = "NightcheckBox";
             NightcheckBox.Size = new System.Drawing.Size(165, 30);
             NightcheckBox.TabIndex = 45;
-            NightcheckBox.Text = "Repeat for same minute each\r\nhour between  sunset-sunrise\r\n";
+            NightcheckBox.Text = "Repeat for same minute each\r\nhour from  sunset to sunrise\r\n";
             NightcheckBox.UseVisualStyleBackColor = true;
             NightcheckBox.Visible = false;
             NightcheckBox.CheckedChanged += NightcheckBox_CheckedChanged;
@@ -658,7 +679,7 @@
             DaycheckBox.Name = "DaycheckBox";
             DaycheckBox.Size = new System.Drawing.Size(165, 30);
             DaycheckBox.TabIndex = 44;
-            DaycheckBox.Text = "Repeat for same minute each\r\nhour between  sunrise-sunset";
+            DaycheckBox.Text = "Repeat for same minute each\r\nhour from sunrise to sunset";
             DaycheckBox.UseVisualStyleBackColor = true;
             DaycheckBox.Visible = false;
             DaycheckBox.CheckedChanged += DaycheckBox_CheckedChanged;
@@ -704,11 +725,11 @@
             // repeatTimecheckBox
             // 
             repeatTimecheckBox.AutoSize = true;
-            repeatTimecheckBox.Location = new System.Drawing.Point(143, 200);
+            repeatTimecheckBox.Location = new System.Drawing.Point(143, 209);
             repeatTimecheckBox.Name = "repeatTimecheckBox";
-            repeatTimecheckBox.Size = new System.Drawing.Size(139, 56);
+            repeatTimecheckBox.Size = new System.Drawing.Size(165, 43);
             repeatTimecheckBox.TabIndex = 39;
-            repeatTimecheckBox.Text = "Repeat for same \r\nminutes each hour\r\nbetween start and \r\nend times on each day?";
+            repeatTimecheckBox.Text = "Repeat for same minutes \r\neach hour between start and \r\nend times on each day?";
             repeatTimecheckBox.UseVisualStyleBackColor = true;
             repeatTimecheckBox.Visible = false;
             repeatTimecheckBox.CheckedChanged += repeatTimecheckBox_CheckedChanged;
@@ -1010,6 +1031,11 @@
             // tabPage1
             // 
             tabPage1.BackColor = System.Drawing.SystemColors.Info;
+            tabPage1.Controls.Add(label115);
+            tabPage1.Controls.Add(setlabel);
+            tabPage1.Controls.Add(riselabel);
+            tabPage1.Controls.Add(label114);
+            tabPage1.Controls.Add(label113);
             tabPage1.Controls.Add(Savelabel);
             tabPage1.Controls.Add(Fhelplabel);
             tabPage1.Controls.Add(Flabel);
@@ -1058,15 +1084,65 @@
             tabPage1.Text = "Slots";
             tabPage1.Click += tabPage1_Click;
             // 
+            // label115
+            // 
+            label115.AutoSize = true;
+            label115.Location = new System.Drawing.Point(380, 613);
+            label115.Name = "label115";
+            label115.Size = new System.Drawing.Size(29, 13);
+            label115.TabIndex = 95;
+            label115.Text = "UTC";
+            // 
+            // setlabel
+            // 
+            setlabel.AutoSize = true;
+            setlabel.Location = new System.Drawing.Point(346, 613);
+            setlabel.Name = "setlabel";
+            setlabel.Size = new System.Drawing.Size(13, 13);
+            setlabel.TabIndex = 94;
+            setlabel.Text = "--";
+            // 
+            // riselabel
+            // 
+            riselabel.AutoSize = true;
+            riselabel.Location = new System.Drawing.Point(270, 613);
+            riselabel.Name = "riselabel";
+            riselabel.Size = new System.Drawing.Size(13, 13);
+            riselabel.TabIndex = 93;
+            riselabel.Text = "--";
+            // 
+            // label114
+            // 
+            label114.AutoSize = true;
+            label114.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            label114.ForeColor = System.Drawing.SystemColors.HotTrack;
+            label114.Location = new System.Drawing.Point(304, 613);
+            label114.Name = "label114";
+            label114.Size = new System.Drawing.Size(43, 13);
+            label114.TabIndex = 92;
+            label114.Text = "Sunset:";
+            // 
+            // label113
+            // 
+            label113.AutoSize = true;
+            label113.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            label113.ForeColor = System.Drawing.SystemColors.HotTrack;
+            label113.Location = new System.Drawing.Point(226, 613);
+            label113.Name = "label113";
+            label113.Size = new System.Drawing.Size(45, 13);
+            label113.TabIndex = 91;
+            label113.Text = "Sunrise:";
+            // 
             // Savelabel
             // 
             Savelabel.AutoSize = true;
             Savelabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            Savelabel.Location = new System.Drawing.Point(256, 608);
+            Savelabel.Location = new System.Drawing.Point(120, 608);
             Savelabel.Name = "Savelabel";
             Savelabel.Size = new System.Drawing.Size(15, 13);
             Savelabel.TabIndex = 90;
             Savelabel.Text = "--";
+            Savelabel.Visible = false;
             // 
             // Fhelplabel
             // 
@@ -1386,6 +1462,8 @@
             // tabPage2
             // 
             tabPage2.BackColor = System.Drawing.SystemColors.Info;
+            tabPage2.Controls.Add(sunrisebutton);
+            tabPage2.Controls.Add(label116);
             tabPage2.Controls.Add(locationbutton);
             tabPage2.Controls.Add(solarcheckBox);
             tabPage2.Controls.Add(asOnecheckBox);
@@ -1469,12 +1547,31 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 24);
+            tabPage2.Location = new System.Drawing.Point(4, 22);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1153, 629);
+            tabPage2.Size = new System.Drawing.Size(1153, 631);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
+            // 
+            // sunrisebutton
+            // 
+            sunrisebutton.Location = new System.Drawing.Point(55, 536);
+            sunrisebutton.Name = "sunrisebutton";
+            sunrisebutton.Size = new System.Drawing.Size(116, 23);
+            sunrisebutton.TabIndex = 106;
+            sunrisebutton.Text = "Update sunrise/set";
+            sunrisebutton.UseVisualStyleBackColor = true;
+            sunrisebutton.Click += sunrisebutton_Click;
+            // 
+            // label116
+            // 
+            label116.AutoSize = true;
+            label116.Location = new System.Drawing.Point(55, 562);
+            label116.Name = "label116";
+            label116.Size = new System.Drawing.Size(176, 26);
+            label116.TabIndex = 105;
+            label116.Text = "Note: create/update sunrise/sunset\r\nsettings regularly from here";
             // 
             // locationbutton
             // 
@@ -2212,7 +2309,7 @@
             // 
             // saveConfigbutton
             // 
-            saveConfigbutton.Location = new System.Drawing.Point(304, 310);
+            saveConfigbutton.Location = new System.Drawing.Point(319, 303);
             saveConfigbutton.Name = "saveConfigbutton";
             saveConfigbutton.Size = new System.Drawing.Size(83, 23);
             saveConfigbutton.TabIndex = 17;
@@ -4285,6 +4382,14 @@
         private System.Windows.Forms.ListBox greylistBox;
         private System.Windows.Forms.GroupBox greygroupBox;
         private System.Windows.Forms.Label Savelabel;
+        private System.Windows.Forms.CheckBox AllcheckBox;
+        private System.Windows.Forms.Label setlabel;
+        private System.Windows.Forms.Label riselabel;
+        private System.Windows.Forms.Label label114;
+        private System.Windows.Forms.Label label113;
+        private System.Windows.Forms.Label label115;
+        private System.Windows.Forms.Label label116;
+        private System.Windows.Forms.Button sunrisebutton;
     }
 }
 
