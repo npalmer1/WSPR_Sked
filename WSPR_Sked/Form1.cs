@@ -111,6 +111,8 @@ namespace WSPR_Sked
 
         string ant = "dipole";
 
+        int utcOffset = 0;
+
 
         int azi = 0;
         string FList = "";
@@ -313,6 +315,12 @@ namespace WSPR_Sked
             OpSystem = 0; //default to Windows
             slash = "\\"; //default to Windows
             root = "C:\\";
+
+            DateTime localTime = DateTime.Now; // your current local time
+            DateTime utcTime = localTime.ToUniversalTime();
+
+            utcOffset = localTime.Hour - utcTime.Hour;
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 OpSystem = 0; //Windows
@@ -436,10 +444,45 @@ namespace WSPR_Sked
             random = randno.Next(0, 7); //random number to spread uploads to wsprnet
 
             LatLng ll;
-            ll = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
+            DateTime r;
+            DateTime s;
+            string loc = LocatortextBox.Text.Trim().Substring(0, 4);
+            ll = MaidenheadLocator.LocatorToLatLng(loc);
+
             var sunTimes = await Sunrise_Sunset(ll.Lat, ll.Long, dt);
-            riselabel.Text = sunTimes.R.ToString("HH:mm");
-            setlabel.Text = sunTimes.S.ToString("HH:mm");
+
+            if (sunTimes.R == DateTime.MinValue)
+            {
+                var sunT = find_sunrise_sunset(loc, dt.ToString("yyyy-MM-dd"));
+                if (sunT == null)
+                {
+                    utcriselabel.Text = "N/A";
+                    utcsetlabel.Text = "N/A";
+                }
+                else
+                {
+                    r = sunT.Result.R;
+                    s = sunT.Result.S;
+                    localriselabel.Text = r.ToString("HH:mm");
+                    localsetlabel.Text = s.ToString("HH:mm");
+                    s = s.AddHours(utcOffset * -1);
+                    r = r.AddHours(utcOffset * -1);
+                    utcriselabel.Text = r.ToString("HH:mm");
+                    utcsetlabel.Text = s.ToString("HH:mm");
+                }
+            }
+            else
+            {
+                r = sunTimes.R;
+                s = sunTimes.S;
+
+                localriselabel.Text = r.ToString("HH:mm");
+                localsetlabel.Text = s.ToString("HH:mm");
+                r = r.AddHours(utcOffset * -1);
+                s = s.AddHours(utcOffset * -1);
+                utcriselabel.Text = r.ToString("HH:mm");
+                utcsetlabel.Text = s.ToString("HH:mm");
+            }
         }
 
 
@@ -462,6 +505,7 @@ namespace WSPR_Sked
             }
             return null;
         }
+
 
 
         //private  async Task<bool> findSlot(int slot, string date, string time) //find a slot in the database corresponding to the date/time from the slot to transmit/receive
@@ -1594,8 +1638,10 @@ namespace WSPR_Sked
                 DateTime startT = T;
                 if (AllcheckBox.Checked) //all day
                 {
-                    startT = DateTime.MinValue.AddHours(0).AddMinutes(0); //midnight
-                    endT = DateTime.MinValue.AddHours(23).AddMinutes(59); //23:59
+                    startT = DateTime.MinValue.AddHours(0).AddMinutes(T.Minute); //midnight + XX mins
+
+                    endT = DateTime.MinValue.AddHours(23).AddMinutes(T.Minute);
+
                 }
 
                 TimeSpan TS = End - StartCount;
@@ -1734,39 +1780,41 @@ namespace WSPR_Sked
                         var sunTimes = find_sunrise_sunset(loc, date);
 
                         rise = sunTimes.Result.R;
+                        rise = rise.AddHours(utcOffset * -1);   //convert to UTC
                         set = sunTimes.Result.S;
+                        set = set.AddHours(utcOffset * -1);
                     }
                     catch
                     {
                         Msg.TMessageBox("Error: no sunrise/set times - see TX Config", "Error: no sunrise/set times", 3000);
                         return false;
                     }
-                
 
 
-                if (!night)
-                {
-                    startT = rise.AddHours(sunriseoffset * -1);
-                    endT = set.AddHours(sunsetoffset);
 
-                }
-                else //night
-                {
-                    startT = DateTime.MinValue.AddHours(0).AddMinutes(0); //midnight
-                    endT = rise.AddHours(sunriseoffset);
+                    if (!night)
+                    {
+                        startT = rise.AddHours(sunriseoffset * -1);
+                        endT = set.AddHours(sunsetoffset);
 
-                }
-                if (startT.Minute % 2 != 0)
-                {
-                    startT = startT.AddMinutes(-1);
-                }
+                    }
+                    else //night
+                    {
+                        startT = DateTime.MinValue.AddHours(0).AddMinutes(0); //midnight
+                        endT = rise.AddHours(sunriseoffset);
 
-                if (endT.Minute % 2 != 0)
-                {
-                    endT = endT.AddMinutes(1);
-                }
-                T = startT;
-                   
+                    }
+                    if (startT.Minute % 2 != 0)
+                    {
+                        startT = startT.AddMinutes(-1);
+                    }
+
+                    if (endT.Minute % 2 != 0)
+                    {
+                        endT = endT.AddMinutes(1);
+                    }
+                    T = startT;
+
 
                     while (dt.Date <= Dend.Date)
                     {
@@ -1780,7 +1828,7 @@ namespace WSPR_Sked
                         }
                         date = dt.ToString("yyyy-MM-dd");
                         bool getsun = false;
-                        if (night && count == 0 || !night && count ==1)
+                        if (night && count == 0 || !night && count == 1)
                         {
                             getsun = true;
                         }
@@ -1818,20 +1866,21 @@ namespace WSPR_Sked
                             }
 
                             T = T.AddHours(1);
-                            if (T.TimeOfDay >= endT.TimeOfDay && !night)
+                            if ((T.TimeOfDay >= endT.TimeOfDay) && !night)
                             {
-                               
                                 dt = dt.AddDays(1);
+                                T = rise.AddHours(sunriseoffset * -1);
+                                endT = set.AddHours(sunsetoffset);
                                 daycount++;
-                                break;                              
+                                break;
                             }
-                            if (T.Hour == 0)
+                            if (T.Hour == 0 && !night)
                             {
                                 dt = dt.AddDays(1);
                                 daycount++;
                                 break;
                             }
-                            if (T.TimeOfDay >= endT.TimeOfDay && night)
+                            if ((T.TimeOfDay >= endT.TimeOfDay || T.Hour == 0) && night)
                             {
                                 if (count == 0)
                                 {
@@ -1841,12 +1890,14 @@ namespace WSPR_Sked
                                 else
                                 {
                                     dt = dt.AddDays(1);
+                                    T = DateTime.MinValue.AddHours(0).AddMinutes(0); //midnight
+                                    endT = rise.AddHours(sunriseoffset);
                                     daycount++;
                                     break;
                                 }
                                 count++;
                             }
-                            
+
                         }
                         //count++;
                     }
@@ -4143,7 +4194,7 @@ namespace WSPR_Sked
             rxForm.set_time(fulltime);
 
 
-            if (now.DayOfYear % 10 == 0 && h == 2 && m == 11 && s ==20)
+            if (now.DayOfYear % 10 == 0 && h == 2 && m == 11 && s == 20)
             {
                 updateSunriseSunset();
             }
@@ -7641,6 +7692,33 @@ namespace WSPR_Sked
 
                 string date = d.ToString(dateformat);
 
+                string loc = LocatortextBox.Text.Trim().Substring(0, 4);
+                var sunTimes = find_sunrise_sunset(loc, date);
+                if (sunTimes.Result.R == DateTime.MinValue)
+                {
+                    localriselabel.Text = "N/A";
+                    localsetlabel.Text = "N/A";
+                    utcriselabel.Text = "N/A";
+                    utcsetlabel.Text = "N/A";
+                }
+                else
+                {                 
+                    DateTime r = sunTimes.Result.R;
+                    DateTime s = sunTimes.Result.S;
+                    string R = r.ToString("HH:mm");
+                    string S = s.ToString("HH:mm");
+                    if (R != localriselabel.Text && S != localsetlabel.Text)
+                    {
+
+                        localriselabel.Text = R;
+                        localsetlabel.Text = S;
+                        s = s.AddHours(utcOffset * -1);
+                        r = r.AddHours(utcOffset * -1);
+                        utcriselabel.Text = r.ToString("HH:mm");
+                        utcsetlabel.Text = s.ToString("HH:mm");
+                    }
+                }
+
                 for (int i = 0; i <= 58; i++)
                 {
                     if (i % 2 == 0)
@@ -8401,7 +8479,7 @@ namespace WSPR_Sked
 
         }
         private async Task SaveSunRiseSunset(DateTime date, int days)
-        {
+        {   //saves local times to database
             int count = 0;
             LatLng ll;
             string sunrise = "";
@@ -8435,9 +8513,10 @@ namespace WSPR_Sked
         }
 
         static async Task<(DateTime R, DateTime S)> Sunrise_Sunset(double latitude, double longitude, DateTime Date)
-        {
-            DateTime sunriseUtc = DateTime.MinValue;
-            DateTime sunsetUtc = DateTime.MinValue;
+        {       //retrieves times as LocalConstant not UTC
+
+            DateTime sunrise = DateTime.MinValue;
+            DateTime sunset = DateTime.MinValue;
             try
             {
                 string date = Date.ToString("yyyy-MM-dd");
@@ -8450,15 +8529,16 @@ namespace WSPR_Sked
                 JObject json = JObject.Parse(response);
                 var results = json["results"];
 
-                sunriseUtc = DateTime.Parse(results["sunrise"].ToString());
-                sunsetUtc = DateTime.Parse(results["sunset"].ToString());
+                sunrise = DateTime.Parse(results["sunrise"].ToString());
+                sunset = DateTime.Parse(results["sunset"].ToString());
             }
             catch
             {
-                sunriseUtc = DateTime.MinValue;
-                sunsetUtc = DateTime.MinValue;
+                sunrise = DateTime.MinValue;
+                sunset = DateTime.MinValue;
+                return (sunrise, sunset);
             }
-            return (sunriseUtc, sunsetUtc);
+            return (sunrise, sunset);
 
         }
 
@@ -8506,7 +8586,7 @@ namespace WSPR_Sked
         }
 
         private async Task<bool> Save_SunSet_SunRise(string locator, string date, string sunrise, string sunset)
-        {
+        {   //note these are saved as local times not UTC
 
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
@@ -8544,11 +8624,8 @@ namespace WSPR_Sked
         }
 
         private async Task<(DateTime R, DateTime S)> find_sunrise_sunset(string locator, string date) //find sunsrise/set times form database
-        {
-            DataTable Slots = new DataTable();
-            //DateTime d = new DateTime();
-            int i = 0;
-            bool found = false;
+        {   //read as local times - so need to be converted to UTC
+                     
             string sunrise = "";
             string sunset = "";
 
@@ -8592,55 +8669,7 @@ namespace WSPR_Sked
             {
                 sunriseUtc = DateTime.MinValue;
                 sunsetUtc = DateTime.MinValue;
-            }
-
-            sunriseUtc = DateTime.Parse(sunrise.ToString());
-            sunsetUtc = DateTime.Parse(sunset.ToString());
-            return (sunriseUtc, sunsetUtc);
-
-        }
-
-
-        private async Task<(DateTime R, DateTime S)> find_sunrise_sunset_Test(string locator, string date) //find sunsrise/set times form database
-        {
-            DataTable Slots = new DataTable();
-            //DateTime d = new DateTime();
-            int i = 0;
-            bool found = false;
-            string sunrise = "";
-            string sunset = "";
-
-
-
-            DateTime sunriseUtc = DateTime.MinValue;
-            DateTime sunsetUtc = DateTime.MinValue;
-            string connectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
-
-
-            try
-            {
-
-
-                using var connection = new MySqlConnection(connectionString);
-                await connection.OpenAsync();
-
-                using var command = new MySqlCommand("SELECT * FROM sunrise_sunset WHERE locator = '" + locator + "' AND date = '" + date + "'", connection);
-                using var reader = await command.ExecuteReaderAsync();
-
-                while (await reader.ReadAsync())
-                {
-                    sunrise = reader["sunrise"].ToString();
-                    sunset = reader["sunset"].ToString();
-
-                }
-                reader.Close();
-                connection.Close();
-
-            }
-            catch
-            {
-                sunriseUtc = DateTime.MinValue;
-                sunsetUtc = DateTime.MinValue;
+                return (sunriseUtc, sunsetUtc);
             }
 
             sunriseUtc = DateTime.Parse(sunrise.ToString());
@@ -8658,11 +8687,12 @@ namespace WSPR_Sked
             LatLng ll;
             ll = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
             var sunTimes = await Sunrise_Sunset(ll.Lat, ll.Long, dt);
-            riselabel.Text = sunTimes.R.ToString("HH:mm");
-            setlabel.Text = sunTimes.S.ToString("HH:mm");
+            utcriselabel.Text = sunTimes.R.ToString("HH:mm");
+            utcsetlabel.Text = sunTimes.S.ToString("HH:mm");
             DateTime today = DateTime.Now;
             await SaveSunRiseSunset(today, 365);
         }
+
     }
 
 
