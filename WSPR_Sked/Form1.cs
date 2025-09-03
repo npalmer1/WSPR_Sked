@@ -1667,6 +1667,7 @@ namespace WSPR_Sked
 
             bool night = false;
             int count = 0;
+            int daycount = 0;
 
             try
             {
@@ -1718,7 +1719,222 @@ namespace WSPR_Sked
                 }
 
 
-                if (dt <= Dend)
+                if (dt.Date <= Dend.Date)
+                {
+
+                    string loc = LocatortextBox.Text.Trim().Substring(0, 4);
+
+                    isValid = DateTime.TryParse(datetimelabel.Text, out dt);
+
+                    string date = dt.ToString("yyyy-MM-dd");
+
+
+                    try
+                    {
+                        var sunTimes = find_sunrise_sunset(loc, date);
+
+                        rise = sunTimes.Result.R;
+                        set = sunTimes.Result.S;
+                    }
+                    catch
+                    {
+                        Msg.TMessageBox("Error: no sunrise/set times - see TX Config", "Error: no sunrise/set times", 3000);
+                        return false;
+                    }
+                
+
+
+                if (!night)
+                {
+                    startT = rise.AddHours(sunriseoffset * -1);
+                    endT = set.AddHours(sunsetoffset);
+
+                }
+                else //night
+                {
+                    startT = DateTime.MinValue.AddHours(0).AddMinutes(0); //midnight
+                    endT = rise.AddHours(sunriseoffset);
+
+                }
+                if (startT.Minute % 2 != 0)
+                {
+                    startT = startT.AddMinutes(-1);
+                }
+
+                if (endT.Minute % 2 != 0)
+                {
+                    endT = endT.AddMinutes(1);
+                }
+                T = startT;
+                   
+
+                    while (dt.Date <= Dend.Date)
+                    {
+                        if (night)
+                        {
+                            count = 0;  //if night need to run from midinight to sunrise and sunset to midnight
+                        }
+                        else
+                        {
+                            count = 1; //else just run once during day
+                        }
+                        date = dt.ToString("yyyy-MM-dd");
+                        bool getsun = false;
+                        if (night && count == 0 || !night && count ==1)
+                        {
+                            getsun = true;
+                        }
+                        if (daycount % 7 == 0 && getsun) //every 7 days recalculate sunrise/sunset
+                        {
+
+                            try
+                            {
+                                var sunTimes = find_sunrise_sunset(loc, date);
+
+                                rise = sunTimes.Result.R;
+                                set = sunTimes.Result.S;
+                            }
+                            catch
+                            {
+                                Msg.TMessageBox("Error: no sunrise/set times - see TX Config", "Error: no sunrise/set times", 3000);
+                                return false;
+                            }
+                        }
+
+
+                        //T = startT;                       
+
+                        while (T.TimeOfDay <= endT.TimeOfDay && count < 2)
+                        {
+
+                            string newdate = dt.ToString(dateformat);
+
+                            T = new DateTime(T.Year, T.Month, T.Day, T.Hour, mins.Minute, 0); // set minutes to same as curr time
+                            time1 = T.ToString("HH:mm"); //update time by one hour
+
+                            if (!SaveSlotData(newdate, time1))
+                            {
+                                return false;
+                            }
+
+                            T = T.AddHours(1);
+                            if (T.TimeOfDay >= endT.TimeOfDay && !night)
+                            {
+                               
+                                dt = dt.AddDays(1);
+                                daycount++;
+                                break;                              
+                            }
+                            if (T.Hour == 0)
+                            {
+                                dt = dt.AddDays(1);
+                                daycount++;
+                                break;
+                            }
+                            if (T.TimeOfDay >= endT.TimeOfDay && night)
+                            {
+                                if (count == 0)
+                                {
+                                    T = set.AddHours(sunsetoffset * -1);
+                                    endT = new DateTime(endT.Year, endT.Month, endT.Day, 23, 59, 0);
+                                }
+                                else
+                                {
+                                    dt = dt.AddDays(1);
+                                    daycount++;
+                                    break;
+                                }
+                                count++;
+                            }
+                            
+                        }
+                        //count++;
+                    }
+
+                }
+                else
+                {
+                    string newdate = dt.ToString(dateformat);
+                    if (!SaveSlotData(newdate, time1))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private async Task<bool> locateSlotMembersDT_Sun_OLD(string date1, string time1, string enddate, string endtime, bool this_slot)
+        {
+            DateTime dt;
+            DateTime Dend;
+
+            DateTime endT;
+            DateTime T;
+
+
+            LatLng latlon;
+            DateTime rise = DateTime.MinValue;
+            DateTime set = DateTime.MinValue;
+
+            bool night = false;
+            int count = 0;
+
+            try
+            {
+                string o = greylistBox.Text;
+                sunriseoffset = Convert.ToInt32(o);
+                sunsetoffset = Convert.ToInt32(o);
+            }
+            catch
+            {
+                sunriseoffset = 0;
+                sunsetoffset = 0;
+            }
+
+            latlon = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
+
+            // time1 is current time
+            try
+            {
+                bool isValid = DateTime.TryParse(date1, out dt); //dt is output of checking datatime label (current) date
+                isValid = DateTime.TryParse(enddate, out Dend); //ditto but end date
+
+
+
+                bool isValidT = DateTime.TryParse(timeEnd.Value.ToString("HH:mm"), out endT); //endtime
+                isValidT = DateTime.TryParse(time1, out T); //current time
+                DateTime mins = T; //keep current minute
+
+                DateTime StartCount = dt.AddHours(T.Hour).AddMinutes(T.Minute);
+                DateTime End = Dend.AddHours(endT.Hour).AddMinutes(endT.Minute);
+
+
+                if (DaycheckBox.Checked)
+                {
+                    night = false;
+                }
+                else if (NightcheckBox.Checked)
+                {
+                    night = true;
+                }
+                DateTime startT = DateTime.UtcNow;
+
+
+
+                //TimeSpan TS = End - StartCount;
+
+                if (this_slot) //only update this slot
+                {
+                    Dend = dt;
+                }
+
+
+                if (dt.Date <= Dend.Date)
                 {
 
 
