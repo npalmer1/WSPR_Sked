@@ -47,6 +47,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
@@ -111,7 +112,7 @@ namespace WSPR_Sked
 
         string ant = "dipole";
 
-        int utcOffset = 0;
+      
 
 
         int azi = 0;
@@ -140,6 +141,8 @@ namespace WSPR_Sked
 
         int sunriseoffset = 1;
         int sunsetoffset = 1;
+        string timezone = "UTC";
+        int utcOffset = 0;
 
 
         DateTime currentSelectedDate;
@@ -318,8 +321,7 @@ namespace WSPR_Sked
 
             DateTime localTime = DateTime.Now; // your current local time
             DateTime utcTime = localTime.ToUniversalTime();
-
-            utcOffset = localTime.Hour - utcTime.Hour;
+         
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -443,6 +445,9 @@ namespace WSPR_Sked
 
             random = randno.Next(0, 7); //random number to spread uploads to wsprnet
 
+            
+            utcOffset = GetUtcOffset(DateTime.Now);
+
             LatLng ll;
             DateTime r;
             DateTime s;
@@ -460,7 +465,7 @@ namespace WSPR_Sked
                     utcsetlabel.Text = "N/A";
                 }
                 else
-                {
+                {   //change LT to UTC
                     r = sunT.Result.R;
                     s = sunT.Result.S;
                     localriselabel.Text = r.ToString("HH:mm");
@@ -483,6 +488,12 @@ namespace WSPR_Sked
                 utcriselabel.Text = r.ToString("HH:mm");
                 utcsetlabel.Text = s.ToString("HH:mm");
             }
+
+          
+            //await GetTimeZoneFromCoordinatesAsync(ll.Lat, ll.Long);
+
+
+
         }
 
 
@@ -7692,6 +7703,8 @@ namespace WSPR_Sked
 
                 string date = d.ToString(dateformat);
 
+                int offset = GetUtcOffset(d);
+
                 string loc = LocatortextBox.Text.Trim().Substring(0, 4);
                 var sunTimes = find_sunrise_sunset(loc, date);
                 if (sunTimes.Result.R == DateTime.MinValue)
@@ -7712,8 +7725,8 @@ namespace WSPR_Sked
 
                         localriselabel.Text = R;
                         localsetlabel.Text = S;
-                        s = s.AddHours(utcOffset * -1);
-                        r = r.AddHours(utcOffset * -1);
+                        s = s.AddHours(offset * -1);
+                        r = r.AddHours(offset * -1);
                         utcriselabel.Text = r.ToString("HH:mm");
                         utcsetlabel.Text = s.ToString("HH:mm");
                     }
@@ -8692,6 +8705,25 @@ namespace WSPR_Sked
             DateTime today = DateTime.Now;
             await SaveSunRiseSunset(today, 365);
         }
+
+
+        private int GetUtcOffset(DateTime date)
+        {
+            string timeZoneId = TimeZoneInfo.Local.Id;
+            TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+      
+            //DateTime utcDate = new DateTime(date.Year,date.Month, date.Day, date.Hour,0,0,DateTimeKind.Utc); // 2 AM UTC
+
+            TimeZoneInfo ukZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+            DateTime utcDate = TimeZoneInfo.ConvertTimeToUtc(date);
+            int diff = date.Hour - utcDate.Hour;
+            return diff;
+
+            //Console.WriteLine($"Local Time: {localDate}");
+
+        }
+        
+
 
     }
 
