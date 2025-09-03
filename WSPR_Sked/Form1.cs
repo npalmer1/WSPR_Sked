@@ -58,12 +58,15 @@ using WsprSharp;
 using ZstdSharp.Unsafe;
 using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 using static Mysqlx.Crud.Find.Types;
+using static Mysqlx.Expect.Open.Types.Condition.Types;
 using static Mysqlx.Notice.Warning.Types;
 using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using static WSPR_Sked.Form1;
@@ -446,7 +449,7 @@ namespace WSPR_Sked
             random = randno.Next(0, 7); //random number to spread uploads to wsprnet
 
             
-            utcOffset = GetUtcOffset(DateTime.Now);
+            utcOffset = getUTCoffset(DateTime.Now);
 
             LatLng ll;
             DateTime r;
@@ -458,7 +461,7 @@ namespace WSPR_Sked
 
             if (sunTimes.R == DateTime.MinValue)
             {
-                var sunT = find_sunrise_sunset(loc, dt.ToString("yyyy-MM-dd"));
+                var sunT = find_sunrise_sunset(loc, dt.ToString("MM-dd"));
                 if (sunT == null)
                 {
                     utcriselabel.Text = "N/A";
@@ -489,10 +492,11 @@ namespace WSPR_Sked
                 utcsetlabel.Text = s.ToString("HH:mm");
             }
 
-          
-            //await GetTimeZoneFromCoordinatesAsync(ll.Lat, ll.Long);
-
-
+            if (grey_table_count() < 365)
+            {
+                Msg.TMessageBox("No sunrise/sunset times - building table - please wait", "Sunrise/sunset Times", 4000);
+                updateSunriseSunset();
+            }
 
         }
 
@@ -1783,12 +1787,12 @@ namespace WSPR_Sked
 
                     isValid = DateTime.TryParse(datetimelabel.Text, out dt);
 
-                    string date = dt.ToString("yyyy-MM-dd");
+                    string sundate = dt.ToString("MM-dd");
 
 
                     try
                     {
-                        var sunTimes = find_sunrise_sunset(loc, date);
+                        var sunTimes = find_sunrise_sunset(loc, sundate);
 
                         rise = sunTimes.Result.R;
                         rise = rise.AddHours(utcOffset * -1);   //convert to UTC
@@ -1837,7 +1841,7 @@ namespace WSPR_Sked
                         {
                             count = 1; //else just run once during day
                         }
-                        date = dt.ToString("yyyy-MM-dd");
+                        sundate = dt.ToString("MM-dd");
                         bool getsun = false;
                         if (night && count == 0 || !night && count == 1)
                         {
@@ -1848,7 +1852,7 @@ namespace WSPR_Sked
 
                             try
                             {
-                                var sunTimes = find_sunrise_sunset(loc, date);
+                                var sunTimes = find_sunrise_sunset(loc, sundate);
 
                                 rise = sunTimes.Result.R;
                                 set = sunTimes.Result.S;
@@ -2005,13 +2009,13 @@ namespace WSPR_Sked
 
                     isValid = DateTime.TryParse(datetimelabel.Text, out dt);
 
-                    string date = dt.ToString("yyyy-MM-dd");
+                    string sundate = dt.ToString("MM-dd");
 
 
 
                     try
                     {
-                        var sunTimes = find_sunrise_sunset(loc, date);
+                        var sunTimes = find_sunrise_sunset(loc, sundate);
 
                         rise = sunTimes.Result.R;
                         set = sunTimes.Result.S;
@@ -4205,7 +4209,7 @@ namespace WSPR_Sked
             rxForm.set_time(fulltime);
 
 
-            if (now.DayOfYear % 10 == 0 && h == 2 && m == 11 && s == 20)
+            if (now.DayOfYear % 30 == 0 && h == 2 && m == 11 && s == 20)
             {
                 updateSunriseSunset();
             }
@@ -7699,39 +7703,45 @@ namespace WSPR_Sked
 
                 DateTime d = new DateTime();
                 d = Convert.ToDateTime(selDate);
-                //monthCalendar1.SetDate(d);
+                //monthCalendar1.SetDate(d);                
+                DateTime selD = d.AddHours(Convert.ToInt32(tm));
 
-                string date = d.ToString(dateformat);
+                string date = d.ToString("yyyy-MM-dd");
+                string sundate = selD.ToString("MM-dd");
 
-                int offset = GetUtcOffset(d);
+                int offset = getUTCoffset(selD);
 
                 string loc = LocatortextBox.Text.Trim().Substring(0, 4);
-                var sunTimes = find_sunrise_sunset(loc, date);
-                if (sunTimes.Result.R == DateTime.MinValue)
+                try
                 {
-                    localriselabel.Text = "N/A";
-                    localsetlabel.Text = "N/A";
-                    utcriselabel.Text = "N/A";
-                    utcsetlabel.Text = "N/A";
-                }
-                else
-                {                 
-                    DateTime r = sunTimes.Result.R;
-                    DateTime s = sunTimes.Result.S;
-                    string R = r.ToString("HH:mm");
-                    string S = s.ToString("HH:mm");
-                    if (R != localriselabel.Text && S != localsetlabel.Text)
+                    var sunTimes = find_sunrise_sunset(loc, sundate);
+                    if (sunTimes.Result.R == DateTime.MinValue)
                     {
-
-                        localriselabel.Text = R;
-                        localsetlabel.Text = S;
-                        s = s.AddHours(offset * -1);
-                        r = r.AddHours(offset * -1);
-                        utcriselabel.Text = r.ToString("HH:mm");
-                        utcsetlabel.Text = s.ToString("HH:mm");
+                        localriselabel.Text = "N/A";
+                        localsetlabel.Text = "N/A";
+                        utcriselabel.Text = "N/A";
+                        utcsetlabel.Text = "N/A";
+                    }
+                    else
+                    {
+                        DateTime r = sunTimes.Result.R;
+                        DateTime s = sunTimes.Result.S;
+                        string R = r.ToString("HH:mm");
+                        string S = s.ToString("HH:mm");
+                       
+                            localriselabel.Text = R;
+                            localsetlabel.Text = S;
+                            s = s.AddHours(offset * -1);
+                            r = r.AddHours(offset * -1);
+                            utcriselabel.Text = r.ToString("HH:mm");
+                            utcsetlabel.Text = s.ToString("HH:mm");
+                        
                     }
                 }
-
+                catch
+                {
+                    string error = "error"; 
+                }
                 for (int i = 0; i <= 58; i++)
                 {
                     if (i % 2 == 0)
@@ -8505,13 +8515,13 @@ namespace WSPR_Sked
 
                 for (int i = 0; i < days; i++)
                 {
-                    if (i % 7 == 0) //get sunrise/set every week
-                    {
+                    //if (i % 7 == 0) //get sunrise/set every week
+                    //{
                         var sunTimes = await Sunrise_Sunset(ll.Lat, ll.Long, date);
                         sunrise = sunTimes.R.ToString("HH:mm");
                         sunset = sunTimes.S.ToString("HH:mm");
-                    }
-                    string Date = date.ToString("yyyy-MM-dd");
+                    //}
+                    string Date = date.ToString("MM-dd");
 
                     Save_SunSet_SunRise(locator, Date, sunrise, sunset);
                     date = date.AddDays(1);
@@ -8609,13 +8619,14 @@ namespace WSPR_Sked
             {
                 try
                 {
+                   
                     MySqlCommand command = connection.CreateCommand();
                     command.CommandText = "INSERT IGNORE INTO sunrise_sunset(locator,date,sunrise,sunset) ";
                     command.CommandText += "VALUES(@locator,@date,@sunrise,@sunset)";
+                    command.CommandText += " ON DUPLICATE KEY UPDATE sunrise = '" + sunrise + "', sunset = '" + sunset + "'";
 
                     connection.Open();
-
-                    //TimeSpan time = Convert.ToDateTime(cells[1]);
+                    
                     command.Parameters.AddWithValue("@locator", locator);
                     command.Parameters.AddWithValue("@date", date);
                     command.Parameters.AddWithValue("@sunrise", sunrise);
@@ -8644,8 +8655,8 @@ namespace WSPR_Sked
 
 
 
-            DateTime sunriseUtc = DateTime.MinValue;
-            DateTime sunsetUtc = DateTime.MinValue;
+            DateTime sunriseT = DateTime.MinValue;
+            DateTime sunsetT = DateTime.MinValue;
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
 
 
@@ -8680,14 +8691,14 @@ namespace WSPR_Sked
             }
             catch
             {
-                sunriseUtc = DateTime.MinValue;
-                sunsetUtc = DateTime.MinValue;
-                return (sunriseUtc, sunsetUtc);
+                sunriseT = DateTime.MinValue;
+                sunsetT = DateTime.MinValue;
+                return (sunriseT, sunsetT);
             }
 
-            sunriseUtc = DateTime.Parse(sunrise.ToString());
-            sunsetUtc = DateTime.Parse(sunset.ToString());
-            return (sunriseUtc, sunsetUtc);
+            sunriseT = DateTime.Parse(sunrise.ToString());
+            sunsetT = DateTime.Parse(sunset.ToString());
+            return (sunriseT, sunsetT);
 
         }
 
@@ -8697,6 +8708,7 @@ namespace WSPR_Sked
         }
         private async void updateSunriseSunset()
         {
+            Msg.TMessageBox("Sunrise and sunset times updating", "Sunrise/set", 3000);
             LatLng ll;
             ll = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
             var sunTimes = await Sunrise_Sunset(ll.Lat, ll.Long, dt);
@@ -8704,25 +8716,46 @@ namespace WSPR_Sked
             utcsetlabel.Text = sunTimes.S.ToString("HH:mm");
             DateTime today = DateTime.Now;
             await SaveSunRiseSunset(today, 365);
+            
         }
 
 
-        private int GetUtcOffset(DateTime date)
+        private int getUTCoffset(DateTime date)
         {
             string timeZoneId = TimeZoneInfo.Local.Id;
             TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+            TimeSpan t = tz.GetUtcOffset(date);
+            return t.Hours;
       
-            //DateTime utcDate = new DateTime(date.Year,date.Month, date.Day, date.Hour,0,0,DateTimeKind.Utc); // 2 AM UTC
-
-            TimeZoneInfo ukZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
-            DateTime utcDate = TimeZoneInfo.ConvertTimeToUtc(date);
-            int diff = date.Hour - utcDate.Hour;
-            return diff;
-
-            //Console.WriteLine($"Local Time: {localDate}");
-
         }
-        
+
+        private int grey_table_count()
+        {
+            int count;
+            string connectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
+
+            try
+            {
+                //string connectionString = "Server=server;Port=3306;Database=wspr;User ID=user;Password=pass;";
+
+                using (var connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new MySqlCommand("SELECT COUNT(*) FROM sunrise_sunset", connection))
+                    {
+                        count = Convert.ToInt32(command.ExecuteScalar());
+                    }
+                    connection.Close();
+                }
+                return count;
+
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
 
 
     }
