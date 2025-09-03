@@ -93,9 +93,12 @@
             label13 = new System.Windows.Forms.Label();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            label117 = new System.Windows.Forms.Label();
+            localsetlabel = new System.Windows.Forms.Label();
+            localriselabel = new System.Windows.Forms.Label();
             label115 = new System.Windows.Forms.Label();
-            setlabel = new System.Windows.Forms.Label();
-            riselabel = new System.Windows.Forms.Label();
+            utcsetlabel = new System.Windows.Forms.Label();
+            utcriselabel = new System.Windows.Forms.Label();
             label114 = new System.Windows.Forms.Label();
             label113 = new System.Windows.Forms.Label();
             Savelabel = new System.Windows.Forms.Label();
@@ -631,7 +634,7 @@
             // AllcheckBox
             // 
             AllcheckBox.AutoSize = true;
-            AllcheckBox.Location = new System.Drawing.Point(143, 329);
+            AllcheckBox.Location = new System.Drawing.Point(143, 321);
             AllcheckBox.Name = "AllcheckBox";
             AllcheckBox.Size = new System.Drawing.Size(141, 30);
             AllcheckBox.TabIndex = 49;
@@ -643,7 +646,7 @@
             // greygroupBox
             // 
             greygroupBox.Controls.Add(greylistBox);
-            greygroupBox.Location = new System.Drawing.Point(31, 262);
+            greygroupBox.Location = new System.Drawing.Point(31, 254);
             greygroupBox.Name = "greygroupBox";
             greygroupBox.Size = new System.Drawing.Size(95, 49);
             greygroupBox.TabIndex = 48;
@@ -663,7 +666,7 @@
             // NightcheckBox
             // 
             NightcheckBox.AutoSize = true;
-            NightcheckBox.Location = new System.Drawing.Point(143, 293);
+            NightcheckBox.Location = new System.Drawing.Point(143, 285);
             NightcheckBox.Name = "NightcheckBox";
             NightcheckBox.Size = new System.Drawing.Size(165, 30);
             NightcheckBox.TabIndex = 45;
@@ -675,7 +678,7 @@
             // DaycheckBox
             // 
             DaycheckBox.AutoSize = true;
-            DaycheckBox.Location = new System.Drawing.Point(143, 262);
+            DaycheckBox.Location = new System.Drawing.Point(143, 254);
             DaycheckBox.Name = "DaycheckBox";
             DaycheckBox.Size = new System.Drawing.Size(165, 30);
             DaycheckBox.TabIndex = 44;
@@ -725,7 +728,7 @@
             // repeatTimecheckBox
             // 
             repeatTimecheckBox.AutoSize = true;
-            repeatTimecheckBox.Location = new System.Drawing.Point(143, 209);
+            repeatTimecheckBox.Location = new System.Drawing.Point(143, 201);
             repeatTimecheckBox.Name = "repeatTimecheckBox";
             repeatTimecheckBox.Size = new System.Drawing.Size(165, 43);
             repeatTimecheckBox.TabIndex = 39;
@@ -785,7 +788,7 @@
             timeEnd.CustomFormat = "HH:mm";
             timeEnd.Enabled = false;
             timeEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            timeEnd.Location = new System.Drawing.Point(42, 219);
+            timeEnd.Location = new System.Drawing.Point(42, 211);
             timeEnd.Name = "timeEnd";
             timeEnd.ShowUpDown = true;
             timeEnd.Size = new System.Drawing.Size(84, 20);
@@ -1024,16 +1027,19 @@
             tabControl1.Location = new System.Drawing.Point(3, -1);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new System.Drawing.Size(1161, 657);
+            tabControl1.Size = new System.Drawing.Size(1161, 678);
             tabControl1.TabIndex = 0;
             tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
             // tabPage1
             // 
             tabPage1.BackColor = System.Drawing.SystemColors.Info;
+            tabPage1.Controls.Add(label117);
+            tabPage1.Controls.Add(localsetlabel);
+            tabPage1.Controls.Add(localriselabel);
             tabPage1.Controls.Add(label115);
-            tabPage1.Controls.Add(setlabel);
-            tabPage1.Controls.Add(riselabel);
+            tabPage1.Controls.Add(utcsetlabel);
+            tabPage1.Controls.Add(utcriselabel);
             tabPage1.Controls.Add(label114);
             tabPage1.Controls.Add(label113);
             tabPage1.Controls.Add(Savelabel);
@@ -1079,10 +1085,37 @@
             tabPage1.Location = new System.Drawing.Point(4, 22);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            tabPage1.Size = new System.Drawing.Size(1153, 631);
+            tabPage1.Size = new System.Drawing.Size(1153, 652);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Slots";
             tabPage1.Click += tabPage1_Click;
+            // 
+            // label117
+            // 
+            label117.AutoSize = true;
+            label117.Location = new System.Drawing.Point(380, 634);
+            label117.Name = "label117";
+            label117.Size = new System.Drawing.Size(20, 13);
+            label117.TabIndex = 98;
+            label117.Text = "LT";
+            // 
+            // localsetlabel
+            // 
+            localsetlabel.AutoSize = true;
+            localsetlabel.Location = new System.Drawing.Point(346, 634);
+            localsetlabel.Name = "localsetlabel";
+            localsetlabel.Size = new System.Drawing.Size(13, 13);
+            localsetlabel.TabIndex = 97;
+            localsetlabel.Text = "--";
+            // 
+            // localriselabel
+            // 
+            localriselabel.AutoSize = true;
+            localriselabel.Location = new System.Drawing.Point(270, 634);
+            localriselabel.Name = "localriselabel";
+            localriselabel.Size = new System.Drawing.Size(13, 13);
+            localriselabel.TabIndex = 96;
+            localriselabel.Text = "--";
             // 
             // label115
             // 
@@ -1093,30 +1126,31 @@
             label115.TabIndex = 95;
             label115.Text = "UTC";
             // 
-            // setlabel
+            // utcsetlabel
             // 
-            setlabel.AutoSize = true;
-            setlabel.Location = new System.Drawing.Point(346, 613);
-            setlabel.Name = "setlabel";
-            setlabel.Size = new System.Drawing.Size(13, 13);
-            setlabel.TabIndex = 94;
-            setlabel.Text = "--";
+            utcsetlabel.AutoSize = true;
+            utcsetlabel.Location = new System.Drawing.Point(346, 613);
+            utcsetlabel.Name = "utcsetlabel";
+            utcsetlabel.Size = new System.Drawing.Size(13, 13);
+            utcsetlabel.TabIndex = 94;
+            utcsetlabel.Text = "--";
+          
             // 
-            // riselabel
+            // utcriselabel
             // 
-            riselabel.AutoSize = true;
-            riselabel.Location = new System.Drawing.Point(270, 613);
-            riselabel.Name = "riselabel";
-            riselabel.Size = new System.Drawing.Size(13, 13);
-            riselabel.TabIndex = 93;
-            riselabel.Text = "--";
+            utcriselabel.AutoSize = true;
+            utcriselabel.Location = new System.Drawing.Point(270, 613);
+            utcriselabel.Name = "utcriselabel";
+            utcriselabel.Size = new System.Drawing.Size(13, 13);
+            utcriselabel.TabIndex = 93;
+            utcriselabel.Text = "--";
             // 
             // label114
             // 
             label114.AutoSize = true;
             label114.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
             label114.ForeColor = System.Drawing.SystemColors.HotTrack;
-            label114.Location = new System.Drawing.Point(304, 613);
+            label114.Location = new System.Drawing.Point(303, 613);
             label114.Name = "label114";
             label114.Size = new System.Drawing.Size(43, 13);
             label114.TabIndex = 92;
@@ -1127,7 +1161,7 @@
             label113.AutoSize = true;
             label113.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
             label113.ForeColor = System.Drawing.SystemColors.HotTrack;
-            label113.Location = new System.Drawing.Point(226, 613);
+            label113.Location = new System.Drawing.Point(225, 613);
             label113.Name = "label113";
             label113.Size = new System.Drawing.Size(45, 13);
             label113.TabIndex = 91;
@@ -1547,10 +1581,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 22);
+            tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1153, 631);
+            tabPage2.Size = new System.Drawing.Size(1153, 650);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -2408,7 +2442,7 @@
             tabPage3.Location = new System.Drawing.Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1153, 629);
+            tabPage3.Size = new System.Drawing.Size(1153, 650);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
             // 
@@ -2709,7 +2743,7 @@
             tabPage4.Location = new System.Drawing.Point(4, 24);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1153, 629);
+            tabPage4.Size = new System.Drawing.Size(1153, 650);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
@@ -3232,7 +3266,7 @@
             tabPage5.Location = new System.Drawing.Point(4, 24);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            tabPage5.Size = new System.Drawing.Size(1153, 629);
+            tabPage5.Size = new System.Drawing.Size(1153, 650);
             tabPage5.TabIndex = 4;
             tabPage5.Text = "Switches&Tuners";
             // 
@@ -3666,7 +3700,7 @@
             tabPage6.Controls.Add(audioInlistBox);
             tabPage6.Location = new System.Drawing.Point(4, 24);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new System.Drawing.Size(1153, 629);
+            tabPage6.Size = new System.Drawing.Size(1153, 650);
             tabPage6.TabIndex = 5;
             tabPage6.Text = "RX & Sound config";
             // 
@@ -3991,7 +4025,7 @@
             AutoSize = true;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             BackColor = System.Drawing.Color.Beige;
-            ClientSize = new System.Drawing.Size(1167, 658);
+            ClientSize = new System.Drawing.Size(1167, 677);
             Controls.Add(LTlabel2);
             Controls.Add(LTlabel);
             Controls.Add(Datelabel);
@@ -4383,13 +4417,16 @@
         private System.Windows.Forms.GroupBox greygroupBox;
         private System.Windows.Forms.Label Savelabel;
         private System.Windows.Forms.CheckBox AllcheckBox;
-        private System.Windows.Forms.Label setlabel;
-        private System.Windows.Forms.Label riselabel;
+        private System.Windows.Forms.Label utcsetlabel;
+        private System.Windows.Forms.Label utcriselabel;
         private System.Windows.Forms.Label label114;
         private System.Windows.Forms.Label label113;
         private System.Windows.Forms.Label label115;
         private System.Windows.Forms.Label label116;
         private System.Windows.Forms.Button sunrisebutton;
+        private System.Windows.Forms.Label localsetlabel;
+        private System.Windows.Forms.Label localriselabel;
+        private System.Windows.Forms.Label label117;
     }
 }
 
