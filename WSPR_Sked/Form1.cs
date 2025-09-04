@@ -1453,10 +1453,10 @@ namespace WSPR_Sked
                 DateTime dt;
                 bool isValid = DateTime.TryParse(datetimelabel.Text, out dt);
 
-                string date = dt.ToString("yyyy-MM-dd");
+                string sundate = dt.ToString("MM-dd");
                 try
                 {
-                    var sunTimes = find_sunrise_sunset(loc, date);
+                    var sunTimes = find_sunrise_sunset(loc, sundate);
 
                     rise = sunTimes.Result.R;
                     set = sunTimes.Result.S;
