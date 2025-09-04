@@ -1655,7 +1655,7 @@ namespace WSPR_Sked
                 {
                     startT = DateTime.MinValue.AddHours(0).AddMinutes(T.Minute); //midnight + XX mins
 
-                    endT = DateTime.MinValue.AddHours(23).AddMinutes(T.Minute);
+                    endT = DateTime.MinValue.AddHours(23).AddMinutes(59);
 
                 }
 
@@ -1671,7 +1671,7 @@ namespace WSPR_Sked
                     while (dt <= Dend)
                     {
                         T = startT;
-                        while (T <= endT)
+                        while (T.TimeOfDay <= endT.TimeOfDay)
                         {
                             string newdate = dt.ToString(dateformat);
                             time1 = T.ToString("HH:mm"); //update time by one hour
@@ -1680,9 +1680,9 @@ namespace WSPR_Sked
                             {
                                 return false;
                             }
-
+                           
                             T = T.AddHours(1);
-                            if (T >= endT)
+                            if (T.TimeOfDay >= endT.TimeOfDay)
                             {
                                 dt = dt.AddDays(1);
                                 break;
@@ -1692,6 +1692,7 @@ namespace WSPR_Sked
                                 dt = dt.AddDays(1);
                                 break;
                             }
+
                         }
                     }
 
