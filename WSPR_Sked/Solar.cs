@@ -972,12 +972,12 @@ namespace WSPR_Sked
             string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_sol";
 
 
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
+
+           
             try
             {
-                MySqlConnection connection = new MySqlConnection(myConnectionString);
-
                 connection.Open();
-
                 MySqlCommand command = connection.CreateCommand();
 
                 string C = "";
@@ -1061,6 +1061,7 @@ namespace WSPR_Sked
             catch
             {
                 found = false;
+                connection.Close();
             }
         }
 
@@ -1159,8 +1160,8 @@ namespace WSPR_Sked
 
             }
             catch
-            {         
-
+            {
+                connection.Close();
             }
 
 
@@ -1198,7 +1199,7 @@ namespace WSPR_Sked
             }
             catch
             {
-
+                connection.Close();
             }
 
 
@@ -1246,8 +1247,8 @@ namespace WSPR_Sked
 
             }
             catch
-            {       
-
+            {
+                connection.Close();
             }
 
 
@@ -1261,12 +1262,12 @@ namespace WSPR_Sked
             int i = 0;
             bool found = false;
             string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_sol";
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
 
+            
 
             try
             {
-                MySqlConnection connection = new MySqlConnection(myConnectionString);
-
                 connection.Open();
 
                 MySqlCommand command = connection.CreateCommand();
@@ -1366,7 +1367,8 @@ namespace WSPR_Sked
             }
             catch
             {
-                found = false;
+                found = false;              
+                connection.Close();
             }
         }
 
@@ -2084,6 +2086,7 @@ namespace WSPR_Sked
             }
             catch
             {         //if row already exists then try updating it in database
+                connection.Close();
 
             }
 
@@ -2116,6 +2119,7 @@ namespace WSPR_Sked
             }
             catch
             {         //if row already exists then try updating it in database
+                connection.Close();
 
             }
 
@@ -2157,12 +2161,12 @@ namespace WSPR_Sked
             bool found = false;
             string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_sol";
 
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
 
+            connection.Open();
             try
             {
-                MySqlConnection connection = new MySqlConnection(myConnectionString);
-
-                connection.Open();
+               
 
                 MySqlCommand command = connection.CreateCommand();
 
@@ -2261,6 +2265,7 @@ namespace WSPR_Sked
             catch
             {
                 found = false;
+                connection.Close();
             }
         }
         private void update_grid3() //add rows to the datagridview

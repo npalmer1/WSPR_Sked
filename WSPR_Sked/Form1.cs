@@ -1471,7 +1471,7 @@ namespace WSPR_Sked
                 {
                     rise = rise.AddHours(sunriseoffset * -1);
                     set = set.AddHours(sunsetoffset);
-                    if (dt.Hour < rise.Hour || dt.Hour > set.Hour)
+                    if (dt.TimeOfDay < rise.TimeOfDay || dt.TimeOfDay > set.TimeOfDay)  //was dt.Hour and rise.Hour
                     {
                         show = false;
                     }
@@ -1480,7 +1480,7 @@ namespace WSPR_Sked
                 {
                     rise = rise.AddHours(sunriseoffset);
                     set = set.AddHours(sunsetoffset * -1);
-                    if (dt.Hour > rise.Hour && dt.Hour < set.Hour)
+                    if (dt.TimeOfDay > rise.TimeOfDay && dt.TimeOfDay < set.TimeOfDay)  //was dt.Hour and rise.Hour
                     {
                         show = false;
                     }
