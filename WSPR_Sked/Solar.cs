@@ -2163,11 +2163,11 @@ namespace WSPR_Sked
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
-            connection.Open();
+           
             try
             {
-               
 
+                connection.Open();
                 MySqlCommand command = connection.CreateCommand();
 
                 string C = "";
