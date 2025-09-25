@@ -1490,7 +1490,7 @@ namespace WSPR_Sked
                     riseM = rise.AddMinutes(2);
                     set = set.AddHours(sunsetoffset * -1);
                     setM = set.AddMinutes(-2);
-                    if (dt.TimeOfDay >= rise.TimeOfDay && dt.TimeOfDay <= set.TimeOfDay)  //was dt.Hour and rise.Hour
+                    if (dt.Hour >= rise.Hour && dt.Hour <= set.Hour)  //was dt.Hour and rise.Hour
                     {
                         show = false;
                     }
@@ -1879,8 +1879,8 @@ namespace WSPR_Sked
 
                         //T = startT;                       
 
-                        while (T.TimeOfDay < endT.TimeOfDay && count < 2)
-                        //while (T.Hour <= endT.Hour && count < 2)
+                        //while (T.TimeOfDay < endT.TimeOfDay && count < 2)
+                        while (T.Hour < endT.Hour+1 && count < 2)   //add an hour to the end so that T.Hour will always be eventually < endT.Hour
                         {
 
                             string newdate = dt.ToString(dateformat);
@@ -1894,8 +1894,8 @@ namespace WSPR_Sked
                             }
 
                             T = T.AddHours(1);
-                            //if ((T.TimeOfDay >= endT.TimeOfDay) && !night)
-                            if ((T.Hour > endT.Hour) && !night)
+                            if ((T.TimeOfDay > endT.TimeOfDay) && !night)
+                            //if ((T.Hour > endT.Hour) && !night)
                             {
                                 dt = dt.AddDays(1);
                                 T = rise.AddHours(sunriseoffset * -1);
@@ -1909,8 +1909,8 @@ namespace WSPR_Sked
                                 daycount++;
                                 break;
                             }
-                            //if ((T.TimeOfDay >= endT.TimeOfDay || T.Hour == 0) && night)
-                            if ((T.Hour > endT.Hour || T.Hour == 0) && night)
+                            if ((T.TimeOfDay > endT.TimeOfDay || T.Hour == 0) && night)
+                            //if ((T.Hour > endT.Hour || T.Hour == 0) && night)
                             {
                                 if (count == 0)
                                 {

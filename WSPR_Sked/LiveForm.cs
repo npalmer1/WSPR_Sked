@@ -242,7 +242,7 @@ namespace WSPR_Sked
         {
             int count;
             string connectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_rx";
-            var connection = new MySqlConnection(connectionString)
+            var connection = new MySqlConnection(connectionString);
             try
             {
                 //string connectionString = "Server=server;Port=3306;Database=wspr;User ID=user;Password=pass;";
