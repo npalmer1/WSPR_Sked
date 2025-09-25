@@ -1876,9 +1876,6 @@ namespace WSPR_Sked
                             }
                         }
 
-
-                        //T = startT;                       
-
                         //while (T.TimeOfDay < endT.TimeOfDay && count < 2)
                         while (T.Hour < endT.Hour+1 && count < 2)   //add an hour to the end so that T.Hour will always be eventually < endT.Hour
                         {
