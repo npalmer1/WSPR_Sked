@@ -242,12 +242,12 @@ namespace WSPR_Sked
         {
             int count;
             string connectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_rx";
-
+            var connection = new MySqlConnection(connectionString)
             try
             {
                 //string connectionString = "Server=server;Port=3306;Database=wspr;User ID=user;Password=pass;";
 
-                using (var connection = new MySqlConnection(connectionString))
+                using (connection)
                 {
                     connection.Open();
                     using (var command = new MySqlCommand("SELECT COUNT(*) FROM reported", connection))
@@ -261,6 +261,7 @@ namespace WSPR_Sked
             }
             catch
             {
+                connection.Close();
                 return 0;
             }
         }
@@ -272,12 +273,12 @@ namespace WSPR_Sked
             int i = 0;
             bool found = false;
             string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_rx";
-
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
             if (!databaseError)
             {
                 try
                 {
-                    MySqlConnection connection = new MySqlConnection(myConnectionString);
+                    
 
                     connection.Open();
 
@@ -353,6 +354,7 @@ namespace WSPR_Sked
 
                     //databaseError = true; //stop wasting time trying to connect if database error - ignore for present
                     found = false;
+                    connection.Close();
 
                 }
             }
@@ -472,9 +474,10 @@ namespace WSPR_Sked
             string tostr = "";
             if (!databaseError)
             {
+                MySqlConnection connection = new MySqlConnection(myConnectionString);
                 try
                 {
-                    MySqlConnection connection = new MySqlConnection(myConnectionString);
+                   
 
                     connection.Open();
 
@@ -587,6 +590,7 @@ namespace WSPR_Sked
 
                     //databaseError = true; //stop wasting time trying to connect if database error - ignore for present
                     found = false;
+                    connection.Close();
 
                 }
             }
@@ -615,12 +619,12 @@ namespace WSPR_Sked
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_rx";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             DateTime date = new DateTime();
-
+            MySqlCommand command = connection.CreateCommand();
             lock (_lock)
             {
                 try
                 {
-                    MySqlCommand command = connection.CreateCommand();
+                    
                     command.CommandText = "INSERT IGNORE INTO reported(id,time,band,rx_sign,rx_lat,rx_lon,rx_loc,tx_sign,tx_lat,tx_lon,tx_loc,distance,azimuth,rx_azimuth,frequency,power,snr,drift,version,code) ";
                     command.CommandText += "VALUES(@id,@time,@band,@rx_sign,@rx_lat,@rx_lon,@rx_loc,@tx_sign,@tx_lat,@tx_lon,@tx_loc,@distance,@azimuth,@rx_azimuth,@frequency,@power,@snr,@drift,@version,@code)";
 
@@ -655,7 +659,7 @@ namespace WSPR_Sked
                 }
                 catch
                 {         //if row already exists then try updating it in database
-
+                    connection.Close();
                 }
             }
 

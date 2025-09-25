@@ -535,10 +535,11 @@ namespace WSPR_Sked
             while (!read)
             {
 
+                MySqlConnection connection = new MySqlConnection(myConnectionString);
+
+               
                 try
                 {
-                    MySqlConnection connection = new MySqlConnection(myConnectionString);
-
                     connection.Open();
 
                     MySqlCommand command = connection.CreateCommand();
@@ -673,6 +674,7 @@ namespace WSPR_Sked
                     }
                     //databaseError = true; //stop wasting time trying to connect if database error
                     slotFound = false;
+                    connection.Close();
 
                     //}
                 }
@@ -726,12 +728,13 @@ namespace WSPR_Sked
 
             if (!databaseError)
             {
+                MySqlConnection connection = new MySqlConnection(myConnectionString);
+
+               
                 try
                 {
-                    MySqlConnection connection = new MySqlConnection(myConnectionString);
 
                     connection.Open();
-
                     MySqlCommand command = connection.CreateCommand();
 
                     command.CommandText = "SELECT * FROM slots WHERE Date = '" + date + "' AND Time = '" + time.Trim() + "'";
@@ -862,6 +865,7 @@ namespace WSPR_Sked
                     }
                     databaseError = true; //stop wasting time trying to connect if database error
                     found = false;
+                    connection.Close();
                 }
             }
             return found;
@@ -1467,11 +1471,15 @@ namespace WSPR_Sked
                     return;
                 }
 
+                DateTime riseM;
+                DateTime setM;
                 if (DaycheckBox.Checked)
                 {
                     rise = rise.AddHours(sunriseoffset * -1);
                     set = set.AddHours(sunsetoffset);
-                    if (dt.TimeOfDay < rise.TimeOfDay || dt.TimeOfDay > set.TimeOfDay)  //was dt.Hour and rise.Hour
+                    //riseM = rise.AddMinutes(-2);
+                    //setM = set.AddMinutes(2);
+                    if (dt.Hour < rise.Hour || dt.Hour > set.Hour)  //was dt.Hour and rise.Hour
                     {
                         show = false;
                     }
@@ -1479,8 +1487,10 @@ namespace WSPR_Sked
                 else if (NightcheckBox.Checked)
                 {
                     rise = rise.AddHours(sunriseoffset);
+                    riseM = rise.AddMinutes(2);
                     set = set.AddHours(sunsetoffset * -1);
-                    if (dt.TimeOfDay > rise.TimeOfDay && dt.TimeOfDay < set.TimeOfDay)  //was dt.Hour and rise.Hour
+                    setM = set.AddMinutes(-2);
+                    if (dt.TimeOfDay >= rise.TimeOfDay && dt.TimeOfDay <= set.TimeOfDay)  //was dt.Hour and rise.Hour
                     {
                         show = false;
                     }
@@ -1854,9 +1864,10 @@ namespace WSPR_Sked
                             try
                             {
                                 var sunTimes = find_sunrise_sunset(loc, sundate);
-
                                 rise = sunTimes.Result.R;
+                                rise = rise.AddHours(utcOffset * -1);   //convert to UTC
                                 set = sunTimes.Result.S;
+                                set = set.AddHours(utcOffset * -1);
                             }
                             catch
                             {
@@ -1868,7 +1879,8 @@ namespace WSPR_Sked
 
                         //T = startT;                       
 
-                        while (T.TimeOfDay <= endT.TimeOfDay && count < 2)
+                        while (T.TimeOfDay < endT.TimeOfDay && count < 2)
+                        //while (T.Hour <= endT.Hour && count < 2)
                         {
 
                             string newdate = dt.ToString(dateformat);
@@ -1882,7 +1894,8 @@ namespace WSPR_Sked
                             }
 
                             T = T.AddHours(1);
-                            if ((T.TimeOfDay >= endT.TimeOfDay) && !night)
+                            //if ((T.TimeOfDay >= endT.TimeOfDay) && !night)
+                            if ((T.Hour > endT.Hour) && !night)
                             {
                                 dt = dt.AddDays(1);
                                 T = rise.AddHours(sunriseoffset * -1);
@@ -1896,7 +1909,8 @@ namespace WSPR_Sked
                                 daycount++;
                                 break;
                             }
-                            if ((T.TimeOfDay >= endT.TimeOfDay || T.Hour == 0) && night)
+                            //if ((T.TimeOfDay >= endT.TimeOfDay || T.Hour == 0) && night)
+                            if ((T.Hour > endT.Hour || T.Hour == 0) && night)
                             {
                                 if (count == 0)
                                 {
@@ -2466,8 +2480,10 @@ namespace WSPR_Sked
 
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
+           
             try
             {
+                connection.Open();
                 MySqlCommand command = connection.CreateCommand();
                 if (!all)
                 {
@@ -2478,7 +2494,7 @@ namespace WSPR_Sked
                     c = "DELETE FROM slots WHERE Parent = '" + parent + "'";
                 }
                 command.CommandText = c;
-                connection.Open();
+               
                 command.ExecuteNonQuery();
                 connection.Close();
 
@@ -2487,6 +2503,7 @@ namespace WSPR_Sked
             catch
             {
                 Msg.OKMessageBox("Error deleting slot", "");
+                connection.Close();
             }
         }
 
@@ -2583,14 +2600,15 @@ namespace WSPR_Sked
             string arrow = ">";
             string c = "";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
+            
             try
             {
-
+                connection.Open();
                 MySqlCommand command = connection.CreateCommand();
                 c = "DELETE FROM slots WHERE slots.Date >= '" + date1 + "' AND slots.Date <= '" + date2 + "'";
 
                 command.CommandText = c;
-                connection.Open();
+                
                 command.ExecuteNonQuery();
                 connection.Close();
                 return true;
@@ -2600,6 +2618,7 @@ namespace WSPR_Sked
             {
                 Msg.OKMessageBox("Error deleting slots", "");
                 return false;
+                connection.Close();
             }
         }
 
@@ -3212,19 +3231,21 @@ namespace WSPR_Sked
             string c = "";
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + database;
             MySqlConnection connection = new MySqlConnection(myConnectionString);
+           
             try
             {
+                connection.Open();
                 MySqlCommand command = connection.CreateCommand();
                 c = "ALTER USER 'admin'@'%' IDENTIFIED BY '" + password + "'";
 
                 command.CommandText = c;
-                connection.Open();
+                
                 command.ExecuteNonQuery();
                 connection.Close();
             }
             catch
             {
-
+                connection.Close();
             }
         }
         private async void setAllPasswords(string password)
@@ -3695,11 +3716,12 @@ namespace WSPR_Sked
         private void ReadConfig()
         {
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs";
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
+            
             try
             {
-                MySqlConnection connection = new MySqlConnection(myConnectionString);
-                connection.Open();
 
+                connection.Open();
                 MySqlCommand command = connection.CreateCommand();
 
                 command.CommandText = "SELECT * FROM settings";
@@ -3780,6 +3802,7 @@ namespace WSPR_Sked
             catch
             {
                 Msg.TMessageBox("Unable to load settings", "", 1000);
+                connection.Close();
             }
         }
 
@@ -3918,8 +3941,11 @@ namespace WSPR_Sked
         private void ReadAntennas()
         {
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
+            
             try
             {
+                
                 int antNo;
                 string antenna;
                 string antDescription;
@@ -3929,7 +3955,6 @@ namespace WSPR_Sked
                 Antenna A;
                 Ant.Clear();
 
-                MySqlConnection connection = new MySqlConnection(myConnectionString);
                 connection.Open();
 
                 MySqlCommand command = connection.CreateCommand();
@@ -3971,6 +3996,7 @@ namespace WSPR_Sked
             catch
             {
                 Msg.TMessageBox("Unable to load settings", "", 1000);
+                connection.Close();
             }
         }
 
@@ -3980,8 +4006,10 @@ namespace WSPR_Sked
 
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
+            
             try
             {
+                connection.Open();
                 MySqlCommand command = connection.CreateCommand();
                 string ant = AntlistBox.SelectedItem.ToString();
                 string[] A = ant.Split('\t');
@@ -3990,7 +4018,7 @@ namespace WSPR_Sked
                 c = "DELETE FROM antennas WHERE AntNo = " + Ant[sel].AntNo;
 
                 command.CommandText = c;
-                connection.Open();
+               
                 command.ExecuteNonQuery();
                 connection.Close();
                 return true;
@@ -3998,6 +4026,7 @@ namespace WSPR_Sked
             catch
             {
                 Msg.OKMessageBox("Error deleting antenna", "");
+                connection.Close();
                 return false;
             }
         }
@@ -4005,15 +4034,14 @@ namespace WSPR_Sked
         private void ReadFrequencies()
         {
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
+           
             try
             {
+                connection.Open();
                 double freq;
                 double level;
                 string antenna;
-
-
-                MySqlConnection connection = new MySqlConnection(myConnectionString);
-                connection.Open();
 
                 MySqlCommand command = connection.CreateCommand();
 
@@ -4039,6 +4067,7 @@ namespace WSPR_Sked
             catch
             {
                 Msg.TMessageBox("Unable to load frequenciess", "", 1000);
+                connection.Close();
             }
         }
         private bool SaveFrequency(string freq) //save configuration settings
@@ -4131,8 +4160,10 @@ namespace WSPR_Sked
 
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
+            
             try
             {
+                connection.Open();
                 MySqlCommand command = connection.CreateCommand();
                 if (freq == "")
                 {
@@ -4144,7 +4175,7 @@ namespace WSPR_Sked
                 c = "DELETE FROM frequencies WHERE Frequency = " + F[0].Trim();
 
                 command.CommandText = c;
-                connection.Open();
+               
                 command.ExecuteNonQuery();
                 connection.Close();
                 return true;
@@ -4152,6 +4183,7 @@ namespace WSPR_Sked
             catch
             {
                 Msg.OKMessageBox("Error deleting frequency", "");
+                connection.Close();
                 return false;
             }
         }
@@ -5228,10 +5260,11 @@ namespace WSPR_Sked
         private bool readRigctl()
         {
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
+            connection.Open();
             try
             {
-                MySqlConnection connection = new MySqlConnection(myConnectionString);
-                connection.Open();
 
                 MySqlCommand command = connection.CreateCommand();
 
@@ -5265,6 +5298,7 @@ namespace WSPR_Sked
             catch
             {
                 Msg.TMessageBox("Unable to load settings", "", 1000);
+                connection.Close();
                 return false;
             }
         }
@@ -6375,8 +6409,11 @@ namespace WSPR_Sked
         private void ReadHardware(string table)
         {
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
+           
             try
             {
+                connection.Open();
                 int hwId = 0;
                 string hw = "";
                 string protocol = "";
@@ -6399,8 +6436,7 @@ namespace WSPR_Sked
                     TU.Clear();
                 }
 
-                MySqlConnection connection = new MySqlConnection(myConnectionString);
-                connection.Open();
+              
 
                 MySqlCommand command = connection.CreateCommand();
 
@@ -6476,6 +6512,7 @@ namespace WSPR_Sked
             catch
             {
                 Msg.TMessageBox("Unable to load " + table, "", 1000);
+                connection.Close();
             }
         }
         private void AddtoHwList(int hwId, string hw, string protocol, string port, string IP, string baud, string serial, string type, int channels, string table)
@@ -8154,11 +8191,12 @@ namespace WSPR_Sked
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             DateTime date = new DateTime();
-
+            
             lock (_lock)
             {
                 try
                 {
+                    connection.Open();
 
                     string wpath = wsprdfilepath.Replace("\\", "/");  //make sql friendly
                     MySqlCommand command = connection.CreateCommand();
@@ -8169,14 +8207,14 @@ namespace WSPR_Sked
                     command.CommandText += ", inputname = '" + audioInName + "', inputdevice = " + audioInDevice;
                     command.CommandText += ", outlevel = " + outLevel + ", inlevel = " + inLevel + ", wsprdpath = '" + wpath + "'";
 
-                    connection.Open();
+                  
                     command.ExecuteNonQuery();
                     connection.Close();
 
                 }
                 catch
                 {
-
+                    connection.Close();
                 }
             }
 
@@ -8615,18 +8653,19 @@ namespace WSPR_Sked
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
-
+            
             lock (_lock)
             {
                 try
                 {
-                   
+
+                    connection.Open();
                     MySqlCommand command = connection.CreateCommand();
                     command.CommandText = "INSERT IGNORE INTO sunrise_sunset(locator,date,sunrise,sunset) ";
                     command.CommandText += "VALUES(@locator,@date,@sunrise,@sunset)";
                     command.CommandText += " ON DUPLICATE KEY UPDATE sunrise = '" + sunrise + "', sunset = '" + sunset + "'";
 
-                    connection.Open();
+                    
                     
                     command.Parameters.AddWithValue("@locator", locator);
                     command.Parameters.AddWithValue("@date", date);
@@ -8642,6 +8681,7 @@ namespace WSPR_Sked
                 }
                 catch
                 {         //if row already exists then try updating it in database
+                    connection.Close();
                     return false;
                 }
             }
@@ -8660,15 +8700,12 @@ namespace WSPR_Sked
             DateTime sunsetT = DateTime.MinValue;
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
 
+            MySqlConnection connection = new MySqlConnection(myConnectionString);           
 
             try
             {
 
-
-                MySqlConnection connection = new MySqlConnection(myConnectionString);
-
                 connection.Open();
-
                 MySqlCommand command = connection.CreateCommand();
 
 
@@ -8694,6 +8731,7 @@ namespace WSPR_Sked
             {
                 sunriseT = DateTime.MinValue;
                 sunsetT = DateTime.MinValue;
+                connection.Close();
                 return (sunriseT, sunsetT);
             }
 
@@ -8734,12 +8772,13 @@ namespace WSPR_Sked
         {
             int count;
             string connectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
-
+            var connection = new MySqlConnection(connectionString);
+            
             try
             {
                 //string connectionString = "Server=server;Port=3306;Database=wspr;User ID=user;Password=pass;";
-
-                using (var connection = new MySqlConnection(connectionString))
+               
+                using (connection)
                 {
                     connection.Open();
                     using (var command = new MySqlCommand("SELECT COUNT(*) FROM sunrise_sunset", connection))
@@ -8753,6 +8792,7 @@ namespace WSPR_Sked
             }
             catch
             {
+                connection.Close();
                 return 0;
             }
         }
