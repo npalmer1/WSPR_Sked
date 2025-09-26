@@ -1457,6 +1457,7 @@ namespace WSPR_Sked
                 DateTime dt;
                 bool isValid = DateTime.TryParse(datetimelabel.Text, out dt);
 
+                int utcOff = getUTCoffset(dt);
                 string sundate = dt.ToString("MM-dd");
                 try
                 {
@@ -1464,6 +1465,8 @@ namespace WSPR_Sked
 
                     rise = sunTimes.Result.R;
                     set = sunTimes.Result.S;
+                    rise = rise.AddHours(utcOff * -1);   //convert to UTC                   
+                    set = set.AddHours(utcOff * -1);
                 }
                 catch
                 {
@@ -1800,15 +1803,15 @@ namespace WSPR_Sked
 
                     string sundate = dt.ToString("MM-dd");
 
-
+                    int utcOff = getUTCoffset(dt);
                     try
                     {
                         var sunTimes = find_sunrise_sunset(loc, sundate);
 
                         rise = sunTimes.Result.R;
-                        rise = rise.AddHours(utcOffset * -1);   //convert to UTC
+                        rise = rise.AddHours(utcOff * -1);   //convert to UTC
                         set = sunTimes.Result.S;
-                        set = set.AddHours(utcOffset * -1);
+                        set = set.AddHours(utcOff * -1);
                     }
                     catch
                     {
@@ -1863,11 +1866,12 @@ namespace WSPR_Sked
 
                             try
                             {
+                                utcOff = getUTCoffset(dt);
                                 var sunTimes = find_sunrise_sunset(loc, sundate);
                                 rise = sunTimes.Result.R;
-                                rise = rise.AddHours(utcOffset * -1);   //convert to UTC
+                                rise = rise.AddHours(utcOff * -1);   //convert to UTC
                                 set = sunTimes.Result.S;
-                                set = set.AddHours(utcOffset * -1);
+                                set = set.AddHours(utcOff * -1);
                             }
                             catch
                             {
