@@ -142,8 +142,8 @@ namespace WSPR_Sked
 
         bool solarStarted = false;
 
-        int sunriseoffset = 1;
-        int sunsetoffset = 1;
+        int sunriseoffset = 0;
+        int sunsetoffset = 0;
         string timezone = "UTC";
         int utcOffset = 0;
 
@@ -1478,8 +1478,9 @@ namespace WSPR_Sked
                 DateTime setM;
                 if (DaycheckBox.Checked)
                 {
-                    rise = rise.AddHours(sunriseoffset * -1);
-                    set = set.AddHours(sunsetoffset);
+                 
+                    rise = rise.AddMinutes(sunriseoffset * -1);
+                    set = set.AddMinutes(sunsetoffset);
                     //riseM = rise.AddMinutes(-2);
                     //setM = set.AddMinutes(2);
                     if (dt.Hour < rise.Hour || dt.Hour > set.Hour)  //was dt.Hour and rise.Hour
@@ -1489,10 +1490,10 @@ namespace WSPR_Sked
                 }
                 else if (NightcheckBox.Checked)
                 {
-                    rise = rise.AddHours(sunriseoffset);
-                    riseM = rise.AddMinutes(2);
-                    set = set.AddHours(sunsetoffset * -1);
-                    setM = set.AddMinutes(-2);
+                    rise = rise.AddMinutes(sunriseoffset);
+                    //riseM = rise.AddMinutes(2);
+                    set = set.AddMinutes(sunsetoffset * -1);
+                    //setM = set.AddMinutes(-2);
                     if (dt.Hour >= rise.Hour && dt.Hour <= set.Hour)  //was dt.Hour and rise.Hour
                     {
                         show = false;
@@ -1823,14 +1824,14 @@ namespace WSPR_Sked
 
                     if (!night)
                     {
-                        startT = rise.AddHours(sunriseoffset * -1);
-                        endT = set.AddHours(sunsetoffset);
+                        startT = rise.AddMinutes(sunriseoffset * -1);
+                        endT = set.AddMinutes(sunsetoffset);
 
                     }
                     else //night
                     {
                         startT = DateTime.MinValue.AddHours(0).AddMinutes(0); //midnight
-                        endT = rise.AddHours(sunriseoffset);
+                        endT = rise.AddMinutes(sunriseoffset);
 
                     }
                     if (startT.Minute % 2 != 0)
@@ -1844,7 +1845,7 @@ namespace WSPR_Sked
                     }
                     T = startT;
 
-
+                   
                     while (dt.Date <= Dend.Date)
                     {
                         if (night)
@@ -1881,7 +1882,7 @@ namespace WSPR_Sked
                         }
 
                         //while (T.TimeOfDay < endT.TimeOfDay && count < 2)
-                        while (T.Hour < endT.Hour+1 && count < 2)   //add an hour to the end so that T.Hour will always be eventually < endT.Hour
+                        while (T.Hour < endT.Hour+2 && count < 2)   //add an hour to the end so that T.Hour will always be eventually < endT.Hour
                         {
 
                             string newdate = dt.ToString(dateformat);
@@ -1899,14 +1900,28 @@ namespace WSPR_Sked
                             //if ((T.Hour > endT.Hour) && !night)
                             {
                                 dt = dt.AddDays(1);
-                                T = rise.AddHours(sunriseoffset * -1);
-                                endT = set.AddHours(sunsetoffset);
+                                utcOff = getUTCoffset(dt);
+                                sundate = dt.ToString("MM-dd");
+                                var sunTimes = find_sunrise_sunset(loc, sundate);
+                                rise = sunTimes.Result.R;
+                                rise = rise.AddHours(utcOff * -1);   //convert to UTC
+                                set = sunTimes.Result.S;
+                                set = set.AddHours(utcOff * -1);
+                                T = rise.AddMinutes(sunriseoffset * -1);
+                                endT = set.AddMinutes(sunsetoffset);
                                 daycount++;
                                 break;
                             }
                             if (T.Hour == 0 && !night)
                             {
                                 dt = dt.AddDays(1);
+                                /*utcOff = getUTCoffset(dt);
+                                sundate = dt.ToString("MM-dd");
+                                var sunTimes = find_sunrise_sunset(loc, sundate);
+                                rise = sunTimes.Result.R;
+                                rise = rise.AddHours(utcOff * -1);   //convert to UTC
+                                set = sunTimes.Result.S;
+                                set = set.AddHours(utcOff * -1);*/
                                 daycount++;
                                 break;
                             }
@@ -1915,14 +1930,21 @@ namespace WSPR_Sked
                             {
                                 if (count == 0)
                                 {
-                                    T = set.AddHours(sunsetoffset * -1);
+                                    T = set.AddMinutes(sunsetoffset * -1);
                                     endT = new DateTime(endT.Year, endT.Month, endT.Day, 23, 59, 0);
                                 }
                                 else
                                 {
                                     dt = dt.AddDays(1);
+                                    utcOff = getUTCoffset(dt);
+                                    sundate = dt.ToString("MM-dd");
+                                    var sunTimes = find_sunrise_sunset(loc, sundate);
+                                    rise = sunTimes.Result.R;
+                                    rise = rise.AddHours(utcOff * -1);   //convert to UTC
+                                    set = sunTimes.Result.S;
+                                    set = set.AddHours(utcOff * -1);
                                     T = DateTime.MinValue.AddHours(0).AddMinutes(0); //midnight
-                                    endT = rise.AddHours(sunriseoffset);
+                                    endT = rise.AddMinutes(sunriseoffset);
                                     daycount++;
                                     break;
                                 }
@@ -1930,6 +1952,7 @@ namespace WSPR_Sked
                             }
 
                         }
+                       
                         //count++;
                     }
 
@@ -2045,14 +2068,14 @@ namespace WSPR_Sked
 
                     if (!night)
                     {
-                        startT = rise.AddHours(sunriseoffset * -1);
-                        endT = set.AddHours(sunsetoffset);
+                        startT = rise.AddMinutes(sunriseoffset * -1);
+                        endT = set.AddMinutes(sunsetoffset);
 
                     }
                     else //night
                     {
                         startT = DateTime.MinValue.AddHours(0).AddMinutes(0); //midnight
-                        endT = rise.AddHours(sunriseoffset);
+                        endT = rise.AddMinutes(sunriseoffset);
 
                     }
                     if (startT.Minute % 2 != 0)
@@ -2109,7 +2132,7 @@ namespace WSPR_Sked
                             }
                             if (T.Hour > endT.Hour && night)
                             {
-                                T = set.AddHours(sunsetoffset * -1);
+                                T = set.AddMinutes(sunsetoffset * -1);
                                 endT = new DateTime(endT.Year, endT.Month, endT.Day, 23, 59, 0);
                             }
                             count++;

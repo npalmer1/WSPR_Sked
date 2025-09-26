@@ -651,16 +651,16 @@
             greygroupBox.Size = new System.Drawing.Size(95, 49);
             greygroupBox.TabIndex = 48;
             greygroupBox.TabStop = false;
-            greygroupBox.Text = "Offset hours";
+            greygroupBox.Text = "Offset minutes";
             greygroupBox.Visible = false;
             // 
             // greylistBox
             // 
             greylistBox.FormattingEnabled = true;
-            greylistBox.Items.AddRange(new object[] { "0", "1", "2" });
+            greylistBox.Items.AddRange(new object[] { "0", "30", "60", "90", "120", "150" });
             greylistBox.Location = new System.Drawing.Point(16, 19);
             greylistBox.Name = "greylistBox";
-            greylistBox.Size = new System.Drawing.Size(42, 17);
+            greylistBox.Size = new System.Drawing.Size(54, 17);
             greylistBox.TabIndex = 46;
             // 
             // NightcheckBox
@@ -1134,7 +1134,6 @@
             utcsetlabel.Size = new System.Drawing.Size(13, 13);
             utcsetlabel.TabIndex = 94;
             utcsetlabel.Text = "--";
-          
             // 
             // utcriselabel
             // 
