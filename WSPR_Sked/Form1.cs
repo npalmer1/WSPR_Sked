@@ -1845,7 +1845,8 @@ namespace WSPR_Sked
                     }
                     T = startT;
 
-                   
+                    int priorUTCoff = utcOff;
+
                     while (dt.Date <= Dend.Date)
                     {
                         if (night)
@@ -1862,7 +1863,7 @@ namespace WSPR_Sked
                         {
                             getsun = true;
                         }
-                        if (daycount % 7 == 0 && getsun) //every 7 days recalculate sunrise/sunset
+                        if (daycount % 7 == 0 && getsun) //every 7 days recalculate sunrise/sunset(reduce times interrogating sunrise/set database)
                         {
 
                             try
@@ -1873,6 +1874,7 @@ namespace WSPR_Sked
                                 rise = rise.AddHours(utcOff * -1);   //convert to UTC
                                 set = sunTimes.Result.S;
                                 set = set.AddHours(utcOff * -1);
+                                priorUTCoff = utcOff;
                             }
                             catch
                             {
@@ -1880,7 +1882,7 @@ namespace WSPR_Sked
                                 return false;
                             }
                         }
-
+                        
                         //while (T.TimeOfDay < endT.TimeOfDay && count < 2)
                         while (T.Hour < endT.Hour+2 && count < 2)   //add an hour to the end so that T.Hour will always be eventually < endT.Hour
                         {
@@ -1901,12 +1903,17 @@ namespace WSPR_Sked
                             {
                                 dt = dt.AddDays(1);
                                 utcOff = getUTCoffset(dt);
-                                sundate = dt.ToString("MM-dd");
+                                /*sundate = dt.ToString("MM-dd");
                                 var sunTimes = find_sunrise_sunset(loc, sundate);
                                 rise = sunTimes.Result.R;
-                                rise = rise.AddHours(utcOff * -1);   //convert to UTC
-                                set = sunTimes.Result.S;
-                                set = set.AddHours(utcOff * -1);
+                                set = sunTimes.Result.S;*/
+                                if (priorUTCoff != utcOff)
+                                {
+                                    rise = rise.AddHours(utcOff * -1);   //convert to UTC                                
+                                    set = set.AddHours(utcOff * -1);
+                                    priorUTCoff = utcOff;
+                                }
+
                                 T = rise.AddMinutes(sunriseoffset * -1);
                                 endT = set.AddMinutes(sunsetoffset);
                                 daycount++;
@@ -1915,13 +1922,21 @@ namespace WSPR_Sked
                             if (T.Hour == 0 && !night)
                             {
                                 dt = dt.AddDays(1);
-                                /*utcOff = getUTCoffset(dt);
+                                utcOff = getUTCoffset(dt);
+                                /*
                                 sundate = dt.ToString("MM-dd");
                                 var sunTimes = find_sunrise_sunset(loc, sundate);
                                 rise = sunTimes.Result.R;
-                                rise = rise.AddHours(utcOff * -1);   //convert to UTC
                                 set = sunTimes.Result.S;
-                                set = set.AddHours(utcOff * -1);*/
+                                */
+                                if (priorUTCoff != utcOff)
+                                {
+                                    rise = rise.AddHours(utcOff * -1);   //convert to UTC                                
+                                    set = set.AddHours(utcOff * -1);
+                                    priorUTCoff = utcOff;
+                                }
+                                rise = rise.AddHours(utcOff * -1);   //convert to UTC                               
+                                set = set.AddHours(utcOff * -1);
                                 daycount++;
                                 break;
                             }
@@ -1936,13 +1951,15 @@ namespace WSPR_Sked
                                 else
                                 {
                                     dt = dt.AddDays(1);
+                                    /*
                                     utcOff = getUTCoffset(dt);
                                     sundate = dt.ToString("MM-dd");
                                     var sunTimes = find_sunrise_sunset(loc, sundate);
                                     rise = sunTimes.Result.R;
                                     rise = rise.AddHours(utcOff * -1);   //convert to UTC
                                     set = sunTimes.Result.S;
-                                    set = set.AddHours(utcOff * -1);
+                                    set = set.AddHours(utcOff * -1);*/
+
                                     T = DateTime.MinValue.AddHours(0).AddMinutes(0); //midnight
                                     endT = rise.AddMinutes(sunriseoffset);
                                     daycount++;
@@ -7064,6 +7081,7 @@ namespace WSPR_Sked
                 DaycheckBox.Checked = false;
                 NightcheckBox.Checked = false;
                 greygroupBox.Visible = false;
+                AllcheckBox.Checked = false;
 
             }
 
