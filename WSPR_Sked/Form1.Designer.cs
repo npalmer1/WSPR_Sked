@@ -657,7 +657,7 @@
             // greylistBox
             // 
             greylistBox.FormattingEnabled = true;
-            greylistBox.Items.AddRange(new object[] { "0", "30", "60", "90", "120", "150" });
+            greylistBox.Items.AddRange(new object[] { "0", "30", "60", "90", "120", "150", "180" });
             greylistBox.Location = new System.Drawing.Point(16, 19);
             greylistBox.Name = "greylistBox";
             greylistBox.Size = new System.Drawing.Size(54, 17);
