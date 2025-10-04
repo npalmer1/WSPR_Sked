@@ -70,6 +70,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using static WSPR_Sked.Form1;
+using Application = System.Windows.Forms.Application;
 
 //solar data source:
 //https://services.swpc.noaa.gov/text/daily-geomagnetic-indices.txt
@@ -115,7 +116,7 @@ namespace WSPR_Sked
 
         string ant = "dipole";
 
-      
+
 
 
         int azi = 0;
@@ -175,8 +176,16 @@ namespace WSPR_Sked
 
         }
 
+
         SlotData Slot = new SlotData();
         SlotData SlotRow = new SlotData();
+
+        public struct SunTimes
+        {
+            public DateTime R;
+            public DateTime S;
+        }
+        SunTimes sunTimes = new SunTimes();
 
         string CurrTime = "";
 
@@ -286,11 +295,11 @@ namespace WSPR_Sked
         MessageClass Msg = new MessageClass();
         public Form1()
         {
-
             KeyPreview = true;
             KeyDown += Form1_KeyDown;
-
+            this.Shown += Form1_Shown;
             InitializeComponent();
+
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -314,6 +323,7 @@ namespace WSPR_Sked
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
             string ver = "0.1.7";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
@@ -322,180 +332,212 @@ namespace WSPR_Sked
             slash = "\\"; //default to Windows
             root = "C:\\";
 
-            DateTime localTime = DateTime.Now; // your current local time
-            DateTime utcTime = localTime.ToUniversalTime();
-         
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (checkSlotDB())
             {
-                OpSystem = 0; //Windows
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                OpSystem = 1; //Linux
-                slash = "/"; //Linux uses forward slash
-                root = "/"; //Linux root
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                OpSystem = 2; //MacOS
-                slash = "/"; //MacOS uses forward slash
-                root = "/"; //MacOS root
-            }
-            else if (OperatingSystem.IsAndroid())
-            {
-                OpSystem = 3; //Android
-                slash = "/"; //Android uses forward slash
-                root = "/"; //Android root
-            }
+                DateTime localTime = DateTime.Now; // your current local time
+                DateTime utcTime = localTime.ToUniversalTime();
 
-            wsprdfilepath = root + "WSPR_Sked"; //default path to WSPR_Sked folder
-
-            baseCalltextBox.Text = "";
-            defaultF = 14.0956;
-            defaultOfftextBox.Text = Convert.ToString(defaultoffset);
-            defaultpwrcomboBox.Text = Convert.ToString(defaultdB);
-            CalltextBox.Text = callsign;
-            LocatortextBox.Text = location;
-
-
-
-            getUserandPassword();
-            GridHeading();
-            dataGridView1.DataSource = dtable;
-            setColumnWidth();
-
-            //selectedTime = dt.Date; //.ToString("hh:mm");
-            daytimer.Enabled = true;
-            daytimer.Start();
-            ReadAntennas();
-            ReadFrequencies();
-
-
-            ReadHardware("switches");
-            ReadHardware("tuners");
-            ReadConfig();
-            TXRXAntlabel.Text = defaultAnt;
-            TXRXAntlabel2.Text = defaultAnt;
-
-
-            DateTime dt;
-
-            if (LTcheckBox.Checked)
-            {
-                dt = DateTime.Now;
-
-            }
-            else
-            {
-                dt = DateTime.Now.ToUniversalTime();
-
-            }
-            selectedDate = dt.Date;
-            //monthCalendar1.TodayDate = dt;
-            monthCalendar1.SetDate(dt);
-            string selTime = dt.Hour.ToString().PadLeft(2, '0');
-            showmsg = true;
-            Datelabel.Text = dt.ToString("dddd-dd-MMM-yyyy");
-
-            //changeDateTimes(selTime, dt.ToString(dateformat), true);
-            getComports();
-            readRigctl();
-            if (!noRigctld)
-            {
-                getRigList();
-
-                findRigCtlFolder();
-                runRigCtlD(); //strt rig ctld
-            }
-            else
-            {
-                rigrunlabel.Text = "rigctld not running";
-                Riglabel.Text = "rigctld not running";
-                Riglabel1.Text = "rigctld not running";
-            }
-
-            TXrunbutton.BackColor = Color.Olive;
-            TXrunbutton2.BackColor = Color.Olive;
-
-            string process = "rigctld";
-
-            if (Process.GetProcessesByName(process).Length > 0 && !noRigctld)
-            {
-                rigrunlabel.Text = "rigctld running";
-                Riglabel.Text = "rigctld not running";
-                Riglabel1.Text = rigrunlabel.Text;
-            }
-            set410Mode();
-            currHour(false, false);
-            trackSlotscheckBox.Checked = true;
-            MonitorMic();
-            gain = trackBarGain.Value / 100f;
-            rxForm.gain = gain;
-            gainlabel.Text = gain.ToString();
-
-            findSound(); //populate sound listboxes with audio in/out devices
-            Read_Audio();
-            liveForm.Show();
-            liveForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass);
-            startCount = 0;
-            rxForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath, ver, OpSystem);
-            if (!noRigctld) { getRigF(); }
-
-            //rxForm.set_frequency(defaultF.ToString("F6"));
-            rxForm.Show();
-            startCount = startCountMax - 60;
-
-            random = randno.Next(0, 7); //random number to spread uploads to wsprnet
-
-            
-            utcOffset = getUTCoffset(DateTime.Now);
-
-            LatLng ll;
-            DateTime r;
-            DateTime s;
-            string loc = LocatortextBox.Text.Trim().Substring(0, 4);
-            ll = MaidenheadLocator.LocatorToLatLng(loc);
-
-            var sunTimes = await Sunrise_Sunset(ll.Lat, ll.Long, dt);
-
-            if (sunTimes.R == DateTime.MinValue)
-            {
-                var sunT = find_sunrise_sunset(loc, dt.ToString("MM-dd"));
-                if (sunT == null)
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    utcriselabel.Text = "N/A";
-                    utcsetlabel.Text = "N/A";
+                    OpSystem = 0; //Windows
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    OpSystem = 1; //Linux
+                    slash = "/"; //Linux uses forward slash
+                    root = "/"; //Linux root
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    OpSystem = 2; //MacOS
+                    slash = "/"; //MacOS uses forward slash
+                    root = "/"; //MacOS root
+                }
+                else if (OperatingSystem.IsAndroid())
+                {
+                    OpSystem = 3; //Android
+                    slash = "/"; //Android uses forward slash
+                    root = "/"; //Android root
+                }
+
+                wsprdfilepath = root + "WSPR_Sked"; //default path to WSPR_Sked folder
+
+                baseCalltextBox.Text = "";
+                defaultF = 14.0956;
+                defaultOfftextBox.Text = Convert.ToString(defaultoffset);
+                defaultpwrcomboBox.Text = Convert.ToString(defaultdB);
+                CalltextBox.Text = callsign;
+                LocatortextBox.Text = location;
+
+
+
+                getUserandPassword();
+                GridHeading();
+                dataGridView1.DataSource = dtable;
+                setColumnWidth();
+
+                //selectedTime = dt.Date; //.ToString("hh:mm");
+
+
+                daytimer.Enabled = true;
+                daytimer.Start();
+
+
+
+                ReadAntennas();
+                ReadFrequencies();
+
+
+                ReadHardware("switches");
+                ReadHardware("tuners");
+                ReadConfig();
+                TXRXAntlabel.Text = defaultAnt;
+                TXRXAntlabel2.Text = defaultAnt;
+
+
+                DateTime dt;
+
+                if (LTcheckBox.Checked)
+                {
+                    dt = DateTime.Now;
+
                 }
                 else
-                {   //change LT to UTC
-                    r = sunT.Result.R;
-                    s = sunT.Result.S;
+                {
+                    dt = DateTime.Now.ToUniversalTime();
+
+                }
+                selectedDate = dt.Date;
+                //monthCalendar1.TodayDate = dt;
+                monthCalendar1.SetDate(dt);
+                string selTime = dt.Hour.ToString().PadLeft(2, '0');
+                showmsg = true;
+                Datelabel.Text = dt.ToString("dddd-dd-MMM-yyyy");
+
+                //changeDateTimes(selTime, dt.ToString(dateformat), true);
+                getComports();
+                readRigctl();
+                if (!noRigctld)
+                {
+                    getRigList();
+
+                    findRigCtlFolder();
+                    runRigCtlD(); //strt rig ctld
+                }
+                else
+                {
+                    rigrunlabel.Text = "rigctld not running";
+                    Riglabel.Text = "rigctld not running";
+                    Riglabel1.Text = "rigctld not running";
+                }
+
+                TXrunbutton.BackColor = Color.Olive;
+                TXrunbutton2.BackColor = Color.Olive;
+
+                string process = "rigctld";
+
+                if (Process.GetProcessesByName(process).Length > 0 && !noRigctld)
+                {
+                    rigrunlabel.Text = "rigctld running";
+                    Riglabel.Text = "rigctld not running";
+                    Riglabel1.Text = rigrunlabel.Text;
+                }
+                set410Mode();
+                currHour(false, false);
+                trackSlotscheckBox.Checked = true;
+                MonitorMic();
+                gain = trackBarGain.Value / 100f;
+                rxForm.gain = gain;
+                gainlabel.Text = gain.ToString();
+
+                findSound(); //populate sound listboxes with audio in/out devices
+                Read_Audio();
+                liveForm.Show();
+                liveForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass);
+                startCount = 0;
+                rxForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath, ver, OpSystem);
+                if (!noRigctld) { getRigF(); }
+
+                //rxForm.set_frequency(defaultF.ToString("F6"));
+                rxForm.Show();
+                startCount = startCountMax - 60;
+
+                random = randno.Next(0, 7); //random number to spread uploads to wsprnet
+
+
+                utcOffset = getUTCoffset(DateTime.Now);
+
+                LatLng ll;
+                DateTime r;
+                DateTime s;
+                string loc = LocatortextBox.Text.Trim().Substring(0, 4);
+                ll = MaidenheadLocator.LocatorToLatLng(loc);
+
+                Sunrise_Sunset(ll.Lat, ll.Long, dt);
+
+                if (sunTimes.R == DateTime.MinValue)
+                {
+                    var sunT = find_sunrise_sunset(loc, dt.ToString("MM-dd"));
+                    if (sunT == null || sunT.Result.R == DateTime.MinValue)
+                    {
+                        utcriselabel.Text = "N/A";
+                        utcsetlabel.Text = "N/A";
+                    }
+                    else
+                    {   //change LT to UTC
+                        try
+                        {
+                            r = sunT.Result.R;
+                            s = sunT.Result.S;
+                            localriselabel.Text = r.ToString("HH:mm");
+                            localsetlabel.Text = s.ToString("HH:mm");
+                            s = s.AddHours(utcOffset * -1);
+                            r = r.AddHours(utcOffset * -1);
+                            utcriselabel.Text = r.ToString("HH:mm");
+                            utcsetlabel.Text = s.ToString("HH:mm");
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                }
+                else
+                {
+                    r = sunTimes.R;
+                    s = sunTimes.S;
+
                     localriselabel.Text = r.ToString("HH:mm");
                     localsetlabel.Text = s.ToString("HH:mm");
-                    s = s.AddHours(utcOffset * -1);
                     r = r.AddHours(utcOffset * -1);
+                    s = s.AddHours(utcOffset * -1);
                     utcriselabel.Text = r.ToString("HH:mm");
                     utcsetlabel.Text = s.ToString("HH:mm");
                 }
-            }
+
+                if (grey_table_count() < 365)
+                {
+                    Msg.TMessageBox("No sunrise/sunset times - building table - please wait", "Sunrise/sunset Times", 4000);
+                    updateSunriseSunset();
+                }
+            } //if checkslotDB
             else
             {
-                r = sunTimes.R;
-                s = sunTimes.S;
+                daytimer.Stop();
+                daytimer.Enabled = false;
 
-                localriselabel.Text = r.ToString("HH:mm");
-                localsetlabel.Text = s.ToString("HH:mm");
-                r = r.AddHours(utcOffset * -1);
-                s = s.AddHours(utcOffset * -1);
-                utcriselabel.Text = r.ToString("HH:mm");
-                utcsetlabel.Text = s.ToString("HH:mm");
             }
+        }
 
-            if (grey_table_count() < 365)
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+
+            if (!checkSlotDB())
             {
-                Msg.TMessageBox("No sunrise/sunset times - building table - please wait", "Sunrise/sunset Times", 4000);
-                updateSunriseSunset();
+                this.Hide();
+                //Msg.TMessageBox("Unable to connect to mySQL", "Check mySQL", 4000);
+                LoadError loadError = new LoadError();
+                loadError.Show();
             }
 
         }
@@ -521,6 +563,26 @@ namespace WSPR_Sked
             return null;
         }
 
+        private bool checkSlotDB()
+        {
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
+
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
+
+
+            try
+            {
+                connection.Open();
+                connection.Close();
+                return true;
+            }
+            catch
+            {
+
+                connection.Close();
+                return false;
+            }
+        }
 
 
         //private  async Task<bool> findSlot(int slot, string date, string time) //find a slot in the database corresponding to the date/time from the slot to transmit/receive
@@ -529,15 +591,15 @@ namespace WSPR_Sked
             DataTable Slots = new DataTable();
 
             bool slotFound = false;
-            bool read = false;
+            int readcount = 0;
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
 
-            while (!read)
+            while (readcount <2)
             {
 
                 MySqlConnection connection = new MySqlConnection(myConnectionString);
 
-               
+
                 try
                 {
                     connection.Open();
@@ -661,23 +723,29 @@ namespace WSPR_Sked
                     }
                     Reader.Close();
                     connection.Close();
-                    read = true;
+                    readcount = 2;
+                    dblabel.Text = "Slot Database OK";
+                    dblabel.BackColor = Color.LightBlue;
 
                 }
                 catch
                 {
+                    dblabel.Text = "Slot Database Error";
+                    dblabel.BackColor = Color.Pink;
                     if (showmsg)
                     {
                         Msg.TMessageBox("Unable to read from database", "", 1000);
                         showmsg = false;
+                        
 
                     }
                     //databaseError = true; //stop wasting time trying to connect if database error
-                    slotFound = false;
+                    slotFound = false;                   
                     connection.Close();
 
                     //}
                 }
+                readcount++;
             }
             return slotFound;
         }
@@ -730,7 +798,7 @@ namespace WSPR_Sked
             {
                 MySqlConnection connection = new MySqlConnection(myConnectionString);
 
-               
+
                 try
                 {
 
@@ -853,10 +921,15 @@ namespace WSPR_Sked
                     }
                     Reader.Close();
                     connection.Close();
+                    dblabel.Text = "Slot Database OK";
+                    dblabel.BackColor = Color.LightBlue;
 
                 }
                 catch
                 {
+                    dblabel.Text = "Slot Database Error";
+                    dblabel.BackColor = Color.Pink;
+                   
                     if (showmsg)
                     {
                         Msg.TMessageBox("Unable to read from database", "", 1000);
@@ -1478,7 +1551,7 @@ namespace WSPR_Sked
                 DateTime setM;
                 if (DaycheckBox.Checked)
                 {
-                 
+
                     rise = rise.AddMinutes(sunriseoffset * -1);
                     set = set.AddMinutes(sunsetoffset);
                     //riseM = rise.AddMinutes(-2);
@@ -1694,7 +1767,7 @@ namespace WSPR_Sked
                             {
                                 return false;
                             }
-                           
+
                             T = T.AddHours(1);
                             if (T.TimeOfDay >= endT.TimeOfDay)
                             {
@@ -1882,9 +1955,9 @@ namespace WSPR_Sked
                                 return false;
                             }
                         }
-                        
+
                         //while (T.TimeOfDay < endT.TimeOfDay && count < 2)
-                        while (T.Hour < endT.Hour+2 && count < 2)   //add an hour to the end so that T.Hour will always be eventually < endT.Hour
+                        while (T.Hour < endT.Hour + 2 && count < 2)   //add an hour to the end so that T.Hour will always be eventually < endT.Hour
                         {
 
                             string newdate = dt.ToString(dateformat);
@@ -1969,7 +2042,7 @@ namespace WSPR_Sked
                             }
 
                         }
-                       
+
                         //count++;
                     }
 
@@ -2521,7 +2594,7 @@ namespace WSPR_Sked
 
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
-           
+
             try
             {
                 connection.Open();
@@ -2535,7 +2608,7 @@ namespace WSPR_Sked
                     c = "DELETE FROM slots WHERE Parent = '" + parent + "'";
                 }
                 command.CommandText = c;
-               
+
                 command.ExecuteNonQuery();
                 connection.Close();
 
@@ -2641,7 +2714,7 @@ namespace WSPR_Sked
             string arrow = ">";
             string c = "";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
-            
+
             try
             {
                 connection.Open();
@@ -2649,7 +2722,7 @@ namespace WSPR_Sked
                 c = "DELETE FROM slots WHERE slots.Date >= '" + date1 + "' AND slots.Date <= '" + date2 + "'";
 
                 command.CommandText = c;
-                
+
                 command.ExecuteNonQuery();
                 connection.Close();
                 return true;
@@ -3272,7 +3345,7 @@ namespace WSPR_Sked
             string c = "";
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + database;
             MySqlConnection connection = new MySqlConnection(myConnectionString);
-           
+
             try
             {
                 connection.Open();
@@ -3280,7 +3353,7 @@ namespace WSPR_Sked
                 c = "ALTER USER 'admin'@'%' IDENTIFIED BY '" + password + "'";
 
                 command.CommandText = c;
-                
+
                 command.ExecuteNonQuery();
                 connection.Close();
             }
@@ -3758,7 +3831,7 @@ namespace WSPR_Sked
         {
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
-            
+
             try
             {
 
@@ -3983,10 +4056,10 @@ namespace WSPR_Sked
         {
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
-            
+
             try
             {
-                
+
                 int antNo;
                 string antenna;
                 string antDescription;
@@ -4047,7 +4120,7 @@ namespace WSPR_Sked
 
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
-            
+
             try
             {
                 connection.Open();
@@ -4059,7 +4132,7 @@ namespace WSPR_Sked
                 c = "DELETE FROM antennas WHERE AntNo = " + Ant[sel].AntNo;
 
                 command.CommandText = c;
-               
+
                 command.ExecuteNonQuery();
                 connection.Close();
                 return true;
@@ -4076,7 +4149,7 @@ namespace WSPR_Sked
         {
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
-           
+
             try
             {
                 connection.Open();
@@ -4201,7 +4274,7 @@ namespace WSPR_Sked
 
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
-            
+
             try
             {
                 connection.Open();
@@ -4216,7 +4289,7 @@ namespace WSPR_Sked
                 c = "DELETE FROM frequencies WHERE Frequency = " + F[0].Trim();
 
                 command.CommandText = c;
-               
+
                 command.ExecuteNonQuery();
                 connection.Close();
                 return true;
@@ -4240,7 +4313,6 @@ namespace WSPR_Sked
         }
         private async void daytimer_Action()
         {
-
             DateTime now;
             DateTime LT = DateTime.Now;
             if (LTcheckBox.Checked)
@@ -4283,6 +4355,17 @@ namespace WSPR_Sked
             rxForm.set_time(fulltime);
 
 
+            /*if (s == 19)
+            {
+                if (!checkSlotDB())
+                {
+                    Msg.TMessageBox("Error: Cannot access slot database", "Database error", 3000);
+                    daytimer.Stop();
+                    daytimer.Enabled = false;
+                    idletimer.Enabled = true;
+                    idletimer.Start();
+                }
+            }*/
             if (now.DayOfYear % 30 == 0 && h == 2 && m == 11 && s == 20)
             {
                 updateSunriseSunset();
@@ -4392,6 +4475,7 @@ namespace WSPR_Sked
 
             if ((m % 2 == 1 && (s == 52 || s == 53 || s == 54) && !Flag) || justLoaded) //if odd minute and 53/4 second past minute
             {
+              
                 nextT = now.AddMinutes(1);
                 string nexttime = nextT.ToString("HH:mm:00");
 
@@ -5303,10 +5387,11 @@ namespace WSPR_Sked
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
-            connection.Open();
+
+
             try
             {
-
+                connection.Open();
                 MySqlCommand command = connection.CreateCommand();
 
                 command.CommandText = "SELECT * FROM rigctl";
@@ -6451,7 +6536,7 @@ namespace WSPR_Sked
         {
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
-           
+
             try
             {
                 connection.Open();
@@ -6477,7 +6562,7 @@ namespace WSPR_Sked
                     TU.Clear();
                 }
 
-              
+
 
                 MySqlCommand command = connection.CreateCommand();
 
@@ -7808,19 +7893,19 @@ namespace WSPR_Sked
                         DateTime s = sunTimes.Result.S;
                         string R = r.ToString("HH:mm");
                         string S = s.ToString("HH:mm");
-                       
-                            localriselabel.Text = R;
-                            localsetlabel.Text = S;
-                            s = s.AddHours(offset * -1);
-                            r = r.AddHours(offset * -1);
-                            utcriselabel.Text = r.ToString("HH:mm");
-                            utcsetlabel.Text = s.ToString("HH:mm");
-                        
+
+                        localriselabel.Text = R;
+                        localsetlabel.Text = S;
+                        s = s.AddHours(offset * -1);
+                        r = r.AddHours(offset * -1);
+                        utcriselabel.Text = r.ToString("HH:mm");
+                        utcsetlabel.Text = s.ToString("HH:mm");
+
                     }
                 }
                 catch
                 {
-                    string error = "error"; 
+                    string error = "error";
                 }
                 for (int i = 0; i <= 58; i++)
                 {
@@ -8233,7 +8318,7 @@ namespace WSPR_Sked
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             DateTime date = new DateTime();
-            
+
             lock (_lock)
             {
                 try
@@ -8249,7 +8334,7 @@ namespace WSPR_Sked
                     command.CommandText += ", inputname = '" + audioInName + "', inputdevice = " + audioInDevice;
                     command.CommandText += ", outlevel = " + outLevel + ", inlevel = " + inLevel + ", wsprdpath = '" + wpath + "'";
 
-                  
+
                     command.ExecuteNonQuery();
                     connection.Close();
 
@@ -8598,13 +8683,18 @@ namespace WSPR_Sked
                 {
                     //if (i % 7 == 0) //get sunrise/set every week
                     //{
-                        var sunTimes = await Sunrise_Sunset(ll.Lat, ll.Long, date);
-                        sunrise = sunTimes.R.ToString("HH:mm");
-                        sunset = sunTimes.S.ToString("HH:mm");
+                    Sunrise_Sunset(ll.Lat, ll.Long, date);
+                    sunrise = sunTimes.R.ToString("HH:mm");
+                    sunset = sunTimes.S.ToString("HH:mm");
                     //}
                     string Date = date.ToString("MM-dd");
 
-                    Save_SunSet_SunRise(locator, Date, sunrise, sunset);
+                    var ok = Save_SunSet_SunRise(locator, Date, sunrise, sunset);
+                    if (!ok.Result)
+                    {
+                        Msg.TMessageBox("Unable to update sunrise/sunset times", "Sunrise/set", 2000);
+                        break;
+                    }
                     date = date.AddDays(1);
                 }
             }
@@ -8616,7 +8706,8 @@ namespace WSPR_Sked
 
         }
 
-        static async Task<(DateTime R, DateTime S)> Sunrise_Sunset(double latitude, double longitude, DateTime Date)
+        //static async Task<(DateTime R, DateTime S)> Sunrise_Sunset(double latitude, double longitude, DateTime Date)
+        private async void Sunrise_Sunset(double latitude, double longitude, DateTime Date)
         {       //retrieves times as LocalConstant not UTC
 
             DateTime sunrise = DateTime.MinValue;
@@ -8640,9 +8731,11 @@ namespace WSPR_Sked
             {
                 sunrise = DateTime.MinValue;
                 sunset = DateTime.MinValue;
-                return (sunrise, sunset);
+                sunTimes.R = sunrise;
+                sunTimes.S = sunset;
             }
-            return (sunrise, sunset);
+            sunTimes.R = sunrise;
+            sunTimes.S = sunset;
 
         }
 
@@ -8695,44 +8788,44 @@ namespace WSPR_Sked
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
-            
-            lock (_lock)
+
+            //lock (_lock)
+            //{
+            try
             {
-                try
-                {
 
-                    connection.Open();
-                    MySqlCommand command = connection.CreateCommand();
-                    command.CommandText = "INSERT IGNORE INTO sunrise_sunset(locator,date,sunrise,sunset) ";
-                    command.CommandText += "VALUES(@locator,@date,@sunrise,@sunset)";
-                    command.CommandText += " ON DUPLICATE KEY UPDATE sunrise = '" + sunrise + "', sunset = '" + sunset + "'";
-
-                    
-                    
-                    command.Parameters.AddWithValue("@locator", locator);
-                    command.Parameters.AddWithValue("@date", date);
-                    command.Parameters.AddWithValue("@sunrise", sunrise);
-                    command.Parameters.AddWithValue("@sunset", sunset);
-
-                    command.ExecuteNonQuery();
+                connection.Open();
+                MySqlCommand command = connection.CreateCommand();
+                command.CommandText = "INSERT IGNORE INTO sunrise_sunset(locator,date,sunrise,sunset) ";
+                command.CommandText += "VALUES(@locator,@date,@sunrise,@sunset)";
+                command.CommandText += " ON DUPLICATE KEY UPDATE sunrise = '" + sunrise + "', sunset = '" + sunset + "'";
 
 
-                    connection.Close();
-                    return true;
 
-                }
-                catch
-                {         //if row already exists then try updating it in database
-                    connection.Close();
-                    return false;
-                }
+                command.Parameters.AddWithValue("@locator", locator);
+                command.Parameters.AddWithValue("@date", date);
+                command.Parameters.AddWithValue("@sunrise", sunrise);
+                command.Parameters.AddWithValue("@sunset", sunset);
+
+                command.ExecuteNonQuery();
+
+
+                connection.Close();
+                return true;
+
             }
+            catch
+            {         //if row already exists then try updating it in database
+                connection.Close();
+                return false;
+            }
+            //}
 
         }
 
         private async Task<(DateTime R, DateTime S)> find_sunrise_sunset(string locator, string date) //find sunsrise/set times form database
         {   //read as local times - so need to be converted to UTC
-                     
+
             string sunrise = "";
             string sunset = "";
 
@@ -8742,7 +8835,7 @@ namespace WSPR_Sked
             DateTime sunsetT = DateTime.MinValue;
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
 
-            MySqlConnection connection = new MySqlConnection(myConnectionString);           
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             try
             {
@@ -8792,12 +8885,12 @@ namespace WSPR_Sked
             Msg.TMessageBox("Sunrise and sunset times updating", "Sunrise/set", 3000);
             LatLng ll;
             ll = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
-            var sunTimes = await Sunrise_Sunset(ll.Lat, ll.Long, dt);
+            Sunrise_Sunset(ll.Lat, ll.Long, dt);
             utcriselabel.Text = sunTimes.R.ToString("HH:mm");
             utcsetlabel.Text = sunTimes.S.ToString("HH:mm");
             DateTime today = DateTime.Now;
-            await SaveSunRiseSunset(today, 365);
-            
+            SaveSunRiseSunset(today, 365);
+
         }
 
 
@@ -8807,7 +8900,7 @@ namespace WSPR_Sked
             TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
             TimeSpan t = tz.GetUtcOffset(date);
             return t.Hours;
-      
+
         }
 
         private int grey_table_count()
@@ -8815,11 +8908,11 @@ namespace WSPR_Sked
             int count;
             string connectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
             var connection = new MySqlConnection(connectionString);
-            
+
             try
             {
                 //string connectionString = "Server=server;Port=3306;Database=wspr;User ID=user;Password=pass;";
-               
+
                 using (connection)
                 {
                     connection.Open();
@@ -8839,8 +8932,17 @@ namespace WSPR_Sked
             }
         }
 
-
-
+        private void idletimer_Tick(object sender, EventArgs e)
+        {
+            if (checkSlotDB())
+            {
+                daytimer.Enabled = true;
+                daytimer.Start();
+               
+                idletimer.Enabled = false;
+                idletimer.Stop();
+            }
+        }
     }
 
 
