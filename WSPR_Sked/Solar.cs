@@ -113,6 +113,8 @@ namespace WSPR_Sked
         int Slevel = 0;
         int Rlevel = 0;
 
+        string SFI = "";
+
         public bool stopUrl = false;
 
         public string results = "";
@@ -145,12 +147,12 @@ namespace WSPR_Sked
                 await updateAllProtonandFlare(serverName, db_user, db_pass, true); //update yesterday
                 await updateAllProtonandFlare(serverName, db_user, db_pass, false); //update today
             }
-           
+
         }
 
         private void Solar_Load(object sender, EventArgs e)
         {
-          
+
             solartimer.Enabled = true;
             solartimer.Start();
 
@@ -210,7 +212,7 @@ namespace WSPR_Sked
         }
         public async Task updateSolar(string server, string user, string pass)
         {
-          
+
             await fetchSolardata();
             DateTime date = DateTime.Now.ToUniversalTime();
             await findSolar();
@@ -221,7 +223,7 @@ namespace WSPR_Sked
 
         public async Task updateBursts(string server, string user, string pass)
         {
-          
+
             await fetchBurstdata();
             DateTime date = DateTime.Now.ToUniversalTime();
             await findBurst();
@@ -403,8 +405,7 @@ namespace WSPR_Sked
                 {
                     solar.Xray = Xray;
                 }
-                conditionlabel.Text = "Higher HF propagation: " + findConditions(solar.flux);
-
+                SFI = solar.flux;              
             }
         }
 
@@ -412,6 +413,7 @@ namespace WSPR_Sked
         {
             int t;
             string P = "";
+            string F = "SFI: " + flux +" - ";
             int.TryParse(flux, out t);
             if (t < 70)
             {
@@ -437,6 +439,11 @@ namespace WSPR_Sked
             {
                 P = "outstanding";
             }
+            if (Glabel.Text.Contains("G") || Rlabel.Text.Contains("R") || Slabel.Text.Contains("S"))
+            {
+                P = "unstable/degraded - (storm or blackout)";
+            }
+            conditionlabel.Text = F + "Higher HF propagation: " + P;
             return P;
         }
 
@@ -482,10 +489,10 @@ namespace WSPR_Sked
                 cells1[12] = "-";
             }
 
-                for (int i = 0; i < dataGridView1.Columns.Count; i++)
-                {
-                    dataGridView1.Rows[row].Cells[i].Value = cells1[i];
-                }
+            for (int i = 0; i < dataGridView1.Columns.Count; i++)
+            {
+                dataGridView1.Rows[row].Cells[i].Value = cells1[i];
+            }
 
         }
 
@@ -554,7 +561,7 @@ namespace WSPR_Sked
                 s = "Unknown";
             }
             return s;
-        }       
+        }
 
 
         public async Task fetchGeodata()
@@ -656,7 +663,7 @@ namespace WSPR_Sked
             }
         }
 
-       
+
 
         public async Task fetchBurstdata()
         {
@@ -974,7 +981,7 @@ namespace WSPR_Sked
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
-           
+
             try
             {
                 connection.Open();
@@ -1009,7 +1016,7 @@ namespace WSPR_Sked
                         if (C != "")
                         { and = " AND "; }
                     }
-                   
+
                     command.CommandText = "SELECT * FROM weather WHERE " + D + and + C + order;
                 }
                 MySqlDataReader Reader;
@@ -1187,7 +1194,7 @@ namespace WSPR_Sked
                 command.CommandText += ", Kp03 = '" + solar.K03 + "', Kp06 = '" + solar.K06 + "', Kp09 = '" + solar.K09 + "'";
                 command.CommandText += ", Kp12 = '" + solar.K12 + "', Kp15 = '" + solar.K15 + "', Kp18 = '" + solar.K18 + "'";
                 command.CommandText += ", Kp21 = '" + solar.K21 + "'";
-             
+
                 connection.Open();
 
 
@@ -1264,7 +1271,7 @@ namespace WSPR_Sked
             string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_sol";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
-            
+
 
             try
             {
@@ -1355,7 +1362,7 @@ namespace WSPR_Sked
                         cells1[10] = zeros(solar.flux);
                         cells1[11] = solar.SSN;
                         cells1[12] = solar.Xray;
-                    }  
+                    }
 
                     update_grid2(); //add this row to the datagridview
 
@@ -1367,7 +1374,7 @@ namespace WSPR_Sked
             }
             catch
             {
-                found = false;              
+                found = false;
                 connection.Close();
             }
         }
@@ -1473,7 +1480,7 @@ namespace WSPR_Sked
         {
             dataGridView2.Rows.Clear();
             dataGridView2.Sort(dataGridView2.Columns[0], ListSortDirection.Descending);  //order by date
-                                                                                       
+
             int rows = table_count();
             if (rows > 0)
             {
@@ -1918,7 +1925,7 @@ namespace WSPR_Sked
             {
                 stormlabels();
             }
-          
+
         }
 
 
@@ -2016,6 +2023,7 @@ namespace WSPR_Sked
             {
                 Rlabel.Text = "--";
             }
+            findConditions(SFI);
         }
 
         public async Task updateProtonandFlare(string server, string user, string pass, bool yesterday, int h)
@@ -2163,7 +2171,7 @@ namespace WSPR_Sked
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
-           
+
             try
             {
 
@@ -2458,7 +2466,7 @@ namespace WSPR_Sked
                         current_int_xrlong = item["current_int_xrlong"]?.ToString();
                         double intXR = Convert.ToDouble(current_int_xrlong);
                         intXR = Math.Round(intXR, 4);
-                    
+
                         DateTime maxt = Convert.ToDateTime(max_time).ToUniversalTime();
                         maxHM = maxt.Hour.ToString().PadLeft(2, '0') + ":" + maxt.Minute.ToString().PadLeft(2, '0');
 
@@ -2673,7 +2681,7 @@ namespace WSPR_Sked
             if (await Msg.IsUrlReachable(url))
             {
                 //OpenBrowser(url);
-                
+
             }
             else
             {
@@ -2688,7 +2696,7 @@ namespace WSPR_Sked
             else
             {
                 hamqslbutton.Text = "Forecast";
-                
+
                 hamqslgroupBox.Visible = false;
 
             }
@@ -2704,9 +2712,9 @@ namespace WSPR_Sked
             browser.ScrollBarsEnabled = false;
             browser.ScriptErrorsSuppressed = true;
 
-         
-                hamqslgroupBox.Controls.Clear();
-            
+
+            hamqslgroupBox.Controls.Clear();
+
             hamqslgroupBox.Controls.Add(browser);
             string html = @"<center><a href='https://www.hamqsl.com/solar.html' ";
             html = html + @"title='Click to add Solar-Terrestrial Data to your website!'>";
@@ -2738,7 +2746,7 @@ namespace WSPR_Sked
                 OpenBrowser(url);
                 hamqslopened = true;
             }
-          
+
         }
 
         private async void solartimer_Tick(object sender, EventArgs e)
@@ -2766,7 +2774,7 @@ namespace WSPR_Sked
             }
             if (timercount == 6)  //30 mins
             {
-                await updateAllProtonandFlare(server, user, pass, false); 
+                await updateAllProtonandFlare(server, user, pass, false);
 
             }
             if (timercount == 5 && dt.Hour == 3)  //25 mins
@@ -2783,7 +2791,7 @@ namespace WSPR_Sked
             if (timercount == 11) //55 mins
             {
                 timercount = 0; //reset timer
-               
+
             }
         }
 
@@ -2792,7 +2800,12 @@ namespace WSPR_Sked
             getLatestSolar(server, user, pass);
             solarstartuptimer.Enabled = false;
             solarstartuptimer.Stop();
-            
+
+        }
+
+        private void conditionlabel_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

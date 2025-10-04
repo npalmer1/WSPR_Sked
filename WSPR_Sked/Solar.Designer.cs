@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             getLatestbutton = new System.Windows.Forms.Button();
             forceUpdatebutton = new System.Windows.Forms.Button();
             textBox1 = new System.Windows.Forms.TextBox();
@@ -38,12 +38,26 @@
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             dataGridView1 = new System.Windows.Forms.DataGridView();
+            Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             label4 = new System.Windows.Forms.Label();
             classlabel = new System.Windows.Forms.Label();
             label6 = new System.Windows.Forms.Label();
             datelabel = new System.Windows.Forms.Label();
             label7 = new System.Windows.Forms.Label();
             groupBox1 = new System.Windows.Forms.GroupBox();
+            label23 = new System.Windows.Forms.Label();
             hamqslbutton = new System.Windows.Forms.Button();
             hamqslgroupBox = new System.Windows.Forms.GroupBox();
             Rlabel = new System.Windows.Forms.Label();
@@ -117,20 +131,6 @@
             sqlCommandBuilder1 = new Microsoft.Data.SqlClient.SqlCommandBuilder();
             solartimer = new System.Windows.Forms.Timer(components);
             solarstartuptimer = new System.Windows.Forms.Timer(components);
-            label23 = new System.Windows.Forms.Label();
-            Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -215,6 +215,110 @@
             dataGridView1.Size = new System.Drawing.Size(893, 78);
             dataGridView1.TabIndex = 7;
             // 
+            // Column1
+            // 
+            Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column1.HeaderText = "Ap (est.)";
+            Column1.Name = "Column1";
+            Column1.ReadOnly = true;
+            Column1.Width = 60;
+            // 
+            // Column13
+            // 
+            Column13.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column13.HeaderText = "Activity level";
+            Column13.Name = "Column13";
+            Column13.ReadOnly = true;
+            Column13.Width = 120;
+            // 
+            // Column2
+            // 
+            Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column2.HeaderText = "00-03";
+            Column2.Name = "Column2";
+            Column2.ReadOnly = true;
+            Column2.Width = 65;
+            // 
+            // Column3
+            // 
+            Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column3.HeaderText = "03-06";
+            Column3.Name = "Column3";
+            Column3.ReadOnly = true;
+            Column3.Width = 65;
+            // 
+            // Column4
+            // 
+            Column4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column4.HeaderText = "06-09";
+            Column4.Name = "Column4";
+            Column4.ReadOnly = true;
+            Column4.Width = 65;
+            // 
+            // Column5
+            // 
+            Column5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column5.HeaderText = "09-12";
+            Column5.Name = "Column5";
+            Column5.ReadOnly = true;
+            Column5.Width = 65;
+            // 
+            // Column6
+            // 
+            Column6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column6.HeaderText = "12-15";
+            Column6.Name = "Column6";
+            Column6.ReadOnly = true;
+            Column6.Width = 65;
+            // 
+            // Column7
+            // 
+            Column7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column7.HeaderText = "15-18";
+            Column7.Name = "Column7";
+            Column7.ReadOnly = true;
+            Column7.Width = 65;
+            // 
+            // Column8
+            // 
+            Column8.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column8.HeaderText = "18-21";
+            Column8.Name = "Column8";
+            Column8.ReadOnly = true;
+            Column8.Width = 65;
+            // 
+            // Column9
+            // 
+            Column9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column9.HeaderText = "21-00";
+            Column9.Name = "Column9";
+            Column9.ReadOnly = true;
+            Column9.Width = 65;
+            // 
+            // Column10
+            // 
+            Column10.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column10.HeaderText = "SFI";
+            Column10.Name = "Column10";
+            Column10.ReadOnly = true;
+            Column10.Width = 52;
+            // 
+            // Column11
+            // 
+            Column11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column11.HeaderText = "SSN";
+            Column11.Name = "Column11";
+            Column11.ReadOnly = true;
+            Column11.Width = 53;
+            // 
+            // Column14
+            // 
+            Column14.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column14.HeaderText = "X-ray";
+            Column14.Name = "Column14";
+            Column14.ReadOnly = true;
+            Column14.Width = 52;
+            // 
             // label4
             // 
             label4.AutoSize = true;
@@ -284,18 +388,28 @@
             groupBox1.Controls.Add(label1);
             groupBox1.Controls.Add(textBox2);
             groupBox1.Controls.Add(textBox1);
-            groupBox1.Location = new System.Drawing.Point(44, 44);
+            groupBox1.Location = new System.Drawing.Point(26, 44);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(1035, 562);
+            groupBox1.Size = new System.Drawing.Size(1067, 562);
             groupBox1.TabIndex = 14;
             groupBox1.TabStop = false;
             groupBox1.Text = "Current solar data from Boulder, CO.";
+            // 
+            // label23
+            // 
+            label23.AutoSize = true;
+            label23.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            label23.Location = new System.Drawing.Point(20, 544);
+            label23.Name = "label23";
+            label23.Size = new System.Drawing.Size(199, 13);
+            label23.TabIndex = 25;
+            label23.Text = "(depending on storm/blackout levels)";
             // 
             // hamqslbutton
             // 
             hamqslbutton.BackColor = System.Drawing.Color.MistyRose;
             hamqslbutton.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            hamqslbutton.Location = new System.Drawing.Point(532, 524);
+            hamqslbutton.Location = new System.Drawing.Point(658, 525);
             hamqslbutton.Name = "hamqslbutton";
             hamqslbutton.Size = new System.Drawing.Size(75, 23);
             hamqslbutton.TabIndex = 23;
@@ -318,7 +432,7 @@
             // Rlabel
             // 
             Rlabel.AutoSize = true;
-            Rlabel.Location = new System.Drawing.Point(451, 524);
+            Rlabel.Location = new System.Drawing.Point(608, 525);
             Rlabel.Name = "Rlabel";
             Rlabel.Size = new System.Drawing.Size(17, 15);
             Rlabel.TabIndex = 19;
@@ -327,7 +441,7 @@
             // Slabel
             // 
             Slabel.AutoSize = true;
-            Slabel.Location = new System.Drawing.Point(428, 524);
+            Slabel.Location = new System.Drawing.Point(585, 525);
             Slabel.Name = "Slabel";
             Slabel.Size = new System.Drawing.Size(17, 15);
             Slabel.TabIndex = 18;
@@ -336,7 +450,7 @@
             // Glabel
             // 
             Glabel.AutoSize = true;
-            Glabel.Location = new System.Drawing.Point(405, 524);
+            Glabel.Location = new System.Drawing.Point(562, 525);
             Glabel.Name = "Glabel";
             Glabel.Size = new System.Drawing.Size(17, 15);
             Glabel.TabIndex = 17;
@@ -345,7 +459,7 @@
             // label21
             // 
             label21.AutoSize = true;
-            label21.Location = new System.Drawing.Point(307, 524);
+            label21.Location = new System.Drawing.Point(464, 525);
             label21.Name = "label21";
             label21.Size = new System.Drawing.Size(95, 15);
             label21.TabIndex = 16;
@@ -354,11 +468,12 @@
             // conditionlabel
             // 
             conditionlabel.AutoSize = true;
-            conditionlabel.Location = new System.Drawing.Point(22, 524);
+            conditionlabel.Location = new System.Drawing.Point(20, 525);
             conditionlabel.Name = "conditionlabel";
             conditionlabel.Size = new System.Drawing.Size(22, 15);
             conditionlabel.TabIndex = 15;
             conditionlabel.Text = "---";
+            conditionlabel.Click += conditionlabel_Click;
             // 
             // label17
             // 
@@ -607,14 +722,14 @@
             // 
             dataGridView3.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView3.BackgroundColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9F);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView3.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView3.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView3.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { dataGridViewTextBoxColumn12, dataGridViewTextBoxColumn14, dataGridViewTextBoxColumn15, dataGridViewTextBoxColumn16, dataGridViewTextBoxColumn17, dataGridViewTextBoxColumn18, dataGridViewTextBoxColumn19, dataGridViewTextBoxColumn20, dataGridViewTextBoxColumn21 });
             dataGridView3.Location = new System.Drawing.Point(5, 59);
@@ -761,14 +876,14 @@
             // 
             dataGridView2.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView2.BackgroundColor = System.Drawing.Color.Lavender;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI", 9F);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView2.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView2.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView2.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewTextBoxColumn3, dataGridViewTextBoxColumn4, dataGridViewTextBoxColumn5, dataGridViewTextBoxColumn6, dataGridViewTextBoxColumn7, dataGridViewTextBoxColumn8, dataGridViewTextBoxColumn9, dataGridViewTextBoxColumn10, dataGridViewTextBoxColumn11, Column12, Column15 });
             dataGridView2.Location = new System.Drawing.Point(40, 61);
@@ -871,17 +986,17 @@
             // 
             label18.AutoSize = true;
             label18.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            label18.Location = new System.Drawing.Point(679, 613);
+            label18.Location = new System.Drawing.Point(610, 625);
             label18.Name = "label18";
-            label18.Size = new System.Drawing.Size(412, 13);
+            label18.Size = new System.Drawing.Size(453, 13);
             label18.TabIndex = 15;
-            label18.Text = "Geomagnetic storms: G1 minor, G2 moderate, G3 strong, G4 severe, G5 extreme";
+            label18.Text = "Geomagnetic storms: G1 minor, G2 moderate, G3 strong, G4 severe, G5 extreme (Kp 5-9)";
             // 
             // label16
             // 
             label16.AutoSize = true;
             label16.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            label16.Location = new System.Drawing.Point(40, 609);
+            label16.Location = new System.Drawing.Point(26, 608);
             label16.Name = "label16";
             label16.Size = new System.Drawing.Size(563, 13);
             label16.TabIndex = 14;
@@ -910,7 +1025,7 @@
             // 
             label20.AutoSize = true;
             label20.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            label20.Location = new System.Drawing.Point(40, 649);
+            label20.Location = new System.Drawing.Point(26, 648);
             label20.Name = "label20";
             label20.Size = new System.Drawing.Size(514, 26);
             label20.TabIndex = 18;
@@ -919,26 +1034,26 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(679, 633);
+            label5.Location = new System.Drawing.Point(611, 640);
             label5.Name = "label5";
-            label5.Size = new System.Drawing.Size(394, 15);
+            label5.Size = new System.Drawing.Size(540, 15);
             label5.TabIndex = 19;
-            label5.Text = "Radiation storms: S1 minor, S2 moderate, S3 strong, S4 severe, S5 extreme";
+            label5.Text = "Radiation storms: S1 minor, S2 moderate, S3 strong, S4 severe, S5 extreme (Pflux >= 10 MeV particles)";
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new System.Drawing.Point(679, 657);
+            label8.Location = new System.Drawing.Point(610, 655);
             label8.Name = "label8";
-            label8.Size = new System.Drawing.Size(389, 15);
+            label8.Size = new System.Drawing.Size(459, 15);
             label8.TabIndex = 20;
-            label8.Text = "Radio blackout: R1 minor, R2 moderate, R3 strong, R4 severe, R5 extreme";
+            label8.Text = "Radio blackout: R1 minor, R2 moderate, R3 strong, R4 severe, R5 extreme (flares > M1)";
             // 
             // infobutton
             // 
             infobutton.BackColor = System.Drawing.Color.MistyRose;
             infobutton.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            infobutton.Location = new System.Drawing.Point(1085, 633);
+            infobutton.Location = new System.Drawing.Point(1115, 608);
             infobutton.Name = "infobutton";
             infobutton.Size = new System.Drawing.Size(82, 23);
             infobutton.TabIndex = 21;
@@ -950,7 +1065,7 @@
             // 
             label22.AutoSize = true;
             label22.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            label22.Location = new System.Drawing.Point(40, 626);
+            label22.Location = new System.Drawing.Point(26, 625);
             label22.Name = "label22";
             label22.Size = new System.Drawing.Size(218, 13);
             label22.TabIndex = 22;
@@ -966,126 +1081,12 @@
             solarstartuptimer.Interval = 5000;
             solarstartuptimer.Tick += solarstartuptimer_Tick;
             // 
-            // label23
-            // 
-            label23.AutoSize = true;
-            label23.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            label23.Location = new System.Drawing.Point(20, 544);
-            label23.Name = "label23";
-            label23.Size = new System.Drawing.Size(199, 13);
-            label23.TabIndex = 25;
-            label23.Text = "(depending on storm/blackout levels)";
-            // 
-            // Column1
-            // 
-            Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column1.HeaderText = "Ap (est.)";
-            Column1.Name = "Column1";
-            Column1.ReadOnly = true;
-            Column1.Width = 60;
-            // 
-            // Column13
-            // 
-            Column13.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column13.HeaderText = "Activity level";
-            Column13.Name = "Column13";
-            Column13.ReadOnly = true;
-            Column13.Width = 120;
-            // 
-            // Column2
-            // 
-            Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column2.HeaderText = "00-03";
-            Column2.Name = "Column2";
-            Column2.ReadOnly = true;
-            Column2.Width = 65;
-            // 
-            // Column3
-            // 
-            Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column3.HeaderText = "03-06";
-            Column3.Name = "Column3";
-            Column3.ReadOnly = true;
-            Column3.Width = 65;
-            // 
-            // Column4
-            // 
-            Column4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column4.HeaderText = "06-09";
-            Column4.Name = "Column4";
-            Column4.ReadOnly = true;
-            Column4.Width = 65;
-            // 
-            // Column5
-            // 
-            Column5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column5.HeaderText = "09-12";
-            Column5.Name = "Column5";
-            Column5.ReadOnly = true;
-            Column5.Width = 65;
-            // 
-            // Column6
-            // 
-            Column6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column6.HeaderText = "12-15";
-            Column6.Name = "Column6";
-            Column6.ReadOnly = true;
-            Column6.Width = 65;
-            // 
-            // Column7
-            // 
-            Column7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column7.HeaderText = "15-18";
-            Column7.Name = "Column7";
-            Column7.ReadOnly = true;
-            Column7.Width = 65;
-            // 
-            // Column8
-            // 
-            Column8.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column8.HeaderText = "18-21";
-            Column8.Name = "Column8";
-            Column8.ReadOnly = true;
-            Column8.Width = 65;
-            // 
-            // Column9
-            // 
-            Column9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column9.HeaderText = "21-00";
-            Column9.Name = "Column9";
-            Column9.ReadOnly = true;
-            Column9.Width = 65;
-            // 
-            // Column10
-            // 
-            Column10.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column10.HeaderText = "SFI";
-            Column10.Name = "Column10";
-            Column10.ReadOnly = true;
-            Column10.Width = 52;
-            // 
-            // Column11
-            // 
-            Column11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column11.HeaderText = "SSN";
-            Column11.Name = "Column11";
-            Column11.ReadOnly = true;
-            Column11.Width = 53;
-            // 
-            // Column14
-            // 
-            Column14.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column14.HeaderText = "X-ray";
-            Column14.Name = "Column14";
-            Column14.ReadOnly = true;
-            Column14.Width = 52;
-            // 
             // Solar
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.Color.SeaShell;
-            ClientSize = new System.Drawing.Size(1182, 683);
+            ClientSize = new System.Drawing.Size(1222, 683);
             ControlBox = false;
             Controls.Add(label22);
             Controls.Add(infobutton);
