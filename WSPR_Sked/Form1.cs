@@ -265,7 +265,7 @@ namespace WSPR_Sked
         LiveForm liveForm = new LiveForm();
         RXForm rxForm = new RXForm();
 
-        Solar solarForm = new Solar();
+        //Solar solarForm = new Solar();
 
 
         int keypresses = 0;
@@ -325,13 +325,13 @@ namespace WSPR_Sked
         {
 
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.7";
+            string ver = "0.1.8";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
             slash = "\\"; //default to Windows
             root = "C:\\";
-
+            getUserandPassword();
             if (checkSlotDB())
             {
                 DateTime localTime = DateTime.Now; // your current local time
@@ -371,7 +371,7 @@ namespace WSPR_Sked
 
 
 
-                getUserandPassword();
+               
                 GridHeading();
                 dataGridView1.DataSource = dtable;
                 setColumnWidth();
@@ -523,6 +523,7 @@ namespace WSPR_Sked
             } //if checkslotDB
             else
             {
+                Msg.TMessageBox("Unable to contact database", "", 2000);
                 daytimer.Stop();
                 daytimer.Enabled = false;
 
@@ -721,9 +722,10 @@ namespace WSPR_Sked
                         }
 
                     }
+                    readcount = 2;
                     Reader.Close();
                     connection.Close();
-                    readcount = 2;
+                   
                     dblabel.Text = "Slot Database OK";
                     dblabel.BackColor = Color.LightBlue;
 
@@ -4399,7 +4401,7 @@ namespace WSPR_Sked
 
             if (s > 9 && s < 46 && !solarStarted && !stopSolar)
             {
-
+                /*
                 solarStarted = true;
                 solarForm.Show();
                 this.Activate();
@@ -4413,7 +4415,7 @@ namespace WSPR_Sked
                 {
                     Msg.TMessageBox("Note: Internet connection is stopped", "Solar data", 1000);
                 }
-
+                */
             }
             if (m % 2 == 1 && s == 27)
             {
@@ -5438,7 +5440,7 @@ namespace WSPR_Sked
 
         private void wsprTXtimer_Action()
         {
-            Flag = false;
+            //Flag = false;
             daytimer2.Stop();
             daytimer.Enabled = true;
             daytimer.Start();
@@ -8622,7 +8624,7 @@ namespace WSPR_Sked
 
         private async void solarcheckBox_CheckedChanged(object sender, EventArgs e)
         {
-
+            /*
             if (solarcheckBox.Checked)
             {
                 solarStarted = false;
@@ -8652,6 +8654,7 @@ namespace WSPR_Sked
                 solarForm.Hide();
 
             }
+            */
         }
 
         private void rigsearchbutton_Click(object sender, EventArgs e)
