@@ -262,7 +262,7 @@ namespace WSPR_Sked
         }
 
         List<Antenna> Ant = new List<Antenna>();
-        LiveForm liveForm = new LiveForm();
+        //LiveForm liveForm = new LiveForm();
         RXForm rxForm = new RXForm();
 
         //Solar solarForm = new Solar();
@@ -325,7 +325,7 @@ namespace WSPR_Sked
         {
 
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.8";
+            string ver = "0.1.9";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -452,8 +452,8 @@ namespace WSPR_Sked
 
                 findSound(); //populate sound listboxes with audio in/out devices
                 Read_Audio();
-                liveForm.Show();
-                liveForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass);
+            //liveForm.Show();
+            //liveForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass);
                 startCount = 0;
                 rxForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath, ver, OpSystem);
                 if (!noRigctld) { getRigF(); }
@@ -3435,6 +3435,7 @@ namespace WSPR_Sked
             string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string filepath = homeDirectory;
             string content = "db_user: " + user + " db_pass: " + encryptedpassword;
+            string dbcall = "db_call: " + baseCalltextBox.Text.Trim();
             if (Path.Exists(filepath))
             {
                 if (filepath.EndsWith(slash))
@@ -3447,6 +3448,7 @@ namespace WSPR_Sked
                     using (StreamWriter writer = new StreamWriter(filepath, false))
                     {
                         writer.WriteLine(content);
+                        writer.WriteLine(dbcall);
                         writer.Close();
                     }
                 }
@@ -3464,6 +3466,7 @@ namespace WSPR_Sked
             Encryption enc = new Encryption();
             string encryptedpassword;
             string content = "";
+            string dbcall = "";
             bool ok = false;
 
             string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -3485,6 +3488,7 @@ namespace WSPR_Sked
                         using (StreamReader reader = new StreamReader(filepath))
                         {
                             content = reader.ReadLine();
+                            dbcall = reader.ReadLine();
                             reader.Close();
                         }
                         if (content != null || content != "")
@@ -3501,8 +3505,8 @@ namespace WSPR_Sked
                                     ok = true;
                                 }
                             }
+                         
                         }
-
                         if (!ok)
                         {
                             Msg.TMessageBox("Unable to read database credentials", "", 1000);
@@ -4463,7 +4467,7 @@ namespace WSPR_Sked
                 else
                 {
                     startCount = 0;
-                    await liveForm.get_results(CalltextBox.Text.Trim(), TXFrequency, serverName, db_user, db_pass, 10);
+                    // await liveForm.get_results(CalltextBox.Text.Trim(), TXFrequency, serverName, db_user, db_pass, 10);
 
                 }
 
@@ -5640,7 +5644,7 @@ namespace WSPR_Sked
             if (startCount > startCountMax)  //X minutes
             {
                 startCount = 0;
-                await liveForm.get_results(CalltextBox.Text.Trim(), TXFrequency, serverName, db_user, db_pass, 10);
+                //await liveForm.get_results(CalltextBox.Text.Trim(), TXFrequency, serverName, db_user, db_pass, 10);
 
             }
             string time = Convert.ToString(h).PadLeft(2, '0');
@@ -8582,14 +8586,14 @@ namespace WSPR_Sked
                 stopUrl = true;
                 //solarForm.stopUrl = true;
                 rxForm.stopUrl = true;
-                liveForm.stopUrl = true;
+                //liveForm.stopUrl = true;
             }
             else
             {
                 stopUrl = false;
                 //solarForm.stopUrl = false;
                 rxForm.stopUrl = false;
-                liveForm.stopUrl = false;
+                //liveForm.stopUrl = false;
             }
         }
 
