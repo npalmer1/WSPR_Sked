@@ -136,6 +136,7 @@
             label22 = new System.Windows.Forms.Label();
             countdownlabel2 = new System.Windows.Forms.Label();
             tabPage2 = new System.Windows.Forms.TabPage();
+            stopRXcheckBox = new System.Windows.Forms.CheckBox();
             sunrisebutton = new System.Windows.Forms.Button();
             label116 = new System.Windows.Forms.Label();
             locationbutton = new System.Windows.Forms.Button();
@@ -1509,6 +1510,7 @@
             // tabPage2
             // 
             tabPage2.BackColor = System.Drawing.SystemColors.Info;
+            tabPage2.Controls.Add(stopRXcheckBox);
             tabPage2.Controls.Add(sunrisebutton);
             tabPage2.Controls.Add(label116);
             tabPage2.Controls.Add(locationbutton);
@@ -1601,6 +1603,17 @@
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
+            // stopRXcheckBox
+            // 
+            stopRXcheckBox.AutoSize = true;
+            stopRXcheckBox.Location = new System.Drawing.Point(29, 321);
+            stopRXcheckBox.Name = "stopRXcheckBox";
+            stopRXcheckBox.Size = new System.Drawing.Size(220, 17);
+            stopRXcheckBox.TabIndex = 107;
+            stopRXcheckBox.Text = "stop RX/decoding (useful when portable)";
+            stopRXcheckBox.UseVisualStyleBackColor = true;
+            stopRXcheckBox.CheckedChanged += stopRXcheckBox_CheckedChanged;
+            // 
             // sunrisebutton
             // 
             sunrisebutton.Location = new System.Drawing.Point(55, 536);
@@ -1634,7 +1647,7 @@
             // solarcheckBox
             // 
             solarcheckBox.AutoSize = true;
-            solarcheckBox.Location = new System.Drawing.Point(29, 307);
+            solarcheckBox.Location = new System.Drawing.Point(29, 289);
             solarcheckBox.Name = "solarcheckBox";
             solarcheckBox.Size = new System.Drawing.Size(110, 17);
             solarcheckBox.TabIndex = 103;
@@ -4448,6 +4461,7 @@
         private System.Windows.Forms.Label label117;
         private System.Windows.Forms.Timer idletimer;
         private System.Windows.Forms.Label dblabel;
+        private System.Windows.Forms.CheckBox stopRXcheckBox;
     }
 }
 
