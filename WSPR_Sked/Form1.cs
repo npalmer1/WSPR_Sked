@@ -4472,6 +4472,11 @@ namespace WSPR_Sked
                 //if (await (findSlot(-1, date, nexttime)))
                 if (findSlot(-1, date, nexttime))
                 {
+                    if (noSkedcheckBox.Checked)
+                    {
+                        Msg.TMessageBox("Slot found but schedule not enabled", "", 1500);
+                        return;
+                    }
                     if (noRigctld)
                     {
                         Msg.TMessageBox("Ignoring slot frequency - RigCtlD disabled", "Frequency", 1000);
@@ -5613,7 +5618,7 @@ namespace WSPR_Sked
             {
                 currHour(true, trackSlotscheckBox.Checked); // update the date/time if no-one has been working in the app in 5 minutes (track exect slot time if no activity)
                 if (!trackSlotscheckBox.Checked) { keypresses = 0; }
-                noSkedcheckBox.Checked = false;
+                //noSkedcheckBox.Checked = false;
             }
 
             string time = Convert.ToString(h).PadLeft(2, '0');
