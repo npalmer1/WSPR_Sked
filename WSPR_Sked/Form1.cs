@@ -4403,24 +4403,7 @@ namespace WSPR_Sked
                 }
             }
 
-            if (s > 9 && s < 46 && !solarStarted && !stopSolar)
-            {
-                /*
-                solarStarted = true;
-                solarForm.Show();
-                this.Activate();
-
-                if (!stopUrl)
-                {
-                    await solarForm.setConfig(serverName, db_user, db_pass);
-
-                }
-                else
-                {
-                    Msg.TMessageBox("Note: Internet connection is stopped", "Solar data", 1000);
-                }
-                */
-            }
+          
             if (m % 2 == 1 && s == 27)
             {
                 random = randno.Next(0, 7); //random number to spread uploads to wsprnet
@@ -4455,23 +4438,7 @@ namespace WSPR_Sked
 
                 rxForm.set_prev_frequency();    //prevent RX decode being recorded for wrong freq
             }
-
-
-            startCount++;
-            if (startCount > startCountMax)  //X minutes
-            {
-                if (s > 50 && m % 2 == 1)
-                {
-                    //don't do anything if odd min and s over 50 sec - when may be processing
-                }
-                else
-                {
-                    startCount = 0;
-                    // await liveForm.get_results(CalltextBox.Text.Trim(), TXFrequency, serverName, db_user, db_pass, 10);
-
-                }
-
-            }
+          
 
 
             if (m % 2 == 0 && (s > 2 && s < 5))
@@ -5641,12 +5608,6 @@ namespace WSPR_Sked
                 noSkedcheckBox.Checked = false;
             }
 
-            if (startCount > startCountMax)  //X minutes
-            {
-                startCount = 0;
-                //await liveForm.get_results(CalltextBox.Text.Trim(), TXFrequency, serverName, db_user, db_pass, 10);
-
-            }
             string time = Convert.ToString(h).PadLeft(2, '0');
             time = time + ":" + Convert.ToString(m).PadLeft(2, '0');
             string fulltime = time + ":" + Convert.ToString(s).PadLeft(2, '0');
