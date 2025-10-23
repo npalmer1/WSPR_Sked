@@ -4474,7 +4474,7 @@ namespace WSPR_Sked
                 {
                     if (noSkedcheckBox.Checked)
                     {
-                        Msg.TMessageBox("Slot found but schedule not enabled", "", 1500);
+                        Msg.TMessageBox("Schedule not enabled!", "Slot Scheduler", 2500);
                         return;
                     }
                     if (noRigctld)
