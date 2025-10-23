@@ -142,6 +142,7 @@ namespace WSPR_Sked
         bool stopSolar = false;
 
         bool solarStarted = false;
+        bool stopRX = false;
 
         int sunriseoffset = 0;
         int sunsetoffset = 0;
@@ -371,7 +372,7 @@ namespace WSPR_Sked
 
 
 
-               
+
                 GridHeading();
                 dataGridView1.DataSource = dtable;
                 setColumnWidth();
@@ -452,15 +453,19 @@ namespace WSPR_Sked
 
                 findSound(); //populate sound listboxes with audio in/out devices
                 Read_Audio();
-            //liveForm.Show();
-            //liveForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass);
+
                 startCount = 0;
                 rxForm.set_header(baseCalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath, ver, OpSystem);
                 if (!noRigctld) { getRigF(); }
 
                 //rxForm.set_frequency(defaultF.ToString("F6"));
-                rxForm.Show();
-                startCount = startCountMax - 60;
+                if (!stopRX) { rxForm.Show(); }
+                else
+                {
+                    Msg.TMessageBox("RX Disabled - enable in TX Config settings", "RX Disabled", 4000);
+                }
+
+                    startCount = startCountMax - 60;
 
                 random = randno.Next(0, 7); //random number to spread uploads to wsprnet
 
@@ -595,7 +600,7 @@ namespace WSPR_Sked
             int readcount = 0;
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
 
-            while (readcount <2)
+            while (readcount < 2)
             {
 
                 MySqlConnection connection = new MySqlConnection(myConnectionString);
@@ -725,7 +730,7 @@ namespace WSPR_Sked
                     readcount = 2;
                     Reader.Close();
                     connection.Close();
-                   
+
                     dblabel.Text = "Slot Database OK";
                     dblabel.BackColor = Color.LightBlue;
 
@@ -738,11 +743,11 @@ namespace WSPR_Sked
                     {
                         Msg.TMessageBox("Unable to read from database", "", 1000);
                         showmsg = false;
-                        
+
 
                     }
                     //databaseError = true; //stop wasting time trying to connect if database error
-                    slotFound = false;                   
+                    slotFound = false;
                     connection.Close();
 
                     //}
@@ -931,7 +936,7 @@ namespace WSPR_Sked
                 {
                     dblabel.Text = "Slot Database Error";
                     dblabel.BackColor = Color.Pink;
-                   
+
                     if (showmsg)
                     {
                         Msg.TMessageBox("Unable to read from database", "", 1000);
@@ -3505,7 +3510,7 @@ namespace WSPR_Sked
                                     ok = true;
                                 }
                             }
-                         
+
                         }
                         if (!ok)
                         {
@@ -3708,8 +3713,8 @@ namespace WSPR_Sked
                 {
 
                     MySqlCommand command = connection.CreateCommand();
-                    command.CommandText = "INSERT INTO settings(ConfigID,Callsign,BaseCall,Offset,DefaultF,Power,PowerW,Locator,LocatorLong,DefaultAnt,Alpha,DefaultAudio,HamlibPath,MsgType,AllowType2,oneMsg,WsprmsgPath,stopsolar) ";
-                    command.CommandText += "VALUES(@ConfigID,@Callsign,@BaseCall,@Offset,@DefaultF,@Power,@PowerW,@Locator,@LocatorLong,@DefaultAnt,@Alpha,@DefaultAudio,@HamlibPath,@MsgType,@AllowType2,@oneMsg,@WsprmsgPath,@stopsolar)";
+                    command.CommandText = "INSERT INTO settings(ConfigID,Callsign,BaseCall,Offset,DefaultF,Power,PowerW,Locator,LocatorLong,DefaultAnt,Alpha,DefaultAudio,HamlibPath,MsgType,AllowType2,oneMsg,WsprmsgPath,stopsolar,stopRX) ";
+                    command.CommandText += "VALUES(@ConfigID,@Callsign,@BaseCall,@Offset,@DefaultF,@Power,@PowerW,@Locator,@LocatorLong,@DefaultAnt,@Alpha,@DefaultAudio,@HamlibPath,@MsgType,@AllowType2,@oneMsg,@WsprmsgPath,@stopsolar,@stopRX)";
 
                     connection.Open();
 
@@ -3740,6 +3745,7 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@WsprmsgPath", wsprmsgP);
 
                     command.Parameters.AddWithValue("@stopsolar", stopSolar);
+                    command.Parameters.AddWithValue("@stopRX", stopRX);
                     string zone = "UTC";
                     if (LTcheckBox.Checked)
                     {
@@ -3788,7 +3794,7 @@ namespace WSPR_Sked
                 c = "UPDATE settings SET ConfigID = " + configID + ", Callsign = '" + callsign + "', BaseCall = '" + baseC + "', Offset = " + defaultoffset + ", DefaultF = " + defaultF + ", ";
                 c = c + "Power = " + defaultdB + ", PowerW = " + defaultW + ", Locator = '" + full_location + "', LocatorLong = " + L + ", DefaultAnt = '" + defaultAnt + "'";
                 c = c + ", Alpha = " + defaultAlpha + ", DefaultAudio = " + defA + ", HamlibPath = '" + HL + "', MsgType = " + msgT;
-                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopSolar + " WHERE settings.ConfigID = " + configID;
+                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopSolar + ", stopRX = " +stopRX+ " WHERE settings.ConfigID = " + configID;
 
                 command.CommandText = c;
                 connection.Open();
@@ -3874,6 +3880,8 @@ namespace WSPR_Sked
                     string wsprmsgP = (string)Reader["WsprmsgPath"];
                     stopSolar = (bool)Reader["stopsolar"];
                     solarcheckBox.Checked = !stopSolar;
+                    stopRX = (bool)Reader["stopRX"];
+                    stopRXcheckBox.Checked = stopRX;
                     if (OpSystem == 0)
                     {
                         wsprmsgP = wsprmsgP.Replace('/', '\\');
@@ -4403,7 +4411,7 @@ namespace WSPR_Sked
                 }
             }
 
-          
+
             if (m % 2 == 1 && s == 27)
             {
                 random = randno.Next(0, 7); //random number to spread uploads to wsprnet
@@ -4424,7 +4432,7 @@ namespace WSPR_Sked
                     }
                     else
                     {
-                        await rxForm.Start_Receive(OpSystem);   //start recording from RX
+                        if (!stopRX) { await rxForm.Start_Receive(OpSystem); } //start recording from RX
                     }
                 }
 
@@ -4438,7 +4446,7 @@ namespace WSPR_Sked
 
                 rxForm.set_prev_frequency();    //prevent RX decode being recorded for wrong freq
             }
-          
+
 
 
             if (m % 2 == 0 && (s > 2 && s < 5))
@@ -4448,7 +4456,7 @@ namespace WSPR_Sked
 
             if ((m % 2 == 1 && (s == 52 || s == 53 || s == 54) && !Flag) || justLoaded) //if odd minute and 53/4 second past minute
             {
-              
+
                 nextT = now.AddMinutes(1);
                 string nexttime = nextT.ToString("HH:mm:00");
 
@@ -5640,7 +5648,7 @@ namespace WSPR_Sked
                     }
                     else
                     {
-                        await rxForm.Start_Receive(OpSystem);   //start recording from RX
+                        if (!stopRX) { await rxForm.Start_Receive(OpSystem); }  //start recording from RX
                     }
                 }
             }
@@ -8906,9 +8914,23 @@ namespace WSPR_Sked
             {
                 daytimer.Enabled = true;
                 daytimer.Start();
-               
+
                 idletimer.Enabled = false;
                 idletimer.Stop();
+            }
+        }
+
+        private void stopRXcheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (stopRXcheckBox.Checked)
+            {
+                stopRX = true;
+                rxForm.Hide();
+            }
+            else
+            {
+                stopRX = false;
+                rxForm.Show();
             }
         }
     }
