@@ -1799,9 +1799,9 @@
             noSkedcheckBox.AutoSize = true;
             noSkedcheckBox.Location = new System.Drawing.Point(711, 223);
             noSkedcheckBox.Name = "noSkedcheckBox";
-            noSkedcheckBox.Size = new System.Drawing.Size(142, 17);
+            noSkedcheckBox.Size = new System.Drawing.Size(87, 17);
             noSkedcheckBox.TabIndex = 86;
-            noSkedcheckBox.Text = "Temporarily disable sked";
+            noSkedcheckBox.Text = "Disable sked";
             noSkedcheckBox.UseVisualStyleBackColor = true;
             // 
             // label88
