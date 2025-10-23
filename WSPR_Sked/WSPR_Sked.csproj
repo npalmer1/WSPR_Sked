@@ -14,14 +14,24 @@
     <Compile Remove="Class1.cs" />
     <Compile Remove="Encode2a.cs" />
     <Compile Remove="HRDComms.cs" />
+    <Compile Remove="LiveForm.cs" />
+    <Compile Remove="LiveForm.Designer.cs" />
     <Compile Remove="RigCtl.cs" />
+    <Compile Remove="Solar.cs" />
+    <Compile Remove="Solar.Designer.cs" />
+    <Compile Remove="SolarDB.cs" />
+    <Compile Remove="SolarDB.Designer.cs" />
     <Compile Remove="Version.cs" />
     <Compile Remove="WSJT - Copy.cs" />
     <Compile Remove="WsprEncoders.cs" />
+    <Compile Remove="Wspr_live.cs" />
     <Compile Remove="Wspr_receive.cs" />
     <Compile Remove="Wspr_receive.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Remove="LiveForm.resx" />
+    <EmbeddedResource Remove="Solar.resx" />
+    <EmbeddedResource Remove="SolarDB.resx" />
     <EmbeddedResource Remove="Wspr_receive.resx" />
   </ItemGroup>
   <ItemGroup>
