@@ -465,7 +465,7 @@ namespace WSPR_Sked
                     Msg.TMessageBox("RX Disabled - enable in TX Config settings", "RX Disabled", 4000);
                 }
 
-                    startCount = startCountMax - 60;
+                startCount = startCountMax - 60;
 
                 random = randno.Next(0, 7); //random number to spread uploads to wsprnet
 
@@ -3794,7 +3794,7 @@ namespace WSPR_Sked
                 c = "UPDATE settings SET ConfigID = " + configID + ", Callsign = '" + callsign + "', BaseCall = '" + baseC + "', Offset = " + defaultoffset + ", DefaultF = " + defaultF + ", ";
                 c = c + "Power = " + defaultdB + ", PowerW = " + defaultW + ", Locator = '" + full_location + "', LocatorLong = " + L + ", DefaultAnt = '" + defaultAnt + "'";
                 c = c + ", Alpha = " + defaultAlpha + ", DefaultAudio = " + defA + ", HamlibPath = '" + HL + "', MsgType = " + msgT;
-                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopSolar + ", stopRX = " +stopRX+ " WHERE settings.ConfigID = " + configID;
+                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopSolar + ", stopRX = " + stopRX + " WHERE settings.ConfigID = " + configID;
 
                 command.CommandText = c;
                 connection.Open();
@@ -8160,11 +8160,18 @@ namespace WSPR_Sked
                 {
                     var caps = WaveOut.GetCapabilities(i);
                     audioOutlistBox.Items.Add($"{i}: {caps.ProductName}");
+                    if (samecheckBox.Checked)
+                    {
+                        audioInlistBox.Items.Add($"{i}: {caps.ProductName}");
+                    }
                 }
-                for (int b = 0; b < WaveIn.DeviceCount; b++)
+                if (!samecheckBox.Checked)
                 {
-                    var caps = WaveIn.GetCapabilities(b);
-                    audioInlistBox.Items.Add($"{b}: {caps.ProductName}");
+                    for (int b = 0; b < WaveIn.DeviceCount; b++)
+                    {
+                        var caps = WaveIn.GetCapabilities(b);
+                        audioInlistBox.Items.Add($"{b}: {caps.ProductName}");
+                    }
                 }
             }
             catch
@@ -8308,11 +8315,11 @@ namespace WSPR_Sked
                     string wpath = wsprdfilepath.Replace("\\", "/");  //make sql friendly
                     MySqlCommand command = connection.CreateCommand();
 
-                    command.CommandText = "INSERT INTO rxsettings(id,outputname,outputdevice,inputname,inputdevice,outlevel,inlevel,wsprdpath)";
-                    command.CommandText += "VALUES(0,'" + audioOutName + "', " + audioOutDevice + ", '" + audioInName + "', " + audioInDevice + ", " + outLevel + ", " + inLevel + ", '" + wpath + "') ";
+                    command.CommandText = "INSERT INTO rxsettings(id,outputname,outputdevice,inputname,inputdevice,outlevel,inlevel,wsprdpath,samedev)";
+                    command.CommandText += "VALUES(0,'" + audioOutName + "', " + audioOutDevice + ", '" + audioInName + "', " + audioInDevice + ", " + outLevel + ", " + inLevel + ", '" + wpath + "', "+samecheckBox.Checked+") ";
                     command.CommandText += "ON DUPLICATE KEY UPDATE outputname = '" + audioOutName + "', outputdevice = " + audioOutDevice;
                     command.CommandText += ", inputname = '" + audioInName + "', inputdevice = " + audioInDevice;
-                    command.CommandText += ", outlevel = " + outLevel + ", inlevel = " + inLevel + ", wsprdpath = '" + wpath + "'";
+                    command.CommandText += ", outlevel = " + outLevel + ", inlevel = " + inLevel + ", wsprdpath = '" + wpath + "', samedev = " + samecheckBox.Checked;
 
 
                     command.ExecuteNonQuery();
@@ -8353,6 +8360,7 @@ namespace WSPR_Sked
                     audioInDevice = (int)Reader["inputdevice"];
                     outLevel = (int)Reader["outlevel"];
                     inLevel = (int)Reader["inlevel"];
+                    samecheckBox.Checked = (bool)Reader["samedev"];
 
                     string wpath = (string)Reader["wsprdpath"];
                     if (OpSystem == 0)
@@ -8937,6 +8945,12 @@ namespace WSPR_Sked
                 stopRX = false;
                 rxForm.Show();
             }
+        }
+
+        private void samecheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+                findSound();
+
         }
     }
 
