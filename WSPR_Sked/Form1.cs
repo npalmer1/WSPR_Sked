@@ -4348,7 +4348,7 @@ namespace WSPR_Sked
             {
                 currHour(true, trackSlotscheckBox.Checked); // update the date/time if no-one has been working in the app in 5 minutes
                 if (!trackSlotscheckBox.Checked) { keypresses = 0; } // update the date/time if no-one has been working in the app in 5 minutes (track exact slot time if no activity)
-                noSkedcheckBox.Checked = false;
+                //noSkedcheckBox.Checked = false;
             }
 
 
