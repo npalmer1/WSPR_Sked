@@ -343,6 +343,7 @@
             TulistBox = new System.Windows.Forms.ListBox();
             SwlistBox = new System.Windows.Forms.ListBox();
             tabPage6 = new System.Windows.Forms.TabPage();
+            samecheckBox = new System.Windows.Forms.CheckBox();
             gainlabel = new System.Windows.Forms.Label();
             label108 = new System.Windows.Forms.Label();
             label107 = new System.Windows.Forms.Label();
@@ -1596,10 +1597,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 22);
+            tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1153, 652);
+            tabPage2.Size = new System.Drawing.Size(1153, 650);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -3701,6 +3702,7 @@
             // tabPage6
             // 
             tabPage6.BackColor = System.Drawing.Color.Beige;
+            tabPage6.Controls.Add(samecheckBox);
             tabPage6.Controls.Add(gainlabel);
             tabPage6.Controls.Add(label108);
             tabPage6.Controls.Add(label107);
@@ -3725,11 +3727,22 @@
             tabPage6.Controls.Add(label97);
             tabPage6.Controls.Add(audioOutlistBox);
             tabPage6.Controls.Add(audioInlistBox);
-            tabPage6.Location = new System.Drawing.Point(4, 24);
+            tabPage6.Location = new System.Drawing.Point(4, 22);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new System.Drawing.Size(1153, 650);
+            tabPage6.Size = new System.Drawing.Size(1153, 652);
             tabPage6.TabIndex = 5;
             tabPage6.Text = "RX & Sound config";
+            // 
+            // samecheckBox
+            // 
+            samecheckBox.AutoSize = true;
+            samecheckBox.Location = new System.Drawing.Point(52, 165);
+            samecheckBox.Name = "samecheckBox";
+            samecheckBox.Size = new System.Drawing.Size(183, 17);
+            samecheckBox.TabIndex = 28;
+            samecheckBox.Text = "Same device for input and output";
+            samecheckBox.UseVisualStyleBackColor = true;
+            samecheckBox.CheckedChanged += samecheckBox_CheckedChanged;
             // 
             // gainlabel
             // 
@@ -4462,6 +4475,7 @@
         private System.Windows.Forms.Timer idletimer;
         private System.Windows.Forms.Label dblabel;
         private System.Windows.Forms.CheckBox stopRXcheckBox;
+        private System.Windows.Forms.CheckBox samecheckBox;
     }
 }
 
