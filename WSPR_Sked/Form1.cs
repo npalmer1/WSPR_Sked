@@ -3248,8 +3248,11 @@ namespace WSPR_Sked
                 await Task.Delay(100);
                 await activateTX(TXFrequency);
                 double freq = Convert.ToDouble(TXFrequency);
-                freq = freq / 1000000;                
-                await rxForm.set_frequency(freq.ToString("F6"));
+                freq = freq / 1000000;
+                if (!noRigctld)
+                {
+                    await rxForm.set_frequency(freq.ToString("F6"));
+                }
 
             }
 
@@ -3281,7 +3284,10 @@ namespace WSPR_Sked
             {
                 double freq = Convert.ToDouble(TXFrequency);
                 freq = freq / 1000000;
-                await rxForm.set_frequency(freq.ToString("F6"));
+                if (!noRigctld)
+                {
+                    await rxForm.set_frequency(freq.ToString("F6"));
+                }
             }
         }
 
@@ -8607,6 +8613,7 @@ namespace WSPR_Sked
         {
             TXrunbutton.Text = FlistBox2.SelectedItem.ToString() + " MHz";
             TXrunbutton2.Text = FlistBox2.SelectedItem.ToString() + " MHz";
+            rxForm.set_frequency(FlistBox2.SelectedItem.ToString());
 
         }
 
