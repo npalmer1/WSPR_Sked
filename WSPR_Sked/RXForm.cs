@@ -1219,6 +1219,8 @@ namespace WSPR_Sked
 
         private void filterbutton_Click(object sender, EventArgs e)
         {
+            MessageForm nForm = new MessageForm();
+            Msg.TCMessageBox("Please wait....", "", 20000,nForm);
             if (filterbutton.Text == "Apply")
             {
                 filter_results(server, user, pass);
@@ -1229,6 +1231,7 @@ namespace WSPR_Sked
                 show_results(server, user, pass);
                 filterbutton.Text = "Apply";
             }
+            nForm.Dispose();
         }
 
         public async Task show_results(string server, string user, string pass) // read back from the reported table to populate the datagridview
