@@ -8082,7 +8082,9 @@ namespace WSPR_Sked
                 if (rigctldcheckBox.Checked)
                 {
                     Msg.TMessageBox("Rigctld disabled - change frequency manually", "", 3000);
-                    changeFmanually();
+                   
+                    changeFmanually(FlistBox);
+                    FlistBox2.SelectedItem = FlistBox.SelectedItem;
                     return;
                 }
                 testFtextBox.Text = FlistBox.SelectedItem.ToString();
@@ -8586,14 +8588,18 @@ namespace WSPR_Sked
 
         private void FlistBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-           changeFmanually();
+           changeFmanually(FlistBox2);
+            FlistBox.SelectedItem = FlistBox2.SelectedItem;
 
         }
-        private  void changeFmanually()
+        private  void changeFmanually(ListBox listB)
         {
             TXrunbutton.Text = FlistBox2.SelectedItem.ToString() + " MHz";
             TXrunbutton2.Text = FlistBox2.SelectedItem.ToString() + " MHz";
             rxForm.set_frequency(FlistBox2.SelectedItem.ToString());
+            TXrunbutton.Text = listB.SelectedItem.ToString() + " MHz";
+            TXrunbutton2.Text = listB.SelectedItem.ToString() + " MHz";
+            rxForm.set_frequency(listB.SelectedItem.ToString());
         }
 
         private async void solarcheckBox_CheckedChanged(object sender, EventArgs e)
