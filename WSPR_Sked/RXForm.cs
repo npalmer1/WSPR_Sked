@@ -1,4 +1,12 @@
 ﻿using Google.Protobuf.WellKnownTypes;
+//using WSPRlive;
+//using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
+//using static Mysqlx.Expect.Open.Types.Condition.Types;
+//using static System.Net.Mime.MediaTypeNames;
+//using static System.Runtime.InteropServices.JavaScript.JSType;
+//using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+//using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using Maidenhead;
 using MathNet.Numerics;
 //using Microsoft.VisualBasic.ApplicationServices;
 using MySql.Data.MySqlClient;
@@ -18,6 +26,7 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Net.Http;
+using System.Reflection;
 //using System.Net.NetworkInformation;
 //using System.Reflection.Metadata;
 //using System.Runtime.CompilerServices;
@@ -26,14 +35,6 @@ using System.Text;
 using System.Threading.Tasks;
 //using System.Transactions;
 using System.Windows.Forms;
-//using WSPRlive;
-//using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
-//using static Mysqlx.Expect.Open.Types.Condition.Types;
-//using static System.Net.Mime.MediaTypeNames;
-//using static System.Runtime.InteropServices.JavaScript.JSType;
-//using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
-//using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
-using Maidenhead;
 
 namespace WSPR_Sked
 {
@@ -104,6 +105,8 @@ namespace WSPR_Sked
 
         string slash = "\\";
         string userdir = "";
+        string exeDir = "";
+        
 
         DateTime nextDT;
 
@@ -132,6 +135,8 @@ namespace WSPR_Sked
             pass = db_pass;
             my_loc = loc;
             userdir = Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
+            string exePath = Assembly.GetExecutingAssembly().Location;
+            exeDir = Path.GetDirectoryName(exePath);
             if (opsys !=0) //if not windows
             {
                 slash = "/";

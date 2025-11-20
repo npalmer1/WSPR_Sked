@@ -82,8 +82,7 @@ namespace WSPR_Sked
 
         string ant = "dipole";
 
-
-
+        string exeDir = "";
 
         int azi = 0;
         string FList = "";
@@ -300,6 +299,10 @@ namespace WSPR_Sked
             OpSystem = 0; //default to Windows
             slash = "\\"; //default to Windows
             root = "C:\\";
+
+            string exePath = Assembly.GetExecutingAssembly().Location;
+            exeDir = Path.GetDirectoryName(exePath);
+            wsprdfilepath = exeDir;
             getUserandPassword();
             if (checkSlotDB())
             {
@@ -3862,10 +3865,15 @@ namespace WSPR_Sked
                     solarcheckBox.Checked = !stopSolar;
                     stopRX = (bool)Reader["stopRX"];
                     stopRXcheckBox.Checked = stopRX;
+                    if (wsprmsgP == "")
+                    {
+                        wsprmsgP = exeDir;
+                    }
                     if (OpSystem == 0)
                     {
                         wsprmsgP = wsprmsgP.Replace('/', '\\');
                     }
+                   
                     wsprmsgtextBox.Text = wsprmsgP;
                     if (zone == "LT")
                     {
@@ -8348,6 +8356,10 @@ namespace WSPR_Sked
                     samecheckBox.Checked = (bool)Reader["samedev"];
 
                     string wpath = (string)Reader["wsprdpath"];
+                    if (wpath == "")
+                    {
+                        wpath = exeDir;
+                    }
                     if (OpSystem == 0)
                     {
                         wsprdfilepath = wpath.Replace('/', '\\');
@@ -8356,6 +8368,7 @@ namespace WSPR_Sked
                     {
                         wsprdfilepath = wpath;
                     }
+                   
                     wsprdtextBox.Text = wsprdfilepath;
 
                 }
