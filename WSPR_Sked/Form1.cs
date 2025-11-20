@@ -294,7 +294,7 @@ namespace WSPR_Sked
         {
 
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.9";
+            string ver = "0.1.10";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -8081,7 +8081,8 @@ namespace WSPR_Sked
             {
                 if (rigctldcheckBox.Checked)
                 {
-                    Msg.TMessageBox("Rig control not enabled - set freq manually", "Using default F", 2000);
+                    Msg.TMessageBox("Rigctld disabled - change frequency manually", "", 3000);
+                    changeFmanually();
                     return;
                 }
                 testFtextBox.Text = FlistBox.SelectedItem.ToString();
@@ -8585,10 +8586,14 @@ namespace WSPR_Sked
 
         private void FlistBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
+           changeFmanually();
+
+        }
+        private  void changeFmanually()
+        {
             TXrunbutton.Text = FlistBox2.SelectedItem.ToString() + " MHz";
             TXrunbutton2.Text = FlistBox2.SelectedItem.ToString() + " MHz";
             rxForm.set_frequency(FlistBox2.SelectedItem.ToString());
-
         }
 
         private async void solarcheckBox_CheckedChanged(object sender, EventArgs e)
