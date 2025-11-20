@@ -103,6 +103,7 @@ namespace WSPR_Sked
         public bool stopUrl = false;
 
         string slash = "\\";
+        string userdir = "";
 
         DateTime nextDT;
 
@@ -130,6 +131,7 @@ namespace WSPR_Sked
             user = db_user;
             pass = db_pass;
             my_loc = loc;
+            userdir = Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
             if (opsys !=0) //if not windows
             {
                 slash = "/";
@@ -194,8 +196,13 @@ namespace WSPR_Sked
 
         private async void Record_Decode(int opsys)
         {
-
-            if (prevwav == wavno)
+            string wsprdir = "C:\\WSPR_Sked";
+            if (!Directory.Exists(wsprdir))
+            {
+                // Create the folder
+                Directory.CreateDirectory(wsprdir);
+            }
+                if (prevwav == wavno)
             {
                 return;
             }
@@ -211,7 +218,7 @@ namespace WSPR_Sked
 
         
 
-            string outpath = wsprdfilepath + slash +"temp" + wavno + ".wav";
+            string outpath = wsprdir + slash +"temp" + wavno + ".wav";
             if (File.Exists(outpath))
             {
                 try
@@ -224,7 +231,7 @@ namespace WSPR_Sked
 
             await Task.Delay(200);
             statuslabel.Text = "receiving";
-            Msg.TMessageBox("Recording: " + wsprdfilepath + slash+ "temp" + wavno + ".wav", "", 3000);
+            Msg.TMessageBox("Recording: " + wsprdir + slash+ "temp" + wavno + ".wav", "", 3000);
 
             string args = "";
             int mS = 110000;
@@ -319,7 +326,7 @@ namespace WSPR_Sked
                 prevwav = 3;
                 wavno = 1;
             }
-            string wavfile = wsprdfilepath + slash + "temp" + prevwav + ".wav";
+            string wavfile = wsprdir + slash + "temp" + prevwav + ".wav";
 
             string c = "";
             string cmd = "";
@@ -328,14 +335,16 @@ namespace WSPR_Sked
             {
                 c = "/c ";
                 cmd = "cmd.exe";
-                args = c + wsprdfilepath + slash + "wsprd.exe -a " + wsprdfilepath + " -f " + Frequency + d + o + " " + wavfile;
+                //args = c + wsprdfilepath + slash + "wsprd.exe -a " + userdir + " -f " + Frequency + d + o + " " + wavfile;
+                args = c + wsprdfilepath + slash + "wsprd.exe -a "+wsprdir+" -f " + Frequency + d + o + " " + wavfile;
             }
             else
             {
                 //Linux etc.
                 cmd = "/bin/bash";
                 c = "-c ";
-                args = c + wsprdfilepath + slash + "wsprd -a " + wsprdfilepath + " -f " + Frequency + d + o + " " + wavfile;
+                //args = c + wsprdfilepath + slash + "wsprd -a " + userdir + " -f " + Frequency + d + o + " " + wavfile;
+                args = c + wsprdfilepath + slash + "wsprd -a "+wsprdir+" -f " + Frequency + d + o + " " + wavfile;
 
             }
                 var fileInfo = new FileInfo(wavfile);
@@ -347,7 +356,7 @@ namespace WSPR_Sked
                 output = "";
                 if (!blockDecodes)    //block decodes whilst transmitting - from Wspr_transmit on form1
                 {
-                    Msg.TMessageBox("Decoding: " + wsprdfilepath + slash + "temp" + prevwav + ".wav", "", 3000);
+                    Msg.TMessageBox("Decoding: " + wsprdir + slash + "temp" + prevwav + ".wav", "", 3000);
                     await Task.Run(() =>
                     {
                         runDecoder(cmd, args);
@@ -384,8 +393,8 @@ namespace WSPR_Sked
                                             originalDT.Hour, originalDT.Minute, 0); //set seconds to zero
 
             try
-            {
-                await save_result_lines(startT, wsprdfilepath);
+            {   
+                await save_result_lines(startT);
                 await Task.Delay(200);
                 int rows = table_count(server, user, pass);
                 if (rows > 0)
@@ -574,7 +583,7 @@ namespace WSPR_Sked
 
             dataGridView1.Rows.Add(row);
         }
-        private async Task save_result_lines(DateTime startT, string filepath)
+        private async Task save_result_lines(DateTime startT)
         {
             //startT is current time minuis 2 mins
             if (results == null || results == "")
@@ -587,7 +596,7 @@ namespace WSPR_Sked
             using var reader = new StringReader(results);
 
             string line = "";
-            //string filepath = "";
+           
             bool append = false;
             bool stop = false;
             string date = startT.ToString("yyMMdd");
