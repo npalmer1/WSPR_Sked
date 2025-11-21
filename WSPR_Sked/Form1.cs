@@ -293,16 +293,14 @@ namespace WSPR_Sked
         {
 
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.10";
+            string ver = "0.1.11";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
             slash = "\\"; //default to Windows
             root = "C:\\";
 
-            string exePath = Assembly.GetExecutingAssembly().Location;
-            exeDir = Path.GetDirectoryName(exePath);
-            wsprdfilepath = exeDir;
+           
             getUserandPassword();
             if (checkSlotDB())
             {
@@ -3239,13 +3237,16 @@ namespace WSPR_Sked
                 {
                     countdownlabel.Text = "TX start";
                     countdownlabel2.Text = "TX start";
+                    await StartTX(false);
                 }
                 else if (!slotActive)
                 {
                     countdownlabel.Text = "RX start";
                     countdownlabel2.Text = "RX start";
+                    if (!rigctldcheckBox.Checked)
+                    { getRigF(); }
                 }
-                await StartTX(false);
+                //await StartTX(false);
                 WSPRtimer.Stop();
                 WSPRtimer.Enabled = false;
 
@@ -3865,10 +3866,7 @@ namespace WSPR_Sked
                     solarcheckBox.Checked = !stopSolar;
                     stopRX = (bool)Reader["stopRX"];
                     stopRXcheckBox.Checked = stopRX;
-                    if (wsprmsgP == "")
-                    {
-                        wsprmsgP = exeDir;
-                    }
+                   
                     if (OpSystem == 0)
                     {
                         wsprmsgP = wsprmsgP.Replace('/', '\\');
@@ -6157,6 +6155,7 @@ namespace WSPR_Sked
 
         private void FlistBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            FlistBox2.SelectedIndex = FlistBox.SelectedIndex;
             testFreq(false);
         }
 
@@ -8356,10 +8355,7 @@ namespace WSPR_Sked
                     samecheckBox.Checked = (bool)Reader["samedev"];
 
                     string wpath = (string)Reader["wsprdpath"];
-                    if (wpath == "")
-                    {
-                        wpath = exeDir;
-                    }
+                   
                     if (OpSystem == 0)
                     {
                         wsprdfilepath = wpath.Replace('/', '\\');
@@ -8601,9 +8597,8 @@ namespace WSPR_Sked
 
         private void FlistBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-           changeFmanually(FlistBox2);
             FlistBox.SelectedItem = FlistBox2.SelectedItem;
-
+            changeFmanually(FlistBox2);            
         }
         private  void changeFmanually(ListBox listB)
         {

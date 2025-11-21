@@ -615,10 +615,13 @@ namespace WSPR_Sked
                     line = reader.ReadLine().Trim();
                     if (line == null || line == "")
                     {
-                        end = true;
-                        stop = true;
+                        //end = true;
+                        //stop = true;
+                        DX.tx_sign = "nil rcvd";
+                        line = "<DecodeFinished>";
+
                     }
-                    else if (line.Contains("<DecodeFinished>"))
+                    if (line.Contains("<DecodeFinished>"))
                     {
                         end = true;
                         if (containsData)
@@ -648,7 +651,7 @@ namespace WSPR_Sked
                             {
                                 if (!DX.tx_sign.Contains("error"))
                                 {
-                                    if (DX.tx_sign.Contains("nil recvd") && containsData)
+                                    if (DX.tx_sign.Contains("nil rcvd") && containsData)
                                     {
                                         end = true;
                                         stop = true;
@@ -759,7 +762,7 @@ namespace WSPR_Sked
             client.DefaultRequestHeaders.Add(Callsign, my_loc);
 
             //client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("WS/0.1.5");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("WS/0.1.10");
 
             var content = new FormUrlEncodedContent(formData);
 
