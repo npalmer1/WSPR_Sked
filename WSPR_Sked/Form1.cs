@@ -5079,6 +5079,7 @@ namespace WSPR_Sked
             slotActive = true;
             showMsgType(1);
             StartTX(false);
+
         }
 
         private void testPTTtimer_Tick(object sender, EventArgs e)
