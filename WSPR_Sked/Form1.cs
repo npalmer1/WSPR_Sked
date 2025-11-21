@@ -2948,6 +2948,11 @@ namespace WSPR_Sked
         private int[] WSPR_Encode() //encode the message into a byte array of wspr Levels (0,1,2 or 3) of 161 bytes length
         {
             //slotNo = 1; 
+            if (flatcode)  //test tx button pressed
+            {
+                slotNo = 1;
+                msgType = 1;
+            }
             if (CalltextBox.Text == "" || LocatortextBox.Text == "")
             {
                 Msg.OKMessageBox("Invalid callsign or locator", "");
@@ -3012,6 +3017,10 @@ namespace WSPR_Sked
                         call = baseCalltextBox.Text;
                         msgType = 1;
                     }
+                }
+                if (flatcode && callok > 0)
+                {
+                    call = baseCalltextBox.Text;
                 }
 
                 if (callok == 0)
@@ -3127,6 +3136,16 @@ namespace WSPR_Sked
         private void TXTestbutton_Click(object sender, EventArgs e)
         {
             slotNo = 1;
+            if (Type2checkBox.Checked)
+            {
+                msgType = 3;    //send as one message type 3
+                
+            }
+            else
+            {
+                msgType = 1;
+            }
+            showMsgType(msgType);
             Slot.Offset = defaultoffset;
             TXAntenna = defaultAnt;
             if (rigctldcheckBox.Checked)
@@ -5058,6 +5077,7 @@ namespace WSPR_Sked
             testPTTtimer.Enabled = true;
             testPTTtimer.Start();
             slotActive = true;
+            showMsgType(1);
             StartTX(false);
         }
 
