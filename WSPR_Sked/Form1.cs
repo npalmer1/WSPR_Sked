@@ -2971,6 +2971,10 @@ namespace WSPR_Sked
             {
                 loc = location.Substring(0, 4);
             }
+            if (longcheckBox.Checked && !Type2checkBox.Checked)
+            {
+                loc = location.Substring(0, 4);
+            }
             if (location.Length < 4)
             {
                 loc = location.PadRight(4);
@@ -3010,13 +3014,13 @@ namespace WSPR_Sked
 
                 callok = checkCall(baseCalltextBox.Text, LocatortextBox.Text);
 
-                if (callok == 1 || msgType == 1)
+                if (msgType == 1)
                 {
-                    if (!Type2checkBox.Checked && !asOnecheckBox.Checked)
-                    {
+                    //if (!Type2checkBox.Checked && !asOnecheckBox.Checked)
+                    //{
                         call = baseCalltextBox.Text;
                         msgType = 1;
-                    }
+                    //}
                 }
                 if (flatcode && callok > 0)
                 {
