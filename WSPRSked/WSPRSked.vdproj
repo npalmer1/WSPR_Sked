@@ -15,25 +15,25 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_0A8C8C270E684456AADF974FCE300895"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_1D881EE215FC4973A0EACA352E3FF350"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_22B70A8F95EC42E1A103953CF3D113C5"
+        "MsmKey" = "8:_49652FA4F18B441486C43C1565E4F9AF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_463144353E5D40CC8B05CAFBF1A59F0D"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6957683B14E44A78B4D2960CCA594911"
+        "MsmKey" = "8:_6B04E402E00A4FEE8FECD0287C63E764"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -51,31 +51,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_79B3F9BC9FF544499C9ADBD195758862"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D93C0082E81A46D48911AB0551988165"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EF7CC340A4144A1782650FC1DC76DA75"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F0CA52ED2EE14EE0935447DE3495D799"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F178FA5436694E5695A4298DAD45B5CE"
+        "MsmKey" = "8:_EE25FDB97A30462C9C01DB9556601280"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -103,6 +79,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -119,6 +111,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -150,12 +158,32 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0A8C8C270E684456AADF974FCE300895"
+            {
+            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libgcc_s_seh-1.dll"
+            "TargetName" = "8:libgcc_s_seh-1.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1D881EE215FC4973A0EACA352E3FF350"
             {
             "SourcePath" = "8:..\\wspr_enc.exe"
             "TargetName" = "8:wspr_enc.exe"
             "Tag" = "8:"
-            "Folder" = "8:_B121CBA499204C9D896DB0279EAFA74E"
+            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -170,52 +198,32 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_22B70A8F95EC42E1A103953CF3D113C5"
-            {
-            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libportaudio-2.dll"
-            "TargetName" = "8:libportaudio-2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_B121CBA499204C9D896DB0279EAFA74E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_463144353E5D40CC8B05CAFBF1A59F0D"
-            {
-            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libstdc++-6.dll"
-            "TargetName" = "8:libstdc++-6.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_B121CBA499204C9D896DB0279EAFA74E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6957683B14E44A78B4D2960CCA594911"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_49652FA4F18B441486C43C1565E4F9AF"
             {
             "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libwinpthread-1.dll"
             "TargetName" = "8:libwinpthread-1.dll"
             "Tag" = "8:"
-            "Folder" = "8:_B121CBA499204C9D896DB0279EAFA74E"
+            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6B04E402E00A4FEE8FECD0287C63E764"
+            {
+            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libfftw3f-3.dll"
+            "TargetName" = "8:libfftw3f-3.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -255,7 +263,7 @@
             "SourcePath" = "8:..\\wsprd.exe"
             "TargetName" = "8:wsprd.exe"
             "Tag" = "8:"
-            "Folder" = "8:_B121CBA499204C9D896DB0279EAFA74E"
+            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -270,92 +278,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_79B3F9BC9FF544499C9ADBD195758862"
-            {
-            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libgcc_s_seh-1.dll"
-            "TargetName" = "8:libgcc_s_seh-1.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_B121CBA499204C9D896DB0279EAFA74E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D93C0082E81A46D48911AB0551988165"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EE25FDB97A30462C9C01DB9556601280"
             {
             "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libquadmath-0.dll"
             "TargetName" = "8:libquadmath-0.dll"
             "Tag" = "8:"
-            "Folder" = "8:_B121CBA499204C9D896DB0279EAFA74E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EF7CC340A4144A1782650FC1DC76DA75"
-            {
-            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libgfortran-4.dll"
-            "TargetName" = "8:libgfortran-4.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_B121CBA499204C9D896DB0279EAFA74E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F0CA52ED2EE14EE0935447DE3495D799"
-            {
-            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libfftw3f-3.dll"
-            "TargetName" = "8:libfftw3f-3.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_B121CBA499204C9D896DB0279EAFA74E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F178FA5436694E5695A4298DAD45B5CE"
-            {
-            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libgomp-1.dll"
-            "TargetName" = "8:libgomp-1.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_B121CBA499204C9D896DB0279EAFA74E"
+            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -398,6 +326,18 @@
                 {
                 }
             }
+            "{994432C3-9487-495D-8656-3E829A8DBDDE}:_3AEA9FE6086C49F1A002AB30BC05E7A9"
+            {
+            "DefaultLocation" = "8:[WindowsVolume]\\WSPR_Sked"
+            "Name" = "8:WSPR_Sked"
+            "AlwaysCreate" = "11:TRUE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:NEWPROPERTY1"
+                "Folders"
+                {
+                }
+            }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_B121CBA499204C9D896DB0279EAFA74E"
             {
             "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
@@ -427,7 +367,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:WSPRSked"
         "ProductCode" = "8:{8FC60B61-C4F5-4FBE-B042-842D926409F1}"
-        "PackageCode" = "8:{48C53CCD-F330-436E-991D-86F961FCAA9A}"
+        "PackageCode" = "8:{9EE2ACF0-0817-4C27-877A-80BD36287687}"
         "UpgradeCode" = "8:{ECFB22B5-B0E1-41CD-ACDD-002824EF3F6D}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
