@@ -1239,6 +1239,7 @@ namespace WSPR_Sked
             slotNo = 1;
             int msgT = 1;
             bool this_slot = false;
+            bool oneTX = asOnecheckBox.Checked;
 
             this.Focus();
             this.BringToFront();
@@ -1279,6 +1280,7 @@ namespace WSPR_Sked
                     }
                     Msg.TCMessageBox("Saving .. please wait", "Save slot", 5000, mForm);
                     Savelabel.Text = "Saving - please wait....";
+                   
                     if ((msgT == 2 || msgT == 3) && !asOnecheckBox.Checked && checkNextSlot(EditRow))
                     {
                         if (DaycheckBox.Checked || NightcheckBox.Checked)
@@ -8469,6 +8471,7 @@ namespace WSPR_Sked
             int msgT = 1;
             testdbmlabel.Text = defaultdB.ToString();
             string cs = callsign;
+            string loc = location;
             if (slotTestlistBox.SelectedIndex > -1)
             {
                 msgT = slotTestlistBox.SelectedIndex + 1;
@@ -8480,12 +8483,33 @@ namespace WSPR_Sked
             if (msgT == 1)
             {
 
-                cs = base_call;
+                cs = baseCalltextBox.Text.Trim().ToUpper();
             }
 
             var wspr = new WsprTransmission();
             wspr.wsprmsgPath = wsprmsgtextBox.Text;
-            levels = wspr.WsprTxn(cs, location, defaultdB, slot, msgT, asOnecheckBox.Checked, OpSystem);
+            bool oneTX = false;
+            if (msgT == 3)
+            {
+                oneTX = true;
+                Msg.TMessageBox("One transmission only for message type 3", "", 1500);
+            }
+            else if (msgT == 2)
+            {
+                Msg.TMessageBox("Two transmissions for message type 2", "", 1500);
+                oneTX = false;
+            }
+            else if (msgT == 1)
+            {
+                Msg.TMessageBox("One transmissions for message type 1", "", 1500);
+                loc = location.Substring(0, 4);
+                oneTX = true;
+            }
+            if (!longcheckBox.Checked)
+            {
+                loc = location.Substring(0, 4);
+            }
+                levels = wspr.WsprTxn(cs, loc, defaultdB, slot, msgT, oneTX, OpSystem);
             leveltextBox.Text = wspr.LevelsString;
         }
 
