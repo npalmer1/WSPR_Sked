@@ -1268,6 +1268,7 @@ namespace WSPR_Sked
                             msgTlabel.Text = "Message type 2";
                         }
                     }
+                    this_slot = true;
                     if (repeatcheckBox.Checked && editslotcheckBox.Checked)
                     {
                         var res = Msg.ynMessageBox("Update all repeating slots (Y/N)?", "Repeating slots");
