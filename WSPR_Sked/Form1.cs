@@ -8062,6 +8062,7 @@ namespace WSPR_Sked
                 //msgType = 1;
                 msgTypelabel.Text = "Message type 1";
                 msgTypelabel2.Text = "Message type 1";
+                longcheckBox.Checked = false;
 
             }
             else
