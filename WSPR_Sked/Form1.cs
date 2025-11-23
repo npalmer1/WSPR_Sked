@@ -1293,7 +1293,7 @@ namespace WSPR_Sked
                         this_slot = false;
                     }
 
-                        Msg.TCMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", 5000, mForm);
+                        Msg.TCMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", 20000, mForm);
                     Savelabel.Text = "Saving - please wait....";
                     repeatStatus = false;
 
