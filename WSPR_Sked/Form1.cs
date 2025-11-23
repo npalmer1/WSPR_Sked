@@ -1244,7 +1244,7 @@ namespace WSPR_Sked
             
             slotNo = 1;
             int msgT = 1;
-            bool this_slot = true; ;
+            bool this_slot = false;
             bool oneTX = asOnecheckBox.Checked;
 
             this.Focus();
@@ -1275,7 +1275,7 @@ namespace WSPR_Sked
                             msgTlabel.Text = "Message type 2";
                         }
                     }
-                    this_slot = true;
+                   
                     if (repeatcheckBox.Checked && editslotcheckBox.Checked)
                     {
                         var res = Msg.ynMessageBox("Update all repeating slots (Y/N)?", "Repeating slots");
@@ -1284,8 +1284,16 @@ namespace WSPR_Sked
                             this_slot = true;
                         }
                     }
-                   
-                    Msg.TCMessageBox("Saving (message type "+ msgT+ ") .. please wait", "Save slot", 5000, mForm);
+                    else if (!repeatcheckBox.Checked )
+                    {
+                        this_slot = true;
+                    }
+                    else
+                    {
+                        this_slot = false;
+                    }
+
+                        Msg.TCMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", 5000, mForm);
                     Savelabel.Text = "Saving - please wait....";
                     repeatStatus = false;
 
@@ -1730,8 +1738,13 @@ namespace WSPR_Sked
 
                     endT = T;
                 }
+                if (this_slot) //only update this slot
+                {
+                    Dend = dt;
+                    endT = T;
+                }
                 DateTime startT = T;
-                if (AllcheckBox.Checked) //all day
+                if (AllcheckBox.Checked && !this_slot) //all day
                 {
                     startT = DateTime.MinValue.AddHours(0).AddMinutes(T.Minute); //midnight + XX mins
 
@@ -1741,10 +1754,7 @@ namespace WSPR_Sked
 
                 TimeSpan TS = End - StartCount;
 
-                if (this_slot) //only update this slot
-                {
-                    Dend = dt;
-                }
+               
                 if (dt <= Dend)
                 {
 
