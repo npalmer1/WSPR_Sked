@@ -116,6 +116,8 @@ namespace WSPR_Sked
 
         bool DBdown = false;
 
+        bool repeatStatus = false;
+
 
         DateTime currentSelectedDate;
 
@@ -293,7 +295,7 @@ namespace WSPR_Sked
         {
 
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.11";
+            string ver = "0.1.12";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -1109,6 +1111,7 @@ namespace WSPR_Sked
                     }
                     else
                     {
+                        
                         editslotcheckBox.Checked = true;  //editing existing
                         FreqcomboBox.SelectedItem = cells[2];
                         OffsettextBox.Text = cells[3];
@@ -1196,6 +1199,7 @@ namespace WSPR_Sked
                     repeatTimecheckBox.Checked = false;
                     repeatTimecheckBox.Checked = false;
                 }
+                repeatStatus = repeatcheckBox.Checked;
             }
             catch
             {
@@ -1208,6 +1212,7 @@ namespace WSPR_Sked
         private void CancelSlotbutton_Click(object sender, EventArgs e)
         {
             slotgroupBox.Visible = false;
+            repeatStatus = false;
             this.Focus();
             this.BringToFront();
             dataGridView1.Focus();
@@ -1236,9 +1241,10 @@ namespace WSPR_Sked
 
         private async void SaveSlotbutton_Click(object sender, EventArgs e)
         {
+            
             slotNo = 1;
             int msgT = 1;
-            bool this_slot = false;
+            bool this_slot = true; ;
             bool oneTX = asOnecheckBox.Checked;
 
             this.Focus();
@@ -1278,12 +1284,14 @@ namespace WSPR_Sked
                             this_slot = true;
                         }
                     }
-                    Msg.TCMessageBox("Saving .. please wait", "Save slot", 5000, mForm);
-                    Savelabel.Text = "Saving - please wait....";
                    
+                    Msg.TCMessageBox("Saving (message type "+ msgT+ ") .. please wait", "Save slot", 5000, mForm);
+                    Savelabel.Text = "Saving - please wait....";
+                    repeatStatus = false;
+
                     if ((msgT == 2 || msgT == 3) && !asOnecheckBox.Checked && checkNextSlot(EditRow))
                     {
-                        if (DaycheckBox.Checked || NightcheckBox.Checked)
+                        if ((DaycheckBox.Checked || NightcheckBox.Checked) && !this_slot) //don't update all if only this one
                         {
                             await SaveSlot_Sun(false, msgT, this_slot);
                             EditRow++;
@@ -1305,7 +1313,7 @@ namespace WSPR_Sked
                     }
                     else //if (msgT != 2 || (msgT == 3 && asOnecheckBox.Checked))
                     {
-                        if (DaycheckBox.Checked || NightcheckBox.Checked)
+                        if ((DaycheckBox.Checked || NightcheckBox.Checked) && !this_slot) //don't update all if only this one
                         {
                             await SaveSlot_Sun(false, msgT, this_slot);
                         }
@@ -2742,6 +2750,14 @@ namespace WSPR_Sked
 
         private void repeatcheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            if (!repeatcheckBox.Checked && repeatStatus)
+            {
+                var res = Msg.ynMessageBox("Only modify this slot (Y/N)?", "Modify slots");
+                if (res == DialogResult.No)
+                {
+                   repeatcheckBox.Checked = true;
+                }
+            }
             dateEnd.Enabled = repeatcheckBox.Checked;
             timeEnd.Visible = repeatcheckBox.Checked;
             repeatTimecheckBox.Visible = repeatcheckBox.Checked;
