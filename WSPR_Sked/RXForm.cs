@@ -106,7 +106,7 @@ namespace WSPR_Sked
         string slash = "\\";
         string userdir = "";
         string exeDir = "";
-        
+
 
         DateTime nextDT;
 
@@ -137,7 +137,7 @@ namespace WSPR_Sked
             userdir = Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
             string exePath = Assembly.GetExecutingAssembly().Location;
             exeDir = Path.GetDirectoryName(exePath);
-            if (opsys !=0) //if not windows
+            if (opsys != 0) //if not windows
             {
                 slash = "/";
             }
@@ -161,7 +161,7 @@ namespace WSPR_Sked
             {
                 for (int i = 1; i <= 3; i++)    //delete all existimg wav files 
                 {
-                    string outpath = wsprdfilepath + slash+"temp" + i + ".wav";
+                    string outpath = wsprdfilepath + slash + "temp" + i + ".wav";
                     if (File.Exists(outpath))
                     {
                         try
@@ -207,11 +207,11 @@ namespace WSPR_Sked
                 // Create the folder
                 Directory.CreateDirectory(wsprdir);
             }
-                if (prevwav == wavno)
+            if (prevwav == wavno)
             {
                 return;
             }
-            if (!File.Exists(wsprdfilepath + slash +"wsprd.exe"))
+            if (!File.Exists(wsprdfilepath + slash + "wsprd.exe"))
             {
                 Msg.TMessageBox("Error: wsprd.exe not found! - see RX & Sound", "WSPR daemon error", 2000);
                 return;
@@ -221,9 +221,9 @@ namespace WSPR_Sked
                 finished = false;
             }
 
-        
 
-            string outpath = wsprdir + slash +"temp" + wavno + ".wav";
+
+            string outpath = wsprdir + slash + "temp" + wavno + ".wav";
             if (File.Exists(outpath))
             {
                 try
@@ -236,7 +236,7 @@ namespace WSPR_Sked
 
             await Task.Delay(200);
             statuslabel.Text = "receiving";
-            Msg.TMessageBox("Recording: " + wsprdir + slash+ "temp" + wavno + ".wav", "", 3000);
+            Msg.TMessageBox("Recording: " + wsprdir + slash + "temp" + wavno + ".wav", "", 3000);
 
             string args = "";
             int mS = 110000;
@@ -341,7 +341,7 @@ namespace WSPR_Sked
                 c = "/c ";
                 cmd = "cmd.exe";
                 //args = c + wsprdfilepath + slash + "wsprd.exe -a " + userdir + " -f " + Frequency + d + o + " " + wavfile;
-                args = c + wsprdfilepath + slash + "wsprd.exe -a "+wsprdir+" -f " + Frequency + d + o + " " + wavfile;
+                args = c + wsprdfilepath + slash + "wsprd.exe -a " + wsprdir + " -f " + Frequency + d + o + " " + wavfile;
             }
             else
             {
@@ -349,41 +349,41 @@ namespace WSPR_Sked
                 cmd = "/bin/bash";
                 c = "-c ";
                 //args = c + wsprdfilepath + slash + "wsprd -a " + userdir + " -f " + Frequency + d + o + " " + wavfile;
-                args = c + wsprdfilepath + slash + "wsprd -a "+wsprdir+" -f " + Frequency + d + o + " " + wavfile;
+                args = c + wsprdfilepath + slash + "wsprd -a " + wsprdir + " -f " + Frequency + d + o + " " + wavfile;
 
             }
-                var fileInfo = new FileInfo(wavfile);
+            var fileInfo = new FileInfo(wavfile);
 
-                if (fileInfo.Exists && fileInfo.Length == 0)
+            if (fileInfo.Exists && fileInfo.Length == 0)
+            {
+                return;
+            }
+            output = "";
+            if (!blockDecodes)    //block decodes whilst transmitting - from Wspr_transmit on form1
+            {
+                Msg.TMessageBox("Decoding: " + wsprdir + slash + "temp" + prevwav + ".wav", "", 3000);
+                await Task.Run(() =>
                 {
-                    return;
-                }
-                output = "";
-                if (!blockDecodes)    //block decodes whilst transmitting - from Wspr_transmit on form1
-                {
-                    Msg.TMessageBox("Decoding: " + wsprdir + slash + "temp" + prevwav + ".wav", "", 3000);
-                    await Task.Run(() =>
-                    {
-                        runDecoder(cmd, args);
+                    runDecoder(cmd, args);
 
-                    });
+                });
 
-                    results = output;
+                results = output;
 
-                    statuslabel.Text = "saving";
-                    await SaveReceived(originalDT);
-                }
+                statuslabel.Text = "saving";
+                await SaveReceived(originalDT);
+            }
 
 
-                //statuslabel.Text = "idle";
-                finished = true;
-                RXblock = false;
-                started = false;
-                if (dataGridView1.Rows.Count > 0)
-                {
-                    dataGridView1.AllowUserToAddRows = false;
-                }
-            
+            //statuslabel.Text = "idle";
+            finished = true;
+            RXblock = false;
+            started = false;
+            if (dataGridView1.Rows.Count > 0)
+            {
+                dataGridView1.AllowUserToAddRows = false;
+            }
+
         }
 
         public async Task SaveReceived(DateTime originalDT)
@@ -398,7 +398,7 @@ namespace WSPR_Sked
                                             originalDT.Hour, originalDT.Minute, 0); //set seconds to zero
 
             try
-            {   
+            {
                 await save_result_lines(startT);
                 await Task.Delay(200);
                 int rows = table_count(server, user, pass);
@@ -601,7 +601,7 @@ namespace WSPR_Sked
             using var reader = new StringReader(results);
 
             string line = "";
-           
+
             bool append = false;
             bool stop = false;
             string date = startT.ToString("yyMMdd");
@@ -658,7 +658,7 @@ namespace WSPR_Sked
                                     }
                                     else
                                     {
-                                       
+
                                         append = true;
                                         await Save_Received_DB(server, user, pass);
                                         if (!DX.tx_sign.Contains("nil rcvd") || DX.tx_sign != "")
@@ -804,13 +804,13 @@ namespace WSPR_Sked
         public async Task runDecoder(string cmd, string args)
         {
             output = "";
-           
+
             try
             {
                 ProcessStartInfo processInfo = new ProcessStartInfo()
                 {
                     FileName = cmd, // Command to run
-                                          //Arguments = args, // Arguments for the command
+                                    //Arguments = args, // Arguments for the command
                     Arguments = args,
                     RedirectStandardOutput = true, // Redirect output if needed
                     RedirectStandardError = false,  // Redirect error stream if needed
@@ -960,7 +960,7 @@ namespace WSPR_Sked
                 try
                 {
 
-                   
+
                     command.CommandText = "INSERT IGNORE INTO received(datetime,band,tx_sign,tx_loc,frequency,power,snr,drift, distance,azimuth,reporter,reporter_loc,dt) ";
                     command.CommandText += "VALUES(@datetime,@band,@tx_sign,@tx_loc,@frequency,@power,@snr,@drift,@distance,@azimuth,@reporter,@reporter_loc,@dt)";
 
@@ -1006,7 +1006,7 @@ namespace WSPR_Sked
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             try
             {
-                
+
 
                 connection.Open();
 
@@ -1124,7 +1124,7 @@ namespace WSPR_Sked
                 try
                 {
 
-                    
+
 
                     command.CommandText = "INSERT INTO rxconfig(id,deep,quick,osd,upload)";
                     command.CommandText += "VALUES(0," + DeepcheckBox.Checked + "," + QuickcheckBox.Checked + ", " + OSDlistBox.SelectedIndex + ", " + uploadcheckBox.Checked + ")";
@@ -1153,7 +1153,7 @@ namespace WSPR_Sked
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             try
             {
-                
+
 
                 connection.Open();
 
@@ -1237,17 +1237,25 @@ namespace WSPR_Sked
         private void filterbutton_Click(object sender, EventArgs e)
         {
             MessageForm nForm = new MessageForm();
-            Msg.TCMessageBox("Please wait....", "", 20000,nForm);
+            Msg.TCMessageBox("Please wait....", "", 30000, nForm);
             if (filterbutton.Text == "Apply")
             {
                 filter_results(server, user, pass);
-                filterbutton.Text = "Clear";
+                //filterbutton.Text = "Clear";
             }
             else
             {
-                show_results(server, user, pass);
-                filterbutton.Text = "Apply";
+                //show_results(server, user, pass);
+                //filterbutton.Text = "Apply";
             }
+            nForm.Dispose();
+        }
+        private void Clearbutton_Click(object sender, EventArgs e)
+        {
+            MessageForm nForm = new MessageForm();
+            Msg.TCMessageBox("Please wait....", "", 30000, nForm);
+            show_results(server, user, pass);
+            
             nForm.Dispose();
         }
 
@@ -1322,7 +1330,7 @@ namespace WSPR_Sked
                 MySqlConnection connection = new MySqlConnection(myConnectionString);
                 try
                 {
-                   
+
 
                     connection.Open();
 
@@ -1330,6 +1338,10 @@ namespace WSPR_Sked
 
                     if (callFiltertextBox.Text.Trim() != "")
                     {
+                        if (callFiltertextBox.Text.Contains("*"))
+                        {
+                            callFiltertextBox.Text = callFiltertextBox.Text.Replace("*", "");
+                        }
                         callstr = and + " tx_sign LIKE '" + callFiltertextBox.Text.Trim() + "%' ";
                         and = "AND";
                     }
@@ -1855,7 +1867,7 @@ namespace WSPR_Sked
             myloclabel.Text = my_loc;
         }
 
-      
+       
     }
 }
 
