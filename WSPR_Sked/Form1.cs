@@ -180,7 +180,7 @@ namespace WSPR_Sked
         bool flatcode = false; //if testing with single tone
         bool stopPlay = false;
         bool blockTXonErr = false;
-        string HamlibPath = ""; //path to rigctl directory
+        string HamlibPath = "C:\\WSPR_Sked"; //path to rigctl directory
         bool Flag = false;
         bool recordFlag = false;
 
@@ -295,14 +295,14 @@ namespace WSPR_Sked
         {
 
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.12";
+            string ver = "0.1.13";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
             slash = "\\"; //default to Windows
             root = "C:\\";
+            RigCtlPathtextBox.Text = HamlibPath;
 
-           
             getUserandPassword();
             if (checkSlotDB())
             {
@@ -393,7 +393,7 @@ namespace WSPR_Sked
                 {
                     getRigList();
 
-                    findRigCtlFolder();
+                   
                     runRigCtlD(); //strt rig ctld
                 }
                 else
@@ -702,7 +702,7 @@ namespace WSPR_Sked
                     Reader.Close();
                     connection.Close();
 
-                    if (DBdown )
+                    if (DBdown)
                     {
                         currHour(false, true);
                     }
@@ -1111,7 +1111,7 @@ namespace WSPR_Sked
                     }
                     else
                     {
-                        
+
                         editslotcheckBox.Checked = true;  //editing existing
                         FreqcomboBox.SelectedItem = cells[2];
                         OffsettextBox.Text = cells[3];
@@ -1241,7 +1241,7 @@ namespace WSPR_Sked
 
         private async void SaveSlotbutton_Click(object sender, EventArgs e)
         {
-            
+
             slotNo = 1;
             int msgT = 1;
             bool this_slot = false;
@@ -1275,7 +1275,7 @@ namespace WSPR_Sked
                             msgTlabel.Text = "Message type 2";
                         }
                     }
-                   
+
                     if (repeatcheckBox.Checked && editslotcheckBox.Checked)
                     {
                         var res = Msg.ynMessageBox("Update all repeating slots (Y/N)?", "Repeating slots");
@@ -1284,7 +1284,7 @@ namespace WSPR_Sked
                             this_slot = true;
                         }
                     }
-                    else if (!repeatcheckBox.Checked )
+                    else if (!repeatcheckBox.Checked)
                     {
                         this_slot = true;
                     }
@@ -1293,7 +1293,7 @@ namespace WSPR_Sked
                         this_slot = false;
                     }
 
-                        Msg.TCMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", 20000, mForm);
+                    Msg.TCMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", 20000, mForm);
                     Savelabel.Text = "Saving - please wait....";
                     repeatStatus = false;
 
@@ -1754,7 +1754,7 @@ namespace WSPR_Sked
 
                 TimeSpan TS = End - StartCount;
 
-               
+
                 if (dt <= Dend)
                 {
 
@@ -2765,7 +2765,7 @@ namespace WSPR_Sked
                 var res = Msg.ynMessageBox("Only modify this slot (Y/N)?", "Modify slots");
                 if (res == DialogResult.No)
                 {
-                   repeatcheckBox.Checked = true;
+                    repeatcheckBox.Checked = true;
                 }
             }
             dateEnd.Enabled = repeatcheckBox.Checked;
@@ -3047,8 +3047,8 @@ namespace WSPR_Sked
                 {
                     //if (!Type2checkBox.Checked && !asOnecheckBox.Checked)
                     //{
-                        call = baseCalltextBox.Text;
-                        msgType = 1;
+                    call = baseCalltextBox.Text;
+                    msgType = 1;
                     //}
                 }
                 if (flatcode && callok > 0)
@@ -3172,7 +3172,7 @@ namespace WSPR_Sked
             if (Type2checkBox.Checked)
             {
                 msgType = 3;    //send as one message type 3
-                
+
             }
             else
             {
@@ -3624,6 +3624,7 @@ namespace WSPR_Sked
 
             string C = CalltextBox.Text;
             string L = LocatortextBox.Text;
+            HamlibPath = RigCtlPathtextBox.Text.Trim();
             rxForm.updateLabels(L);
 
             if (C == "")
@@ -3764,7 +3765,7 @@ namespace WSPR_Sked
 
                     command.Parameters.AddWithValue("@Locator", full_location);
                     bool L = longcheckBox.Checked;
-                    command.Parameters.AddWithValue("@Locator", L);
+                    command.Parameters.AddWithValue("@LocatorLong", L);
                     command.Parameters.AddWithValue("@DefaultAnt", defaultAnt);
                     command.Parameters.AddWithValue("@Alpha", defaultAlpha);
                     command.Parameters.AddWithValue("@DefaultAudio", 1);
@@ -3824,6 +3825,7 @@ namespace WSPR_Sked
                     zone = "LT";
                 }
                 string HL = HamlibPath.Replace('\\', '/'); //make mysql friendly
+               
                 string wsprmsgP = wsprmsgtextBox.Text;
                 wsprmsgP = wsprmsgP.Replace("\\", "/");
                 MySqlCommand command = connection.CreateCommand();
@@ -3918,12 +3920,12 @@ namespace WSPR_Sked
                     solarcheckBox.Checked = !stopSolar;
                     stopRX = (bool)Reader["stopRX"];
                     stopRXcheckBox.Checked = stopRX;
-                   
+
                     if (OpSystem == 0)
                     {
                         wsprmsgP = wsprmsgP.Replace('/', '\\');
                     }
-                   
+
                     wsprmsgtextBox.Text = wsprmsgP;
                     if (zone == "LT")
                     {
@@ -4823,18 +4825,19 @@ namespace WSPR_Sked
             bool running = false;
             try
             {
+                string rpath = RigCtlPathtextBox.Text.Trim();
+                string content = rpath + slash + "rigctld";
+                string args = "-m " + Radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort;
 
-                if (createRigFile(rigctldfile))
-                {
-                    await Task.Delay(1000);
+              
                     await Task.Run(() =>
                      {
-
-                         runAsyncProcess(rigctldfile, "");
+                        
+                         runAsyncProcess(content, args);
 
 
                      });
-                    await Task.Delay(500);
+                    await Task.Delay(2000);
                     if (Process.GetProcessesByName(process1).Length > 0)
                     {
                         running = true;
@@ -4854,14 +4857,7 @@ namespace WSPR_Sked
                     }
                     Riglabel.Text = rigrunlabel.Text;
                     Riglabel1.Text = rigrunlabel.Text;
-                }
-                else
-                {
-                    Msg.TMessageBox("Unable to start RigCtlD - check Hamlib path", "", 3000);
-                    rigrunlabel.Text = "rigctld not running";
-                    Riglabel.Text = rigrunlabel.Text;
-                    Riglabel1.Text = rigrunlabel.Text;
-                }
+             
             }
             catch { }
         }
@@ -4912,69 +4908,16 @@ namespace WSPR_Sked
             }
             catch { }
         }
-        private bool createRigFile(string filepath)
-        {
-            bool ok = false;
-            string programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            string rigctld = "rigctld";
+       
 
-            string currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine);
-            if (!currentPath.Contains("hamlib"))
-            {
-                Msg.OKMessageBox("Hamlib is not in current PATH", "");
-            }
-
-            try
-            {
-                string radio = Radio.Trim(' ');
-                string[] str = radio.Split(' ');
-                radio = str[0].Trim(' ');
-                string content = "";
-                //need to allow config for each setup:
-
-                content = "start /b " + rigctld + " -m " + radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort;
-
-
-                // Create file and write content (will overwrite if file exists)
-                File.WriteAllText(filepath, content);
-                ok = true;
-
-            }
-            catch (Exception ex)
-            {
-                Msg.OKMessageBox(ex.Message, "");
-
-            }
-            return ok;
-
-        }
-
-        private void findRigCtlFolder()
-        {
-            string programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            string searchfile = "rigctl.exe";
-            try
-            {
-                string[] files = Directory.GetFiles(programFilesPath, searchfile, SearchOption.AllDirectories);
-                if (files.Length > 0)
-                {
-                    if (Directory.Exists(files[0]))
-                    {
-                        HamlibPath = files[0];
-                    }
-                }
-            }
-            catch
-            {
-
-            }
-        }
+       
 
 
         private async Task runAsyncProcess(string cmd, string args)
         {
             try
             {
+             
                 ProcessStartInfo processInfo = new ProcessStartInfo()
                 {
                     FileName = cmd, // Command to run
@@ -5225,18 +5168,17 @@ namespace WSPR_Sked
         {
             //riglistBox.Items.Clear();
             RigcomboBox.Items.Clear();
-            string command = "cmd.exe";
-            string args = "";
+         
+            string command = RigCtlPathtextBox.Text.Trim() + slash + "rigctl";
+            string args = "-l";
             if (OpSystem == 0) //windows
             {
-                command = "cmd.exe";
-                args = "/c rigctl -l";
+             
             }
             else
             {
                 //Linux etc.
-                command = "rigctl";
-                args = "-l";
+                command = "rigctl";              
             }
 
             try
@@ -5313,24 +5255,22 @@ namespace WSPR_Sked
                     string rigctldfile = "";
                     string content = "";
                     string args = "";
+                    string rpath = RigCtlPathtextBox.Text.Trim();
                     if (OpSystem == 0)
                     {
-                        rigctldfile = userdir + slash + "rigctld_launch.bat";
-                        content = rigctldfile;
-                        createRigFile(rigctldfile);
+                        content = rpath + slash + "rigctld";
+                        args = "-m " + Radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort;
                     }
                     else
                     {
                         //Linux etc.
                         content = "rigctld";
                         args = "-m " + Radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort + " &";
-                    }
+                    }                                                        
 
                     await Task.Run(() =>    //update rigctld file and run it
                     {
-
                         runAsyncProcess(content, args);
-
 
                     });
                 }
@@ -7229,19 +7169,14 @@ namespace WSPR_Sked
         private void RigCtlPbutton_Click(object sender, EventArgs e)
         {
 
-            RigCtlfolderBrowserDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-
+            //RigCtlfolderBrowserDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            RigCtlfolderBrowserDialog.InitialDirectory = "C:\\Wspr_Sked";
             RigCtlfolderBrowserDialog.ShowDialog();
             var Rpath = RigCtlfolderBrowserDialog.SelectedPath;
             RigCtlPathtextBox.Text = Rpath;
-            if (Rpath.EndsWith("bin"))
+            if (!File.Exists(Rpath + slash + "rigctld.exe"))
             {
-                HamlibPath = Rpath;
-            }
-            else
-            {
-                HamlibPath = @"" + Rpath + slash + "bin";
-                RigCtlPathtextBox.Text = Rpath + slash + "bin";
+                Msg.OKMessageBox("rigctld.exe daemon not in this folder", "");
             }
 
         }
@@ -7253,7 +7188,7 @@ namespace WSPR_Sked
             {
                 if (P != "" && Directory.Exists(P))
                 {
-                    if (File.Exists(P + slash + "rigctl.exe"))
+                    if (File.Exists(P + slash + "rigctld.exe"))
                     {
 
                         // Get the current PATH environment variable
@@ -7286,6 +7221,11 @@ namespace WSPR_Sked
 
         private void SaveRPathbutton_Click(object sender, EventArgs e)
         {
+            if (!File.Exists(@""+RigCtlPathtextBox.Text + slash + "rigctld.exe"))
+            {
+                Msg.OKMessageBox("rigctld.exe daemon not in this folder", "");
+                return;
+            }
             SaveAll();
         }
 
@@ -8144,7 +8084,7 @@ namespace WSPR_Sked
                 if (rigctldcheckBox.Checked)
                 {
                     Msg.TMessageBox("Rigctld disabled - change frequency manually", "", 3000);
-                   
+
                     changeFmanually(FlistBox);
                     FlistBox2.SelectedItem = FlistBox.SelectedItem;
                     return;
@@ -8363,7 +8303,7 @@ namespace WSPR_Sked
                     MySqlCommand command = connection.CreateCommand();
 
                     command.CommandText = "INSERT INTO rxsettings(id,outputname,outputdevice,inputname,inputdevice,outlevel,inlevel,wsprdpath,samedev)";
-                    command.CommandText += "VALUES(0,'" + audioOutName + "', " + audioOutDevice + ", '" + audioInName + "', " + audioInDevice + ", " + outLevel + ", " + inLevel + ", '" + wpath + "', "+samecheckBox.Checked+") ";
+                    command.CommandText += "VALUES(0,'" + audioOutName + "', " + audioOutDevice + ", '" + audioInName + "', " + audioInDevice + ", " + outLevel + ", " + inLevel + ", '" + wpath + "', " + samecheckBox.Checked + ") ";
                     command.CommandText += "ON DUPLICATE KEY UPDATE outputname = '" + audioOutName + "', outputdevice = " + audioOutDevice;
                     command.CommandText += ", inputname = '" + audioInName + "', inputdevice = " + audioInDevice;
                     command.CommandText += ", outlevel = " + outLevel + ", inlevel = " + inLevel + ", wsprdpath = '" + wpath + "', samedev = " + samecheckBox.Checked;
@@ -8410,7 +8350,7 @@ namespace WSPR_Sked
                     samecheckBox.Checked = (bool)Reader["samedev"];
 
                     string wpath = (string)Reader["wsprdpath"];
-                   
+
                     if (OpSystem == 0)
                     {
                         wsprdfilepath = wpath.Replace('/', '\\');
@@ -8419,7 +8359,7 @@ namespace WSPR_Sked
                     {
                         wsprdfilepath = wpath;
                     }
-                   
+
                     wsprdtextBox.Text = wsprdfilepath;
 
                 }
@@ -8535,7 +8475,7 @@ namespace WSPR_Sked
             {
                 loc = location.Substring(0, 4);
             }
-                levels = wspr.WsprTxn(cs, loc, defaultdB, slot, msgT, oneTX, OpSystem);
+            levels = wspr.WsprTxn(cs, loc, defaultdB, slot, msgT, oneTX, OpSystem);
             leveltextBox.Text = wspr.LevelsString;
         }
 
@@ -8666,8 +8606,7 @@ namespace WSPR_Sked
                 Fhelplabel.Visible = false;
                 noRigctld = false;
                 getRigList();
-
-                findRigCtlFolder();
+                
                 runRigCtlD(); //strt rig ctld
             }
         }
@@ -8675,9 +8614,9 @@ namespace WSPR_Sked
         private void FlistBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             FlistBox.SelectedItem = FlistBox2.SelectedItem;
-            changeFmanually(FlistBox2);            
+            changeFmanually(FlistBox2);
         }
-        private  void changeFmanually(ListBox listB)
+        private void changeFmanually(ListBox listB)
         {
             TXrunbutton.Text = FlistBox2.SelectedItem.ToString() + " MHz";
             TXrunbutton2.Text = FlistBox2.SelectedItem.ToString() + " MHz";
@@ -9028,7 +8967,12 @@ namespace WSPR_Sked
 
         private void samecheckBox_CheckedChanged(object sender, EventArgs e)
         {
-                findSound();
+            findSound();
+
+        }
+
+        private void RigCtlfolderBrowserDialog_HelpRequest(object sender, EventArgs e)
+        {
 
         }
     }
