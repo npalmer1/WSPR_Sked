@@ -4776,6 +4776,11 @@ namespace WSPR_Sked
         {
             try
             {
+                if (rigctldcheckBox.Checked)
+                {
+                    Msg.TMessageBox("RigCtlD is not enabled", "", 2000);
+                    return;
+                }
                 runRigCtlD();
                 //Task.Delay(300);           
                 await Task.Delay(1000);
