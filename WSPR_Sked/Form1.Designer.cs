@@ -31,7 +31,6 @@
             components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
             dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -229,8 +228,6 @@
             label111 = new System.Windows.Forms.Label();
             rigctldcheckBox = new System.Windows.Forms.CheckBox();
             SaveRPathbutton = new System.Windows.Forms.Button();
-            label73 = new System.Windows.Forms.Label();
-            PathAddbutton = new System.Windows.Forms.Button();
             label72 = new System.Windows.Forms.Label();
             RigCtlPbutton = new System.Windows.Forms.Button();
             RigCtlPathtextBox = new System.Windows.Forms.TextBox();
@@ -2444,8 +2441,6 @@
             tabPage3.Controls.Add(label111);
             tabPage3.Controls.Add(rigctldcheckBox);
             tabPage3.Controls.Add(SaveRPathbutton);
-            tabPage3.Controls.Add(label73);
-            tabPage3.Controls.Add(PathAddbutton);
             tabPage3.Controls.Add(label72);
             tabPage3.Controls.Add(RigCtlPbutton);
             tabPage3.Controls.Add(RigCtlPathtextBox);
@@ -2467,10 +2462,10 @@
             tabPage3.Controls.Add(label30);
             tabPage3.Controls.Add(label29);
             tabPage3.Controls.Add(label28);
-            tabPage3.Location = new System.Drawing.Point(4, 24);
+            tabPage3.Location = new System.Drawing.Point(4, 22);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1153, 650);
+            tabPage3.Size = new System.Drawing.Size(1153, 652);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
             // 
@@ -2529,25 +2524,6 @@
             SaveRPathbutton.Text = "Save Path";
             SaveRPathbutton.UseVisualStyleBackColor = true;
             SaveRPathbutton.Click += SaveRPathbutton_Click;
-            // 
-            // label73
-            // 
-            label73.AutoSize = true;
-            label73.Location = new System.Drawing.Point(567, 388);
-            label73.Name = "label73";
-            label73.Size = new System.Drawing.Size(234, 65);
-            label73.TabIndex = 69;
-            label73.Text = resources.GetString("label73.Text");
-            // 
-            // PathAddbutton
-            // 
-            PathAddbutton.Location = new System.Drawing.Point(836, 400);
-            PathAddbutton.Name = "PathAddbutton";
-            PathAddbutton.Size = new System.Drawing.Size(96, 23);
-            PathAddbutton.TabIndex = 68;
-            PathAddbutton.Text = "Append to Path";
-            PathAddbutton.UseVisualStyleBackColor = true;
-            PathAddbutton.Click += PathAddbutton_Click;
             // 
             // label72
             // 
@@ -3727,9 +3703,9 @@
             tabPage6.Controls.Add(label97);
             tabPage6.Controls.Add(audioOutlistBox);
             tabPage6.Controls.Add(audioInlistBox);
-            tabPage6.Location = new System.Drawing.Point(4, 22);
+            tabPage6.Location = new System.Drawing.Point(4, 24);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new System.Drawing.Size(1153, 652);
+            tabPage6.Size = new System.Drawing.Size(1153, 650);
             tabPage6.TabIndex = 5;
             tabPage6.Text = "RX & Sound config";
             // 
@@ -4324,8 +4300,6 @@
         private System.Windows.Forms.TextBox RigCtlPathtextBox;
         private System.Windows.Forms.FolderBrowserDialog RigCtlfolderBrowserDialog;
         private System.Windows.Forms.Label label72;
-        private System.Windows.Forms.Button PathAddbutton;
-        private System.Windows.Forms.Label label73;
         private System.Windows.Forms.Button SaveRPathbutton;
         private System.Windows.Forms.Label label71;
         private System.Windows.Forms.Label label74;
