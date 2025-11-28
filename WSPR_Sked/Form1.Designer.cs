@@ -135,6 +135,7 @@
             label22 = new System.Windows.Forms.Label();
             countdownlabel2 = new System.Windows.Forms.Label();
             tabPage2 = new System.Windows.Forms.TabPage();
+            overcheckBox = new System.Windows.Forms.CheckBox();
             stopRXcheckBox = new System.Windows.Forms.CheckBox();
             sunrisebutton = new System.Windows.Forms.Button();
             label116 = new System.Windows.Forms.Label();
@@ -380,6 +381,7 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
+            overlabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -1035,6 +1037,7 @@
             // tabPage1
             // 
             tabPage1.BackColor = System.Drawing.SystemColors.Info;
+            tabPage1.Controls.Add(overlabel);
             tabPage1.Controls.Add(dblabel);
             tabPage1.Controls.Add(label117);
             tabPage1.Controls.Add(localsetlabel);
@@ -1194,7 +1197,7 @@
             // 
             Fhelplabel.AutoSize = true;
             Fhelplabel.BackColor = System.Drawing.Color.AntiqueWhite;
-            Fhelplabel.Location = new System.Drawing.Point(1057, 363);
+            Fhelplabel.Location = new System.Drawing.Point(1057, 383);
             Fhelplabel.Name = "Fhelplabel";
             Fhelplabel.Size = new System.Drawing.Size(76, 78);
             Fhelplabel.TabIndex = 89;
@@ -1204,7 +1207,7 @@
             // Flabel
             // 
             Flabel.AutoSize = true;
-            Flabel.Location = new System.Drawing.Point(981, 105);
+            Flabel.Location = new System.Drawing.Point(981, 129);
             Flabel.Name = "Flabel";
             Flabel.Size = new System.Drawing.Size(61, 13);
             Flabel.TabIndex = 88;
@@ -1215,7 +1218,7 @@
             // 
             FlistBox2.FormattingEnabled = true;
             FlistBox2.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "50.293", "70.091", "144.489", "432.300", "1296.500" });
-            FlistBox2.Location = new System.Drawing.Point(1057, 104);
+            FlistBox2.Location = new System.Drawing.Point(1057, 129);
             FlistBox2.Name = "FlistBox2";
             FlistBox2.Size = new System.Drawing.Size(58, 251);
             FlistBox2.TabIndex = 87;
@@ -1508,6 +1511,7 @@
             // tabPage2
             // 
             tabPage2.BackColor = System.Drawing.SystemColors.Info;
+            tabPage2.Controls.Add(overcheckBox);
             tabPage2.Controls.Add(stopRXcheckBox);
             tabPage2.Controls.Add(sunrisebutton);
             tabPage2.Controls.Add(label116);
@@ -1601,6 +1605,16 @@
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
+            // overcheckBox
+            // 
+            overcheckBox.AutoSize = true;
+            overcheckBox.Location = new System.Drawing.Point(330, 131);
+            overcheckBox.Name = "overcheckBox";
+            overcheckBox.Size = new System.Drawing.Size(140, 30);
+            overcheckBox.TabIndex = 108;
+            overcheckBox.Text = "Override scheduled msg\r\ntype with this setting";
+            overcheckBox.UseVisualStyleBackColor = true;
+            // 
             // stopRXcheckBox
             // 
             stopRXcheckBox.AutoSize = true;
@@ -1659,7 +1673,7 @@
             asOnecheckBox.AutoSize = true;
             asOnecheckBox.Checked = true;
             asOnecheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            asOnecheckBox.Location = new System.Drawing.Point(374, 136);
+            asOnecheckBox.Location = new System.Drawing.Point(330, 101);
             asOnecheckBox.Name = "asOnecheckBox";
             asOnecheckBox.Size = new System.Drawing.Size(148, 17);
             asOnecheckBox.TabIndex = 102;
@@ -1698,7 +1712,7 @@
             // label94
             // 
             label94.AutoSize = true;
-            label94.Location = new System.Drawing.Point(319, 105);
+            label94.Location = new System.Drawing.Point(330, 70);
             label94.Name = "label94";
             label94.Size = new System.Drawing.Size(239, 26);
             label94.TabIndex = 98;
@@ -1795,7 +1809,7 @@
             // noSkedcheckBox
             // 
             noSkedcheckBox.AutoSize = true;
-            noSkedcheckBox.Location = new System.Drawing.Point(711, 223);
+            noSkedcheckBox.Location = new System.Drawing.Point(815, 226);
             noSkedcheckBox.Name = "noSkedcheckBox";
             noSkedcheckBox.Size = new System.Drawing.Size(87, 17);
             noSkedcheckBox.TabIndex = 86;
@@ -1805,7 +1819,7 @@
             // label88
             // 
             label88.AutoSize = true;
-            label88.Location = new System.Drawing.Point(785, 16);
+            label88.Location = new System.Drawing.Point(889, 19);
             label88.Name = "label88";
             label88.Size = new System.Drawing.Size(50, 13);
             label88.TabIndex = 85;
@@ -1814,7 +1828,7 @@
             // TXRXAntlabel2
             // 
             TXRXAntlabel2.BackColor = System.Drawing.Color.Khaki;
-            TXRXAntlabel2.Location = new System.Drawing.Point(787, 30);
+            TXRXAntlabel2.Location = new System.Drawing.Point(891, 33);
             TXRXAntlabel2.Name = "TXRXAntlabel2";
             TXRXAntlabel2.Size = new System.Drawing.Size(193, 15);
             TXRXAntlabel2.TabIndex = 84;
@@ -1823,7 +1837,7 @@
             // label86
             // 
             label86.AutoSize = true;
-            label86.Location = new System.Drawing.Point(605, 176);
+            label86.Location = new System.Drawing.Point(709, 179);
             label86.Name = "label86";
             label86.Size = new System.Drawing.Size(99, 26);
             label86.TabIndex = 83;
@@ -1872,7 +1886,7 @@
             // Type2checkBox
             // 
             Type2checkBox.AutoSize = true;
-            Type2checkBox.Location = new System.Drawing.Point(374, 88);
+            Type2checkBox.Location = new System.Drawing.Point(330, 53);
             Type2checkBox.Name = "Type2checkBox";
             Type2checkBox.Size = new System.Drawing.Size(144, 17);
             Type2checkBox.TabIndex = 78;
@@ -1992,7 +2006,7 @@
             // msgTypelabel2
             // 
             msgTypelabel2.AutoSize = true;
-            msgTypelabel2.Location = new System.Drawing.Point(389, 61);
+            msgTypelabel2.Location = new System.Drawing.Point(345, 26);
             msgTypelabel2.Name = "msgTypelabel2";
             msgTypelabel2.Size = new System.Drawing.Size(82, 13);
             msgTypelabel2.TabIndex = 66;
@@ -2003,7 +2017,7 @@
             TXrunbutton2.BackColor = System.Drawing.Color.Thistle;
             TXrunbutton2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             TXrunbutton2.ForeColor = System.Drawing.Color.White;
-            TXrunbutton2.Location = new System.Drawing.Point(580, 17);
+            TXrunbutton2.Location = new System.Drawing.Point(684, 20);
             TXrunbutton2.Name = "TXrunbutton2";
             TXrunbutton2.Size = new System.Drawing.Size(147, 27);
             TXrunbutton2.TabIndex = 65;
@@ -2068,7 +2082,7 @@
             // Riglabel
             // 
             Riglabel.AutoSize = true;
-            Riglabel.Location = new System.Drawing.Point(605, 50);
+            Riglabel.Location = new System.Drawing.Point(709, 53);
             Riglabel.Name = "Riglabel";
             Riglabel.Size = new System.Drawing.Size(91, 13);
             Riglabel.TabIndex = 54;
@@ -2089,7 +2103,7 @@
             // 
             FlistBox.FormattingEnabled = true;
             FlistBox.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "50.293", "70.091", "144.489", "432.300", "1296.500" });
-            FlistBox.Location = new System.Drawing.Point(500, 176);
+            FlistBox.Location = new System.Drawing.Point(604, 179);
             FlistBox.Name = "FlistBox";
             FlistBox.Size = new System.Drawing.Size(58, 251);
             FlistBox.TabIndex = 52;
@@ -2109,7 +2123,7 @@
             // label39
             // 
             label39.AutoSize = true;
-            label39.Location = new System.Drawing.Point(608, 80);
+            label39.Location = new System.Drawing.Point(712, 83);
             label39.Name = "label39";
             label39.Size = new System.Drawing.Size(76, 13);
             label39.TabIndex = 50;
@@ -2120,7 +2134,7 @@
             AlphacomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
             AlphacomboBox.FormattingEnabled = true;
             AlphacomboBox.Items.AddRange(new object[] { "0.01", "0.015", "0.02", "0.04", "0.05", "0.08", "0.1", "0.12", "0.14", "0.15", "0.18", "0.2", "0.22", "0.24", "0.25" });
-            AlphacomboBox.Location = new System.Drawing.Point(900, 133);
+            AlphacomboBox.Location = new System.Drawing.Point(1004, 136);
             AlphacomboBox.Name = "AlphacomboBox";
             AlphacomboBox.Size = new System.Drawing.Size(51, 205);
             AlphacomboBox.TabIndex = 49;
@@ -2131,7 +2145,7 @@
             // label38
             // 
             label38.AutoSize = true;
-            label38.Location = new System.Drawing.Point(818, 136);
+            label38.Location = new System.Drawing.Point(922, 139);
             label38.Name = "label38";
             label38.Size = new System.Drawing.Size(76, 39);
             label38.TabIndex = 48;
@@ -2148,7 +2162,7 @@
             // 
             // stopWAVbutton
             // 
-            stopWAVbutton.Location = new System.Drawing.Point(605, 307);
+            stopWAVbutton.Location = new System.Drawing.Point(709, 310);
             stopWAVbutton.Name = "stopWAVbutton";
             stopWAVbutton.Size = new System.Drawing.Size(84, 23);
             stopWAVbutton.TabIndex = 44;
@@ -2180,7 +2194,7 @@
             enableTXcheckBox.BackColor = System.Drawing.Color.Green;
             enableTXcheckBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
             enableTXcheckBox.ForeColor = System.Drawing.Color.White;
-            enableTXcheckBox.Location = new System.Drawing.Point(384, 15);
+            enableTXcheckBox.Location = new System.Drawing.Point(563, 20);
             enableTXcheckBox.Name = "enableTXcheckBox";
             enableTXcheckBox.Padding = new System.Windows.Forms.Padding(5);
             enableTXcheckBox.Size = new System.Drawing.Size(99, 30);
@@ -2191,7 +2205,7 @@
             // 
             // stopTestbutton
             // 
-            stopTestbutton.Location = new System.Drawing.Point(605, 261);
+            stopTestbutton.Location = new System.Drawing.Point(709, 264);
             stopTestbutton.Name = "stopTestbutton";
             stopTestbutton.Size = new System.Drawing.Size(84, 24);
             stopTestbutton.TabIndex = 40;
@@ -2201,7 +2215,7 @@
             // 
             // TestTXbutton
             // 
-            TestTXbutton.Location = new System.Drawing.Point(605, 223);
+            TestTXbutton.Location = new System.Drawing.Point(709, 226);
             TestTXbutton.Name = "TestTXbutton";
             TestTXbutton.Size = new System.Drawing.Size(84, 23);
             TestTXbutton.TabIndex = 39;
@@ -2212,7 +2226,7 @@
             // label27
             // 
             label27.AutoSize = true;
-            label27.Location = new System.Drawing.Point(872, 67);
+            label27.Location = new System.Drawing.Point(976, 70);
             label27.Name = "label27";
             label27.Size = new System.Drawing.Size(100, 13);
             label27.TabIndex = 35;
@@ -2221,7 +2235,7 @@
             // testTonescheckBox
             // 
             testTonescheckBox.AutoSize = true;
-            testTonescheckBox.Location = new System.Drawing.Point(787, 91);
+            testTonescheckBox.Location = new System.Drawing.Point(891, 94);
             testTonescheckBox.Name = "testTonescheckBox";
             testTonescheckBox.Size = new System.Drawing.Size(150, 17);
             testTonescheckBox.TabIndex = 34;
@@ -2231,7 +2245,7 @@
             // label26
             // 
             label26.AutoSize = true;
-            label26.Location = new System.Drawing.Point(695, 147);
+            label26.Location = new System.Drawing.Point(799, 150);
             label26.Name = "label26";
             label26.Size = new System.Drawing.Size(29, 13);
             label26.TabIndex = 33;
@@ -2240,7 +2254,7 @@
             // label25
             // 
             label25.AutoSize = true;
-            label25.Location = new System.Drawing.Point(561, 147);
+            label25.Location = new System.Drawing.Point(665, 150);
             label25.Name = "label25";
             label25.Size = new System.Drawing.Size(46, 13);
             label25.TabIndex = 32;
@@ -2249,7 +2263,7 @@
             // testFtextBox
             // 
             testFtextBox.Enabled = false;
-            testFtextBox.Location = new System.Drawing.Point(613, 144);
+            testFtextBox.Location = new System.Drawing.Point(717, 147);
             testFtextBox.Name = "testFtextBox";
             testFtextBox.Size = new System.Drawing.Size(71, 20);
             testFtextBox.TabIndex = 31;
@@ -2275,7 +2289,7 @@
             // 
             // testButton
             // 
-            testButton.Location = new System.Drawing.Point(787, 61);
+            testButton.Location = new System.Drawing.Point(891, 64);
             testButton.Name = "testButton";
             testButton.Size = new System.Drawing.Size(79, 26);
             testButton.TabIndex = 28;
@@ -2286,7 +2300,7 @@
             // countdownlabel
             // 
             countdownlabel.AutoSize = true;
-            countdownlabel.Location = new System.Drawing.Point(711, 112);
+            countdownlabel.Location = new System.Drawing.Point(815, 115);
             countdownlabel.Name = "countdownlabel";
             countdownlabel.Size = new System.Drawing.Size(13, 13);
             countdownlabel.TabIndex = 27;
@@ -2295,7 +2309,7 @@
             // label21
             // 
             label21.AutoSize = true;
-            label21.Location = new System.Drawing.Point(419, 176);
+            label21.Location = new System.Drawing.Point(523, 179);
             label21.Name = "label21";
             label21.Size = new System.Drawing.Size(75, 13);
             label21.TabIndex = 26;
@@ -2406,7 +2420,7 @@
             // TXTestbutton
             // 
             TXTestbutton.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            TXTestbutton.Location = new System.Drawing.Point(605, 106);
+            TXTestbutton.Location = new System.Drawing.Point(709, 109);
             TXTestbutton.Name = "TXTestbutton";
             TXTestbutton.Size = new System.Drawing.Size(90, 25);
             TXTestbutton.TabIndex = 13;
@@ -2462,10 +2476,10 @@
             tabPage3.Controls.Add(label30);
             tabPage3.Controls.Add(label29);
             tabPage3.Controls.Add(label28);
-            tabPage3.Location = new System.Drawing.Point(4, 22);
+            tabPage3.Location = new System.Drawing.Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1153, 652);
+            tabPage3.Size = new System.Drawing.Size(1153, 650);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
             // 
@@ -4039,6 +4053,15 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
+            // overlabel
+            // 
+            overlabel.AutoSize = true;
+            overlabel.Location = new System.Drawing.Point(955, 98);
+            overlabel.Name = "overlabel";
+            overlabel.Size = new System.Drawing.Size(10, 13);
+            overlabel.TabIndex = 100;
+            overlabel.Text = "-";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4450,6 +4473,8 @@
         private System.Windows.Forms.Label dblabel;
         private System.Windows.Forms.CheckBox stopRXcheckBox;
         private System.Windows.Forms.CheckBox samecheckBox;
+        private System.Windows.Forms.CheckBox overcheckBox;
+        private System.Windows.Forms.Label overlabel;
     }
 }
 
