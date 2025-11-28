@@ -295,7 +295,7 @@ namespace WSPR_Sked
         {
 
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.13";
+            string ver = "0.1.14";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -684,8 +684,19 @@ namespace WSPR_Sked
                         currentMsgType = (int)Reader["MsgType"];
                         Slot.MessageType = currentMsgType;
                         msgType = currentMsgType;
+                        if (slotActive && enableTXcheckBox.Checked)
+                        {
+                            if (Type2checkBox.Checked && overcheckBox.Checked)
+                            {
+                                msgType = 3;
+                            }
+                            else if (overcheckBox.Checked)
+                            {
+                                msgType = 1;
+                            }
+                        }
 
-                        rpt_type = (sbyte)Reader["RptType"];
+                            rpt_type = (sbyte)Reader["RptType"];
                         findRptType(rpt_type);
                         greyoffset = (sbyte)Reader["GreyOffset"];
                         if (greyoffset != null)
@@ -3014,6 +3025,15 @@ namespace WSPR_Sked
 
             mtypelabel.Text = msgType.ToString();
             slotnolabel.Text = slotNo.ToString();
+            if (overcheckBox.Checked  && slotActive && enableTXcheckBox.Checked)
+            {
+                overlabel.Text = "msg type override on";
+            }
+            else
+            {
+                overlabel.Text = "";
+            }
+
             if ((msgType == 2 && !asOnecheckBox.Checked) || (msgType == 3 && slotNo == 2))
             {
                 showMsgType(msgType);
