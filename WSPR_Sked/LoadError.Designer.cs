@@ -50,7 +50,7 @@
             label1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
             label1.Location = new System.Drawing.Point(13, 19);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(513, 255);
+            label1.Size = new System.Drawing.Size(407, 255);
             label1.TabIndex = 2;
             label1.Text = resources.GetString("label1.Text");
             // 

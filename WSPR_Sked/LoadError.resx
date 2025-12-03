@@ -119,9 +119,11 @@
   </resheader>
   <data name="label1.Text" xml:space="preserve">
     <value>Error whilst loading!
-The app cannot connect to the mySQL databases.
-Ensure that you have mySQL installed and all necessary databases are 
-present, visible and your username and password to access them is correct:
+The app cannot connect to the mySQL databases!
+Ensure that you have mySQL installed and you have imported 
+the wspr scheduler databases (from the file wspr_db.sql) and 
+added the admin user. Please read the installation and configuration
+instructions. The necessary databases are:
 wspr.sql
 wspr_configs.sql
 wspr_grey.sql
@@ -129,10 +131,8 @@ wspr_rpt.sql
 wspr_rx.sql
 wspr_slots.sql
 wspr_sol.sql
-- and make sure that lastest database updates have been applied.
-Also ensure that you have the decoder and encoder daemons installed and accessible:
-wspr_enc.exe
-wsprd.exe
+- and make sure that latest database updates have been applied.
+
 </value>
   </data>
 </root>
