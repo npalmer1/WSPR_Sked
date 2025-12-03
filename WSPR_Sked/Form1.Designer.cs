@@ -92,6 +92,8 @@
             label13 = new System.Windows.Forms.Label();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            skedstoplabel = new System.Windows.Forms.Label();
+            overlabel = new System.Windows.Forms.Label();
             dblabel = new System.Windows.Forms.Label();
             label117 = new System.Windows.Forms.Label();
             localsetlabel = new System.Windows.Forms.Label();
@@ -381,7 +383,6 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
-            overlabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -1037,6 +1038,7 @@
             // tabPage1
             // 
             tabPage1.BackColor = System.Drawing.SystemColors.Info;
+            tabPage1.Controls.Add(skedstoplabel);
             tabPage1.Controls.Add(overlabel);
             tabPage1.Controls.Add(dblabel);
             tabPage1.Controls.Add(label117);
@@ -1094,6 +1096,26 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Slots";
             tabPage1.Click += tabPage1_Click;
+            // 
+            // skedstoplabel
+            // 
+            skedstoplabel.AutoSize = true;
+            skedstoplabel.BackColor = System.Drawing.Color.Yellow;
+            skedstoplabel.Location = new System.Drawing.Point(750, 65);
+            skedstoplabel.Name = "skedstoplabel";
+            skedstoplabel.Size = new System.Drawing.Size(73, 13);
+            skedstoplabel.TabIndex = 101;
+            skedstoplabel.Text = "Sked enabled";
+            skedstoplabel.DoubleClick += skedstoplabel_DoubleClick;
+            // 
+            // overlabel
+            // 
+            overlabel.AutoSize = true;
+            overlabel.Location = new System.Drawing.Point(955, 98);
+            overlabel.Name = "overlabel";
+            overlabel.Size = new System.Drawing.Size(10, 13);
+            overlabel.TabIndex = 100;
+            overlabel.Text = "-";
             // 
             // dblabel
             // 
@@ -1403,7 +1425,7 @@
             // msgTypelabel
             // 
             msgTypelabel.AutoSize = true;
-            msgTypelabel.Location = new System.Drawing.Point(750, 62);
+            msgTypelabel.Location = new System.Drawing.Point(581, 60);
             msgTypelabel.Name = "msgTypelabel";
             msgTypelabel.Size = new System.Drawing.Size(82, 13);
             msgTypelabel.TabIndex = 68;
@@ -1431,7 +1453,7 @@
             // label75
             // 
             label75.AutoSize = true;
-            label75.Location = new System.Drawing.Point(562, 44);
+            label75.Location = new System.Drawing.Point(562, 37);
             label75.Name = "label75";
             label75.Size = new System.Drawing.Size(120, 13);
             label75.TabIndex = 65;
@@ -1484,7 +1506,7 @@
             // Riglabel1
             // 
             Riglabel1.AutoSize = true;
-            Riglabel1.Location = new System.Drawing.Point(569, 79);
+            Riglabel1.Location = new System.Drawing.Point(569, 82);
             Riglabel1.Name = "Riglabel1";
             Riglabel1.Size = new System.Drawing.Size(91, 13);
             Riglabel1.TabIndex = 14;
@@ -1815,6 +1837,7 @@
             noSkedcheckBox.TabIndex = 86;
             noSkedcheckBox.Text = "Disable sked";
             noSkedcheckBox.UseVisualStyleBackColor = true;
+            noSkedcheckBox.CheckedChanged += noSkedcheckBox_CheckedChanged;
             // 
             // label88
             // 
@@ -4053,15 +4076,6 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
-            // overlabel
-            // 
-            overlabel.AutoSize = true;
-            overlabel.Location = new System.Drawing.Point(955, 98);
-            overlabel.Name = "overlabel";
-            overlabel.Size = new System.Drawing.Size(10, 13);
-            overlabel.TabIndex = 100;
-            overlabel.Text = "-";
-            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4475,6 +4489,7 @@
         private System.Windows.Forms.CheckBox samecheckBox;
         private System.Windows.Forms.CheckBox overcheckBox;
         private System.Windows.Forms.Label overlabel;
+        private System.Windows.Forms.Label skedstoplabel;
     }
 }
 
