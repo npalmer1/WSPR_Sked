@@ -295,7 +295,7 @@ namespace WSPR_Sked
         {
 
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.15";
+            string ver = "0.1.16";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -393,7 +393,7 @@ namespace WSPR_Sked
                 {
                     getRigList();
 
-                   
+
                     runRigCtlD(); //strt rig ctld
                 }
                 else
@@ -696,7 +696,7 @@ namespace WSPR_Sked
                             }
                         }
 
-                            rpt_type = (sbyte)Reader["RptType"];
+                        rpt_type = (sbyte)Reader["RptType"];
                         findRptType(rpt_type);
                         greyoffset = (sbyte)Reader["GreyOffset"];
                         if (greyoffset != null)
@@ -3025,7 +3025,7 @@ namespace WSPR_Sked
 
             mtypelabel.Text = msgType.ToString();
             slotnolabel.Text = slotNo.ToString();
-            if (overcheckBox.Checked  && slotActive && enableTXcheckBox.Checked)
+            if (overcheckBox.Checked && slotActive && enableTXcheckBox.Checked)
             {
                 overlabel.Text = "msg type override on";
             }
@@ -3845,7 +3845,7 @@ namespace WSPR_Sked
                     zone = "LT";
                 }
                 string HL = HamlibPath.Replace('\\', '/'); //make mysql friendly
-               
+
                 string wsprmsgP = wsprmsgtextBox.Text;
                 wsprmsgP = wsprmsgP.Replace("\\", "/");
                 MySqlCommand command = connection.CreateCommand();
@@ -4854,35 +4854,35 @@ namespace WSPR_Sked
                 string content = rpath + slash + "rigctld";
                 string args = "-m " + Radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort;
 
-              
-                    await Task.Run(() =>
-                     {
-                        
-                         runAsyncProcess(content, args);
+
+                await Task.Run(() =>
+                 {
+
+                     runAsyncProcess(content, args);
 
 
-                     });
-                    await Task.Delay(2000);
-                    if (Process.GetProcessesByName(process1).Length > 0)
-                    {
-                        running = true;
-                    }
-                    if (Process.GetProcessesByName(process2).Length > 0)
-                    {
-                        running = true;
-                    }
-                    if (running)
-                    {
-                        rigrunlabel.Text = "rigctld running";
+                 });
+                await Task.Delay(2000);
+                if (Process.GetProcessesByName(process1).Length > 0)
+                {
+                    running = true;
+                }
+                if (Process.GetProcessesByName(process2).Length > 0)
+                {
+                    running = true;
+                }
+                if (running)
+                {
+                    rigrunlabel.Text = "rigctld running";
 
-                    }
-                    else
-                    {
-                        rigrunlabel.Text = "rigctld not running";
-                    }
-                    Riglabel.Text = rigrunlabel.Text;
-                    Riglabel1.Text = rigrunlabel.Text;
-             
+                }
+                else
+                {
+                    rigrunlabel.Text = "rigctld not running";
+                }
+                Riglabel.Text = rigrunlabel.Text;
+                Riglabel1.Text = rigrunlabel.Text;
+
             }
             catch { }
         }
@@ -4933,16 +4933,16 @@ namespace WSPR_Sked
             }
             catch { }
         }
-       
 
-       
+
+
 
 
         private async Task runAsyncProcess(string cmd, string args)
         {
             try
             {
-             
+
                 ProcessStartInfo processInfo = new ProcessStartInfo()
                 {
                     FileName = cmd, // Command to run
@@ -5193,17 +5193,17 @@ namespace WSPR_Sked
         {
             //riglistBox.Items.Clear();
             RigcomboBox.Items.Clear();
-         
+
             string command = RigCtlPathtextBox.Text.Trim() + slash + "rigctl";
             string args = "-l";
             if (OpSystem == 0) //windows
             {
-             
+
             }
             else
             {
                 //Linux etc.
-                command = "rigctl";              
+                command = "rigctl";
             }
 
             try
@@ -5291,7 +5291,7 @@ namespace WSPR_Sked
                         //Linux etc.
                         content = "rigctld";
                         args = "-m " + Radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort + " &";
-                    }                                                        
+                    }
 
                     await Task.Run(() =>    //update rigctld file and run it
                     {
@@ -7246,7 +7246,7 @@ namespace WSPR_Sked
 
         private void SaveRPathbutton_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(@""+RigCtlPathtextBox.Text + slash + "rigctld.exe"))
+            if (!File.Exists(@"" + RigCtlPathtextBox.Text + slash + "rigctld.exe"))
             {
                 Msg.OKMessageBox("rigctld.exe daemon not in this folder", "");
                 return;
@@ -8631,7 +8631,7 @@ namespace WSPR_Sked
                 Fhelplabel.Visible = false;
                 noRigctld = false;
                 getRigList();
-                
+
                 runRigCtlD(); //strt rig ctld
             }
         }
@@ -8999,6 +8999,33 @@ namespace WSPR_Sked
         private void RigCtlfolderBrowserDialog_HelpRequest(object sender, EventArgs e)
         {
 
+        }
+
+        private void noSkedcheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (noSkedcheckBox.Checked)
+            {
+                skedstoplabel.Text = "Sked disabled";
+
+            }
+            else
+            {
+                skedstoplabel.Text = "Sked enabled";
+            }
+        }
+
+        private void skedstoplabel_DoubleClick(object sender, EventArgs e)
+        {
+            if (skedstoplabel.Text == "Sked disabled")
+            {
+                noSkedcheckBox.Checked = false;
+                //skedstoplabel.Text = "Sked OK";
+            }
+            else
+            {
+                noSkedcheckBox.Checked = true;
+                //skedstoplabel.Text = "Sked disabled";
+            }
         }
     }
 

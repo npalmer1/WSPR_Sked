@@ -57,6 +57,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9489A236F6A84A82AA5DB8D9DF4071BF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_BF608FB736DD47AE9507F53F29A79533"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -300,6 +306,26 @@
             {
             "SourcePath" = "8:..\\wsprd.exe"
             "TargetName" = "8:wsprd.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9489A236F6A84A82AA5DB8D9DF4071BF"
+            {
+            "SourcePath" = "8:..\\libusb-1.0.dll"
+            "TargetName" = "8:libusb-1.0.dll"
             "Tag" = "8:"
             "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
             "Condition" = "8:"
