@@ -2457,6 +2457,7 @@ namespace WSPR_Sked
         private void OffsettextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             int t;
+
             if (e.KeyChar == 45)
             {
                 if (defaultOfftextBox.Text.Contains("-"))
@@ -2465,20 +2466,17 @@ namespace WSPR_Sked
                 }
                 return;
             }
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar)) //will allow offset from -10 to +210 for adjustment
+            // Allow only letters, digits, and basic punctuation
+            if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && !"-".Contains(e.KeyChar))
             {
-                e.Handled = true;
-            }
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && !char.IsSymbol("-", e.KeyChar)) //will also accept - offset up to -10 and +ve up to 210
-            {
-                e.Handled = true;
+                e.Handled = true; // Block the character
             }
             else
             {
-                int.TryParse(OffsettextBox.Text + e.KeyChar, out t);
+                int.TryParse(defaultOfftextBox.Text + e.KeyChar, out t);
                 if (t > 220 || t < -20)
                 {
-                    Msg.OKMessageBox("Error: normal range -20 to 220 Hz", "");
+                    Msg.OKMessageBox("Error: range 0-200 Hz", "");
                     e.Handled = true;
                 }
             }
@@ -3883,7 +3881,7 @@ namespace WSPR_Sked
                 return;
             }
             // Allow only letters, digits, and basic punctuation
-            if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && !".,-_ ".Contains(e.KeyChar))
+            if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && !"-".Contains(e.KeyChar))
             {
                 e.Handled = true; // Block the character
             }
