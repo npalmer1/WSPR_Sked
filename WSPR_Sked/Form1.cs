@@ -1264,7 +1264,7 @@ namespace WSPR_Sked
             {
                 if (validateSlot())
                 {
-                    MessageForm mForm = new MessageForm();
+                    //MessageForm mForm = new MessageForm();
 
                     if (Type2checkBox.Checked)
                     {
@@ -1304,7 +1304,7 @@ namespace WSPR_Sked
                         this_slot = false;
                     }
 
-                    Msg.TCMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", 20000, mForm);
+                    Msg.TMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", 20000);
                     Savelabel.Text = "Saving - please wait....";
                     repeatStatus = false;
 
@@ -1344,7 +1344,7 @@ namespace WSPR_Sked
                     Savelabel.Text = "--";
                     slotgroupBox.Visible = false;
                     greygroupBox.Visible = false;
-                    mForm.Dispose();
+                    //mForm.Dispose();
                 }
             }
             catch { }
