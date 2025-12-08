@@ -1236,8 +1236,8 @@ namespace WSPR_Sked
 
         private void filterbutton_Click(object sender, EventArgs e)
         {
-            MessageForm nForm = new MessageForm();
-            Msg.TCMessageBox("Please wait....", "", 30000, nForm);
+            //MessageForm nForm = new MessageForm();
+            Msg.TMessageBox("Please wait....", "", 30000);
             if (filterbutton.Text == "Apply")
             {
                 filter_results(server, user, pass);
@@ -1248,15 +1248,15 @@ namespace WSPR_Sked
                 //show_results(server, user, pass);
                 //filterbutton.Text = "Apply";
             }
-            nForm.Dispose();
+            //nForm.Dispose();
         }
         private void Clearbutton_Click(object sender, EventArgs e)
         {
-            MessageForm nForm = new MessageForm();
-            Msg.TCMessageBox("Please wait....", "", 30000, nForm);
+            //MessageForm nForm = new MessageForm();
+            Msg.TMessageBox("Please wait....", "", 30000);
             show_results(server, user, pass);
             
-            nForm.Dispose();
+            //nForm.Dispose();
         }
 
         public async Task show_results(string server, string user, string pass) // read back from the reported table to populate the datagridview
