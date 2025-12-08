@@ -2460,7 +2460,7 @@ namespace WSPR_Sked
 
             if (e.KeyChar == 45)
             {
-                if (defaultOfftextBox.Text.Contains("-"))
+                if (OffsettextBox.Text.Contains("-"))
                 {
                     e.Handled = true;
                 }
@@ -2473,7 +2473,7 @@ namespace WSPR_Sked
             }
             else
             {
-                int.TryParse(defaultOfftextBox.Text + e.KeyChar, out t);
+                int.TryParse(OffsettextBox.Text + e.KeyChar, out t);
                 if (t > 220 || t < -20)
                 {
                     Msg.OKMessageBox("Error: range 0-200 Hz", "");
