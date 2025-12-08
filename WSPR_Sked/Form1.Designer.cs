@@ -383,6 +383,7 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
+            label73 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -1533,6 +1534,7 @@
             // tabPage2
             // 
             tabPage2.BackColor = System.Drawing.SystemColors.Info;
+            tabPage2.Controls.Add(label73);
             tabPage2.Controls.Add(overcheckBox);
             tabPage2.Controls.Add(stopRXcheckBox);
             tabPage2.Controls.Add(sunrisebutton);
@@ -1620,17 +1622,17 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 24);
+            tabPage2.Location = new System.Drawing.Point(4, 22);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1153, 650);
+            tabPage2.Size = new System.Drawing.Size(1153, 652);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
             // overcheckBox
             // 
             overcheckBox.AutoSize = true;
-            overcheckBox.Location = new System.Drawing.Point(330, 131);
+            overcheckBox.Location = new System.Drawing.Point(359, 131);
             overcheckBox.Name = "overcheckBox";
             overcheckBox.Size = new System.Drawing.Size(140, 30);
             overcheckBox.TabIndex = 108;
@@ -1695,7 +1697,7 @@
             asOnecheckBox.AutoSize = true;
             asOnecheckBox.Checked = true;
             asOnecheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            asOnecheckBox.Location = new System.Drawing.Point(330, 101);
+            asOnecheckBox.Location = new System.Drawing.Point(359, 101);
             asOnecheckBox.Name = "asOnecheckBox";
             asOnecheckBox.Size = new System.Drawing.Size(148, 17);
             asOnecheckBox.TabIndex = 102;
@@ -1734,7 +1736,7 @@
             // label94
             // 
             label94.AutoSize = true;
-            label94.Location = new System.Drawing.Point(330, 70);
+            label94.Location = new System.Drawing.Point(359, 70);
             label94.Name = "label94";
             label94.Size = new System.Drawing.Size(239, 26);
             label94.TabIndex = 98;
@@ -1909,7 +1911,7 @@
             // Type2checkBox
             // 
             Type2checkBox.AutoSize = true;
-            Type2checkBox.Location = new System.Drawing.Point(330, 53);
+            Type2checkBox.Location = new System.Drawing.Point(359, 53);
             Type2checkBox.Name = "Type2checkBox";
             Type2checkBox.Size = new System.Drawing.Size(144, 17);
             Type2checkBox.TabIndex = 78;
@@ -2029,7 +2031,7 @@
             // msgTypelabel2
             // 
             msgTypelabel2.AutoSize = true;
-            msgTypelabel2.Location = new System.Drawing.Point(345, 26);
+            msgTypelabel2.Location = new System.Drawing.Point(374, 26);
             msgTypelabel2.Name = "msgTypelabel2";
             msgTypelabel2.Size = new System.Drawing.Size(82, 13);
             msgTypelabel2.TabIndex = 66;
@@ -4076,6 +4078,15 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
+            // label73
+            // 
+            label73.AutoSize = true;
+            label73.Location = new System.Drawing.Point(210, 88);
+            label73.Name = "label73";
+            label73.Size = new System.Drawing.Size(102, 13);
+            label73.TabIndex = 109;
+            label73.Text = "(accepts -20 to 220)";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4490,6 +4501,7 @@
         private System.Windows.Forms.CheckBox overcheckBox;
         private System.Windows.Forms.Label overlabel;
         private System.Windows.Forms.Label skedstoplabel;
+        private System.Windows.Forms.Label label73;
     }
 }
 
