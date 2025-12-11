@@ -3717,6 +3717,11 @@ namespace WSPR_Sked
             defaultdB = Convert.ToInt32(defaultpwrcomboBox.SelectedItem);
             defaultW = Convert.ToDouble(defaultWtextBox.Text);
 
+            string loc = LocatortextBox.Text.Trim().Substring(0, 4);
+            if (!location.Contains(loc))
+            {
+                Msg.TMessageBox("Locator changed - update sunrise/sunset?", "Locator changed", 2500);
+            }
             if (checkLocator(LocatortextBox.Text))
             {
 
