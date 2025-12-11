@@ -449,46 +449,53 @@ namespace WSPR_Sked
                 string loc = LocatortextBox.Text.Trim().Substring(0, 4);
                 ll = MaidenheadLocator.LocatorToLatLng(loc);
 
-                Sunrise_Sunset(ll.Lat, ll.Long, dt);
-
-                if (sunTimes.R == DateTime.MinValue)
+                try
                 {
-                    var sunT = find_sunrise_sunset(loc, dt.ToString("MM-dd"));
-                    if (sunT == null || sunT.Result.R == DateTime.MinValue)
+                    Sunrise_Sunset(ll.Lat, ll.Long, dt);
+
+                    if (sunTimes.R == DateTime.MinValue)
                     {
-                        utcriselabel.Text = "N/A";
-                        utcsetlabel.Text = "N/A";
+                        var sunT = find_sunrise_sunset(loc, dt.ToString("MM-dd"));
+                        if (sunT == null || sunT.Result.R == DateTime.MinValue)
+                        {
+                            utcriselabel.Text = "N/A";
+                            utcsetlabel.Text = "N/A";
+                        }
+                        else
+                        {   //change LT to UTC
+                            try
+                            {
+                                r = sunT.Result.R;
+                                s = sunT.Result.S;
+                                localriselabel.Text = r.ToString("HH:mm");
+                                localsetlabel.Text = s.ToString("HH:mm");
+                                s = s.AddHours(utcOffset * -1);
+                                r = r.AddHours(utcOffset * -1);
+                                utcriselabel.Text = r.ToString("HH:mm");
+                                utcsetlabel.Text = s.ToString("HH:mm");
+                            }
+                            catch
+                            {
+
+                            }
+                        }
                     }
                     else
-                    {   //change LT to UTC
-                        try
-                        {
-                            r = sunT.Result.R;
-                            s = sunT.Result.S;
-                            localriselabel.Text = r.ToString("HH:mm");
-                            localsetlabel.Text = s.ToString("HH:mm");
-                            s = s.AddHours(utcOffset * -1);
-                            r = r.AddHours(utcOffset * -1);
-                            utcriselabel.Text = r.ToString("HH:mm");
-                            utcsetlabel.Text = s.ToString("HH:mm");
-                        }
-                        catch
-                        {
+                    {
+                        r = sunTimes.R;
+                        s = sunTimes.S;
 
-                        }
+                        localriselabel.Text = r.ToString("HH:mm");
+                        localsetlabel.Text = s.ToString("HH:mm");
+                        r = r.AddHours(utcOffset * -1);
+                        s = s.AddHours(utcOffset * -1);
+                        utcriselabel.Text = r.ToString("HH:mm");
+                        utcsetlabel.Text = s.ToString("HH:mm");
                     }
                 }
-                else
+                catch
                 {
-                    r = sunTimes.R;
-                    s = sunTimes.S;
-
-                    localriselabel.Text = r.ToString("HH:mm");
-                    localsetlabel.Text = s.ToString("HH:mm");
-                    r = r.AddHours(utcOffset * -1);
-                    s = s.AddHours(utcOffset * -1);
-                    utcriselabel.Text = r.ToString("HH:mm");
-                    utcsetlabel.Text = s.ToString("HH:mm");
+                    Msg.TMessageBox("Check locator", "Sunrise/Sunset Error", 2500);
                 }
 
                 if (grey_table_count() < 365)
@@ -3637,11 +3644,19 @@ namespace WSPR_Sked
         private async void SaveAll()
         {
             int msgT = 1;
+            bool loc_changed = false;
             FList = "";
             bool saved = false;
 
             string C = CalltextBox.Text;
             string L = LocatortextBox.Text;
+            LatLng ll;
+            ll = MaidenheadLocator.LocatorToLatLng(L);
+            if (ll.Lat > 90|| ll.Long >180)
+            {
+                Msg.OKMessageBox("Invalid locator", "Locator");
+                return;
+            }
             HamlibPath = RigCtlPathtextBox.Text.Trim();
             rxForm.updateLabels(L);
 
@@ -3720,7 +3735,7 @@ namespace WSPR_Sked
             string loc = LocatortextBox.Text.Trim().Substring(0, 4);
             if (!location.Contains(loc))
             {
-                Msg.TMessageBox("Locator changed - update sunrise/sunset?", "Locator changed", 2500);
+                loc_changed = true;
             }
             if (checkLocator(LocatortextBox.Text))
             {
@@ -3751,8 +3766,14 @@ namespace WSPR_Sked
                     saved = true;
                 }
             }
-
-            Msg.OKMessageBox("Settings saved", "");
+            if (loc_changed)
+            {
+                Msg.OKMessageBox("Settings saved - may need to update sunrise/set", "Update sunrise/set?");
+            }
+            else
+            {
+                Msg.OKMessageBox("Settings saved", "");
+            }
 
 
         }
