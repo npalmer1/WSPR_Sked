@@ -295,7 +295,7 @@ namespace WSPR_Sked
         {
 
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.17";
+            string ver = "0.1.18";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
