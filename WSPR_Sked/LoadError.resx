@@ -120,17 +120,14 @@
   <data name="label1.Text" xml:space="preserve">
     <value>Error whilst loading!
 The app cannot connect to the mySQL databases!
-Ensure that you have mySQL installed and you have imported 
-the wspr scheduler databases (from the file wspr_db.sql) and 
-added the admin user. Please read the installation and configuration
-instructions. The necessary databases are:
-wspr.sql
-wspr_configs.sql
-wspr_grey.sql
-wspr_rpt.sql
-wspr_rx.sql
-wspr_slots.sql
-wspr_sol.sql
+Ensure that you have mySQL installed and you have:
+1)imported the wspr scheduler databases - from the file 
+"wspr_db.sql" 
+2) ... and added the admin user. 
+Please read the installation and configuration
+instructions to install and configure the databases.
+Then re-run WSPR Scheduler.
+
 - and make sure that latest database updates have been applied.
 
 </value>
