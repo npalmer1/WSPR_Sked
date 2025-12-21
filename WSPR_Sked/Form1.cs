@@ -142,6 +142,8 @@ namespace WSPR_Sked
             public string Parent;
             public int SwPort;
             public int MessageType;
+            public int Switch2;
+            public int SwPort2;
 
 
         }
@@ -220,6 +222,8 @@ namespace WSPR_Sked
         string db_pass = "wspr";
         string db_user = "admin";
 
+
+
         public struct Antenna
         {
             public int AntNo;
@@ -228,6 +232,8 @@ namespace WSPR_Sked
             public int Switch;
             public int Tuner;
             public int SwitchPort;
+            public int Switch2;
+            public int SwitchPort2;
 
         }
 
@@ -295,7 +301,7 @@ namespace WSPR_Sked
         {
 
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.18";
+            string ver = "0.1.19";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -306,6 +312,7 @@ namespace WSPR_Sked
             getUserandPassword();
             if (checkSlotDB())
             {
+                addNewSlotColumns();
                 DateTime localTime = DateTime.Now; // your current local time
                 DateTime utcTime = localTime.ToUniversalTime();
 
@@ -577,6 +584,10 @@ namespace WSPR_Sked
             bool slotFound = false;
             int readcount = 0;
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
+            selSwitchtextBox.Text = "0";
+            selSwitchtextBox2.Text = "0";
+            selSwPorttextBox.Text = "0";
+            selSwPorttextBox2.Text = "0";
 
             while (readcount < 2)
             {
@@ -713,6 +724,25 @@ namespace WSPR_Sked
                         else
                         {
                             greylistBox.Text = "1";
+                        }
+                        if (checkNewSlotColumns())
+                        {
+                            try
+                            {
+                                int swi2 = (int)Reader["Switch2"];
+                                Slot.Switch2 = swi2;
+                                if (swi2 > -1) { selSwitchtextBox2.Text = swi2.ToString(); }
+                                int swPort2 = (int)Reader["SwitchPort2"];
+                                Slot.SwPort2 = swPort2;
+                                if (swPort2 > -1) { selSwPorttextBox2.Text = swPort2.ToString(); }
+                            }
+                            catch
+                            {
+                                Slot.Switch2 = 0;
+                                Slot.SwPort2 = 0;
+                                selSwPorttextBox2.Text = "0";
+                                selSwitchtextBox2.Text = "0";
+                            }
                         }
 
                     }
@@ -918,6 +948,13 @@ namespace WSPR_Sked
                         {
                             greylistBox.Text = "1";
                         }
+                        if (checkNewSlotColumns())
+                        {
+                            int swi2 = (int)Reader["Switch2"];
+                            SlotRow.Switch2 = swi2;
+                            int swPort2 = (int)Reader["SwitchPort2"];
+                            SlotRow.SwPort2 = swPort2;
+                        }
 
 
                     }
@@ -1121,8 +1158,35 @@ namespace WSPR_Sked
                             int p = Ant[a].SwitchPort;
                             if (p > -1)
                             {
-                                p++;
-                                selSwPorttextBox.Text = p.ToString(); //show index 0 as 1 as ports start from 1
+                                if (s > 0)
+                                {
+                                    p++;
+                                }
+                                else
+                                {
+                                    p = 0;
+                                }
+
+                                    selSwPorttextBox.Text = p.ToString(); //show index 0 as 1 as ports start from 1
+                            }
+                            int s2 = Ant[a].Switch2;
+                            if (s2 > -1)
+                            {
+                                selSwitchtextBox2.Text = s2.ToString();
+                            }
+                            int p2 = Ant[a].SwitchPort2;
+                            if (p2 > -1)
+                            {
+                                if (s2 > 0)
+                                {
+                                    p2++;
+                                }
+                                else
+                                {
+                                    p2 = 0;
+                                }
+
+                                    selSwPorttextBox2.Text = p2.ToString(); //show index 0 as 1 as ports start from 1
                             }
                         }
 
@@ -1448,6 +1512,7 @@ namespace WSPR_Sked
 
                 cells[8] = selSwitchtextBox.Text;
                 Slot.Switch = Convert.ToInt32(selSwitchtextBox.Text);
+                Slot.Switch2 = Convert.ToInt32(selSwitchtextBox2.Text);
 
 
                 //cells[9] = null; //rotator
@@ -1491,6 +1556,8 @@ namespace WSPR_Sked
 
                 Slot.SwPort = Convert.ToInt32(selSwPorttextBox.Text);
                 Slot.SwPort++; //zeroise it
+                Slot.SwPort2 = Convert.ToInt32(selSwPorttextBox2.Text);
+                Slot.SwPort2++; //zeroise it
                 string MT = msgT.ToString();
 
                 cells[15] = MT;
@@ -1627,6 +1694,8 @@ namespace WSPR_Sked
                 cells[8] = selSwitchtextBox.Text;
                 Slot.Switch = Convert.ToInt32(selSwitchtextBox.Text);
 
+                Slot.Switch2 = Convert.ToInt32(selSwitchtextBox2.Text);
+
 
                 //cells[9] = null; //rotator
                 //cells[10] = null; //azimuth
@@ -1669,6 +1738,8 @@ namespace WSPR_Sked
 
                 Slot.SwPort = Convert.ToInt32(selSwPorttextBox.Text);
                 Slot.SwPort++; //zeroise it
+                Slot.SwPort2 = Convert.ToInt32(selSwPorttextBox2.Text);
+                Slot.SwPort2++; //zeroise it
                 string MT = msgT.ToString();
 
                 cells[15] = MT;
@@ -2278,6 +2349,8 @@ namespace WSPR_Sked
             string e = "";
             string p = "";
             int msgT = 1;
+            string N = "";
+            string N2 = "";
             rpt_type = 0;
             greyoffset = 0;
             if (repeatcheckBox.Checked)
@@ -2311,6 +2384,16 @@ namespace WSPR_Sked
             {
 
             }
+            if (checkNewSlotColumns())
+            {
+                N = ",Switch2,SwitchPort2) ";
+                N2 = ",@Switch2,@SwitchPort2)";
+            }
+            else
+            {
+                N = ") ";
+                N2 = ")";
+            }
             lock (_lock)
             {
                 try
@@ -2318,8 +2401,8 @@ namespace WSPR_Sked
 
 
                     MySqlCommand command = connection.CreateCommand();
-                    command.CommandText = "INSERT INTO slots(Date,Time,Frequency,Offset,Power,PowerW,Antenna,Tuner,Switch,SwitchPort,End,Active,Repeating,TimeEnd,RptTime,Parent,SlotNo,MsgType,RptType,GreyOffset) ";
-                    command.CommandText += "VALUES(@Date,@Time,@Frequency,@Offset,@Power,@PowerW,@Antenna,@Tuner,@Switch,@SwitchPort,@End,@Active,@Repeating,@TimeEnd,@RptTime,@Parent,@SlotNo,@MsgType,@RptType,@GreyOffset)";
+                    command.CommandText = "INSERT INTO slots(Date,Time,Frequency,Offset,Power,PowerW,Antenna,Tuner,Switch,SwitchPort,End,Active,Repeating,TimeEnd,RptTime,Parent,SlotNo,MsgType,RptType,GreyOffset" + N;
+                    command.CommandText += "VALUES(@Date,@Time,@Frequency,@Offset,@Power,@PowerW,@Antenna,@Tuner,@Switch,@SwitchPort,@End,@Active,@Repeating,@TimeEnd,@RptTime,@Parent,@SlotNo,@MsgType,@RptType,@GreyOffset" + N2;
 
                     connection.Open();
 
@@ -2370,6 +2453,15 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@MsgType", msgT);
                     command.Parameters.AddWithValue("@RptType", rpt_type);
                     command.Parameters.AddWithValue("@GreyOffset", greyoffset);
+                    if (N2 == ")")
+                    {
+                        //do nothing
+                    }
+                    else
+                    {
+                        command.Parameters.AddWithValue("@Switch2", Slot.Switch2);
+                        command.Parameters.AddWithValue("@SwitchPort2", Slot.SwPort2);
+                    }
 
                     command.ExecuteNonQuery();
                     connection.Close();
@@ -2388,6 +2480,15 @@ namespace WSPR_Sked
             string c = "";
             string act = "0";
             string r = "0";
+            string N = "";
+            if (checkNewSlotColumns())
+            {
+                N = ",Switch2 = " + Slot.Switch2 + ", SwitchPort2 = " + Slot.SwPort2;
+            }
+            else
+            {
+                N = "";
+            }
             if (cells[11].Contains(tick))
             {
                 act = "1";
@@ -2407,8 +2508,8 @@ namespace WSPR_Sked
                     c = c + ", PowerW = " + Slot.PowerW + ", Antenna = '" + Slot.Ant + "', Tuner = " + Slot.Tuner + ", Switch = " + Slot.Switch;
                     c = c + ", SwitchPort = " + Slot.SwPort + ", End = '" + e + "', Active = " + act + ", Repeating = " + r + ", TimeEnd = '" + Slot.EndTime;
                     c = c + "', RptTime = " + Slot.RptTime + ", Parent = '" + p + "'";
-                    c = c + ", SlotNo = " + slotNo + ", MsgType = " + msgT + ", RptType = " + rpt_type + ", GreyOffset = " + greyoffset + " WHERE slots.Date = '" + d + "' AND slots.Time = '" + t + "'"; // + ";";              
-                                                                                                                                                                                                          //UPDATE `slots` SET `Antenna` = 'GP' WHERE `slots`.`Date` = '2025-02-28' AND `slots`.`Time` = '16:02:00'; 
+                    c = c + ", SlotNo = " + slotNo + ", MsgType = " + msgT + ", RptType = " + rpt_type + ", GreyOffset = " + greyoffset + N + " WHERE slots.Date = '" + d + "' AND slots.Time = '" + t + "'"; // + ";";              
+                                                                                                                                                                                                              //UPDATE `slots` SET `Antenna` = 'GP' WHERE `slots`.`Date` = '2025-02-28' AND `slots`.`Time` = '16:02:00'; 
                     command.CommandText = c;
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -3652,7 +3753,7 @@ namespace WSPR_Sked
             string L = LocatortextBox.Text;
             LatLng ll;
             ll = MaidenheadLocator.LocatorToLatLng(L);
-            if (ll.Lat > 90|| ll.Long >180)
+            if (ll.Lat > 90 || ll.Long > 180)
             {
                 Msg.OKMessageBox("Invalid locator", "Locator");
                 return;
@@ -4022,25 +4123,38 @@ namespace WSPR_Sked
         {
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
+            string N = "";
+            string N2 = "";
             lock (_lock)
             {
                 try
                 {
 
                     MySqlCommand command = connection.CreateCommand();
-                    command.CommandText = "INSERT INTO antennas(AntNo,Antenna,Description,Switch,Tuner,SwitchPort) ";
-                    command.CommandText += "VALUES(@AntNo,@Antenna,@Description,@Switch,@Tuner,@SwitchPort)";
-
+                    if (checkNewSlotColumns())
+                    {
+                        N = "Switch2,SwitchPort2) ";
+                        N2 = "@Switch2,@SwitchPort2)";
+                    }
+                    else
+                    {
+                        N = ") ";
+                        N2 = ")";
+                    }
+                    command.CommandText = "INSERT INTO antennas(AntNo,Antenna,Description,Switch,Tuner,SwitchPort" + N;
+                    command.CommandText += "VALUES(@AntNo,@Antenna,@Description,@Switch,@Tuner,@SwitchPort" + N2;
 
                     connection.Open();
 
                     int sw = 0;
+                    int sw2 = 0;
                     int tu = 0;
 
                     //int antNo = AntlistBox.Items.Count; //add new antenna to listbox
                     string ant = AntnametextBox.Text.Trim();
                     string desc = AntdesctextBox.Text;
                     int swP = 0;
+                    int swP2 = 0;
                     if (ShowSwlistBox.SelectedIndex < 0)
                     {
                         sw = 0;
@@ -4048,6 +4162,14 @@ namespace WSPR_Sked
                     else
                     {
                         sw = ShowSwlistBox.SelectedIndex;
+                    }
+                    if (ShowSwlistBox2.SelectedIndex < 0)
+                    {
+                        sw2 = 0;
+                    }
+                    else
+                    {
+                        sw2 = ShowSwlistBox2.SelectedIndex;
                     }
                     if (ShowTulistBox.SelectedIndex < 0)
                     {
@@ -4065,12 +4187,29 @@ namespace WSPR_Sked
                     {
                         swP = AntPortlistBox.SelectedIndex;
                     }
+                    if (AntPortlistBox2.SelectedIndex < 0)
+                    {
+                        swP2 = 0;
+                    }
+                    else
+                    {
+                        swP2 = AntPortlistBox2.SelectedIndex;
+                    }
                     command.Parameters.AddWithValue("@AntNo", antNo);
                     command.Parameters.AddWithValue("@Antenna", ant);
                     command.Parameters.AddWithValue("@Description", desc);
                     command.Parameters.AddWithValue("@Switch", sw);
                     command.Parameters.AddWithValue("@Tuner", tu);
                     command.Parameters.AddWithValue("@SwitchPort", swP);
+                    if (N == ") ")
+                    {
+                        //do nothing
+                    }
+                    else
+                    {
+                        command.Parameters.AddWithValue("@Switch2", sw2);
+                        command.Parameters.AddWithValue("@SwitchPort2", swP2);
+                    }
 
                     command.ExecuteNonQuery();
 
@@ -4103,6 +4242,9 @@ namespace WSPR_Sked
                 int sw = 0;
                 int tu = 0;
                 int swP = 0;
+                int sw2 = 0;
+                int swP2 = 0;
+                string N = "";
                 string ant = AntnametextBox.Text;
                 string desc = AntdesctextBox.Text;
                 if (ShowSwlistBox.SelectedIndex < 0)
@@ -4130,9 +4272,31 @@ namespace WSPR_Sked
                     swP = AntPortlistBox.SelectedIndex;
                 }
 
+
+                if (checkNewSlotColumns())
+                {
+                    if (ShowSwlistBox2.SelectedIndex < 0)
+                    {
+                        sw = 0;
+                    }
+                    else
+                    {
+                        sw2 = ShowSwlistBox2.SelectedIndex;
+                    }
+                    if (AntPortlistBox2.SelectedIndex < 0)
+                    {
+                        swP2 = 0;
+                    }
+                    else
+                    {
+                        swP2 = AntPortlistBox2.SelectedIndex;
+                    }
+                    N = ", Switch2 = " + sw2 + ", SwitchPort2 = " + swP2;
+                }
+                else { N = ""; }
                 MySqlCommand command = connection.CreateCommand();
                 c = "UPDATE antennas SET Antenna = '" + ant + "', Description = '" + desc + "', Switch = " + sw + ", ";
-                c = c + "Tuner = " + tu + ", SwitchPort = " + swP;
+                c = c + "Tuner = " + tu + ", SwitchPort = " + swP + N;
                 c = c + " WHERE antennas.AntNo = " + antNo;
 
                 command.CommandText = c;
@@ -4164,6 +4328,8 @@ namespace WSPR_Sked
                 int antSwitch;
                 int antTuner;
                 int antSwPort;
+                int antSwitch2 = 0;
+                int antSwitchPort2 = 0;
                 Antenna A;
                 Ant.Clear();
 
@@ -4185,12 +4351,21 @@ namespace WSPR_Sked
                     antSwitch = (int)Reader["Switch"];
                     antTuner = (int)Reader["Tuner"];
                     antSwPort = (int)Reader["SwitchPort"];
+                    if (checkNewSlotColumns())
+                    {
+                        antSwitch2 = (int)Reader["Switch2"];
+                        antSwitchPort2 = (int)Reader["SwitchPort2"];
+
+                    }
+
                     A.AntNo = antNo;
                     A.AntName = antenna;
                     A.Description = antDescription;
                     A.Switch = antSwitch;
                     A.Tuner = antTuner;
                     A.SwitchPort = antSwPort;
+                    A.Switch2 = antSwitch2;
+                    A.SwitchPort2 = antSwitchPort2;
 
                     string ant = antenna.PadRight(40, ' ');
                     ant = ant.Substring(0, 40);
@@ -5959,6 +6134,7 @@ namespace WSPR_Sked
                 oldAnt = A; //remember old ant name 
                 //ShowSwlistBox.Text = ant[1];
                 ShowSwlistBox.SelectedIndex = Ant[sel].Switch;
+                ShowSwlistBox2.SelectedIndex = Ant[sel].Switch2;
                 ShowTulistBox.SelectedIndex = Ant[sel].Tuner;
                 int P = Ant[sel].SwitchPort;
 
@@ -5973,6 +6149,20 @@ namespace WSPR_Sked
                 else
                 {
                     AntPortlistBox.Visible = false;
+                }
+                P = Ant[sel].SwitchPort2;
+
+                if (P > -1 && P < AntPortlistBox2.Items.Count)
+                {
+                    AntPortlistBox2.SelectedIndex = P; //ports start from 1
+                }
+                if (Ant[sel].Switch2 > 0)
+                {
+                    AntPortlistBox2.Visible = true;
+                }
+                else
+                {
+                    AntPortlistBox2.Visible = false;
                 }
 
                 AntdesctextBox.Text = Ant[sel].Description;
@@ -6029,6 +6219,8 @@ namespace WSPR_Sked
                 int S = ShowSwlistBox.SelectedIndex;
                 int T = ShowTulistBox.SelectedIndex;
                 int P = AntPortlistBox.SelectedIndex;
+                int S2 = ShowSwlistBox2.SelectedIndex;
+                int P2 = AntPortlistBox2.SelectedIndex;
                 if (S < 0)
                 {
                     S = 0;
@@ -6041,7 +6233,14 @@ namespace WSPR_Sked
                 {
                     P = 0;
                 }
-
+                if (P2 < 0)
+                {
+                    P2 = 0;
+                }
+                if (S2 < 0)
+                {
+                    S2 = 0;
+                }
 
                 A.AntNo = Convert.ToInt32(antNolabel.Text);
                 A.AntName = AntnametextBox.Text.Trim();
@@ -6049,6 +6248,8 @@ namespace WSPR_Sked
                 A.Tuner = T;
                 A.Description = AntdesctextBox.Text;
                 A.SwitchPort = P; //ports start at 1
+                A.Switch2 = S2;
+                A.SwitchPort2 = P2;
                 if (!newAcheckBox.Checked)
                 {
                     Ant[sel] = A;
@@ -7138,10 +7339,28 @@ namespace WSPR_Sked
                 if (Ant[i].AntName.Trim() == AntselcomboBox.Text.Trim())
                 {
                     selSwitchtextBox.Text = Ant[i].Switch.ToString();
+                    selSwitchtextBox2.Text = Ant[i].Switch2.ToString();
                     selTunertextBox.Text = Ant[i].Tuner.ToString();
                     int a = Ant[i].SwitchPort;
-                    a++;
+                    if (Ant[i].Switch == 0)
+                    {
+                        a = 0;                                            
+                    }
+                    else
+                    {
+                        a++; //display port number starting from 1
+                    }
                     selSwPorttextBox.Text = a.ToString();
+                    int a2 = Ant[i].SwitchPort2;
+                    if (Ant[i].Switch2 == 0)
+                    {
+                        a2 = 0;                                             
+                    }
+                    else
+                    {
+                        a2++;
+                    }
+                    selSwPorttextBox2.Text = a2.ToString();
                 }
             }
         }
@@ -7476,16 +7695,20 @@ namespace WSPR_Sked
         private async Task activateAntSwitch(string TXAntenna)
         {
             int sw = 0;
+            int sw2 = 0;
             int tu = 0;
             int ch = 0;
+            int ch2 = 0;
             bool found = false;
             for (int i = 0; i < Ant.Count; i++)
             {
                 if (Ant[i].AntName == TXAntenna)
                 {
                     sw = Ant[i].Switch;
+                    sw2 = Ant[i].Switch2;
                     tu = Ant[i].Tuner;
                     ch = Ant[i].SwitchPort;
+                    ch2 = Ant[i].SwitchPort;
                     found = true;
                 }
             }
@@ -7496,13 +7719,15 @@ namespace WSPR_Sked
                     if (Ant[i].AntName == defaultAnt)
                     {
                         sw = Ant[i].Switch;
+                        sw2 = Ant[i].Switch2;
                         tu = Ant[i].Tuner;
                         ch = Ant[i].SwitchPort;
+                        ch2 = Ant[i].SwitchPort2;
                     }
                 }
             }
 
-            changeAntenna(TXAntenna, sw, tu, ch);
+            changeAntenna(TXAntenna, sw, sw2, tu, ch, ch2);
 
         }
         private async void set410Mode()
@@ -7526,8 +7751,9 @@ namespace WSPR_Sked
             string msg = "mode 2 (1TX-4Ant)";
             Msg.TMessageBox("W410A: " + msg, "", 3000);
         }
-        private async Task<bool> changeAntenna(string antName, int sw, int tu, int channel)
+        private async Task<bool> changeAntenna(string antName, int sw, int sw2, int tu, int channel, int channel2)
         {
+            bool ok = false;
             try
             {
                 channel++; //the channels start from 1 not zero
@@ -7549,7 +7775,7 @@ namespace WSPR_Sked
                             Msg.TMessageBox("Switch: " + sw.ToString() + ", Ant: " + ant.Trim(), "Switch reply", 3000);
                             TXRXAntlabel.Text = antName;
                             TXRXAntlabel2.Text = antName;
-                            return true;
+                            ok = true;
                         }
                         else
                         {
@@ -7581,6 +7807,74 @@ namespace WSPR_Sked
                         }
                         TXRXAntlabel.Text = antName;
                         TXRXAntlabel2.Text = antName;
+                        ok= true;
+
+                    }
+                }
+            }
+            catch
+            {
+                Msg.TMessageBox("Error selecting antenna switch", "", 4000);
+                return false;
+            }
+           
+            if (sw2 ==0)    //if there is no second switch
+            {
+                return ok;
+            }
+            try
+            {
+                channel2++; //the channels start from 1 not zero
+                string swType = SW[sw2].Type;
+                var ret = "";
+
+                if (sw2 != 0 && swType != "" && swType != null)
+                {
+                    if (swType.StartsWith("Arduino"))
+                    {
+                        await Task.Run(() =>
+                        {
+                            ret = Arduino_Comms_1(sw2, channel2).Result;
+                        });
+                        if (ret == "ok")
+                        {
+                            string ant = antName.PadRight(20);
+                            ant = ant.Substring(0, 20);
+                            Msg.TMessageBox("Switch: " + sw2.ToString() + ", Ant: " + ant.Trim(), "Switch reply", 2000);
+                            TXRXAntlabel.Text = antName;
+                            TXRXAntlabel2.Text = antName;
+                            return true;
+                        }
+                        else
+                        {
+                            Msg.TMessageBox("Antenna switch error", "Switch reply", 3000);
+                            return false;
+                        }
+
+
+                    }
+                    else if (swType.StartsWith("W-410A"))
+                    {
+                        await Task.Run(() =>
+                        {
+                            ret = W410A_setAnt(sw2, channel2).Result;
+                        });
+
+                        string R = "";
+                        if (ret != null)
+                        {
+                            R = ret.Trim();
+                            if (R != "null" && R != "")
+                            {
+                                Msg.TMessageBox("W410A: " + antName, "Switch reply", 2500);
+                            }
+                        }
+                        else
+                        {
+                            Msg.TMessageBox("W410A: " + antName, "Switch reply", 2500);
+                        }
+                        TXRXAntlabel.Text = antName;
+                        TXRXAntlabel2.Text = antName;
                         return true;
 
                     }
@@ -7591,7 +7885,7 @@ namespace WSPR_Sked
                 Msg.TMessageBox("Error selecting antenna switch", "", 4000);
                 return false;
             }
-            return false;
+            return ok;
 
         }
 
@@ -9050,6 +9344,164 @@ namespace WSPR_Sked
                 noSkedcheckBox.Checked = true;
                 //skedstoplabel.Text = "Sked disabled";
             }
+        }
+
+        private void addNewSlotColumns()
+        {
+            bool ok = false;
+            string ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
+
+
+            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                ok = AddIntColumnIfNotExists(conn, "slots", "Switch2");
+                ok = AddIntColumnIfNotExists(conn, "slots", "SwitchPort2");
+            }
+            ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                ok = AddIntColumnIfNotExists(conn, "antennas", "Switch2");
+                ok = AddIntColumnIfNotExists(conn, "antennas", "SwitchPort2");
+            }
+            if (ok)
+            {
+                Msg.TMessageBox("Database updated with new columns", "Database Update", 1000);
+            }
+        }
+        private bool AddIntColumnIfNotExists(MySqlConnection conn, string table, string column)
+        {
+            bool ok = false;
+            try
+            {
+                if (conn == null)
+                    throw new ArgumentNullException(nameof(conn));
+
+                if (conn.State != System.Data.ConnectionState.Open)
+                    conn.Open();
+                string checkSql = $@"
+                SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                AND TABLE_NAME = '{table}'
+                AND COLUMN_NAME = '{column}';";
+
+                int exists = Convert.ToInt32(new MySqlCommand(checkSql, conn).ExecuteScalar());
+
+                if (exists == 0)
+                {
+                    //Msg.TMessageBox($"Adding missing column '{column}' to table '{table}'", "Database Update", 1000);
+                    string alterSql = $@"
+                    ALTER TABLE {table}
+                    ADD COLUMN {column} INT NOT NULL DEFAULT 0;";
+                    new MySqlCommand(alterSql, conn).ExecuteNonQuery();
+                    ok = true;
+                }
+            }
+            catch
+            {
+                ok = false;
+            }
+            if (conn.State == System.Data.ConnectionState.Open)
+                conn.Close();
+            return ok;
+        }
+
+        private bool checkNewSlotColumns()
+        {
+            bool exists = false;
+            string ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
+
+
+            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                exists = CheckIfColumnExists(conn, "slots", "Switch2");
+                if (!exists)
+                {
+                    return false;
+                }
+                exists = CheckIfColumnExists(conn, "slots", "SwitchPort2");
+            }
+            ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                exists = CheckIfColumnExists(conn, "antennas", "Switch2");
+                if (!exists)
+                {
+                    return false;
+                }
+                exists = CheckIfColumnExists(conn, "antennas", "SwitchPort2");
+            }
+            if (exists)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        private bool CheckIfColumnExists(MySqlConnection conn, string table, string column)
+        {
+            bool exists = false;
+            try
+            {
+                if (conn == null)
+                    throw new ArgumentNullException(nameof(conn));
+
+                if (conn.State != System.Data.ConnectionState.Open)
+                    conn.Open();
+                string checkSql = $@"
+                SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                AND TABLE_NAME = '{table}'
+                AND COLUMN_NAME = '{column}';";
+
+                int ret = Convert.ToInt32(new MySqlCommand(checkSql, conn).ExecuteScalar());
+
+                if (ret == 0)
+                {
+
+                    exists = false;
+                }
+                else
+                {
+                    exists = true;
+                }
+            }
+            catch
+            {
+                exists = false;
+            }
+            if (conn.State == System.Data.ConnectionState.Open)
+                conn.Close();
+            return exists;
+        }
+        private void AntgroupBox_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ShowSwlistBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bool V = false;
+            if (ShowSwlistBox2.SelectedIndex == 0)
+            {
+                V = false;
+
+            }
+            else
+            {
+                V = true;
+            }
+            AntPortlistBox2.Visible = V;
+            AntPortlabel2.Visible = V;
         }
     }
 
