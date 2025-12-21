@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 30, 2025 at 10:38 AM
+-- Generation Time: Dec 21, 2025 at 03:18 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,19 +38,21 @@ CREATE TABLE `antennas` (
   `Rotator` tinyint(1) NOT NULL,
   `SwitchPort` int(11) NOT NULL,
   `TunerPort` int(11) NOT NULL,
-  `Azimuth` int(11) NOT NULL
+  `Azimuth` int(11) NOT NULL,
+  `Switch2` int(11) NOT NULL,
+  `SwitchPort2` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `antennas`
 --
 
-INSERT INTO `antennas` (`AntNo`, `Antenna`, `Description`, `Switch`, `Tuner`, `Rotator`, `SwitchPort`, `TunerPort`, `Azimuth`) VALUES
-(0, 'Cobwebb 20-6m', 'Cobwebb antenna for 20-6m', 2, 0, 0, 1, 0, 0),
-(1, 'Collinear for 6/2/70', 'Colinear for 6m, 2m and 70cm', 2, 0, 0, 3, 0, 0),
-(2, 'Hustler 5-BTV 80-10m vertical', 'Hustler 5-BTV vertical at 10ft with elevated radials - covers 80,40,30,20,15,10 m', 2, 0, 0, 3, 0, 0),
-(3, 'Inverted L 80/160', 'Vertical as inverted L with trapped counterpoise for 80/160', 2, 0, 0, 2, 0, 0),
-(4, 'Windom 80-6m', 'Off centre fed dipole', 2, 0, 0, 0, 0, 0);
+INSERT INTO `antennas` (`AntNo`, `Antenna`, `Description`, `Switch`, `Tuner`, `Rotator`, `SwitchPort`, `TunerPort`, `Azimuth`, `Switch2`, `SwitchPort2`) VALUES
+(0, 'Cobwebb 20-6m', 'Cobwebb antenna for 20-6m', 2, 0, 0, 1, 0, 0, 0, 0),
+(1, 'Collinear for 6/2/70', 'Colinear for 6m, 2m and 70cm', 2, 0, 0, 3, 0, 0, 0, 0),
+(2, 'Hustler 5-BTV 80-10m vertical', 'Hustler 5-BTV vertical at 10ft with elevated radials - covers 80,40,30,20,15,10 m', 2, 0, 0, 3, 0, 0, 0, 0),
+(3, 'Inverted L 80/160', 'Vertical as inverted L with trapped counterpoise for 80/160', 2, 0, 0, 2, 0, 0, 0, 0),
+(4, 'Windom 80-6m', 'Off centre fed dipole', 2, 0, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -822,7 +824,9 @@ CREATE TABLE `slots` (
   `SlotNo` int(11) NOT NULL,
   `MsgType` int(11) NOT NULL,
   `RptType` tinyint(4) NOT NULL,
-  `GreyOffset` tinyint(4) NOT NULL
+  `GreyOffset` tinyint(4) NOT NULL,
+  `Switch2` int(3) NOT NULL,
+  `SwitchPort2` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
