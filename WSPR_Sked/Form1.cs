@@ -7708,7 +7708,7 @@ namespace WSPR_Sked
                     sw2 = Ant[i].Switch2;
                     tu = Ant[i].Tuner;
                     ch = Ant[i].SwitchPort;
-                    ch2 = Ant[i].SwitchPort;
+                    ch2 = Ant[i].SwitchPort2;
                     found = true;
                 }
             }
@@ -7754,6 +7754,7 @@ namespace WSPR_Sked
         private async Task<bool> changeAntenna(string antName, int sw, int sw2, int tu, int channel, int channel2)
         {
             bool ok = false;
+            string message = "";
             try
             {
                 channel++; //the channels start from 1 not zero
@@ -7772,7 +7773,7 @@ namespace WSPR_Sked
                         {
                             string ant = antName.PadRight(20);
                             ant = ant.Substring(0, 20);
-                            Msg.TMessageBox("Switch: " + sw.ToString() + ", Ant: " + ant.Trim(), "Switch reply", 3000);
+                            message = "Switch: " + sw.ToString();
                             TXRXAntlabel.Text = antName;
                             TXRXAntlabel2.Text = antName;
                             ok = true;
@@ -7798,12 +7799,12 @@ namespace WSPR_Sked
                             R = ret.Trim();
                             if (R != "null" && R != "")
                             {
-                                Msg.TMessageBox("W410A: " + antName, "Switch reply", 2500);
+                                message = "W410A";
                             }
                         }
                         else
                         {
-                            Msg.TMessageBox("W410A: " + antName, "Switch reply", 2500);
+                            message = "W410A";
                         }
                         TXRXAntlabel.Text = antName;
                         TXRXAntlabel2.Text = antName;
@@ -7820,6 +7821,7 @@ namespace WSPR_Sked
            
             if (sw2 ==0)    //if there is no second switch
             {
+                message = message + ", Ant: " + ant.Trim();
                 return ok;
             }
             try
@@ -7840,7 +7842,8 @@ namespace WSPR_Sked
                         {
                             string ant = antName.PadRight(20);
                             ant = ant.Substring(0, 20);
-                            Msg.TMessageBox("Switch: " + sw2.ToString() + ", Ant: " + ant.Trim(), "Switch reply", 2000);
+                            message = message + " + Switch: " + sw2.ToString() + ", Ant: " + ant.Trim();
+                            Msg.TMessageBox(message , "Switch reply", 2000);
                             TXRXAntlabel.Text = antName;
                             TXRXAntlabel2.Text = antName;
                             return true;
@@ -7866,12 +7869,14 @@ namespace WSPR_Sked
                             R = ret.Trim();
                             if (R != "null" && R != "")
                             {
-                                Msg.TMessageBox("W410A: " + antName, "Switch reply", 2500);
+                                message = message + " + W410A " + antName;
+                                Msg.TMessageBox(message, "Switch reply", 2500);
                             }
                         }
                         else
                         {
-                            Msg.TMessageBox("W410A: " + antName, "Switch reply", 2500);
+                            message = message + " + W410A: " + antName;
+                            Msg.TMessageBox(message, "Switch reply", 2500);
                         }
                         TXRXAntlabel.Text = antName;
                         TXRXAntlabel2.Text = antName;
