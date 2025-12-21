@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
             dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -51,6 +51,8 @@
             Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             slotgroupBox = new System.Windows.Forms.GroupBox();
+            selSwPorttextBox2 = new System.Windows.Forms.TextBox();
+            selSwitchtextBox2 = new System.Windows.Forms.TextBox();
             AllcheckBox = new System.Windows.Forms.CheckBox();
             greygroupBox = new System.Windows.Forms.GroupBox();
             greylistBox = new System.Windows.Forms.ListBox();
@@ -137,6 +139,7 @@
             label22 = new System.Windows.Forms.Label();
             countdownlabel2 = new System.Windows.Forms.Label();
             tabPage2 = new System.Windows.Forms.TabPage();
+            label73 = new System.Windows.Forms.Label();
             overcheckBox = new System.Windows.Forms.CheckBox();
             stopRXcheckBox = new System.Windows.Forms.CheckBox();
             sunrisebutton = new System.Windows.Forms.Button();
@@ -257,6 +260,10 @@
             label68 = new System.Windows.Forms.Label();
             label63 = new System.Windows.Forms.Label();
             AntgroupBox = new System.Windows.Forms.GroupBox();
+            AntPortlabel2 = new System.Windows.Forms.Label();
+            AntPortlistBox2 = new System.Windows.Forms.ListBox();
+            label118 = new System.Windows.Forms.Label();
+            ShowSwlistBox2 = new System.Windows.Forms.ListBox();
             label90 = new System.Windows.Forms.Label();
             antNolabel = new System.Windows.Forms.Label();
             AntPortlabel = new System.Windows.Forms.Label();
@@ -383,7 +390,6 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
-            label73 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -436,23 +442,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle4;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -593,6 +599,8 @@
             // slotgroupBox
             // 
             slotgroupBox.BackColor = System.Drawing.Color.FromArgb(255, 192, 192);
+            slotgroupBox.Controls.Add(selSwPorttextBox2);
+            slotgroupBox.Controls.Add(selSwitchtextBox2);
             slotgroupBox.Controls.Add(AllcheckBox);
             slotgroupBox.Controls.Add(greygroupBox);
             slotgroupBox.Controls.Add(NightcheckBox);
@@ -628,13 +636,29 @@
             slotgroupBox.Controls.Add(label1);
             slotgroupBox.Controls.Add(ActivecheckBox);
             slotgroupBox.Controls.Add(OffsettextBox);
-            slotgroupBox.Location = new System.Drawing.Point(389, 203);
+            slotgroupBox.Location = new System.Drawing.Point(303, 203);
             slotgroupBox.Name = "slotgroupBox";
-            slotgroupBox.Size = new System.Drawing.Size(653, 363);
+            slotgroupBox.Size = new System.Drawing.Size(704, 363);
             slotgroupBox.TabIndex = 8;
             slotgroupBox.TabStop = false;
             slotgroupBox.Text = "Timeslot Configuration";
             slotgroupBox.Visible = false;
+            // 
+            // selSwPorttextBox2
+            // 
+            selSwPorttextBox2.Enabled = false;
+            selSwPorttextBox2.Location = new System.Drawing.Point(589, 120);
+            selSwPorttextBox2.Name = "selSwPorttextBox2";
+            selSwPorttextBox2.Size = new System.Drawing.Size(32, 20);
+            selSwPorttextBox2.TabIndex = 51;
+            // 
+            // selSwitchtextBox2
+            // 
+            selSwitchtextBox2.Enabled = false;
+            selSwitchtextBox2.Location = new System.Drawing.Point(589, 81);
+            selSwitchtextBox2.Name = "selSwitchtextBox2";
+            selSwitchtextBox2.Size = new System.Drawing.Size(54, 20);
+            selSwitchtextBox2.TabIndex = 50;
             // 
             // AllcheckBox
             // 
@@ -695,11 +719,11 @@
             // label110
             // 
             label110.AutoSize = true;
-            label110.Location = new System.Drawing.Point(650, 133);
+            label110.Location = new System.Drawing.Point(589, 40);
             label110.Name = "label110";
-            label110.Size = new System.Drawing.Size(47, 13);
+            label110.Size = new System.Drawing.Size(68, 39);
             label110.TabIndex = 43;
-            label110.Text = "label110";
+            label110.Text = "Remote ant. \r\nswitch\r\n(none if 0)\r\n";
             // 
             // label109
             // 
@@ -724,7 +748,7 @@
             // msgTlabel
             // 
             msgTlabel.AutoSize = true;
-            msgTlabel.Location = new System.Drawing.Point(536, 16);
+            msgTlabel.Location = new System.Drawing.Point(381, 16);
             msgTlabel.Name = "msgTlabel";
             msgTlabel.Size = new System.Drawing.Size(82, 13);
             msgTlabel.TabIndex = 40;
@@ -745,7 +769,7 @@
             // label70
             // 
             label70.AutoSize = true;
-            label70.Location = new System.Drawing.Point(496, 164);
+            label70.Location = new System.Drawing.Point(491, 104);
             label70.Name = "label70";
             label70.Size = new System.Drawing.Size(80, 13);
             label70.TabIndex = 38;
@@ -754,7 +778,7 @@
             // selSwPorttextBox
             // 
             selSwPorttextBox.Enabled = false;
-            selSwPorttextBox.Location = new System.Drawing.Point(496, 180);
+            selSwPorttextBox.Location = new System.Drawing.Point(491, 120);
             selSwPorttextBox.Name = "selSwPorttextBox";
             selSwPorttextBox.Size = new System.Drawing.Size(32, 20);
             selSwPorttextBox.TabIndex = 37;
@@ -765,16 +789,16 @@
             selSwitchtextBox.Enabled = false;
             selSwitchtextBox.Location = new System.Drawing.Point(491, 81);
             selSwitchtextBox.Name = "selSwitchtextBox";
-            selSwitchtextBox.Size = new System.Drawing.Size(127, 20);
+            selSwitchtextBox.Size = new System.Drawing.Size(54, 20);
             selSwitchtextBox.TabIndex = 36;
             selSwitchtextBox.KeyPress += selSwitchtextBox_KeyPress;
             // 
             // selTunertextBox
             // 
             selTunertextBox.Enabled = false;
-            selTunertextBox.Location = new System.Drawing.Point(491, 130);
+            selTunertextBox.Location = new System.Drawing.Point(491, 201);
             selTunertextBox.Name = "selTunertextBox";
-            selTunertextBox.Size = new System.Drawing.Size(127, 20);
+            selTunertextBox.Size = new System.Drawing.Size(54, 20);
             selTunertextBox.TabIndex = 35;
             selTunertextBox.KeyPress += selTunertextBox_KeyPress;
             // 
@@ -905,21 +929,21 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new System.Drawing.Point(488, 65);
+            label7.Location = new System.Drawing.Point(491, 39);
             label7.Name = "label7";
-            label7.Size = new System.Drawing.Size(130, 13);
+            label7.Size = new System.Drawing.Size(54, 39);
             label7.TabIndex = 15;
-            label7.Text = "Antenna switch (none if 0)";
+            label7.Text = "Antenna\r\nswitch\r\n(none if 0)";
             label7.Click += label7_Click;
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(491, 114);
+            label6.Location = new System.Drawing.Point(491, 172);
             label6.Name = "label6";
-            label6.Size = new System.Drawing.Size(85, 13);
+            label6.Size = new System.Drawing.Size(54, 26);
             label6.TabIndex = 14;
-            label6.Text = "Tuner (none if 0)";
+            label6.Text = "Tuner \r\n(none if 0)";
             // 
             // label5
             // 
@@ -1622,12 +1646,21 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 22);
+            tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1153, 652);
+            tabPage2.Size = new System.Drawing.Size(1153, 650);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
+            // 
+            // label73
+            // 
+            label73.AutoSize = true;
+            label73.Location = new System.Drawing.Point(210, 88);
+            label73.Name = "label73";
+            label73.Size = new System.Drawing.Size(102, 13);
+            label73.TabIndex = 109;
+            label73.Text = "(accepts -20 to 220)";
             // 
             // overcheckBox
             // 
@@ -2783,10 +2816,10 @@
             tabPage4.Controls.Add(FreqlistBox);
             tabPage4.Controls.Add(AgroupBox);
             tabPage4.Controls.Add(AntlistBox);
-            tabPage4.Location = new System.Drawing.Point(4, 24);
+            tabPage4.Location = new System.Drawing.Point(4, 22);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1153, 650);
+            tabPage4.Size = new System.Drawing.Size(1153, 652);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
@@ -2822,6 +2855,10 @@
             // 
             AntgroupBox.BackColor = System.Drawing.Color.FromArgb(192, 192, 255);
             AntgroupBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            AntgroupBox.Controls.Add(AntPortlabel2);
+            AntgroupBox.Controls.Add(AntPortlistBox2);
+            AntgroupBox.Controls.Add(label118);
+            AntgroupBox.Controls.Add(ShowSwlistBox2);
             AntgroupBox.Controls.Add(label90);
             AntgroupBox.Controls.Add(antNolabel);
             AntgroupBox.Controls.Add(AntPortlabel);
@@ -2839,11 +2876,51 @@
             AntgroupBox.Controls.Add(label48);
             AntgroupBox.Location = new System.Drawing.Point(501, 281);
             AntgroupBox.Name = "AntgroupBox";
-            AntgroupBox.Size = new System.Drawing.Size(451, 285);
+            AntgroupBox.Size = new System.Drawing.Size(516, 345);
             AntgroupBox.TabIndex = 2;
             AntgroupBox.TabStop = false;
             AntgroupBox.Text = "Antenna";
             AntgroupBox.Visible = false;
+            AntgroupBox.Enter += AntgroupBox_Enter;
+            // 
+            // AntPortlabel2
+            // 
+            AntPortlabel2.AutoSize = true;
+            AntPortlabel2.Location = new System.Drawing.Point(249, 210);
+            AntPortlabel2.Name = "AntPortlabel2";
+            AntPortlabel2.Size = new System.Drawing.Size(86, 26);
+            AntPortlabel2.TabIndex = 18;
+            AntPortlabel2.Text = "Remote antenna\r\nport on switch:";
+            AntPortlabel2.Visible = false;
+            // 
+            // AntPortlistBox2
+            // 
+            AntPortlistBox2.FormattingEnabled = true;
+            AntPortlistBox2.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14" });
+            AntPortlistBox2.Location = new System.Drawing.Point(340, 210);
+            AntPortlistBox2.Name = "AntPortlistBox2";
+            AntPortlistBox2.Size = new System.Drawing.Size(41, 43);
+            AntPortlistBox2.TabIndex = 17;
+            AntPortlistBox2.Visible = false;
+            // 
+            // label118
+            // 
+            label118.AutoSize = true;
+            label118.Location = new System.Drawing.Point(261, 161);
+            label118.Name = "label118";
+            label118.Size = new System.Drawing.Size(59, 26);
+            label118.TabIndex = 16;
+            label118.Text = "Remote\r\nAnt switch:";
+            // 
+            // ShowSwlistBox2
+            // 
+            ShowSwlistBox2.FormattingEnabled = true;
+            ShowSwlistBox2.Items.AddRange(new object[] { "0\tno switch", "1\tswitch1", "2\tswitch2", "3\tswitch3", "4\tswitch4", "5\tswitch5", "6\tswitch6", "7\tswitch7", "8\tswitch8", "9\tswitch9", "10\tswitch10" });
+            ShowSwlistBox2.Location = new System.Drawing.Point(328, 161);
+            ShowSwlistBox2.Name = "ShowSwlistBox2";
+            ShowSwlistBox2.Size = new System.Drawing.Size(143, 43);
+            ShowSwlistBox2.TabIndex = 15;
+            ShowSwlistBox2.SelectedIndexChanged += ShowSwlistBox2_SelectedIndexChanged;
             // 
             // label90
             // 
@@ -2867,7 +2944,7 @@
             // AntPortlabel
             // 
             AntPortlabel.AutoSize = true;
-            AntPortlabel.Location = new System.Drawing.Point(37, 210);
+            AntPortlabel.Location = new System.Drawing.Point(18, 210);
             AntPortlabel.Name = "AntPortlabel";
             AntPortlabel.Size = new System.Drawing.Size(68, 26);
             AntPortlabel.TabIndex = 12;
@@ -2878,7 +2955,7 @@
             // 
             AntPortlistBox.FormattingEnabled = true;
             AntPortlistBox.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14" });
-            AntPortlistBox.Location = new System.Drawing.Point(111, 210);
+            AntPortlistBox.Location = new System.Drawing.Point(92, 210);
             AntPortlistBox.Name = "AntPortlistBox";
             AntPortlistBox.Size = new System.Drawing.Size(41, 43);
             AntPortlistBox.TabIndex = 11;
@@ -2888,7 +2965,7 @@
             // 
             ShowTulistBox.FormattingEnabled = true;
             ShowTulistBox.Items.AddRange(new object[] { "0\tno tuner", "1\ttuner1", "2\ttuner2", "3\ttuner3", "4\ttuner4", "5\ttuner5", "6\ttuner6", "7\ttuner7", "8\ttuner8", "9\ttuner9", "10\ttuner10" });
-            ShowTulistBox.Location = new System.Drawing.Point(279, 161);
+            ShowTulistBox.Location = new System.Drawing.Point(83, 281);
             ShowTulistBox.Name = "ShowTulistBox";
             ShowTulistBox.Size = new System.Drawing.Size(134, 43);
             ShowTulistBox.TabIndex = 10;
@@ -2916,7 +2993,7 @@
             // 
             // CancelAbutton
             // 
-            CancelAbutton.Location = new System.Drawing.Point(341, 230);
+            CancelAbutton.Location = new System.Drawing.Point(356, 292);
             CancelAbutton.Name = "CancelAbutton";
             CancelAbutton.Size = new System.Drawing.Size(50, 23);
             CancelAbutton.TabIndex = 7;
@@ -2926,7 +3003,7 @@
             // 
             // SaveAbutton
             // 
-            SaveAbutton.Location = new System.Drawing.Point(270, 230);
+            SaveAbutton.Location = new System.Drawing.Point(285, 292);
             SaveAbutton.Name = "SaveAbutton";
             SaveAbutton.Size = new System.Drawing.Size(50, 23);
             SaveAbutton.TabIndex = 6;
@@ -2937,7 +3014,7 @@
             // label51
             // 
             label51.AutoSize = true;
-            label51.Location = new System.Drawing.Point(235, 161);
+            label51.Location = new System.Drawing.Point(39, 281);
             label51.Name = "label51";
             label51.Size = new System.Drawing.Size(38, 13);
             label51.TabIndex = 5;
@@ -4078,15 +4155,6 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
-            // label73
-            // 
-            label73.AutoSize = true;
-            label73.Location = new System.Drawing.Point(210, 88);
-            label73.Name = "label73";
-            label73.Size = new System.Drawing.Size(102, 13);
-            label73.TabIndex = 109;
-            label73.Text = "(accepts -20 to 220)";
-            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4502,6 +4570,12 @@
         private System.Windows.Forms.Label overlabel;
         private System.Windows.Forms.Label skedstoplabel;
         private System.Windows.Forms.Label label73;
+        private System.Windows.Forms.TextBox selSwitchtextBox2;
+        private System.Windows.Forms.TextBox selSwPorttextBox2;
+        private System.Windows.Forms.ListBox ShowSwlistBox2;
+        private System.Windows.Forms.Label AntPortlabel2;
+        private System.Windows.Forms.ListBox AntPortlistBox2;
+        private System.Windows.Forms.Label label118;
     }
 }
 
