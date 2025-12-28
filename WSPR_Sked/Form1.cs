@@ -301,7 +301,7 @@ namespace WSPR_Sked
         {
 
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.19";
+            string ver = "0.1.20";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -1167,7 +1167,7 @@ namespace WSPR_Sked
                                     p = 0;
                                 }
 
-                                    selSwPorttextBox.Text = p.ToString(); //show index 0 as 1 as ports start from 1
+                                selSwPorttextBox.Text = p.ToString(); //show index 0 as 1 as ports start from 1
                             }
                             int s2 = Ant[a].Switch2;
                             if (s2 > -1)
@@ -1186,7 +1186,7 @@ namespace WSPR_Sked
                                     p2 = 0;
                                 }
 
-                                    selSwPorttextBox2.Text = p2.ToString(); //show index 0 as 1 as ports start from 1
+                                selSwPorttextBox2.Text = p2.ToString(); //show index 0 as 1 as ports start from 1
                             }
                         }
 
@@ -1335,6 +1335,7 @@ namespace WSPR_Sked
             {
                 if (validateSlot())
                 {
+
                     //MessageForm mForm = new MessageForm();
 
                     if (Type2checkBox.Checked)
@@ -1378,6 +1379,13 @@ namespace WSPR_Sked
                     Msg.TMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", 20000);
                     Savelabel.Text = "Saving - please wait....";
                     repeatStatus = false;
+
+                    if ((FreqcomboBox.Text.StartsWith("40") || FreqcomboBox.Text.StartsWith("13")) && ActivecheckBox.Checked)
+                    {
+                        Msg.TMessageBox("22 and 8m RX only", "22m and 8m", 2500);
+                        ActivecheckBox.Checked = false;
+
+                    }
 
                     if ((msgT == 2 || msgT == 3) && !asOnecheckBox.Checked && checkNextSlot(EditRow))
                     {
@@ -4435,7 +4443,7 @@ namespace WSPR_Sked
                 command.CommandText = "SELECT * FROM frequencies";
                 MySqlDataReader Reader;
                 Reader = command.ExecuteReader();
-                FreqlistBox.Items.Clear();
+                //FreqlistBox.Items.Clear();
 
                 while (Reader.Read())
                 {
@@ -4443,9 +4451,15 @@ namespace WSPR_Sked
                     freq = (double)Reader["Frequency"];
                     level = (double)Reader["AudioLevel"];
                     string lvl = level.ToString();
-                    string F = freq.ToString() + "\t\t" + lvl;
-
-                    FreqlistBox.Items.Add(F);
+                    string f = freq.ToString();
+                    string F = f + "\t\t" + lvl;
+                    for (int i = 0; i < FreqlistBox.Items.Count; i++)
+                    {
+                        if (FreqlistBox.Items[i].ToString().StartsWith(f))
+                        {
+                            FreqlistBox.Items[i] = F;
+                        }
+                    }
 
                 }
                 Reader.Close();
@@ -5896,6 +5910,11 @@ namespace WSPR_Sked
                 Msg.OKMessageBox("No frequency selected", "");
                 return;
             }
+            if (FreqlistBox.Text.StartsWith("40.") || FreqlistBox.Text.StartsWith("13."))
+            {
+                Msg.OKMessageBox("22 and 8m bands RX only", "");
+                return;
+            }
             FreqlistBox.Enabled = false;
             string F = FreqlistBox.SelectedItem.ToString();
             string[] Freq = F.Split('\t');
@@ -7344,7 +7363,7 @@ namespace WSPR_Sked
                     int a = Ant[i].SwitchPort;
                     if (Ant[i].Switch == 0)
                     {
-                        a = 0;                                            
+                        a = 0;
                     }
                     else
                     {
@@ -7354,7 +7373,7 @@ namespace WSPR_Sked
                     int a2 = Ant[i].SwitchPort2;
                     if (Ant[i].Switch2 == 0)
                     {
-                        a2 = 0;                                             
+                        a2 = 0;
                     }
                     else
                     {
@@ -7808,7 +7827,7 @@ namespace WSPR_Sked
                         }
                         TXRXAntlabel.Text = antName;
                         TXRXAntlabel2.Text = antName;
-                        ok= true;
+                        ok = true;
 
                     }
                 }
@@ -7818,8 +7837,8 @@ namespace WSPR_Sked
                 Msg.TMessageBox("Error selecting antenna switch", "", 4000);
                 return false;
             }
-           
-            if (sw2 ==0)    //if there is no second switch
+
+            if (sw2 == 0)    //if there is no second switch
             {
                 message = message + ", Ant: " + ant.Trim();
                 return ok;
@@ -7843,7 +7862,7 @@ namespace WSPR_Sked
                             string ant = antName.PadRight(20);
                             ant = ant.Substring(0, 20);
                             message = message + " + Switch: " + sw2.ToString() + ", Ant: " + ant.Trim();
-                            Msg.TMessageBox(message , "Switch reply", 2000);
+                            Msg.TMessageBox(message, "Switch reply", 2000);
                             TXRXAntlabel.Text = antName;
                             TXRXAntlabel2.Text = antName;
                             return true;
@@ -9507,6 +9526,17 @@ namespace WSPR_Sked
             }
             AntPortlistBox2.Visible = V;
             AntPortlabel2.Visible = V;
+        }
+
+    
+
+        private void ActivecheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (FreqcomboBox.Text.StartsWith("40") || FreqcomboBox.Text.StartsWith("13"))
+            {
+                Msg.TMessageBox("22m and 8m RX only slots", "22m and 8m bands", 1500);
+                ActivecheckBox.Checked = false;
+            }
         }
     }
 
