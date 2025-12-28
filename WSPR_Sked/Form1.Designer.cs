@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
             dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -390,6 +390,7 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
+            RXonlylabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -442,23 +443,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -874,7 +875,7 @@
             FreqcomboBox.Location = new System.Drawing.Point(15, 81);
             FreqcomboBox.Name = "FreqcomboBox";
             FreqcomboBox.Size = new System.Drawing.Size(74, 21);
-            FreqcomboBox.TabIndex = 21;      
+            FreqcomboBox.TabIndex = 21;
             // 
             // datetimelabel
             // 
@@ -3089,6 +3090,7 @@
             // FreqgroupBox
             // 
             FreqgroupBox.BackColor = System.Drawing.Color.FromArgb(255, 192, 192);
+            FreqgroupBox.Controls.Add(RXonlylabel);
             FreqgroupBox.Controls.Add(label81);
             FreqgroupBox.Controls.Add(label80);
             FreqgroupBox.Controls.Add(newFcheckBox);
@@ -3102,7 +3104,7 @@
             FreqgroupBox.Controls.Add(label43);
             FreqgroupBox.Location = new System.Drawing.Point(73, 141);
             FreqgroupBox.Name = "FreqgroupBox";
-            FreqgroupBox.Size = new System.Drawing.Size(329, 217);
+            FreqgroupBox.Size = new System.Drawing.Size(329, 228);
             FreqgroupBox.TabIndex = 4;
             FreqgroupBox.TabStop = false;
             FreqgroupBox.Text = "WSPR Frequency";
@@ -3140,7 +3142,7 @@
             // 
             // Fcancelbutton
             // 
-            Fcancelbutton.Location = new System.Drawing.Point(216, 170);
+            Fcancelbutton.Location = new System.Drawing.Point(218, 188);
             Fcancelbutton.Name = "Fcancelbutton";
             Fcancelbutton.Size = new System.Drawing.Size(63, 23);
             Fcancelbutton.TabIndex = 8;
@@ -3150,7 +3152,7 @@
             // 
             // Fsavebutton
             // 
-            Fsavebutton.Location = new System.Drawing.Point(118, 170);
+            Fsavebutton.Location = new System.Drawing.Point(118, 188);
             Fsavebutton.Name = "Fsavebutton";
             Fsavebutton.Size = new System.Drawing.Size(63, 23);
             Fsavebutton.TabIndex = 7;
@@ -4156,6 +4158,15 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
+            // RXonlylabel
+            // 
+            RXonlylabel.AutoSize = true;
+            RXonlylabel.Location = new System.Drawing.Point(128, 159);
+            RXonlylabel.Name = "RXonlylabel";
+            RXonlylabel.Size = new System.Drawing.Size(10, 13);
+            RXonlylabel.TabIndex = 12;
+            RXonlylabel.Text = "-";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4577,6 +4588,7 @@
         private System.Windows.Forms.Label AntPortlabel2;
         private System.Windows.Forms.ListBox AntPortlistBox2;
         private System.Windows.Forms.Label label118;
+        private System.Windows.Forms.Label RXonlylabel;
     }
 }
 

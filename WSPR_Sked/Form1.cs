@@ -5912,10 +5912,17 @@ namespace WSPR_Sked
             }
             if (FreqlistBox.Text.StartsWith("40.") || FreqlistBox.Text.StartsWith("13."))
             {
-                Msg.OKMessageBox("22 and 8m bands RX only", "");
-                return;
+                //Msg.OKMessageBox("22 and 8m bands RX only", "");
+                trackBar1.Value = 0;
+                trackBar1.Enabled = false;
+                RXonlylabel.Text = "RX only on this band";
             }
-            FreqlistBox.Enabled = false;
+            else
+            {
+                RXonlylabel.Text = "-";
+                trackBar1.Enabled = true;
+            }
+                FreqlistBox.Enabled = false;
             string F = FreqlistBox.SelectedItem.ToString();
             string[] Freq = F.Split('\t');
             FtextBox.Text = Freq[0];
