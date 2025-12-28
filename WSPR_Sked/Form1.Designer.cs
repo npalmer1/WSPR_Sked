@@ -870,11 +870,11 @@
             // FreqcomboBox
             // 
             FreqcomboBox.FormattingEnabled = true;
-            FreqcomboBox.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "50.293", "70.091", "144.489", "432.300", "1296.500" });
+            FreqcomboBox.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "13.5539", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "40.68", "50.293", "70.091", "144.489", "432.300", "1296.500" });
             FreqcomboBox.Location = new System.Drawing.Point(15, 81);
             FreqcomboBox.Name = "FreqcomboBox";
             FreqcomboBox.Size = new System.Drawing.Size(74, 21);
-            FreqcomboBox.TabIndex = 21;
+            FreqcomboBox.TabIndex = 21;      
             // 
             // datetimelabel
             // 
@@ -1009,6 +1009,7 @@
             ActivecheckBox.TabIndex = 7;
             ActivecheckBox.Text = "Activate slot?";
             ActivecheckBox.UseVisualStyleBackColor = true;
+            ActivecheckBox.CheckedChanged += ActivecheckBox_CheckedChanged;
             // 
             // OffsettextBox
             // 
@@ -2160,10 +2161,10 @@
             // FlistBox
             // 
             FlistBox.FormattingEnabled = true;
-            FlistBox.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "50.293", "70.091", "144.489", "432.300", "1296.500" });
-            FlistBox.Location = new System.Drawing.Point(604, 179);
+            FlistBox.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "13.5539", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "40.68", "50.293", "70.091", "144.489", "432.300", "1296.500" });
+            FlistBox.Location = new System.Drawing.Point(588, 165);
             FlistBox.Name = "FlistBox";
-            FlistBox.Size = new System.Drawing.Size(58, 251);
+            FlistBox.Size = new System.Drawing.Size(58, 264);
             FlistBox.TabIndex = 52;
             FlistBox.SelectedIndexChanged += FlistBox_SelectedIndexChanged;
             FlistBox.MouseDoubleClick += FlistBox_MouseDoubleClick;
@@ -2367,7 +2368,7 @@
             // label21
             // 
             label21.AutoSize = true;
-            label21.Location = new System.Drawing.Point(523, 179);
+            label21.Location = new System.Drawing.Point(503, 165);
             label21.Name = "label21";
             label21.Size = new System.Drawing.Size(75, 13);
             label21.TabIndex = 26;
@@ -3099,7 +3100,7 @@
             FreqgroupBox.Controls.Add(FtextBox);
             FreqgroupBox.Controls.Add(label44);
             FreqgroupBox.Controls.Add(label43);
-            FreqgroupBox.Location = new System.Drawing.Point(114, 108);
+            FreqgroupBox.Location = new System.Drawing.Point(73, 141);
             FreqgroupBox.Name = "FreqgroupBox";
             FreqgroupBox.Size = new System.Drawing.Size(329, 217);
             FreqgroupBox.TabIndex = 4;
@@ -3229,7 +3230,7 @@
             FBgroupBox.Controls.Add(addFbutton);
             FBgroupBox.Controls.Add(deleteFbutton);
             FBgroupBox.Controls.Add(editFbutton);
-            FBgroupBox.Location = new System.Drawing.Point(80, 305);
+            FBgroupBox.Location = new System.Drawing.Point(90, 318);
             FBgroupBox.Name = "FBgroupBox";
             FBgroupBox.Size = new System.Drawing.Size(175, 40);
             FBgroupBox.TabIndex = 14;
@@ -3314,10 +3315,10 @@
             // FreqlistBox
             // 
             FreqlistBox.FormattingEnabled = true;
-            FreqlistBox.Items.AddRange(new object[] { "0.136\t\t1.0", "0.4742\t\t1.0", "1.8366\t\t1.0", "3.5686\t\t1.0", "5.2872\t\t1.0", "5.3647\t\t1.0", "7.0386\t\t1.0", "10.1387\t\t1.0", "14.0956\t\t1.0", "18.1046\t\t1.0", "21.0946\t\t1.0", "24.9246\t\t1.0", "28.1246\t\t1.0", "50.293\t\t1.0", "70.091\t\t1.0", "144.489\t\t1.0", "432.300\t\t1.0", "1296.500\t\t1.0" });
-            FreqlistBox.Location = new System.Drawing.Point(96, 48);
+            FreqlistBox.Items.AddRange(new object[] { "0.136\t\t1.0", "0.4742\t\t1.0", "1.8366\t\t1.0", "3.5686\t\t1.0", "5.2872\t\t1.0", "5.3647\t\t1.0", "7.0386\t\t1.0", "10.1387\t\t1.0", "14.0956\t\t1.0", "13.5539\t\t0.0", "18.1046\t\t1.0", "21.0946\t\t1.0", "24.9246\t\t1.0", "28.1246\t\t1.0", "40.68\t\t0.0", "50.293\t\t1.0", "70.091\t\t1.0", "144.489\t\t1.0", "432.300\t\t1.0", "1296.500\t\t1.0" });
+            FreqlistBox.Location = new System.Drawing.Point(96, 49);
             FreqlistBox.Name = "FreqlistBox";
-            FreqlistBox.Size = new System.Drawing.Size(138, 251);
+            FreqlistBox.Size = new System.Drawing.Size(138, 264);
             FreqlistBox.TabIndex = 0;
             FreqlistBox.MouseDoubleClick += FreqlistBox_MouseDoubleClick;
             // 
