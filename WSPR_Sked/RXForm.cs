@@ -1611,10 +1611,10 @@ namespace WSPR_Sked
                     b = 28;
                     break;
                 case 14:
-                    b = 50;
+                    b = 40;
                     break;
                 case 15:
-                    b = 40;
+                    b = 50;
                     break;
                 case 16:
                     b = 70;
