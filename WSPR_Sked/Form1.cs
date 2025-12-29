@@ -36,6 +36,8 @@ using System.Windows.Forms;
 using W410A;
 
 using WsprSharp;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 
 //solar data source:
@@ -301,7 +303,7 @@ namespace WSPR_Sked
         {
 
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.20";
+            string ver = "0.1.21";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -1086,7 +1088,7 @@ namespace WSPR_Sked
             else
             { td = DateTime.Now; }
 
-            if (d.DayOfYear < td.DayOfYear)
+            if (d.DayOfYear < td.DayOfYear && d.Year < td.Year)
             {
                 Msg.OKMessageBox("Note: Editing date before today?", "");
             }
@@ -1333,7 +1335,7 @@ namespace WSPR_Sked
             this.BringToFront();
             try
             {
-                if (validateSlot())
+                if (validateSlot()) //check all fields ok
                 {
 
                     //MessageForm mForm = new MessageForm();
@@ -1375,8 +1377,12 @@ namespace WSPR_Sked
                     {
                         this_slot = false;
                     }
-
-                    Msg.TMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", 20000);
+                    int timeout = 50000;
+                    if (this_slot)
+                    {
+                        timeout = 5000;
+                    }
+                    Msg.TMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", timeout);
                     Savelabel.Text = "Saving - please wait....";
                     repeatStatus = false;
 
@@ -1391,20 +1397,25 @@ namespace WSPR_Sked
                     {
                         if ((DaycheckBox.Checked || NightcheckBox.Checked) && !this_slot) //don't update all if only this one
                         {
-                            await SaveSlot_Sun(false, msgT, this_slot);
+                            SaveSlot_Sun(false, msgT, this_slot);
+                          
                             EditRow++;
 
                             slotNo = 2;
-                            await SaveSlot_Sun(true, msgT, this_slot);
+                           
+                            SaveSlot_Sun(true, msgT, this_slot);
                         }
                         else
                         {
 
-                            await SaveSlot(false, msgT, this_slot);
+                            SaveSlot(false, msgT, this_slot);
+                            
                             EditRow++;
 
                             slotNo = 2;
-                            await SaveSlot(true, msgT, this_slot);
+
+                            SaveSlot(true, msgT, this_slot);
+                          
                         }
 
                         //EditRow--;
@@ -1413,11 +1424,13 @@ namespace WSPR_Sked
                     {
                         if ((DaycheckBox.Checked || NightcheckBox.Checked) && !this_slot) //don't update all if only this one
                         {
-                            await SaveSlot_Sun(false, msgT, this_slot);
+                            SaveSlot_Sun(false, msgT, this_slot);
+                           
                         }
                         else
                         {
-                            await SaveSlot(false, msgT, this_slot);
+                            SaveSlot(false, msgT, this_slot);
+                         
                         }
                     }
                     Savelabel.Text = "--";
@@ -1425,6 +1438,7 @@ namespace WSPR_Sked
                     greygroupBox.Visible = false;
                     //mForm.Dispose();
                 }
+              
             }
             catch { }
             this.Focus();
@@ -1481,7 +1495,7 @@ namespace WSPR_Sked
             int i = EditRow;
             DataGridViewRow DataRow = dataGridView1.Rows[i];
 
-
+            saveslotlabel.Visible = true;
             try
             {
 
@@ -1569,8 +1583,12 @@ namespace WSPR_Sked
                 string MT = msgT.ToString();
 
                 cells[15] = MT;
-
-                if (locateSlotMembersDT(date1, time1, enddate, endtime, this_slot)) //if able to save data
+                bool result = false;
+                result = await Task.Run(() =>
+                {
+                    return locateSlotMembersDT(date1, time1, enddate, endtime, this_slot);
+                });
+                if (result) //if able to save data
                 {
                     for (i = 0; i < maxcol; i++)
                     {
@@ -1581,7 +1599,12 @@ namespace WSPR_Sked
                         }
                     }
                 }
-                string act = DataRow.Cells[11].Value.ToString();
+                else
+                {
+                    Msg.TMessageBox("Error updating cells", "",1000);
+                }
+                string act = "";
+                act = DataRow.Cells[11].Value.ToString();
                 if (act.Contains(tick))
                 {
                     dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Red;
@@ -1604,6 +1627,7 @@ namespace WSPR_Sked
             {
                 Msg.OKMessageBox("Error updating cells", "");
             }
+            saveslotlabel.Visible = false; ;
         }
 
         private async Task SaveSlot_Sun(bool slot2, int msgT, bool this_slot) //update the gridview
@@ -1611,7 +1635,7 @@ namespace WSPR_Sked
             int i = EditRow;
             DataGridViewRow DataRow = dataGridView1.Rows[i];
 
-
+            saveslotlabel.Visible = true;
             try
             {
                 DateTime rise = DateTime.MinValue;
@@ -1751,8 +1775,12 @@ namespace WSPR_Sked
                 string MT = msgT.ToString();
 
                 cells[15] = MT;
-
-                bool ok = await locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot);
+                var ok = false;
+                ok = await Task.Run(() =>
+                {
+                    return locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot);
+                });
+                
                 if (ok && show) //if able to save data
                 {
                     for (i = 0; i < maxcol; i++)
@@ -1766,9 +1794,12 @@ namespace WSPR_Sked
                 }
                 else if (!ok)
                 {
+                    Msg.TMessageBox("Error updating cells", "",1500);
+                    saveslotlabel.Visible = false;
                     return;
                 }
-                string act = DataRow.Cells[11].Value.ToString();
+                string act = "";
+                act = DataRow.Cells[11].Value.ToString();
                 if (act.Contains(tick))
                 {
                     dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Red;
@@ -1791,6 +1822,7 @@ namespace WSPR_Sked
             {
                 Msg.OKMessageBox("Error updating cells", "");
             }
+            saveslotlabel.Visible = false;
         }
 
 
@@ -7406,7 +7438,7 @@ namespace WSPR_Sked
             string selTime = timeEnd.Value.ToString("HHmm");
             int t1 = Convert.ToInt32(time1);
             int selt = Convert.ToInt32(selTime);
-            if (selt < t1)
+            if (selt < t1 && !editslotcheckBox.Checked)
             {
                 Msg.OKMessageBox("Error: End time before slot time", "");
             }
@@ -7437,7 +7469,7 @@ namespace WSPR_Sked
 
             if (dateEnd.Value.DayOfYear < dt.DayOfYear)
             {
-                Msg.OKMessageBox("Note: Date before today", "");
+                //Msg.OKMessageBox("Note: Date before today", "");
             }
         }
 
