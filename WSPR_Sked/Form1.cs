@@ -5,6 +5,7 @@ using Logging;
 
 using Maidenhead;
 using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 using MathNet.Numerics.Providers.LinearAlgebra;
 using MySql.Data.MySqlClient;
 using NAudio.Wave;
@@ -303,7 +304,7 @@ namespace WSPR_Sked
         {
 
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.21";
+            string ver = "0.1.22";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -1066,6 +1067,10 @@ namespace WSPR_Sked
 
         private void dataGridView1_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            if (saveslotlabel.Visible)
+            {
+                return;
+            }
             greygroupBox.Visible = false;
             for (int s = 0; s < dataGridView1.Rows.Count; s++)
             {
@@ -2195,188 +2200,7 @@ namespace WSPR_Sked
             }
         }
 
-        private async Task<bool> locateSlotMembersDT_Sun_OLD(string date1, string time1, string enddate, string endtime, bool this_slot)
-        {
-            DateTime dt;
-            DateTime Dend;
-
-            DateTime endT;
-            DateTime T;
-
-
-            LatLng latlon;
-            DateTime rise = DateTime.MinValue;
-            DateTime set = DateTime.MinValue;
-
-            bool night = false;
-            int count = 0;
-
-            try
-            {
-                string o = greylistBox.Text;
-                sunriseoffset = Convert.ToInt32(o);
-                sunsetoffset = Convert.ToInt32(o);
-            }
-            catch
-            {
-                sunriseoffset = 0;
-                sunsetoffset = 0;
-            }
-
-            latlon = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
-
-            // time1 is current time
-            try
-            {
-                bool isValid = DateTime.TryParse(date1, out dt); //dt is output of checking datatime label (current) date
-                isValid = DateTime.TryParse(enddate, out Dend); //ditto but end date
-
-
-
-                bool isValidT = DateTime.TryParse(timeEnd.Value.ToString("HH:mm"), out endT); //endtime
-                isValidT = DateTime.TryParse(time1, out T); //current time
-                DateTime mins = T; //keep current minute
-
-                DateTime StartCount = dt.AddHours(T.Hour).AddMinutes(T.Minute);
-                DateTime End = Dend.AddHours(endT.Hour).AddMinutes(endT.Minute);
-
-
-                if (DaycheckBox.Checked)
-                {
-                    night = false;
-                }
-                else if (NightcheckBox.Checked)
-                {
-                    night = true;
-                }
-                DateTime startT = DateTime.UtcNow;
-
-
-
-                //TimeSpan TS = End - StartCount;
-
-                if (this_slot) //only update this slot
-                {
-                    Dend = dt;
-                }
-
-
-                if (dt.Date <= Dend.Date)
-                {
-
-
-
-                    string loc = LocatortextBox.Text.Trim().Substring(0, 4);
-
-                    isValid = DateTime.TryParse(datetimelabel.Text, out dt);
-
-                    string sundate = dt.ToString("MM-dd");
-
-
-
-                    try
-                    {
-                        var sunTimes = find_sunrise_sunset(loc, sundate);
-
-                        rise = sunTimes.Result.R;
-                        set = sunTimes.Result.S;
-                    }
-                    catch
-                    {
-                        Msg.TMessageBox("Error: no sunrise/set times - see TX Config", "Error: no sunrise/set times", 3000);
-                        return false;
-                    }
-
-
-                    if (!night)
-                    {
-                        startT = rise.AddMinutes(sunriseoffset * -1);
-                        endT = set.AddMinutes(sunsetoffset);
-
-                    }
-                    else //night
-                    {
-                        startT = DateTime.MinValue.AddHours(0).AddMinutes(0); //midnight
-                        endT = rise.AddMinutes(sunriseoffset);
-
-                    }
-                    if (startT.Minute % 2 != 0)
-                    {
-                        startT = startT.AddMinutes(-1);
-                    }
-
-                    if (endT.Minute % 2 != 0)
-                    {
-                        endT = endT.AddMinutes(1);
-                    }
-                    T = startT;
-                    while (dt.Date <= Dend.Date)
-                    {
-
-                        if (night)
-                        {
-                            count = 0;  //if night need to run from midinight to sunrise and sunset to midnight
-                        }
-                        else
-                        {
-                            count = 1; //else just run once during day
-                        }
-                        //T = startT;                       
-
-                        while (T <= endT && count < 2)
-                        {
-
-                            string newdate = dt.ToString(dateformat);
-
-                            T = new DateTime(T.Year, T.Month, T.Day, T.Hour, mins.Minute, 0); // set minutes to same as curr time
-                            time1 = T.ToString("HH:mm"); //update time by one hour
-
-                            if (!SaveSlotData(newdate, time1))
-                            {
-                                return false;
-                            }
-
-                            T = T.AddHours(1);
-                            if (T >= endT)
-                            {
-                                if (!night || (night && count == 1))
-                                {
-                                    dt = dt.AddDays(1);
-                                    T = startT;
-                                }
-                                break;
-                            }
-                            if (T.Hour == 0)
-                            {
-                                dt = dt.AddDays(1);
-
-                                break;
-                            }
-                            if (T.Hour > endT.Hour && night)
-                            {
-                                T = set.AddMinutes(sunsetoffset * -1);
-                                endT = new DateTime(endT.Year, endT.Month, endT.Day, 23, 59, 0);
-                            }
-                            count++;
-                        }
-                    }
-
-                }
-                else
-                {
-                    string newdate = dt.ToString(dateformat);
-                    if (!SaveSlotData(newdate, time1))
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+       
 
 
         private bool SaveSlotData(string d, string t)  //to database
@@ -2391,6 +2215,7 @@ namespace WSPR_Sked
             int msgT = 1;
             string N = "";
             string N2 = "";
+            string N3 = "";
             rpt_type = 0;
             greyoffset = 0;
             if (repeatcheckBox.Checked)
@@ -2428,22 +2253,50 @@ namespace WSPR_Sked
             {
                 N = ",Switch2,SwitchPort2) ";
                 N2 = ",@Switch2,@SwitchPort2)";
+                N3 = ",Switch2 = " + Slot.Switch2 + ", SwitchPort2 = " + Slot.SwPort2;
             }
             else
             {
                 N = ") ";
                 N2 = ")";
+                N3 = "";
             }
             lock (_lock)
             {
                 try
                 {
 
+                    e = Convert.ToString(Slot.Endslot);
+                    bool A = false; ;
+                    if (cells[11].Contains(tick))
+                    {
+                        A = true;
+                    }
+                    bool R = false;
+                    if (cells[10].Contains(tick))
+                    {
+                        R = true;
+                    }
+                    p = Convert.ToString(cells[0]);
+                    p = p + " " + cells[1]; //date and time of parent of this slot
+                    if (Type2checkBox.Checked)
+                    {
+                        msgT = checkCall(callsign, location);
+                    }
 
                     MySqlCommand command = connection.CreateCommand();
+                 
                     command.CommandText = "INSERT INTO slots(Date,Time,Frequency,Offset,Power,PowerW,Antenna,Tuner,Switch,SwitchPort,End,Active,Repeating,TimeEnd,RptTime,Parent,SlotNo,MsgType,RptType,GreyOffset" + N;
                     command.CommandText += "VALUES(@Date,@Time,@Frequency,@Offset,@Power,@PowerW,@Antenna,@Tuner,@Switch,@SwitchPort,@End,@Active,@Repeating,@TimeEnd,@RptTime,@Parent,@SlotNo,@MsgType,@RptType,@GreyOffset" + N2;
-
+                   
+                  
+                    string c = "";
+                    c = " ON DUPLICATE KEY UPDATE Frequency = " + Slot.Freq + ", Offset = " + Slot.Offset + ", Power = " + Slot.PowerdB;
+                    c = c + ", PowerW = " + Slot.PowerW + ", Antenna = '" + Slot.Ant + "', Tuner = " + Slot.Tuner + ", Switch = " + Slot.Switch;
+                    c = c + ", SwitchPort = " + Slot.SwPort + ", End = '" + e + "', Active = " + A + ", Repeating = " + R + ", TimeEnd = '" + Slot.EndTime;
+                    c = c + "', RptTime = " + Slot.RptTime + ", Parent = '" + p + "'";
+                    c = c + ", SlotNo = " + slotNo + ", MsgType = " + msgT + ", RptType = " + rpt_type + ", GreyOffset = " + greyoffset + N3;
+                    command.CommandText += c;
                     connection.Open();
 
 
@@ -2458,37 +2311,22 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@Tuner", Slot.Tuner);
                     command.Parameters.AddWithValue("@Switch", Slot.Switch);
                     command.Parameters.AddWithValue("@SwitchPort", Slot.SwPort);
-
-
-                    e = Convert.ToString(Slot.Endslot);
+                    
 
                     command.Parameters.AddWithValue("@End", e);
-                    bool A = false; ;
-                    if (cells[11].Contains(tick))
-                    {
-                        A = true;
-                    }
-                    bool R = false;
-                    if (cells[10].Contains(tick))
-                    {
-                        R = true;
-                    }
+                   
                     command.Parameters.AddWithValue("@Active", A);
                     command.Parameters.AddWithValue("@Repeating", R);
                     //string endtime = timeEnd.Value.ToString("HH:mm");
                     command.Parameters.AddWithValue("@TimeEnd", Slot.EndTime);
                     command.Parameters.AddWithValue("@RptTime", Slot.RptTime);
 
-                    p = Convert.ToString(cells[0]);
-                    p = p + " " + cells[1]; //date and time of parent of this slot
+                  
                     Slot.Parent = p;
                     command.Parameters.AddWithValue("@Parent", p);
                     command.Parameters.AddWithValue("@SlotNo", slotNo);
 
-                    if (Type2checkBox.Checked)
-                    {
-                        msgT = checkCall(callsign, location);
-                    }
+                   
 
                     command.Parameters.AddWithValue("@MsgType", msgT);
                     command.Parameters.AddWithValue("@RptType", rpt_type);
@@ -2510,12 +2348,13 @@ namespace WSPR_Sked
                 catch
                 {         //if row already exists then try updating it in database
                     connection.Close();
-                    return UpdateSlotData(d, t, e, p, msgT);
+                    return false;
+                    //return UpdateSlotData(d, t, e, p, msgT);
 
                 }
             }
         }
-        private bool UpdateSlotData(string d, string t, string e, string p, int msgT)
+        /*private bool UpdateSlotData(string d, string t, string e, string p, int msgT)
         {
             string c = "";
             string act = "0";
@@ -2564,7 +2403,7 @@ namespace WSPR_Sked
                     return false;
                 }
             }
-        }
+        }*/
         private string dBtoWatts(string db)
         {
             string W = "";
