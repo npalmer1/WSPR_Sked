@@ -721,15 +721,17 @@ namespace WSPR_Sked
 
                         Slot.RptType = (sbyte)Reader["RptType"];
                         findRptType(Slot.RptType); //enable relevant checkboxes
-                        int greyoffset = (int)Reader["GreyOffset"];
-                        Slot.GreyOffset = greyoffset;
+                        int greyoffset = (sbyte)Reader["GreyOffset"];
+                       
                         if (greyoffset != null)
                         {
                             greylistBox.Text = greyoffset.ToString();
+                            Slot.GreyOffset = greyoffset;
                         }
                         else
                         {
                             greylistBox.Text = "1";
+                            Slot.GreyOffset = 0;
                         }
                         if (checkNewSlotColumns())
                         {
