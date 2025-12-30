@@ -28,7 +28,7 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 
 using System.Runtime.InteropServices;
-
+using System.Security.Cryptography.Pkcs;
 using System.Text;
 
 using System.Threading.Tasks;
@@ -38,6 +38,7 @@ using W410A;
 
 using WsprSharp;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 
@@ -68,8 +69,8 @@ namespace WSPR_Sked
         int currentMsgType = 1;
         int slotNo = 1; //type 1 or 2 slot no.
 
-        int greyoffset = 0;
-        int rpt_type = 0;
+        //int greyoffset = 0;
+        //int rpt_type = 0;
 
 
         string TXFrequency = "140956";
@@ -100,7 +101,7 @@ namespace WSPR_Sked
         string cross = "   x";
         int EditRow = 0;
         string dateformat = "yyyy-MM-dd";
-        string[] cells = new string[16];
+        string[] cells = new string[18];
 
         bool prepDone = false;
 
@@ -147,7 +148,8 @@ namespace WSPR_Sked
             public int MessageType;
             public int Switch2;
             public int SwPort2;
-
+            public int RptType;
+            public int GreyOffset;
 
         }
 
@@ -166,7 +168,7 @@ namespace WSPR_Sked
 
         string date = "";
         string time = "";
-        int maxcol = 16;
+        int maxcol = 18; //cells max = 18
         List<string> parents = new List<string>();
 
         byte[] wsprLevels;
@@ -717,9 +719,10 @@ namespace WSPR_Sked
                             }
                         }
 
-                        rpt_type = (sbyte)Reader["RptType"];
-                        findRptType(rpt_type);
-                        greyoffset = (sbyte)Reader["GreyOffset"];
+                        Slot.RptType = (sbyte)Reader["RptType"];
+                        findRptType(Slot.RptType); //enable relevant checkboxes
+                        int greyoffset = (int)Reader["GreyOffset"];
+                        Slot.GreyOffset = greyoffset;
                         if (greyoffset != null)
                         {
                             greylistBox.Text = greyoffset.ToString();
@@ -940,9 +943,11 @@ namespace WSPR_Sked
                         int msgT = (int)Reader["MsgType"];
                         SlotRow.MessageType = msgT;
 
-                        rpt_type = (sbyte)Reader["RptType"];
-                        findRptType(rpt_type);
-                        greyoffset = (sbyte)Reader["GreyOffset"];
+                        int rpt_type = (sbyte)Reader["RptType"];
+                        SlotRow.RptType = rpt_type;
+                        findRptType(rpt_type); //enable relevant checkboxes
+                        int greyoffset = (sbyte)Reader["GreyOffset"];
+                        SlotRow.GreyOffset = greyoffset;
                         if (greyoffset != null)
                         {
                             greylistBox.Text = greyoffset.ToString();
@@ -1008,7 +1013,9 @@ namespace WSPR_Sked
             dtable.Columns.Add("Endtime"); //12
             dtable.Columns.Add("rptT"); //13
             dtable.Columns.Add("Slot"); //14
-            dtable.Columns.Add("Type"); //15 msg type
+            dtable.Columns.Add("Mtype"); //15 msg type
+            dtable.Columns.Add("Rtype"); //16 hidden
+            dtable.Columns.Add("Goff"); //17 hidden
             dataGridView1.Columns.Clear();  //delete existing cells in datagrid view - to replace them with dtable
         }
 
@@ -1037,6 +1044,8 @@ namespace WSPR_Sked
             dataGridView1.Columns[13].Width = 45; //repeat time
             dataGridView1.Columns[14].Width = 44; //slot no
             dataGridView1.Columns[15].Width = 44; //message type
+            dataGridView1.Columns[16].Width = 40; //message type
+            dataGridView1.Columns[17].Width = 40; //message type
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -1046,6 +1055,8 @@ namespace WSPR_Sked
             dataGridView1.Columns[11].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[14].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[15].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns[16].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns[17].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
 
         }
@@ -1069,6 +1080,7 @@ namespace WSPR_Sked
         {
             if (saveslotlabel.Visible)
             {
+                Msg.TMessageBox("Please wait...", "Saving slots", 1500);
                 return;
             }
             greygroupBox.Visible = false;
@@ -1233,6 +1245,7 @@ namespace WSPR_Sked
                         {
                             msgTlabel.Text = "Message type 1";
                         }
+                        findRepeatType(cells[16], cells[17]); //reapeat type and greyoffset
 
                     }
                 }
@@ -1293,6 +1306,60 @@ namespace WSPR_Sked
             catch
             {
                 Msg.OKMessageBox("Error editing slot", "");
+            }
+        }
+        private void findRepeatType(string rptT, string grey)
+        {
+            try
+            {
+                if (cells[10].Contains("x")) //not a repeating slot
+                { 
+                    
+                        rptT = "0";
+                }
+                int rpt_type = Convert.ToInt32(rptT);
+                int greyoffset = Convert.ToInt32(grey);
+                greygroupBox.Visible = false;
+                switch (rpt_type)
+                {
+                    case 1:
+                        repeatTimecheckBox.Checked = true;
+                        break;
+                    case 2:
+                        DaycheckBox.Checked = true;
+                        greylistBox.Text = greyoffset.ToString();
+                        greygroupBox.Visible = true;
+
+                        break;
+                     case 3:
+                        NightcheckBox.Checked = true;
+                        greylistBox.Text = greyoffset.ToString();
+                        greygroupBox.Visible = true;
+                        break;
+                     case 4:
+                        AllcheckBox.Checked = true;
+                        break;
+                      case 0:
+                        {
+                            repeatcheckBox.Checked = false;
+                            DaycheckBox.Checked = false;
+                            NightcheckBox.Checked = false;
+                            AllcheckBox.Checked = false;
+                            break;
+                        }
+                     default:
+                        {
+                            repeatcheckBox.Checked = false;  
+                            DaycheckBox.Checked = false;
+                            NightcheckBox.Checked = false;
+                            AllcheckBox.Checked = false;
+                            break;
+                        }
+                }
+            }
+            catch
+            {
+
             }
         }
 
@@ -1588,6 +1655,45 @@ namespace WSPR_Sked
                 string MT = msgT.ToString();
 
                 cells[15] = MT;
+
+                int rpt_type = 0;
+                int greyoffset = 0;
+                if (repeatcheckBox.Checked)
+                {
+                    if (repeatTimecheckBox.Checked)
+                    {
+                        rpt_type = 1;
+                    }
+                    else if (DaycheckBox.Checked)
+                    {
+                        rpt_type = 2;
+                    }
+                    else if (NightcheckBox.Checked)
+                    {
+                        rpt_type = 3;
+                    }
+                    else if (AllcheckBox.Checked)
+                    {
+                        rpt_type = 4;
+                    }
+                }
+                else
+                {
+                    rpt_type = 0;
+                }
+                try
+                {
+                    greyoffset = Convert.ToInt32(greylistBox.Text.Trim());
+                }
+                catch
+                {
+
+                }
+                Slot.RptType = rpt_type;
+                Slot.GreyOffset = greyoffset;
+                cells[16] = Slot.RptType.ToString();
+                cells[17] = Slot.GreyOffset.ToString();
+
                 bool result = false;
                 result = await Task.Run(() =>
                 {
@@ -1609,7 +1715,11 @@ namespace WSPR_Sked
                     Msg.TMessageBox("Error updating cells", "",1000);
                 }
                 string act = "";
-                act = DataRow.Cells[11].Value.ToString();
+                if (DataRow.Cells[11].Value != null)
+                {
+                    act = DataRow.Cells[11].Value.ToString();
+                }
+                   
                 if (act.Contains(tick))
                 {
                     dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Red;
@@ -1780,6 +1890,54 @@ namespace WSPR_Sked
                 string MT = msgT.ToString();
 
                 cells[15] = MT;
+
+                int rpt_type = 0;
+                int greyoffset = 0;
+                if (repeatcheckBox.Checked)
+                {
+                    if (repeatTimecheckBox.Checked)
+                    {
+                        rpt_type = 1;
+                       
+                    }
+                    else if (DaycheckBox.Checked)
+                    {
+                        rpt_type = 2;
+                    }
+                    else if (NightcheckBox.Checked)
+                    {
+                        rpt_type = 3;
+                    }
+                    else if (AllcheckBox.Checked)
+                    {
+                        rpt_type = 4;
+                       
+                    }
+                }
+                else
+                {
+                    rpt_type = 0;
+                }
+                try
+                {
+                    if (rpt_type == 2 || rpt_type == 3)
+                    {
+                        greyoffset = Convert.ToInt32(greylistBox.Text.Trim());
+                    }
+                    else
+                    {
+                        greyoffset = 0;
+                    }                  
+                }
+                catch
+                {
+
+                }
+                Slot.RptType = rpt_type;
+                Slot.GreyOffset = greyoffset;
+                cells[16] = Slot.RptType.ToString();
+                cells[17] = Slot.GreyOffset.ToString();
+
                 var ok = false;
                 ok = await Task.Run(() =>
                 {
@@ -1803,8 +1961,12 @@ namespace WSPR_Sked
                     saveslotlabel.Visible = false;
                     return;
                 }
-                string act = "";
-                act = DataRow.Cells[11].Value.ToString();
+               var act = "";
+                if (DataRow.Cells[11].Value != null)
+                {
+                    act = DataRow.Cells[11].Value.ToString();
+                }
+              
                 if (act.Contains(tick))
                 {
                     dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Red;
@@ -2216,39 +2378,7 @@ namespace WSPR_Sked
             string N = "";
             string N2 = "";
             string N3 = "";
-            rpt_type = 0;
-            greyoffset = 0;
-            if (repeatcheckBox.Checked)
-            {
-                if (repeatTimecheckBox.Checked)
-                {
-                    rpt_type = 1;
-                }
-                else if (DaycheckBox.Checked)
-                {
-                    rpt_type = 2;
-                }
-                else if (NightcheckBox.Checked)
-                {
-                    rpt_type = 3;
-                }
-                else if (AllcheckBox.Checked)
-                {
-                    rpt_type = 4;
-                }
-            }
-            else
-            {
-                rpt_type = 0;
-            }
-            try
-            {
-                greyoffset = Convert.ToInt32(greylistBox.Text.Trim());
-            }
-            catch
-            {
-
-            }
+            
             if (checkNewSlotColumns())
             {
                 N = ",Switch2,SwitchPort2) ";
@@ -2295,7 +2425,7 @@ namespace WSPR_Sked
                     c = c + ", PowerW = " + Slot.PowerW + ", Antenna = '" + Slot.Ant + "', Tuner = " + Slot.Tuner + ", Switch = " + Slot.Switch;
                     c = c + ", SwitchPort = " + Slot.SwPort + ", End = '" + e + "', Active = " + A + ", Repeating = " + R + ", TimeEnd = '" + Slot.EndTime;
                     c = c + "', RptTime = " + Slot.RptTime + ", Parent = '" + p + "'";
-                    c = c + ", SlotNo = " + slotNo + ", MsgType = " + msgT + ", RptType = " + rpt_type + ", GreyOffset = " + greyoffset + N3;
+                    c = c + ", SlotNo = " + slotNo + ", MsgType = " + msgT + ", RptType = " + Slot.RptType + ", GreyOffset = " + Slot.GreyOffset + N3;
                     command.CommandText += c;
                     connection.Open();
 
@@ -2329,8 +2459,8 @@ namespace WSPR_Sked
                    
 
                     command.Parameters.AddWithValue("@MsgType", msgT);
-                    command.Parameters.AddWithValue("@RptType", rpt_type);
-                    command.Parameters.AddWithValue("@GreyOffset", greyoffset);
+                    command.Parameters.AddWithValue("@RptType", Slot.RptType);
+                    command.Parameters.AddWithValue("@GreyOffset", Slot.GreyOffset);
                     if (N2 == ")")
                     {
                         //do nothing
@@ -8198,6 +8328,8 @@ namespace WSPR_Sked
 
                 cells[14] = SlotRow.SlotNo.ToString();
                 cells[15] = SlotRow.MessageType.ToString();
+                cells[16] = SlotRow.RptType.ToString();
+                cells[17] = SlotRow.GreyOffset.ToString();
 
                 for (int i = 2; i < maxcol; i++)
                 {
@@ -8208,7 +8340,9 @@ namespace WSPR_Sked
                     }
                 }
                 dataGridView1.Columns[12].Visible = false; //hide end time
-                dataGridView1.Columns[13].Visible = false; //amd rpr time flag
+                dataGridView1.Columns[13].Visible = false; //and rpr time flag
+                //dataGridView1.Columns[16].Visible = false; //hide rpt type
+               // dataGridView1.Columns[17].Visible = false; //and greyoffset
                                                            //dataGridView1.Columns[15].Visible = false; //and msg type
                 string act = DataRow.Cells[11].Value.ToString();
                 if (act.Contains(tick))
