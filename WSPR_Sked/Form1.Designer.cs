@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
             dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -444,28 +444,28 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
             dataGridView1.ReadOnly = true;
-            dataGridView1.Size = new System.Drawing.Size(897, 400);
+            dataGridView1.Size = new System.Drawing.Size(979, 400);
             dataGridView1.TabIndex = 7;
             dataGridView1.RowHeaderMouseClick += dataGridView1_RowHeaderMouseClick;
             dataGridView1.RowHeaderMouseDoubleClick += dataGridView1_RowHeaderMouseDoubleClick;
@@ -638,7 +638,7 @@
             slotgroupBox.Controls.Add(label1);
             slotgroupBox.Controls.Add(ActivecheckBox);
             slotgroupBox.Controls.Add(OffsettextBox);
-            slotgroupBox.Location = new System.Drawing.Point(303, 203);
+            slotgroupBox.Location = new System.Drawing.Point(303, 232);
             slotgroupBox.Name = "slotgroupBox";
             slotgroupBox.Size = new System.Drawing.Size(704, 363);
             slotgroupBox.TabIndex = 8;
@@ -1059,7 +1059,7 @@
             tabControl1.Location = new System.Drawing.Point(3, -1);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new System.Drawing.Size(1161, 678);
+            tabControl1.Size = new System.Drawing.Size(1180, 678);
             tabControl1.TabIndex = 0;
             tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
@@ -1121,7 +1121,7 @@
             tabPage1.Location = new System.Drawing.Point(4, 22);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            tabPage1.Size = new System.Drawing.Size(1153, 652);
+            tabPage1.Size = new System.Drawing.Size(1172, 652);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Slots";
             tabPage1.Click += tabPage1_Click;
@@ -1261,7 +1261,7 @@
             // 
             Fhelplabel.AutoSize = true;
             Fhelplabel.BackColor = System.Drawing.Color.AntiqueWhite;
-            Fhelplabel.Location = new System.Drawing.Point(1057, 383);
+            Fhelplabel.Location = new System.Drawing.Point(1090, 383);
             Fhelplabel.Name = "Fhelplabel";
             Fhelplabel.Size = new System.Drawing.Size(76, 78);
             Fhelplabel.TabIndex = 89;
@@ -1271,7 +1271,7 @@
             // Flabel
             // 
             Flabel.AutoSize = true;
-            Flabel.Location = new System.Drawing.Point(981, 129);
+            Flabel.Location = new System.Drawing.Point(1032, 129);
             Flabel.Name = "Flabel";
             Flabel.Size = new System.Drawing.Size(61, 13);
             Flabel.TabIndex = 88;
@@ -1282,7 +1282,7 @@
             // 
             FlistBox2.FormattingEnabled = true;
             FlistBox2.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "50.293", "70.091", "144.489", "432.300", "1296.500" });
-            FlistBox2.Location = new System.Drawing.Point(1057, 129);
+            FlistBox2.Location = new System.Drawing.Point(1099, 129);
             FlistBox2.Name = "FlistBox2";
             FlistBox2.Size = new System.Drawing.Size(58, 251);
             FlistBox2.TabIndex = 87;
@@ -1302,7 +1302,7 @@
             // 
             // showRXbutton
             // 
-            showRXbutton.Location = new System.Drawing.Point(1041, 583);
+            showRXbutton.Location = new System.Drawing.Point(1062, 610);
             showRXbutton.Name = "showRXbutton";
             showRXbutton.Size = new System.Drawing.Size(92, 20);
             showRXbutton.TabIndex = 85;
@@ -4189,7 +4189,7 @@
             AutoSize = true;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             BackColor = System.Drawing.Color.Beige;
-            ClientSize = new System.Drawing.Size(1167, 677);
+            ClientSize = new System.Drawing.Size(1185, 677);
             Controls.Add(LTlabel2);
             Controls.Add(LTlabel);
             Controls.Add(Datelabel);
