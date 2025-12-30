@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 21, 2025 at 03:18 PM
+-- Generation Time: Dec 30, 2025 at 08:46 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -824,7 +824,7 @@ CREATE TABLE `slots` (
   `SlotNo` int(11) NOT NULL,
   `MsgType` int(11) NOT NULL,
   `RptType` tinyint(4) NOT NULL,
-  `GreyOffset` tinyint(4) NOT NULL,
+  `GreyOffset` int(11) NOT NULL,
   `Switch2` int(3) NOT NULL,
   `SwitchPort2` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
