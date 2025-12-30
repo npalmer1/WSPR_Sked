@@ -733,9 +733,13 @@ namespace WSPR_Sked
 
                         if (greyoffset != null) 
                         {
-                            if (greyoffset == 127) //fix for older GreyOffset sbyte instead of int in database
+                            if (Slot.RptType == 1 || Slot.RptType == 4)
                             {
-                                greyoffset = 120;   //older versions max offset 120 mins
+                                greyoffset = 0;
+                            }
+                            if (greyoffset == 127)
+                            {
+                                greyoffset = 120;   //older versions max offset 120 mins                                
                             }
                             greylistBox.Text = greyoffset.ToString();
                             Slot.GreyOffset = greyoffset;
@@ -972,9 +976,13 @@ namespace WSPR_Sked
                         SlotRow.GreyOffset = greyoffset;
                         if (greyoffset != null)
                         {
-                            if (greyoffset == 127) //fix for older GreyOffset sbyte instead of int in database
+                            if (SlotRow.RptType == 1 || SlotRow.RptType == 4)
                             {
-                                greyoffset = 120;   //older versions max offset 120 mins
+                                greyoffset = 0;
+                            }
+                            if (greyoffset == 127)
+                            {                                                               
+                                greyoffset = 120;   //older versions max offset 120 mins                                
                             }
                             greylistBox.Text = greyoffset.ToString();
                             SlotRow.GreyOffset = greyoffset;
