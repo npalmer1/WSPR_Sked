@@ -721,16 +721,28 @@ namespace WSPR_Sked
 
                         Slot.RptType = (sbyte)Reader["RptType"];
                         findRptType(Slot.RptType); //enable relevant checkboxes
-                        int greyoffset = (sbyte)Reader["GreyOffset"];
-                       
-                        if (greyoffset != null)
+                        int greyoffset = 0;
+                        try
                         {
+                            greyoffset = (int)Reader["GreyOffset"];
+                        }
+                        catch
+                        {
+                            greyoffset = (sbyte)Reader["GreyOffset"];
+                        }
+
+                        if (greyoffset != null) 
+                        {
+                            if (greyoffset == 127) //fix for older GreyOffset sbyte instead of int in database
+                            {
+                                greyoffset = 120;   //older versions max offset 120 mins
+                            }
                             greylistBox.Text = greyoffset.ToString();
                             Slot.GreyOffset = greyoffset;
                         }
                         else
                         {
-                            greylistBox.Text = "1";
+                            greylistBox.Text = "0";
                             Slot.GreyOffset = 0;
                         }
                         if (checkNewSlotColumns())
@@ -948,15 +960,29 @@ namespace WSPR_Sked
                         int rpt_type = (sbyte)Reader["RptType"];
                         SlotRow.RptType = rpt_type;
                         findRptType(rpt_type); //enable relevant checkboxes
-                        int greyoffset = (sbyte)Reader["GreyOffset"];
+                        int greyoffset = 0;
+                        try
+                        {
+                            greyoffset = (int)Reader["GreyOffset"];
+                        }
+                        catch
+                        {
+                            greyoffset = (sbyte)Reader["GreyOffset"];
+                        }
                         SlotRow.GreyOffset = greyoffset;
                         if (greyoffset != null)
                         {
+                            if (greyoffset == 127) //fix for older GreyOffset sbyte instead of int in database
+                            {
+                                greyoffset = 120;   //older versions max offset 120 mins
+                            }
                             greylistBox.Text = greyoffset.ToString();
+                            SlotRow.GreyOffset = greyoffset;
                         }
                         else
                         {
-                            greylistBox.Text = "1";
+                            greylistBox.Text = "0";
+                            SlotRow.GreyOffset = 0;
                         }
                         if (checkNewSlotColumns())
                         {
@@ -1677,6 +1703,7 @@ namespace WSPR_Sked
                     else if (AllcheckBox.Checked)
                     {
                         rpt_type = 4;
+                        greyoffset = 0;
                     }
                 }
                 else
@@ -1685,11 +1712,22 @@ namespace WSPR_Sked
                 }
                 try
                 {
-                    greyoffset = Convert.ToInt32(greylistBox.Text.Trim());
+                    if (rpt_type == 2 || rpt_type == 3)
+                    {
+                        greyoffset = Convert.ToInt32(greylistBox.Text.Trim());
+                        if (greyoffset == 127)
+                        {
+                            greyoffset = 120;
+                        }
+                    }
+                    else
+                    {
+                        greyoffset = 0;
+                    }
                 }
                 catch
                 {
-
+                    greyoffset = 0;
                 }
                 Slot.RptType = rpt_type;
                 Slot.GreyOffset = greyoffset;
@@ -1925,6 +1963,10 @@ namespace WSPR_Sked
                     if (rpt_type == 2 || rpt_type == 3)
                     {
                         greyoffset = Convert.ToInt32(greylistBox.Text.Trim());
+                        if (greyoffset == 127)
+                        {
+                            greyoffset = 120;
+                        }
                     }
                     else
                     {
@@ -1933,7 +1975,7 @@ namespace WSPR_Sked
                 }
                 catch
                 {
-
+                    greyoffset = 0;
                 }
                 Slot.RptType = rpt_type;
                 Slot.GreyOffset = greyoffset;
