@@ -1848,7 +1848,7 @@
             // label89
             // 
             label89.AutoSize = true;
-            label89.Location = new System.Drawing.Point(804, 497);
+            label89.Location = new System.Drawing.Point(814, 528);
             label89.Name = "label89";
             label89.Size = new System.Drawing.Size(201, 13);
             label89.TabIndex = 90;
@@ -1857,7 +1857,7 @@
             // label82
             // 
             label82.AutoSize = true;
-            label82.Location = new System.Drawing.Point(603, 523);
+            label82.Location = new System.Drawing.Point(613, 554);
             label82.Name = "label82";
             label82.Size = new System.Drawing.Size(59, 13);
             label82.TabIndex = 89;
@@ -1866,7 +1866,7 @@
             // label87
             // 
             label87.AutoSize = true;
-            label87.Location = new System.Drawing.Point(678, 497);
+            label87.Location = new System.Drawing.Point(688, 528);
             label87.Name = "label87";
             label87.Size = new System.Drawing.Size(82, 13);
             label87.TabIndex = 88;
@@ -1874,7 +1874,7 @@
             // 
             // pintextBox
             // 
-            pintextBox.Location = new System.Drawing.Point(766, 494);
+            pintextBox.Location = new System.Drawing.Point(776, 525);
             pintextBox.Name = "pintextBox";
             pintextBox.Size = new System.Drawing.Size(32, 20);
             pintextBox.TabIndex = 87;
@@ -2032,7 +2032,7 @@
             // ardReplylabel
             // 
             ardReplylabel.AutoSize = true;
-            ardReplylabel.Location = new System.Drawing.Point(668, 523);
+            ardReplylabel.Location = new System.Drawing.Point(678, 554);
             ardReplylabel.Name = "ardReplylabel";
             ardReplylabel.Size = new System.Drawing.Size(45, 13);
             ardReplylabel.TabIndex = 71;
@@ -2101,7 +2101,7 @@
             // 
             // ArduinoPorttextBox
             // 
-            ArduinoPorttextBox.Location = new System.Drawing.Point(766, 468);
+            ArduinoPorttextBox.Location = new System.Drawing.Point(776, 499);
             ArduinoPorttextBox.Name = "ArduinoPorttextBox";
             ArduinoPorttextBox.Size = new System.Drawing.Size(66, 20);
             ArduinoPorttextBox.TabIndex = 60;
@@ -2110,7 +2110,7 @@
             // 
             // ArduinoIPtextBox
             // 
-            ArduinoIPtextBox.Location = new System.Drawing.Point(766, 442);
+            ArduinoIPtextBox.Location = new System.Drawing.Point(776, 473);
             ArduinoIPtextBox.Name = "ArduinoIPtextBox";
             ArduinoIPtextBox.Size = new System.Drawing.Size(100, 20);
             ArduinoIPtextBox.TabIndex = 59;
@@ -2119,7 +2119,7 @@
             // label59
             // 
             label59.AutoSize = true;
-            label59.Location = new System.Drawing.Point(719, 471);
+            label59.Location = new System.Drawing.Point(729, 502);
             label59.Name = "label59";
             label59.Size = new System.Drawing.Size(41, 13);
             label59.TabIndex = 58;
@@ -2128,7 +2128,7 @@
             // label58
             // 
             label58.AutoSize = true;
-            label58.Location = new System.Drawing.Point(700, 449);
+            label58.Location = new System.Drawing.Point(710, 480);
             label58.Name = "label58";
             label58.Size = new System.Drawing.Size(60, 13);
             label58.TabIndex = 57;
@@ -2137,7 +2137,7 @@
             // HiLolabel
             // 
             HiLolabel.AutoSize = true;
-            HiLolabel.Location = new System.Drawing.Point(605, 497);
+            HiLolabel.Location = new System.Drawing.Point(615, 528);
             HiLolabel.Name = "HiLolabel";
             HiLolabel.Size = new System.Drawing.Size(27, 13);
             HiLolabel.TabIndex = 56;
@@ -2146,7 +2146,7 @@
             // LEDcheckBox
             // 
             LEDcheckBox.AutoSize = true;
-            LEDcheckBox.Location = new System.Drawing.Point(818, 522);
+            LEDcheckBox.Location = new System.Drawing.Point(828, 553);
             LEDcheckBox.Name = "LEDcheckBox";
             LEDcheckBox.Size = new System.Drawing.Size(103, 17);
             LEDcheckBox.TabIndex = 55;
@@ -2187,7 +2187,7 @@
             // 
             // button1
             // 
-            button1.Location = new System.Drawing.Point(608, 442);
+            button1.Location = new System.Drawing.Point(618, 473);
             button1.Name = "button1";
             button1.Size = new System.Drawing.Size(75, 29);
             button1.TabIndex = 51;
@@ -2551,10 +2551,10 @@
             tabPage3.Controls.Add(label30);
             tabPage3.Controls.Add(label29);
             tabPage3.Controls.Add(label28);
-            tabPage3.Location = new System.Drawing.Point(4, 22);
+            tabPage3.Location = new System.Drawing.Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1172, 652);
+            tabPage3.Size = new System.Drawing.Size(1172, 650);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
             // 
@@ -2833,10 +2833,10 @@
             tabPage4.Controls.Add(FreqlistBox);
             tabPage4.Controls.Add(AgroupBox);
             tabPage4.Controls.Add(AntlistBox);
-            tabPage4.Location = new System.Drawing.Point(4, 22);
+            tabPage4.Location = new System.Drawing.Point(4, 24);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1172, 652);
+            tabPage4.Size = new System.Drawing.Size(1172, 650);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
