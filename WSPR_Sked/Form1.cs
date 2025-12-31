@@ -3358,6 +3358,7 @@ namespace WSPR_Sked
             if (FlistBox.Text.StartsWith("13.") || FlistBox.Text.StartsWith("40."))
             {
                 Msg.TMessageBox("RX only on 22 or 8m", "RX only", 2000);
+                Task.Delay(1000);
                 return;
             }
             slotNo = 1;
@@ -5314,10 +5315,11 @@ namespace WSPR_Sked
 
         private async void TestTXbutton_Click(object sender, EventArgs e)
         {
+            bool noTX = false;
             if (FlistBox.Text.StartsWith("13.") || FlistBox.Text.StartsWith("40."))
             {
                 Msg.TMessageBox("RX only on 22 or 8m", "RX only", 2000);
-                return;
+                noTX = true;
             }
             if (rigctldcheckBox.Checked)
             {
@@ -5344,17 +5346,20 @@ namespace WSPR_Sked
             double f = Convert.ToDouble(testFtextBox.Text);
             f = f * 1000000; //convert to MHz
             await selectAntenna();
-            //await activateAntSwitch(DefaultAntcomboBox.Text);
-            await activateTX(f.ToString());
-            Task.Delay(2000);
-            //PTT(true); //key TX
-            flatcode = true;
+            if (!noTX)
+            {
+                //await activateAntSwitch(DefaultAntcomboBox.Text);
+                await activateTX(f.ToString());
+                Task.Delay(2000);
+                //PTT(true); //key TX
+                flatcode = true;
 
-            testPTTtimer.Enabled = true;
-            testPTTtimer.Start();
-            slotActive = true;
-            showMsgType(1);
-            StartTX(false);
+                testPTTtimer.Enabled = true;
+                testPTTtimer.Start();
+                slotActive = true;
+                showMsgType(1);
+                StartTX(false);
+            }
 
         }
 
