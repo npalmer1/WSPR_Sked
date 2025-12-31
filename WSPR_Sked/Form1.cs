@@ -6002,6 +6002,7 @@ namespace WSPR_Sked
 
             FreqgroupBox.Visible = true;
             FBgroupBox.Visible = false;
+            FtextBox.Enabled = false; //default - don't allow editing of the frequency
         }
 
         private void addF()

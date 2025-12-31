@@ -3216,6 +3216,8 @@
             // 
             // FtextBox
             // 
+            FtextBox.Enabled = false;
+            FtextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             FtextBox.Location = new System.Drawing.Point(126, 34);
             FtextBox.Name = "FtextBox";
             FtextBox.Size = new System.Drawing.Size(100, 20);
