@@ -8510,6 +8510,11 @@ namespace WSPR_Sked
 
         async void testFreq(bool change_IdleF)
         {
+            if (FlistBox.Text.StartsWith("13.") || FlistBox.Text.StartsWith("40."))
+            {
+                Msg.TMessageBox("RX only on 22 or 8m", "RX only",1500);
+                return;
+            }
             try
             {
                 if (rigctldcheckBox.Checked)
