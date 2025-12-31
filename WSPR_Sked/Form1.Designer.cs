@@ -94,6 +94,8 @@
             label13 = new System.Windows.Forms.Label();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            label119 = new System.Windows.Forms.Label();
+            flsuhSlotbutton = new System.Windows.Forms.Button();
             saveslotlabel = new System.Windows.Forms.Label();
             skedstoplabel = new System.Windows.Forms.Label();
             overlabel = new System.Windows.Forms.Label();
@@ -1066,6 +1068,8 @@
             // tabPage1
             // 
             tabPage1.BackColor = System.Drawing.SystemColors.Info;
+            tabPage1.Controls.Add(label119);
+            tabPage1.Controls.Add(flsuhSlotbutton);
             tabPage1.Controls.Add(saveslotlabel);
             tabPage1.Controls.Add(skedstoplabel);
             tabPage1.Controls.Add(overlabel);
@@ -1125,6 +1129,26 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Slots";
             tabPage1.Click += tabPage1_Click;
+            // 
+            // label119
+            // 
+            label119.AutoSize = true;
+            label119.Location = new System.Drawing.Point(551, 631);
+            label119.Name = "label119";
+            label119.Size = new System.Drawing.Size(117, 13);
+            label119.TabIndex = 104;
+            label119.Text = "Delete slots > 6 months";
+            // 
+            // flsuhSlotbutton
+            // 
+            flsuhSlotbutton.Location = new System.Drawing.Point(562, 610);
+            flsuhSlotbutton.Margin = new System.Windows.Forms.Padding(0);
+            flsuhSlotbutton.Name = "flsuhSlotbutton";
+            flsuhSlotbutton.Size = new System.Drawing.Size(91, 19);
+            flsuhSlotbutton.TabIndex = 103;
+            flsuhSlotbutton.Text = "Flush old slots";
+            flsuhSlotbutton.UseVisualStyleBackColor = true;
+            flsuhSlotbutton.Click += flsuhSlotbutton_Click;
             // 
             // saveslotlabel
             // 
@@ -1361,7 +1385,7 @@
             // label84
             // 
             label84.AutoSize = true;
-            label84.Location = new System.Drawing.Point(932, 613);
+            label84.Location = new System.Drawing.Point(967, 614);
             label84.Name = "label84";
             label84.Size = new System.Drawing.Size(71, 13);
             label84.TabIndex = 79;
@@ -1370,7 +1394,7 @@
             // label83
             // 
             label83.AutoSize = true;
-            label83.Location = new System.Drawing.Point(836, 613);
+            label83.Location = new System.Drawing.Point(885, 614);
             label83.Name = "label83";
             label83.Size = new System.Drawing.Size(16, 13);
             label83.TabIndex = 78;
@@ -1379,7 +1403,7 @@
             // selectedEndDatelabel
             // 
             selectedEndDatelabel.AutoSize = true;
-            selectedEndDatelabel.Location = new System.Drawing.Point(858, 613);
+            selectedEndDatelabel.Location = new System.Drawing.Point(906, 614);
             selectedEndDatelabel.Name = "selectedEndDatelabel";
             selectedEndDatelabel.Size = new System.Drawing.Size(34, 13);
             selectedEndDatelabel.TabIndex = 77;
@@ -1388,7 +1412,7 @@
             // selectedStartDatelabel
             // 
             selectedStartDatelabel.AutoSize = true;
-            selectedStartDatelabel.Location = new System.Drawing.Point(771, 613);
+            selectedStartDatelabel.Location = new System.Drawing.Point(816, 614);
             selectedStartDatelabel.Name = "selectedStartDatelabel";
             selectedStartDatelabel.Size = new System.Drawing.Size(34, 13);
             selectedStartDatelabel.TabIndex = 76;
@@ -1396,10 +1420,10 @@
             // 
             // deleteAllSlotsbutton
             // 
-            deleteAllSlotsbutton.Location = new System.Drawing.Point(642, 608);
+            deleteAllSlotsbutton.Location = new System.Drawing.Point(701, 608);
             deleteAllSlotsbutton.Margin = new System.Windows.Forms.Padding(0);
             deleteAllSlotsbutton.Name = "deleteAllSlotsbutton";
-            deleteAllSlotsbutton.Size = new System.Drawing.Size(126, 22);
+            deleteAllSlotsbutton.Size = new System.Drawing.Size(109, 22);
             deleteAllSlotsbutton.TabIndex = 75;
             deleteAllSlotsbutton.Text = "Delete all slots from";
             deleteAllSlotsbutton.UseVisualStyleBackColor = true;
@@ -1663,10 +1687,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 22);
+            tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1172, 652);
+            tabPage2.Size = new System.Drawing.Size(1172, 650);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -4609,6 +4633,8 @@
         private System.Windows.Forms.Label label118;
         private System.Windows.Forms.Label RXonlylabel;
         private System.Windows.Forms.Label saveslotlabel;
+        private System.Windows.Forms.Label label119;
+        private System.Windows.Forms.Button flsuhSlotbutton;
     }
 }
 
