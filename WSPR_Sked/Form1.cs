@@ -3355,6 +3355,11 @@ namespace WSPR_Sked
 
         private void TXTestbutton_Click(object sender, EventArgs e)
         {
+            if (FlistBox.Text.StartsWith("13.") || FlistBox.Text.StartsWith("40."))
+            {
+                Msg.TMessageBox("RX only on 22 or 8m", "RX only", 2000);
+                return;
+            }
             slotNo = 1;
             if (Type2checkBox.Checked)
             {
@@ -5309,7 +5314,11 @@ namespace WSPR_Sked
 
         private async void TestTXbutton_Click(object sender, EventArgs e)
         {
-
+            if (FlistBox.Text.StartsWith("13.") || FlistBox.Text.StartsWith("40."))
+            {
+                Msg.TMessageBox("RX only on 22 or 8m", "RX only", 2000);
+                return;
+            }
             if (rigctldcheckBox.Checked)
             {
                 testFtextBox.Text = defaultF.ToString();
@@ -8511,11 +8520,7 @@ namespace WSPR_Sked
 
         async void testFreq(bool change_IdleF)
         {
-            if (FlistBox.Text.StartsWith("13.") || FlistBox.Text.StartsWith("40."))
-            {
-                Msg.TMessageBox("RX only on 22 or 8m", "RX only",1500);
-                return;
-            }
+          
             try
             {
                 if (rigctldcheckBox.Checked)
@@ -8547,6 +8552,10 @@ namespace WSPR_Sked
         }
         private void FlistBox_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            if (FlistBox.Text.StartsWith("13.") || FlistBox.Text.StartsWith("40."))
+            {
+                Msg.TMessageBox("Note: RX only on 22 or 8m", "RX only", 2000);               
+            }
             testFreq(true);
         }
 

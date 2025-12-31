@@ -1663,10 +1663,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 24);
+            tabPage2.Location = new System.Drawing.Point(4, 22);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1172, 650);
+            tabPage2.Size = new System.Drawing.Size(1172, 652);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -2393,7 +2393,7 @@
             // defaultFcomboBox
             // 
             defaultFcomboBox.FormattingEnabled = true;
-            defaultFcomboBox.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "50.293", "70.091", "144.489", "432.300", "1296.500" });
+            defaultFcomboBox.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "13.5539", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "40.68", "50.293", "70.091", "144.489", "432.300", "1296.500" });
             defaultFcomboBox.Location = new System.Drawing.Point(107, 147);
             defaultFcomboBox.Name = "defaultFcomboBox";
             defaultFcomboBox.Size = new System.Drawing.Size(77, 21);
@@ -2551,10 +2551,10 @@
             tabPage3.Controls.Add(label30);
             tabPage3.Controls.Add(label29);
             tabPage3.Controls.Add(label28);
-            tabPage3.Location = new System.Drawing.Point(4, 24);
+            tabPage3.Location = new System.Drawing.Point(4, 22);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1172, 650);
+            tabPage3.Size = new System.Drawing.Size(1172, 652);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
             // 
