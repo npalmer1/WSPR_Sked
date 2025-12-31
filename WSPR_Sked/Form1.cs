@@ -731,7 +731,7 @@ namespace WSPR_Sked
                             greyoffset = (sbyte)Reader["GreyOffset"];
                         }
 
-                        if (greyoffset != null) 
+                        if (greyoffset != null)
                         {
                             if (Slot.RptType == 1 || Slot.RptType == 4)
                             {
@@ -981,7 +981,7 @@ namespace WSPR_Sked
                                 greyoffset = 0;
                             }
                             if (greyoffset == 127)
-                            {                                                               
+                            {
                                 greyoffset = 120;   //older versions max offset 120 mins                                
                             }
                             greylistBox.Text = greyoffset.ToString();
@@ -1349,9 +1349,9 @@ namespace WSPR_Sked
             try
             {
                 if (cells[10].Contains("x")) //not a repeating slot
-                { 
-                    
-                        rptT = "0";
+                {
+
+                    rptT = "0";
                 }
                 int rpt_type = Convert.ToInt32(rptT);
                 int greyoffset = Convert.ToInt32(grey);
@@ -1367,15 +1367,15 @@ namespace WSPR_Sked
                         greygroupBox.Visible = true;
 
                         break;
-                     case 3:
+                    case 3:
                         NightcheckBox.Checked = true;
                         greylistBox.Text = greyoffset.ToString();
                         greygroupBox.Visible = true;
                         break;
-                     case 4:
+                    case 4:
                         AllcheckBox.Checked = true;
                         break;
-                      case 0:
+                    case 0:
                         {
                             repeatcheckBox.Checked = false;
                             DaycheckBox.Checked = false;
@@ -1383,9 +1383,9 @@ namespace WSPR_Sked
                             AllcheckBox.Checked = false;
                             break;
                         }
-                     default:
+                    default:
                         {
-                            repeatcheckBox.Checked = false;  
+                            repeatcheckBox.Checked = false;
                             DaycheckBox.Checked = false;
                             NightcheckBox.Checked = false;
                             AllcheckBox.Checked = false;
@@ -1506,24 +1506,24 @@ namespace WSPR_Sked
                         if ((DaycheckBox.Checked || NightcheckBox.Checked) && !this_slot) //don't update all if only this one
                         {
                             SaveSlot_Sun(false, msgT, this_slot);
-                          
+
                             EditRow++;
 
                             slotNo = 2;
-                           
+
                             SaveSlot_Sun(true, msgT, this_slot);
                         }
                         else
                         {
 
                             SaveSlot(false, msgT, this_slot);
-                            
+
                             EditRow++;
 
                             slotNo = 2;
 
                             SaveSlot(true, msgT, this_slot);
-                          
+
                         }
 
                         //EditRow--;
@@ -1533,12 +1533,12 @@ namespace WSPR_Sked
                         if ((DaycheckBox.Checked || NightcheckBox.Checked) && !this_slot) //don't update all if only this one
                         {
                             SaveSlot_Sun(false, msgT, this_slot);
-                           
+
                         }
                         else
                         {
                             SaveSlot(false, msgT, this_slot);
-                         
+
                         }
                     }
                     Savelabel.Text = "--";
@@ -1546,7 +1546,7 @@ namespace WSPR_Sked
                     greygroupBox.Visible = false;
                     //mForm.Dispose();
                 }
-              
+
             }
             catch { }
             this.Focus();
@@ -1760,14 +1760,14 @@ namespace WSPR_Sked
                 }
                 else
                 {
-                    Msg.TMessageBox("Error updating cells", "",1000);
+                    Msg.TMessageBox("Error updating cells", "", 1000);
                 }
                 string act = "";
                 if (DataRow.Cells[11].Value != null)
                 {
                     act = DataRow.Cells[11].Value.ToString();
                 }
-                   
+
                 if (act.Contains(tick))
                 {
                     dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Red;
@@ -1946,7 +1946,7 @@ namespace WSPR_Sked
                     if (repeatTimecheckBox.Checked)
                     {
                         rpt_type = 1;
-                       
+
                     }
                     else if (DaycheckBox.Checked)
                     {
@@ -1959,7 +1959,7 @@ namespace WSPR_Sked
                     else if (AllcheckBox.Checked)
                     {
                         rpt_type = 4;
-                       
+
                     }
                 }
                 else
@@ -1979,7 +1979,7 @@ namespace WSPR_Sked
                     else
                     {
                         greyoffset = 0;
-                    }                  
+                    }
                 }
                 catch
                 {
@@ -1995,7 +1995,7 @@ namespace WSPR_Sked
                 {
                     return locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot);
                 });
-                
+
                 if (ok && show) //if able to save data
                 {
                     for (i = 0; i < maxcol; i++)
@@ -2009,16 +2009,16 @@ namespace WSPR_Sked
                 }
                 else if (!ok)
                 {
-                    Msg.TMessageBox("Error updating cells", "",1500);
+                    Msg.TMessageBox("Error updating cells", "", 1500);
                     saveslotlabel.Visible = false;
                     return;
                 }
-               var act = "";
+                var act = "";
                 if (DataRow.Cells[11].Value != null)
                 {
                     act = DataRow.Cells[11].Value.ToString();
                 }
-              
+
                 if (act.Contains(tick))
                 {
                     dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Red;
@@ -2414,7 +2414,7 @@ namespace WSPR_Sked
             }
         }
 
-       
+
 
 
         private bool SaveSlotData(string d, string t)  //to database
@@ -2430,7 +2430,7 @@ namespace WSPR_Sked
             string N = "";
             string N2 = "";
             string N3 = "";
-            
+
             if (checkNewSlotColumns())
             {
                 N = ",Switch2,SwitchPort2) ";
@@ -2467,11 +2467,11 @@ namespace WSPR_Sked
                     }
 
                     MySqlCommand command = connection.CreateCommand();
-                 
+
                     command.CommandText = "INSERT INTO slots(Date,Time,Frequency,Offset,Power,PowerW,Antenna,Tuner,Switch,SwitchPort,End,Active,Repeating,TimeEnd,RptTime,Parent,SlotNo,MsgType,RptType,GreyOffset" + N;
                     command.CommandText += "VALUES(@Date,@Time,@Frequency,@Offset,@Power,@PowerW,@Antenna,@Tuner,@Switch,@SwitchPort,@End,@Active,@Repeating,@TimeEnd,@RptTime,@Parent,@SlotNo,@MsgType,@RptType,@GreyOffset" + N2;
-                   
-                  
+
+
                     string c = "";
                     c = " ON DUPLICATE KEY UPDATE Frequency = " + Slot.Freq + ", Offset = " + Slot.Offset + ", Power = " + Slot.PowerdB;
                     c = c + ", PowerW = " + Slot.PowerW + ", Antenna = '" + Slot.Ant + "', Tuner = " + Slot.Tuner + ", Switch = " + Slot.Switch;
@@ -2493,22 +2493,22 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@Tuner", Slot.Tuner);
                     command.Parameters.AddWithValue("@Switch", Slot.Switch);
                     command.Parameters.AddWithValue("@SwitchPort", Slot.SwPort);
-                    
+
 
                     command.Parameters.AddWithValue("@End", e);
-                   
+
                     command.Parameters.AddWithValue("@Active", A);
                     command.Parameters.AddWithValue("@Repeating", R);
                     //string endtime = timeEnd.Value.ToString("HH:mm");
                     command.Parameters.AddWithValue("@TimeEnd", Slot.EndTime);
                     command.Parameters.AddWithValue("@RptTime", Slot.RptTime);
 
-                  
+
                     Slot.Parent = p;
                     command.Parameters.AddWithValue("@Parent", p);
                     command.Parameters.AddWithValue("@SlotNo", slotNo);
 
-                   
+
 
                     command.Parameters.AddWithValue("@MsgType", msgT);
                     command.Parameters.AddWithValue("@RptType", Slot.RptType);
@@ -5989,7 +5989,7 @@ namespace WSPR_Sked
                 RXonlylabel.Text = "-";
                 trackBar1.Enabled = true;
             }
-                FreqlistBox.Enabled = false;
+            FreqlistBox.Enabled = false;
             string F = FreqlistBox.SelectedItem.ToString();
             string[] Freq = F.Split('\t');
             FtextBox.Text = Freq[0];
@@ -8408,8 +8408,8 @@ namespace WSPR_Sked
                 }
                 dataGridView1.Columns[12].Visible = false; //hide end time
                 dataGridView1.Columns[13].Visible = false; //and rpr time flag
-                //dataGridView1.Columns[16].Visible = false; //hide rpt type
-               // dataGridView1.Columns[17].Visible = false; //and greyoffset
+                                                           //dataGridView1.Columns[16].Visible = false; //hide rpt type
+                                                           // dataGridView1.Columns[17].Visible = false; //and greyoffset
                                                            //dataGridView1.Columns[15].Visible = false; //and msg type
                 string act = DataRow.Cells[11].Value.ToString();
                 if (act.Contains(tick))
@@ -8525,7 +8525,7 @@ namespace WSPR_Sked
 
         async void testFreq(bool change_IdleF)
         {
-          
+
             try
             {
                 if (rigctldcheckBox.Checked)
@@ -8559,7 +8559,7 @@ namespace WSPR_Sked
         {
             if (FlistBox.Text.StartsWith("13.") || FlistBox.Text.StartsWith("40."))
             {
-                Msg.TMessageBox("Note: RX only on 22 or 8m", "RX only", 2000);               
+                Msg.TMessageBox("Note: RX only on 22 or 8m", "RX only", 2000);
             }
             testFreq(true);
         }
@@ -9612,7 +9612,7 @@ namespace WSPR_Sked
             AntPortlabel2.Visible = V;
         }
 
-    
+
 
         private void ActivecheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -9620,6 +9620,37 @@ namespace WSPR_Sked
             {
                 Msg.TMessageBox("22m and 8m RX only slots", "22m and 8m bands", 1500);
                 ActivecheckBox.Checked = false;
+            }
+        }
+
+        private void flsuhSlotbutton_Click(object sender, EventArgs e)
+        {
+            FlushSlots();
+        }
+        private void FlushSlots()
+        {
+            DateTime dt = DateTime.Now.ToUniversalTime();
+            DateTime origin = new DateTime(2025, 3, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+            dt = dt.AddMonths(-6);
+
+            string date2 = dt.ToString("yyyy-MM-dd");
+
+            string date1 = origin.ToString("yyyy-MM-dd");
+            var res = Msg.ynMessageBox("Delete all slots older than 6 months (y/n)?", "Flush old slots");
+            if (res == DialogResult.Yes)
+            {
+                res = Msg.ynMessageBox("Flush slots before "+date2+" (y/n)?", "Confirmation");
+                if (res == DialogResult.No)
+                {
+                    return;
+                }
+               
+
+                if (deleteAllSlotsBetween(date1, date2))
+                {
+                    Msg.OKMessageBox("Deleted slots > 3 months", "Success");
+                }
             }
         }
     }
