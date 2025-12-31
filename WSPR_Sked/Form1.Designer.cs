@@ -1261,7 +1261,7 @@
             // 
             Fhelplabel.AutoSize = true;
             Fhelplabel.BackColor = System.Drawing.Color.AntiqueWhite;
-            Fhelplabel.Location = new System.Drawing.Point(1090, 383);
+            Fhelplabel.Location = new System.Drawing.Point(1093, 420);
             Fhelplabel.Name = "Fhelplabel";
             Fhelplabel.Size = new System.Drawing.Size(76, 78);
             Fhelplabel.TabIndex = 89;
@@ -1281,10 +1281,10 @@
             // FlistBox2
             // 
             FlistBox2.FormattingEnabled = true;
-            FlistBox2.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "50.293", "70.091", "144.489", "432.300", "1296.500" });
+            FlistBox2.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "13.5539", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "40.68", "50.293", "70.091", "144.489", "432.300", "1296.500" });
             FlistBox2.Location = new System.Drawing.Point(1099, 129);
             FlistBox2.Name = "FlistBox2";
-            FlistBox2.Size = new System.Drawing.Size(58, 251);
+            FlistBox2.Size = new System.Drawing.Size(58, 277);
             FlistBox2.TabIndex = 87;
             FlistBox2.Visible = false;
             FlistBox2.SelectedIndexChanged += FlistBox2_SelectedIndexChanged;
@@ -1666,7 +1666,7 @@
             tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1153, 650);
+            tabPage2.Size = new System.Drawing.Size(1172, 650);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -2554,7 +2554,7 @@
             tabPage3.Location = new System.Drawing.Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1153, 650);
+            tabPage3.Size = new System.Drawing.Size(1172, 650);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
             // 
@@ -2833,10 +2833,10 @@
             tabPage4.Controls.Add(FreqlistBox);
             tabPage4.Controls.Add(AgroupBox);
             tabPage4.Controls.Add(AntlistBox);
-            tabPage4.Location = new System.Drawing.Point(4, 24);
+            tabPage4.Location = new System.Drawing.Point(4, 22);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1153, 650);
+            tabPage4.Size = new System.Drawing.Size(1172, 652);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
@@ -3117,7 +3117,7 @@
             FreqgroupBox.Controls.Add(FtextBox);
             FreqgroupBox.Controls.Add(label44);
             FreqgroupBox.Controls.Add(label43);
-            FreqgroupBox.Location = new System.Drawing.Point(73, 141);
+            FreqgroupBox.Location = new System.Drawing.Point(66, 139);
             FreqgroupBox.Name = "FreqgroupBox";
             FreqgroupBox.Size = new System.Drawing.Size(329, 228);
             FreqgroupBox.TabIndex = 4;
@@ -3256,7 +3256,7 @@
             FBgroupBox.Controls.Add(addFbutton);
             FBgroupBox.Controls.Add(deleteFbutton);
             FBgroupBox.Controls.Add(editFbutton);
-            FBgroupBox.Location = new System.Drawing.Point(90, 318);
+            FBgroupBox.Location = new System.Drawing.Point(77, 318);
             FBgroupBox.Name = "FBgroupBox";
             FBgroupBox.Size = new System.Drawing.Size(175, 40);
             FBgroupBox.TabIndex = 14;
@@ -3270,6 +3270,7 @@
             addFbutton.TabIndex = 11;
             addFbutton.Text = "Add";
             addFbutton.UseVisualStyleBackColor = true;
+            addFbutton.Visible = false;
             addFbutton.Click += addFbutton_Click;
             // 
             // deleteFbutton
@@ -3280,6 +3281,7 @@
             deleteFbutton.TabIndex = 13;
             deleteFbutton.Text = "Del";
             deleteFbutton.UseVisualStyleBackColor = true;
+            deleteFbutton.Visible = false;
             deleteFbutton.Click += deleteFbutton_Click;
             // 
             // editFbutton
@@ -3413,7 +3415,7 @@
             tabPage5.Location = new System.Drawing.Point(4, 24);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            tabPage5.Size = new System.Drawing.Size(1153, 650);
+            tabPage5.Size = new System.Drawing.Size(1172, 650);
             tabPage5.TabIndex = 4;
             tabPage5.Text = "Switches&Tuners";
             // 
@@ -3848,7 +3850,7 @@
             tabPage6.Controls.Add(audioInlistBox);
             tabPage6.Location = new System.Drawing.Point(4, 24);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new System.Drawing.Size(1153, 650);
+            tabPage6.Size = new System.Drawing.Size(1172, 650);
             tabPage6.TabIndex = 5;
             tabPage6.Text = "RX & Sound config";
             // 
