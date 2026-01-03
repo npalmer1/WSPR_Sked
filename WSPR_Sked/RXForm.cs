@@ -1,39 +1,21 @@
 ﻿using Google.Protobuf.WellKnownTypes;
-//using WSPRlive;
-//using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
-//using static Mysqlx.Expect.Open.Types.Condition.Types;
-//using static System.Net.Mime.MediaTypeNames;
-//using static System.Runtime.InteropServices.JavaScript.JSType;
-//using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
-//using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using Maidenhead;
 using MathNet.Numerics;
-//using Microsoft.VisualBasic.ApplicationServices;
 using MySql.Data.MySqlClient;
-//using Mysqlx.Crud;
-//using NAudio.Gui;
 using NAudio.Wave;
-//using Org.BouncyCastle.Tls;
 using System;
-//using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-//using System.Diagnostics.Eventing.Reader;
-//using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Management;
 using System.Net.Http;
 using System.Reflection;
-//using System.Net.NetworkInformation;
-//using System.Reflection.Metadata;
-//using System.Runtime.CompilerServices;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
-//using System.Transactions;
 using System.Windows.Forms;
 
 namespace WSPR_Sked
@@ -1198,8 +1180,8 @@ namespace WSPR_Sked
 
         private static (int km, int az) Calculate_km_az(string tx_loc, string my_loc)
         {
-            double km = MaidenheadLocator.Distance(tx_loc, my_loc);
-            double az = MaidenheadLocator.Azimuth(tx_loc, my_loc);
+            double km = MaidenheadLocator.Distance(my_loc, tx_loc);
+            double az = MaidenheadLocator.Azimuth(my_loc, tx_loc);
             return ((int)km, (int)az);
         }
 
