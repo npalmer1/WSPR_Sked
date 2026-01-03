@@ -243,11 +243,10 @@ namespace WSPR_Sked
         }
 
         List<Antenna> Ant = new List<Antenna>();
-        //LiveForm liveForm = new LiveForm();
+        
         RXForm rxForm = new RXForm();
 
-        //Solar solarForm = new Solar();
-
+      
 
         int keypresses = 0;
 
@@ -303,10 +302,9 @@ namespace WSPR_Sked
         }
 
         private async void Form1_Load(object sender, EventArgs e)
-        {
-
+        {          
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.22";
+            string ver = "0.1.23";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -9640,12 +9638,12 @@ namespace WSPR_Sked
             var res = Msg.ynMessageBox("Delete all slots older than 6 months (y/n)?", "Flush old slots");
             if (res == DialogResult.Yes)
             {
-                res = Msg.ynMessageBox("Flush slots before "+date2+" (y/n)?", "Confirmation");
+                res = Msg.ynMessageBox("Flush slots before " + date2 + " (y/n)?", "Confirmation");
                 if (res == DialogResult.No)
                 {
                     return;
                 }
-               
+
 
                 if (deleteAllSlotsBetween(date1, date2))
                 {
@@ -9653,6 +9651,7 @@ namespace WSPR_Sked
                 }
             }
         }
+       
     }
 
 
