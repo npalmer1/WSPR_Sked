@@ -457,6 +457,7 @@
             // RXofflabel
             // 
             RXofflabel.AutoSize = true;
+            RXofflabel.BackColor = System.Drawing.Color.PeachPuff;
             RXofflabel.Location = new System.Drawing.Point(244, 41);
             RXofflabel.Name = "RXofflabel";
             RXofflabel.Size = new System.Drawing.Size(69, 15);
