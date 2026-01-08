@@ -304,7 +304,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {          
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.23";
+            string ver = "0.1.24";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -582,6 +582,12 @@ namespace WSPR_Sked
         //private  async Task<bool> findSlot(int slot, string date, string time) //find a slot in the database corresponding to the date/time from the slot to transmit/receive
         private bool findSlot(int slot, string date, string time)
         {
+
+            if (noSkedcheckBox.Checked)
+            {
+                Msg.TMessageBox("Schedule not enabled!", "Slot Scheduler", 2000);
+                return false;
+            }
             DataTable Slots = new DataTable();
 
             bool slotFound = false;
@@ -3359,6 +3365,8 @@ namespace WSPR_Sked
                 Task.Delay(1000);
                 return;
             }
+            double f = Convert.ToDouble(FlistBox.Text.Trim());            
+            TXFrequency = (f * 1000000).ToString();
             slotNo = 1;
             if (Type2checkBox.Checked)
             {
@@ -4802,20 +4810,12 @@ namespace WSPR_Sked
                 //if (await (findSlot(-1, date, nexttime)))
                 if (findSlot(-1, date, nexttime))
                 {
-                    if (noSkedcheckBox.Checked)
-                    {
-                        Msg.TMessageBox("Schedule not enabled!", "Slot Scheduler", 2500);
-                        return;
-                    }
+                   
                     if (noRigctld)
                     {
                         Msg.TMessageBox("Ignoring slot frequency - RigCtlD disabled", "Frequency", 1000);
                     }
-                    if (noSkedcheckBox.Checked)
-                    {
-                        Msg.TMessageBox("Slot schedule not enabled", "", 800);
-                        return;
-                    }
+                   
                     if (!enableTXcheckBox.Checked && slotActive)
                     {
                         //do nothing
