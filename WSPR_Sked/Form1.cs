@@ -1247,7 +1247,9 @@ namespace WSPR_Sked
 
                                 selSwPorttextBox2.Text = p2.ToString(); //show index 0 as 1 as ports start from 1
                             }
+                            greygroupBox.Visible = false;
                         }
+                        
 
                     }
                     else
@@ -1286,6 +1288,7 @@ namespace WSPR_Sked
                             msgTlabel.Text = "Message type 1";
                         }
                         findRepeatType(cells[16], cells[17]); //reapeat type and greyoffset
+                       
 
                     }
                 }
@@ -1364,6 +1367,7 @@ namespace WSPR_Sked
                 {
                     case 1:
                         repeatTimecheckBox.Checked = true;
+                        timeEnd.Text = cells[12];
                         break;
                     case 2:
                         DaycheckBox.Checked = true;
@@ -1395,6 +1399,14 @@ namespace WSPR_Sked
                             AllcheckBox.Checked = false;
                             break;
                         }
+                }
+                if (DaycheckBox.Checked || NightcheckBox.Checked)
+                {
+                    greygroupBox.Visible = true;
+                }
+                else
+                {
+                    greygroupBox.Visible = false;
                 }
             }
             catch
