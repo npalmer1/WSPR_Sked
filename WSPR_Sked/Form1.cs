@@ -10,7 +10,7 @@ using MathNet.Numerics.Providers.LinearAlgebra;
 using MySql.Data.MySqlClient;
 using NAudio.Wave;
 using Newtonsoft.Json.Linq;
-
+using Org.BouncyCastle.Asn1.Cms;
 using Security;
 using System;
 using System.Collections.Generic;
@@ -104,6 +104,10 @@ namespace WSPR_Sked
         string[] cells = new string[18];
 
         bool prepDone = false;
+
+        int rptType = 0;
+        string orig_parents = "";
+        string orig_parents2 ="";
 
         string Results;
         bool stopUrl = false;
@@ -1050,7 +1054,7 @@ namespace WSPR_Sked
             dtable.Columns.Add("End     ");  //9
             dtable.Columns.Add("Rpt");  //10
             dtable.Columns.Add("Active");  //11
-            dtable.Columns.Add("Endtime"); //12
+            dtable.Columns.Add("endT"); //12
             dtable.Columns.Add("rptT"); //13
             dtable.Columns.Add("Slot"); //14
             dtable.Columns.Add("Mtype"); //15 msg type
@@ -1066,25 +1070,25 @@ namespace WSPR_Sked
                 dataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; //set all columns to fixed width
 
             }
-            dataGridView1.Columns[0].Width = 80; //date
+            dataGridView1.Columns[0].Width = 70; //date
             dataGridView1.Columns[1].Width = 50; //time
             dataGridView1.Columns[2].Width = 70; //frequency
             dataGridView1.Columns[3].Width = 40; //offset
             dataGridView1.Columns[4].Width = 56; //power dBm
             dataGridView1.Columns[5].Width = 56; //power W
             dataGridView1.Columns[6].Width = 120; //antenna
-            dataGridView1.Columns[7].Width = 50; //tuner
-            dataGridView1.Columns[8].Width = 50; //switch
+            dataGridView1.Columns[7].Width = 46; //tuner
+            dataGridView1.Columns[8].Width = 46; //switch
             //dataGridView1.Columns[9].Width = 60; //rotator
             //dataGridView1.Columns[10].Width = 60; //azimuth
-            dataGridView1.Columns[9].Width = 80; //end date
-            dataGridView1.Columns[10].Width = 44; //repeat
-            dataGridView1.Columns[11].Width = 44; //active
-            dataGridView1.Columns[12].Width = 50; //end time
-            dataGridView1.Columns[13].Width = 45; //repeat time
-            dataGridView1.Columns[14].Width = 44; //slot no
-            dataGridView1.Columns[15].Width = 44; //message type
-            dataGridView1.Columns[16].Width = 40; //message type
+            dataGridView1.Columns[9].Width = 70; //end date
+            dataGridView1.Columns[10].Width = 42; //repeat
+            dataGridView1.Columns[11].Width = 42; //active
+            dataGridView1.Columns[12].Width = 42; //end time
+            dataGridView1.Columns[13].Width = 42; //repeat time
+            dataGridView1.Columns[14].Width = 42; //slot no
+            dataGridView1.Columns[15].Width = 42; //message type
+            dataGridView1.Columns[16].Width = 42; //message type
             dataGridView1.Columns[17].Width = 40; //message type
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -1118,10 +1122,28 @@ namespace WSPR_Sked
 
         private void dataGridView1_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+
+           
             if (saveslotlabel.Visible)
             {
                 Msg.TMessageBox("Please wait...", "Saving slots", 1500);
                 return;
+            }
+
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                try
+                {
+                    if (dataGridView1.Rows[i].Selected)
+                    {
+                        orig_parents = parents[i];
+                        orig_parents2 = parents[i + 1];
+                    }
+                }
+                catch
+                {
+                    orig_parents2 = orig_parents;
+                }
             }
             greygroupBox.Visible = false;
             for (int s = 0; s < dataGridView1.Rows.Count; s++)
@@ -1254,7 +1276,7 @@ namespace WSPR_Sked
                     }
                     else
                     {
-
+                        timeEnd.Value = Convert.ToDateTime("23:59");
                         editslotcheckBox.Checked = true;  //editing existing
                         FreqcomboBox.SelectedItem = cells[2];
                         OffsettextBox.Text = cells[3];
@@ -1287,9 +1309,9 @@ namespace WSPR_Sked
                         {
                             msgTlabel.Text = "Message type 1";
                         }
+                        
                         findRepeatType(cells[16], cells[17]); //reapeat type and greyoffset
                        
-
                     }
                 }
                 catch
@@ -1308,7 +1330,15 @@ namespace WSPR_Sked
                 timeEnd.CustomFormat = "HH:mm";
                 try
                 {
-                    timeEnd.Value = Convert.ToDateTime(cells[12]);
+                    if (cells[12].Contains(":"))
+                    {
+
+                        timeEnd.Value = Convert.ToDateTime(cells[12]);
+                    }
+                    else
+                    {
+                        timeEnd.Value = Convert.ToDateTime("23:00");
+                    }
                 }
                 catch
                 {
@@ -1333,9 +1363,16 @@ namespace WSPR_Sked
                 if (cells[13].Contains("1")) //if slot end time then 
                 {
                     repeatTimecheckBox.Checked = true;
-                    DateTime t;
-                    DateTime.TryParse(cells[12], out t); //slot end time T
-                    timeEnd.Value = t;
+                    try
+                    {
+                        DateTime t;
+                        DateTime.TryParse(cells[12], out t); //slot end time T
+                        timeEnd.Value = t;
+                    }
+                    catch
+                    {
+                        timeEnd.Text = "00:00";
+                    }
 
                 }
                 if (cells[2].Trim() == "") //new slot
@@ -1351,8 +1388,9 @@ namespace WSPR_Sked
                 Msg.OKMessageBox("Error editing slot", "");
             }
         }
-        private void findRepeatType(string rptT, string grey)
+        private int findRepeatType(string rptT, string grey)
         {
+            int rpt_type = 0;
             try
             {
                 if (cells[10].Contains("x")) //not a repeating slot
@@ -1360,14 +1398,23 @@ namespace WSPR_Sked
 
                     rptT = "0";
                 }
-                int rpt_type = Convert.ToInt32(rptT);
+                rpt_type = Convert.ToInt32(rptT);
+                rptType = rpt_type; //public variable
+
                 int greyoffset = Convert.ToInt32(grey);
                 greygroupBox.Visible = false;
+                timeEnd.Text = "23:59";
+                timeEnd.Enabled = false;
                 switch (rpt_type)
                 {
                     case 1:
                         repeatTimecheckBox.Checked = true;
-                        timeEnd.Text = cells[12];
+                        timeEnd.Enabled = true;
+                        try
+                        {
+                            timeEnd.Text = cells[12];
+                        }
+                        catch{ timeEnd.Text = "23:59"; }
                         break;
                     case 2:
                         DaycheckBox.Checked = true;
@@ -1413,6 +1460,7 @@ namespace WSPR_Sked
             {
 
             }
+            return rpt_type;
         }
 
 
@@ -1461,7 +1509,7 @@ namespace WSPR_Sked
             {
                 if (validateSlot()) //check all fields ok
                 {
-
+                    
                     //MessageForm mForm = new MessageForm();
 
                     if (Type2checkBox.Checked)
@@ -1485,12 +1533,29 @@ namespace WSPR_Sked
                         }
                     }
 
+                    int oldR = rptType;
+                    int R = findRptTypeNew(); //get new repeat type  
                     if (repeatcheckBox.Checked && editslotcheckBox.Checked)
                     {
+                       
                         var res = Msg.ynMessageBox("Update all repeating slots (Y/N)?", "Repeating slots");
                         if (res == DialogResult.No)
                         {
+                                            
+                            if (R != oldR && editslotcheckBox.Checked)
+                            {
+                                SilentdeletethisRow(false);  //delete old slots if repeat type has changed
+                            }
                             this_slot = true;
+                        }
+                        else
+                        {
+                            if (R != oldR && editslotcheckBox.Checked)
+                            {
+                                SilentdeletethisRow(true);  //delete old slots if repeat type has changed
+                            }
+                            this_slot = false;
+
                         }
                     }
                     else if (!repeatcheckBox.Checked)
@@ -1508,6 +1573,7 @@ namespace WSPR_Sked
                     }
                     Msg.TMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", timeout);
                     Savelabel.Text = "Saving - please wait....";
+                    Savelabel.Visible = true;
                     repeatStatus = false;
 
                     if ((FreqcomboBox.Text.StartsWith("40") || FreqcomboBox.Text.StartsWith("13")) && ActivecheckBox.Checked)
@@ -1676,13 +1742,15 @@ namespace WSPR_Sked
                 if (repeatTimecheckBox.Checked)
                 {
                     endtime = timeEnd.Value.ToString("HH:mm");
+                    cells[12] = endtime;
                 }
                 else
                 {
                     endtime = time1;
+                    cells[12] = findendT();
                 }
                 Slot.EndTime = endtime;
-                cells[12] = endtime;
+                
 
                 cells[9] = enddate;
                 Slot.Endslot = enddate;
@@ -1795,7 +1863,7 @@ namespace WSPR_Sked
                 DataGridViewCell cell = dataGridView1.Rows[EditRow].Cells[11];
                 cell.Style.Font = new System.Drawing.Font(dataGridView1.Font, FontStyle.Bold);
 
-                dataGridView1.Columns[12].Visible = false; // Hide the repeat time column
+                //dataGridView1.Columns[12].Visible = false; // Hide the repeat time column
                 dataGridView1.Columns[13].Visible = false; // Hide the end time column
                 //dataGridView1.Columns[15].Visible = false; // Hide the end time column
 
@@ -1920,20 +1988,14 @@ namespace WSPR_Sked
                 {
                     enddate = date1;
                 }
-                if (repeatTimecheckBox.Checked)
-                {
-                    endtime = timeEnd.Value.ToString("HH:mm");
-                }
-                else
-                {
-                    endtime = time1;
-                }
-                Slot.EndTime = endtime;
-                cells[12] = endtime;
+
+               
+               
+               
 
                 cells[9] = enddate;
                 Slot.Endslot = enddate;
-                Slot.EndTime = endtime;
+              
                 if (ActivecheckBox.Checked) { cells[11] = tick; Slot.Active = tick; }
                 else { cells[11] = cross; Slot.Active = cross; }
                 if (repeatcheckBox.Checked) { cells[10] = tick; Slot.Rpt = tick; }
@@ -1982,6 +2044,18 @@ namespace WSPR_Sked
                 {
                     rpt_type = 0;
                 }
+               
+                if (repeatTimecheckBox.Checked)
+                {
+                    endtime = timeEnd.Value.ToString("HH:mm");
+                    cells[12] = endtime;
+                }
+                else
+                {
+                    endtime = time1;
+                    cells[12] = findendT();
+                }
+                Slot.EndTime = endtime;
                 try
                 {
                     if (rpt_type == 2 || rpt_type == 3)
@@ -2029,7 +2103,18 @@ namespace WSPR_Sked
                     saveslotlabel.Visible = false;
                     return;
                 }
-                var act = "";
+                else //!show
+                {                
+                    for (i = 2; i < maxcol; i++)
+                    {
+                        if (cells[i] != null)
+                        {
+                            DataRow.Cells[i].Value = "";
+
+                        }
+                    }
+                }
+                    var act = "";
                 if (DataRow.Cells[11].Value != null)
                 {
                     act = DataRow.Cells[11].Value.ToString();
@@ -2046,7 +2131,7 @@ namespace WSPR_Sked
                 DataGridViewCell cell = dataGridView1.Rows[EditRow].Cells[11];
                 cell.Style.Font = new System.Drawing.Font(dataGridView1.Font, FontStyle.Bold);
 
-                dataGridView1.Columns[12].Visible = false; // Hide the repeat time column
+                //dataGridView1.Columns[12].Visible = false; // Hide the repeat time column
                 dataGridView1.Columns[13].Visible = false; // Hide the end time column
                 //dataGridView1.Columns[15].Visible = false; // Hide the end time column
 
@@ -2475,8 +2560,18 @@ namespace WSPR_Sked
                     {
                         R = true;
                     }
-                    p = Convert.ToString(cells[0]);
-                    p = p + " " + cells[1]; //date and time of parent of this slot
+                    string dte = Convert.ToString(cells[0]);
+                    
+                    p = dte + " " + cells[1]; //date and time of parent of this slot
+                    if (orig_parents != p & editslotcheckBox.Checked) //if parent has changed and editing slot
+                    {
+                        p = orig_parents; //if editing save original slot parent
+                    }
+                    if (rptType ==4)
+                    {
+                        p = dte + "00:00"; //all day slots parent is date and 00:00
+                    }
+
                     if (Type2checkBox.Checked)
                     {
                         msgT = checkCall(callsign, location);
@@ -2751,6 +2846,77 @@ namespace WSPR_Sked
             this.Focus();
             this.BringToFront();
             dataGridView1.Focus();
+        }
+
+        private async Task SilentdeletethisRow(bool all)
+        {
+            int i = 0;
+            int slot = 0;
+            string msgT = "1";
+          
+            for (i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                try
+                {
+                    if (dataGridView1.Rows[i].Selected)
+                    {
+                        date = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
+
+                        time = Convert.ToString(dataGridView1.Rows[i].Cells[1].Value);
+                        string MT = dataGridView1.Rows[i].Cells[15].Value.ToString();
+
+                        msgT = MT;
+                        slot = i; break;
+                    }
+                }
+                catch { }
+            }
+
+         
+               
+               
+                try
+                {
+                //time = dataGridView1.Rows[dataGridView1.]
+
+
+                if (all)
+                {
+
+                    DeleteSlot(true, slot, orig_parents);  //check where can get PARENT from in current row (its not in the current gridview)
+
+                    if ((msgT == "2" || msgT == "3") && !asOnecheckBox.Checked)
+                    {
+                        DeleteSlot(true, slot + 1, orig_parents2);  //if type 2
+                        parents[slot + 1] = "";
+                    }
+                }
+                else
+                {
+                    DeleteSlot(false, slot, orig_parents);
+                    if ((msgT == "2" || msgT == "3") && !asOnecheckBox.Checked)
+                    {
+                        DeleteSlot(false, slot + 1, orig_parents2);  //type 2
+                        parents[slot + 1] = "";
+                    }
+                }
+
+
+                DeleteRow(slot);
+                        if ((msgT == "2" || msgT == "3") && !asOnecheckBox.Checked)
+                        {
+                            DeleteRow(slot + 1);
+                        }
+                        parents[slot] = "";
+                    
+                }
+                catch
+                {
+                   
+                }
+
+
+                dataGridView1.Focus();
         }
 
         private void DeleteRow(int slot)
@@ -7496,7 +7662,7 @@ namespace WSPR_Sked
 
             if (repeatTimecheckBox.Checked)
             {
-                timeEnd.Enabled = repeatTimecheckBox.Checked;
+                
 
                 DaycheckBox.Checked = false;
                 NightcheckBox.Checked = false;
@@ -7504,7 +7670,7 @@ namespace WSPR_Sked
                 AllcheckBox.Checked = false;
 
             }
-
+            timeEnd.Enabled = repeatTimecheckBox.Checked;
 
         }
 
@@ -8338,7 +8504,7 @@ namespace WSPR_Sked
                 //dataGridView1.DataSource = dtable;
 
 
-                dataGridView1.Columns[12].Visible = false;
+                //dataGridView1.Columns[12].Visible = false;
                 dataGridView1.Columns[13].Visible = false;
                 //dataGridView1.Columns[15].Visible = false;
 
@@ -8374,6 +8540,69 @@ namespace WSPR_Sked
             }
         }
 
+        private string findendT()
+        {
+            string endT = "--";
+            
+            if (repeatTimecheckBox.Checked)
+            {
+                endT= SlotRow.EndTime;
+                rptType = 1;
+            }
+            else
+            {
+                if (DaycheckBox.Checked)
+                {
+                    endT = "Day";
+                    rptType = 2;
+
+                }
+                else if (NightcheckBox.Checked)
+                {
+                    endT  = "Night";
+                    rptType = 3;
+                }
+                else if (AllcheckBox.Checked)
+                {
+                    endT = "24hr";
+                    rptType = 4;
+                }
+              
+            }
+            return endT;
+        }
+
+        private int findRptTypeNew()
+        {
+            int rpt_type =0;
+            
+            if (repeatTimecheckBox.Checked)
+            {
+               
+                rpt_type = 1;
+            }
+            else
+            {
+                if (DaycheckBox.Checked)
+                {
+                    
+                    rpt_type = 2;
+
+                }
+                else if (NightcheckBox.Checked)
+                {
+                 
+                    rpt_type = 3;
+                }
+                else if (AllcheckBox.Checked)
+                {
+                   
+                    rpt_type = 4;
+                }
+
+            }
+            return rpt_type;
+        }
         private void populateGridSlot(int s)  //having found slot in database - populate the gridview with slot
         {
 
@@ -8397,16 +8626,22 @@ namespace WSPR_Sked
 
                 cells[9] = SlotRow.Endslot;
                 cells[11] = SlotRow.Active;
-                cells[10] = SlotRow.Rpt;
-                cells[12] = SlotRow.EndTime;
-
+                cells[10] = SlotRow.Rpt;              
 
                 cells[13] = SlotRow.RptTime;
 
                 cells[14] = SlotRow.SlotNo.ToString();
                 cells[15] = SlotRow.MessageType.ToString();
                 cells[16] = SlotRow.RptType.ToString();
-                cells[17] = SlotRow.GreyOffset.ToString();
+                if (SlotRow.RptType == 1)   //repeat until end time
+                {
+                    cells[12] = SlotRow.EndTime;
+                }
+                else
+                {
+                    cells[12] = findendT();
+                }
+                    cells[17] = SlotRow.GreyOffset.ToString();
 
                 for (int i = 2; i < maxcol; i++)
                 {
@@ -8416,7 +8651,7 @@ namespace WSPR_Sked
 
                     }
                 }
-                dataGridView1.Columns[12].Visible = false; //hide end time
+                //dataGridView1.Columns[12].Visible = false; //hide end time
                 dataGridView1.Columns[13].Visible = false; //and rpr time flag
                                                            //dataGridView1.Columns[16].Visible = false; //hide rpt type
                                                            // dataGridView1.Columns[17].Visible = false; //and greyoffset
