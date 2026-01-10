@@ -728,7 +728,7 @@ namespace WSPR_Sked
                         }
 
                         Slot.RptType = (sbyte)Reader["RptType"];
-                        findRptType(Slot.RptType); //enable relevant checkboxes
+                        setRptBoxes(Slot.RptType); //enable relevant checkboxes
                         int greyoffset = 0;
                         try
                         {
@@ -814,7 +814,7 @@ namespace WSPR_Sked
             return slotFound;
         }
 
-        private void findRptType(int type)
+        private void setRptBoxes(int type)
         {
             switch (type)
             {
@@ -971,7 +971,7 @@ namespace WSPR_Sked
 
                         int rpt_type = (sbyte)Reader["RptType"];
                         SlotRow.RptType = rpt_type;
-                        findRptType(rpt_type); //enable relevant checkboxes
+                        setRptBoxes(rpt_type); //enable relevant checkboxes
                         int greyoffset = 0;
                         try
                         {
@@ -1534,7 +1534,7 @@ namespace WSPR_Sked
                     }
 
                     int oldR = rptType;
-                    int R = findRptTypeNew(); //get new repeat type  
+                    int R = findRptType(); //get new repeat type  
                     if (repeatcheckBox.Checked && editslotcheckBox.Checked)
                     {
                        
@@ -1739,17 +1739,26 @@ namespace WSPR_Sked
                 {
                     enddate = date1;
                 }
-                if (repeatTimecheckBox.Checked)
+                if (repeatcheckBox.Checked)
                 {
-                    endtime = timeEnd.Value.ToString("HH:mm");
-                    cells[12] = endtime;
+                    if (repeatTimecheckBox.Checked)
+                    {
+                        endtime = timeEnd.Value.ToString("HH:mm");
+                        cells[12] = endtime;
+                    }
+                    else
+                    {
+                        endtime = time1;
+                        cells[12] = findendT();
+                    }
+                  
                 }
                 else
                 {
-                    endtime = time1;
-                    cells[12] = findendT();
+                    endtime = "n/a";
+                    cells[12] = "once";
                 }
-                Slot.EndTime = endtime;
+                    Slot.EndTime = endtime;
                 
 
                 cells[9] = enddate;
@@ -8543,60 +8552,111 @@ namespace WSPR_Sked
         private string findendT()
         {
             string endT = "--";
-            
-            if (repeatTimecheckBox.Checked)
+            string t = tick.Trim();
+            if (SlotRow.Rpt.Contains(t))
             {
-                endT= SlotRow.EndTime;
-                rptType = 1;
+                endT = "1hr";
+                rptType = 0;
+
+                if (repeatTimecheckBox.Checked)
+                {
+                    endT = SlotRow.EndTime;
+                    rptType = 1;
+                }
+                else
+                {
+                    if (DaycheckBox.Checked)
+                    {
+                        endT = "Day";
+                        rptType = 2;
+
+                    }
+                    else if (NightcheckBox.Checked)
+                    {
+                        endT = "Night";
+                        rptType = 3;
+                    }
+                    else if (AllcheckBox.Checked)
+                    {
+                        endT = "24hr";
+                        rptType = 4;
+                    }
+
+                }
             }
             else
             {
-                if (DaycheckBox.Checked)
+                endT = "once";
+                rptType = 0;
+            }
+                return endT;
+        }
+
+        private string findendTType(int rpt)
+        {
+            string endT = "once";
+            string t = tick.Trim();
+            if (SlotRow.Rpt.Contains(t))
+            {
+                endT = "1hr";                
+
+                if (rpt ==1)
                 {
-                    endT = "Day";
-                    rptType = 2;
+                    endT = SlotRow.EndTime;
+                  
+                }
+                else
+                {
+                    if (rpt ==2)
+                    {
+                        endT = "Day";                    
+                    }
+                    else if (rpt ==3)
+                    {
+                        endT = "Night";
+                        rptType = 3;
+                    }
+                    else if (rpt ==4)
+                    {
+                        endT = "24hr";                       
+                    }
 
                 }
-                else if (NightcheckBox.Checked)
-                {
-                    endT  = "Night";
-                    rptType = 3;
-                }
-                else if (AllcheckBox.Checked)
-                {
-                    endT = "24hr";
-                    rptType = 4;
-                }
-              
+            }
+            else
+            {
+                endT = "once";
+                rptType = 0;
             }
             return endT;
         }
 
-        private int findRptTypeNew()
+
+        private int findRptType()
         {
-            int rpt_type =0;
-            
+            int rpt_type = 0;
+
             if (repeatTimecheckBox.Checked)
             {
-               
+
                 rpt_type = 1;
             }
             else
             {
                 if (DaycheckBox.Checked)
                 {
-                    
+
                     rpt_type = 2;
 
                 }
                 else if (NightcheckBox.Checked)
                 {
-                 
+
                     rpt_type = 3;
                 }
                 else if (AllcheckBox.Checked)
                 {
-                   
+
                     rpt_type = 4;
                 }
 
@@ -8639,7 +8699,7 @@ namespace WSPR_Sked
                 }
                 else
                 {
-                    cells[12] = findendT();
+                    cells[12] = findendTType(SlotRow.RptType);
                 }
                     cells[17] = SlotRow.GreyOffset.ToString();
 
