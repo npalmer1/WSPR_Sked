@@ -1375,7 +1375,7 @@
             // trackSlotscheckBox
             // 
             trackSlotscheckBox.AutoSize = true;
-            trackSlotscheckBox.Location = new System.Drawing.Point(24, 601);
+            trackSlotscheckBox.Location = new System.Drawing.Point(12, 610);
             trackSlotscheckBox.Name = "trackSlotscheckBox";
             trackSlotscheckBox.Size = new System.Drawing.Size(78, 17);
             trackSlotscheckBox.TabIndex = 80;
