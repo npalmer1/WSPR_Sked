@@ -1083,14 +1083,15 @@ namespace WSPR_Sked
             //dataGridView1.Columns[9].Width = 60; //rotator
             //dataGridView1.Columns[10].Width = 60; //azimuth
             dataGridView1.Columns[9].Width = 70; //end date
-            dataGridView1.Columns[10].Width = 42; //repeat
-            dataGridView1.Columns[11].Width = 42; //active
-            dataGridView1.Columns[12].Width = 42; //end time
+            dataGridView1.Columns[10].Width = 38; //repeat
+            dataGridView1.Columns[11].Width = 40; //rpttype
+            dataGridView1.Columns[12].Width = 48; //end time
             dataGridView1.Columns[13].Width = 42; //repeat time
-            dataGridView1.Columns[14].Width = 42; //slot no
-            dataGridView1.Columns[15].Width = 42; //message type
-            dataGridView1.Columns[16].Width = 42; //message type
+            dataGridView1.Columns[14].Width = 40; //goffset
+            dataGridView1.Columns[15].Width = 42; //active
+            dataGridView1.Columns[16].Width = 40; //slot
             dataGridView1.Columns[17].Width = 40; //message type
+        
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -1098,6 +1099,7 @@ namespace WSPR_Sked
             dataGridView1.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[10].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[11].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[14].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[15].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[16].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -8568,13 +8570,13 @@ namespace WSPR_Sked
                 {
                     if (DaycheckBox.Checked)
                     {
-                        endT = "Day";
+                        endT = "Day+/-";
                         rptType = 2;
 
                     }
                     else if (NightcheckBox.Checked)
                     {
-                        endT = "Night";
+                        endT = "Night+/-";
                         rptType = 3;
                     }
                     else if (AllcheckBox.Checked)
@@ -8610,11 +8612,11 @@ namespace WSPR_Sked
                 {
                     if (rpt ==2)
                     {
-                        endT = "Day";                    
+                        endT = "Day+/-";                    
                     }
                     else if (rpt ==3)
                     {
-                        endT = "Night";
+                        endT = "Night+/-";
                         rptType = 3;
                     }
                     else if (rpt ==4)
