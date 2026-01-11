@@ -2857,10 +2857,10 @@
             tabPage4.Controls.Add(FreqlistBox);
             tabPage4.Controls.Add(AgroupBox);
             tabPage4.Controls.Add(AntlistBox);
-            tabPage4.Location = new System.Drawing.Point(4, 24);
+            tabPage4.Location = new System.Drawing.Point(4, 22);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1172, 650);
+            tabPage4.Size = new System.Drawing.Size(1172, 652);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
@@ -3275,6 +3275,7 @@
             PopulateFbutton.TabIndex = 21;
             PopulateFbutton.Text = "Populate with standard frequencies";
             PopulateFbutton.UseVisualStyleBackColor = true;
+            PopulateFbutton.Visible = false;
             PopulateFbutton.Click += PopulateFbutton_Click;
             // 
             // FBgroupBox
@@ -3329,6 +3330,7 @@
             standardFcheckBox.TabIndex = 10;
             standardFcheckBox.Text = "Allow standard WSPR frequencies to be modified";
             standardFcheckBox.UseVisualStyleBackColor = true;
+            standardFcheckBox.Visible = false;
             // 
             // label47
             // 
