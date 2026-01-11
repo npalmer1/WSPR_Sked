@@ -308,7 +308,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {          
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.24";
+            string ver = "0.1.25";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -1053,13 +1053,14 @@ namespace WSPR_Sked
             //dtable.Columns.Add("Azimuth");          
             dtable.Columns.Add("End     ");  //9
             dtable.Columns.Add("Rpt");  //10
-            dtable.Columns.Add("Active");  //11
+            dtable.Columns.Add("Rtype"); //11 
             dtable.Columns.Add("endT"); //12
-            dtable.Columns.Add("rptT"); //13
-            dtable.Columns.Add("Slot"); //14
-            dtable.Columns.Add("Mtype"); //15 msg type
-            dtable.Columns.Add("Rtype"); //16 hidden
-            dtable.Columns.Add("Goff"); //17 hidden
+            dtable.Columns.Add("rptT"); //13 //repeat time - hidden                      
+           
+            dtable.Columns.Add("Goff"); //14 
+            dtable.Columns.Add("Active");  //15
+            dtable.Columns.Add("Slot"); //16
+            dtable.Columns.Add("Mtype"); //17 msg type
             dataGridView1.Columns.Clear();  //delete existing cells in datagrid view - to replace them with dtable
         }
 
@@ -1301,7 +1302,7 @@ namespace WSPR_Sked
                                 selSwPorttextBox.Text = p.ToString(); //show index 0 as 1 as ports start from 1
                             }
                         }
-                        if (cells[15] == "2")
+                        if (cells[17] == "2")
                         {
                             msgTlabel.Text = "Message type 2";
                         }
@@ -1310,7 +1311,7 @@ namespace WSPR_Sked
                             msgTlabel.Text = "Message type 1";
                         }
                         
-                        findRepeatType(cells[16], cells[17]); //reapeat type and greyoffset
+                        findRepeatType(cells[11], cells[14]); //reapeat type and greyoffset
                        
                     }
                 }
@@ -1344,7 +1345,7 @@ namespace WSPR_Sked
                 {
 
                 }
-                if (cells[11].Contains("x") || cells[11] == "")
+                if (cells[15].Contains("x") || cells[15] == "")
                 {
                     ActivecheckBox.Checked = false;
                 }
@@ -1764,8 +1765,8 @@ namespace WSPR_Sked
                 cells[9] = enddate;
                 Slot.Endslot = enddate;
                 Slot.EndTime = endtime;
-                if (ActivecheckBox.Checked) { cells[11] = tick; Slot.Active = tick; }
-                else { cells[11] = cross; Slot.Active = cross; }
+                if (ActivecheckBox.Checked) { cells[15] = tick; Slot.Active = tick; }
+                else { cells[15] = cross; Slot.Active = cross; }
                 if (repeatcheckBox.Checked) { cells[10] = tick; Slot.Rpt = tick; }
                 else { cells[10] = cross; Slot.Rpt = cross; }
                 cells[13] = "0"; //repeat time?
@@ -1774,7 +1775,7 @@ namespace WSPR_Sked
                 {
                     cells[13] = "1"; Slot.RptTime = "1";
                 }
-                cells[14] = slotNo.ToString();
+                cells[16] = slotNo.ToString();
                 Slot.SlotNo = slotNo;
 
                 Slot.SwPort = Convert.ToInt32(selSwPorttextBox.Text);
@@ -1783,7 +1784,7 @@ namespace WSPR_Sked
                 Slot.SwPort2++; //zeroise it
                 string MT = msgT.ToString();
 
-                cells[15] = MT;
+                cells[17] = MT;
 
                 int rpt_type = 0;
                 int greyoffset = 0;
@@ -1832,8 +1833,8 @@ namespace WSPR_Sked
                 }
                 Slot.RptType = rpt_type;
                 Slot.GreyOffset = greyoffset;
-                cells[16] = Slot.RptType.ToString();
-                cells[17] = Slot.GreyOffset.ToString();
+                cells[11] = Slot.RptType.ToString();
+                cells[14] = Slot.GreyOffset.ToString();
 
                 bool result = false;
                 result = await Task.Run(() =>
@@ -1856,20 +1857,20 @@ namespace WSPR_Sked
                     Msg.TMessageBox("Error updating cells", "", 1000);
                 }
                 string act = "";
-                if (DataRow.Cells[11].Value != null)
+                if (DataRow.Cells[15].Value != null)
                 {
-                    act = DataRow.Cells[11].Value.ToString();
+                    act = DataRow.Cells[15].Value.ToString();
                 }
 
                 if (act.Contains(tick))
                 {
-                    dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Red;
+                    dataGridView1.Rows[EditRow].Cells[15].Style.ForeColor = Color.Red;
                 }
                 else
                 {
-                    dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Blue;
+                    dataGridView1.Rows[EditRow].Cells[15].Style.ForeColor = Color.Blue;
                 }
-                DataGridViewCell cell = dataGridView1.Rows[EditRow].Cells[11];
+                DataGridViewCell cell = dataGridView1.Rows[EditRow].Cells[15];
                 cell.Style.Font = new System.Drawing.Font(dataGridView1.Font, FontStyle.Bold);
 
                 //dataGridView1.Columns[12].Visible = false; // Hide the repeat time column
@@ -2005,8 +2006,8 @@ namespace WSPR_Sked
                 cells[9] = enddate;
                 Slot.Endslot = enddate;
               
-                if (ActivecheckBox.Checked) { cells[11] = tick; Slot.Active = tick; }
-                else { cells[11] = cross; Slot.Active = cross; }
+                if (ActivecheckBox.Checked) { cells[15] = tick; Slot.Active = tick; }
+                else { cells[15] = cross; Slot.Active = cross; }
                 if (repeatcheckBox.Checked) { cells[10] = tick; Slot.Rpt = tick; }
                 else { cells[10] = cross; Slot.Rpt = cross; }
                 cells[13] = "0"; //repeat time?
@@ -2015,7 +2016,7 @@ namespace WSPR_Sked
                 {
                     cells[13] = "1"; Slot.RptTime = "1";
                 }
-                cells[14] = slotNo.ToString();
+                cells[16] = slotNo.ToString();
                 Slot.SlotNo = slotNo;
 
                 Slot.SwPort = Convert.ToInt32(selSwPorttextBox.Text);
@@ -2024,7 +2025,7 @@ namespace WSPR_Sked
                 Slot.SwPort2++; //zeroise it
                 string MT = msgT.ToString();
 
-                cells[15] = MT;
+                cells[17] = MT;
 
                 int rpt_type = 0;
                 int greyoffset = 0;
@@ -2086,8 +2087,8 @@ namespace WSPR_Sked
                 }
                 Slot.RptType = rpt_type;
                 Slot.GreyOffset = greyoffset;
-                cells[16] = Slot.RptType.ToString();
-                cells[17] = Slot.GreyOffset.ToString();
+                cells[11] = Slot.RptType.ToString();
+                cells[14] = Slot.GreyOffset.ToString();
 
                 var ok = false;
                 ok = await Task.Run(() =>
@@ -2124,20 +2125,20 @@ namespace WSPR_Sked
                     }
                 }
                     var act = "";
-                if (DataRow.Cells[11].Value != null)
+                if (DataRow.Cells[15].Value != null)
                 {
-                    act = DataRow.Cells[11].Value.ToString();
+                    act = DataRow.Cells[15].Value.ToString();
                 }
 
                 if (act.Contains(tick))
                 {
-                    dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Red;
+                    dataGridView1.Rows[EditRow].Cells[15].Style.ForeColor = Color.Red;
                 }
                 else
                 {
-                    dataGridView1.Rows[EditRow].Cells[11].Style.ForeColor = Color.Blue;
+                    dataGridView1.Rows[EditRow].Cells[15].Style.ForeColor = Color.Blue;
                 }
-                DataGridViewCell cell = dataGridView1.Rows[EditRow].Cells[11];
+                DataGridViewCell cell = dataGridView1.Rows[EditRow].Cells[15];
                 cell.Style.Font = new System.Drawing.Font(dataGridView1.Font, FontStyle.Bold);
 
                 //dataGridView1.Columns[12].Visible = false; // Hide the repeat time column
@@ -2560,7 +2561,7 @@ namespace WSPR_Sked
 
                     e = Convert.ToString(Slot.Endslot);
                     bool A = false; ;
-                    if (cells[11].Contains(tick))
+                    if (cells[15].Contains(tick))
                     {
                         A = true;
                     }
@@ -2670,7 +2671,7 @@ namespace WSPR_Sked
             {
                 N = "";
             }
-            if (cells[11].Contains(tick))
+            if (cells[15].Contains(tick))
             {
                 act = "1";
             }
@@ -2800,7 +2801,7 @@ namespace WSPR_Sked
                         date = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
 
                         time = Convert.ToString(dataGridView1.Rows[i].Cells[1].Value);
-                        string MT = dataGridView1.Rows[i].Cells[15].Value.ToString();
+                        string MT = dataGridView1.Rows[i].Cells[17].Value.ToString();
 
                         msgT = MT;
                         slot = i; break;
@@ -2872,7 +2873,7 @@ namespace WSPR_Sked
                         date = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
 
                         time = Convert.ToString(dataGridView1.Rows[i].Cells[1].Value);
-                        string MT = dataGridView1.Rows[i].Cells[15].Value.ToString();
+                        string MT = dataGridView1.Rows[i].Cells[17].Value.ToString();
 
                         msgT = MT;
                         slot = i; break;
@@ -8685,14 +8686,14 @@ namespace WSPR_Sked
                 //cells[10] = null; //azimuth                
 
                 cells[9] = SlotRow.Endslot;
-                cells[11] = SlotRow.Active;
+                cells[15] = SlotRow.Active;
                 cells[10] = SlotRow.Rpt;              
 
                 cells[13] = SlotRow.RptTime;
 
-                cells[14] = SlotRow.SlotNo.ToString();
-                cells[15] = SlotRow.MessageType.ToString();
-                cells[16] = SlotRow.RptType.ToString();
+                cells[16] = SlotRow.SlotNo.ToString();
+                cells[17] = SlotRow.MessageType.ToString();
+                cells[11] = SlotRow.RptType.ToString();
                 if (SlotRow.RptType == 1)   //repeat until end time
                 {
                     cells[12] = SlotRow.EndTime;
@@ -8701,7 +8702,7 @@ namespace WSPR_Sked
                 {
                     cells[12] = findendTType(SlotRow.RptType);
                 }
-                    cells[17] = SlotRow.GreyOffset.ToString();
+                    cells[14] = SlotRow.GreyOffset.ToString();
 
                 for (int i = 2; i < maxcol; i++)
                 {
@@ -8716,16 +8717,16 @@ namespace WSPR_Sked
                                                            //dataGridView1.Columns[16].Visible = false; //hide rpt type
                                                            // dataGridView1.Columns[17].Visible = false; //and greyoffset
                                                            //dataGridView1.Columns[15].Visible = false; //and msg type
-                string act = DataRow.Cells[11].Value.ToString();
+                string act = DataRow.Cells[15].Value.ToString();
                 if (act.Contains(tick))
                 {
-                    dataGridView1.Rows[s].Cells[11].Style.ForeColor = Color.Red;
+                    dataGridView1.Rows[s].Cells[15].Style.ForeColor = Color.Red;
                 }
                 else
                 {
-                    dataGridView1.Rows[s].Cells[11].Style.ForeColor = Color.Blue;
+                    dataGridView1.Rows[s].Cells[15].Style.ForeColor = Color.Blue;
                 }
-                DataGridViewCell cell = dataGridView1.Rows[s].Cells[11];
+                DataGridViewCell cell = dataGridView1.Rows[s].Cells[15];
                 cell.Style.Font = new System.Drawing.Font(dataGridView1.Font, FontStyle.Bold);
             }
             catch
