@@ -1687,10 +1687,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 24);
+            tabPage2.Location = new System.Drawing.Point(4, 22);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1172, 650);
+            tabPage2.Size = new System.Drawing.Size(1172, 652);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -1737,11 +1737,11 @@
             // label116
             // 
             label116.AutoSize = true;
-            label116.Location = new System.Drawing.Point(55, 562);
+            label116.Location = new System.Drawing.Point(29, 562);
             label116.Name = "label116";
-            label116.Size = new System.Drawing.Size(176, 26);
+            label116.Size = new System.Drawing.Size(179, 39);
             label116.TabIndex = 105;
-            label116.Text = "Note: create/update sunrise/sunset\r\nsettings regularly from here";
+            label116.Text = "Note: create/update sunrise/sunset \r\nwhen you change locator >40 miles\r\nUses: https://api.sunrise-sunset.org\r\n";
             // 
             // locationbutton
             // 
@@ -2857,10 +2857,10 @@
             tabPage4.Controls.Add(FreqlistBox);
             tabPage4.Controls.Add(AgroupBox);
             tabPage4.Controls.Add(AntlistBox);
-            tabPage4.Location = new System.Drawing.Point(4, 22);
+            tabPage4.Location = new System.Drawing.Point(4, 24);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1172, 652);
+            tabPage4.Size = new System.Drawing.Size(1172, 650);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;

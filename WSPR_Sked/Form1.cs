@@ -308,7 +308,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {          
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.25";
+            string ver = "0.1.26";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -9459,7 +9459,8 @@ namespace WSPR_Sked
                         Msg.TMessageBox("Unable to update sunrise/sunset times", "Sunrise/set", 2000);
                         break;
                     }
-                    date = date.AddDays(1);
+                   
+                        date = date.AddDays(1);
                 }
             }
             catch
@@ -9474,6 +9475,7 @@ namespace WSPR_Sked
         private async void Sunrise_Sunset(double latitude, double longitude, DateTime Date)
         {       //retrieves times as LocalConstant not UTC
 
+            //this method uses the REST API courtesy of sunrise-sunset.org
             DateTime sunrise = DateTime.MinValue;
             DateTime sunset = DateTime.MinValue;
             try
