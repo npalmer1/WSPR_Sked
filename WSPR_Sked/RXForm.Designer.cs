@@ -509,7 +509,6 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             ClientSize = new System.Drawing.Size(932, 620);
-            ControlBox = false;
             Controls.Add(Clearbutton);
             Controls.Add(Timelabel);
             Controls.Add(myloclabel);

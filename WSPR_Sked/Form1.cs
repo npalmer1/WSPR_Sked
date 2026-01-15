@@ -308,7 +308,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {          
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.26";
+            string ver = "0.1.27";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
