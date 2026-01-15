@@ -17,6 +17,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace WSPR_Sked
 {
@@ -95,10 +96,26 @@ namespace WSPR_Sked
 
         MessageClass Msg = new MessageClass();
 
+       
+
         public RXForm()
         {
             InitializeComponent();
-            OSDlistBox.SelectedIndex = 0;
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.MinimizeBox = true;
+            this.MaximizeBox = true;
+            OSDlistBox.SelectedIndex = 0;             
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                const int CS_NOCLOSE = 0x200;
+                CreateParams cp = base.CreateParams;
+                cp.ClassStyle |= CS_NOCLOSE;
+                return cp;
+            }
         }
 
         //private WaveInEvent waveIn = new WaveInEvent();
@@ -107,6 +124,8 @@ namespace WSPR_Sked
         {
 
         }
+
+       
 
         public void set_header(string call, string serverName, string db_user, string db_pass, string loc, int audioDev, string wsprdpath, string ver, int opsys)
         {
