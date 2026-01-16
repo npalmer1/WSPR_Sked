@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
             dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -394,6 +394,7 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
+            overrideFcheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -446,23 +447,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle4;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -808,6 +809,7 @@
             // 
             // AntselcomboBox
             // 
+            AntselcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             AntselcomboBox.FormattingEnabled = true;
             AntselcomboBox.Location = new System.Drawing.Point(270, 82);
             AntselcomboBox.Name = "AntselcomboBox";
@@ -863,6 +865,7 @@
             // 
             // dBmcomboBox
             // 
+            dBmcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             dBmcomboBox.FormattingEnabled = true;
             dBmcomboBox.Items.AddRange(new object[] { "0", "3", "7", "10", "13", "17", "20", "23", "27", "30", "33", "37", "40", "43", "47", "50", "53", "57", "60" });
             dBmcomboBox.Location = new System.Drawing.Point(158, 81);
@@ -873,6 +876,8 @@
             // 
             // FreqcomboBox
             // 
+            FreqcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            FreqcomboBox.ForeColor = System.Drawing.Color.Black;
             FreqcomboBox.FormattingEnabled = true;
             FreqcomboBox.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "13.5539", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "40.68", "50.293", "70.091", "144.489", "432.300", "1296.500" });
             FreqcomboBox.Location = new System.Drawing.Point(15, 81);
@@ -1599,6 +1604,7 @@
             // tabPage2
             // 
             tabPage2.BackColor = System.Drawing.SystemColors.Info;
+            tabPage2.Controls.Add(overrideFcheckBox);
             tabPage2.Controls.Add(label73);
             tabPage2.Controls.Add(overcheckBox);
             tabPage2.Controls.Add(stopRXcheckBox);
@@ -2189,6 +2195,7 @@
             // 
             // DefaultAntcomboBox
             // 
+            DefaultAntcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             DefaultAntcomboBox.FormattingEnabled = true;
             DefaultAntcomboBox.Location = new System.Drawing.Point(107, 176);
             DefaultAntcomboBox.MaxLength = 50;
@@ -2416,6 +2423,7 @@
             // 
             // defaultFcomboBox
             // 
+            defaultFcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             defaultFcomboBox.FormattingEnabled = true;
             defaultFcomboBox.Items.AddRange(new object[] { "0.136", "0.4742", "1.8366", "3.5686", "5.2872", "5.3647", "7.0386", "10.1387", "13.5539", "14.0956", "18.1046", "21.0946", "24.9246", "28.1246", "40.68", "50.293", "70.091", "144.489", "432.300", "1296.500" });
             defaultFcomboBox.Location = new System.Drawing.Point(107, 147);
@@ -2461,6 +2469,7 @@
             // 
             // defaultpwrcomboBox
             // 
+            defaultpwrcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             defaultpwrcomboBox.FormattingEnabled = true;
             defaultpwrcomboBox.Items.AddRange(new object[] { "0", "3", "7", "10", "13", "17", "20", "23", "27", "30", "33", "37", "40", "43", "47", "50", "53", "57", "60" });
             defaultpwrcomboBox.Location = new System.Drawing.Point(108, 111);
@@ -4212,6 +4221,16 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
+            // overrideFcheckBox
+            // 
+            overrideFcheckBox.AutoSize = true;
+            overrideFcheckBox.Location = new System.Drawing.Point(815, 263);
+            overrideFcheckBox.Name = "overrideFcheckBox";
+            overrideFcheckBox.Size = new System.Drawing.Size(158, 17);
+            overrideFcheckBox.TabIndex = 110;
+            overrideFcheckBox.Text = "Override scheduled slot freq";
+            overrideFcheckBox.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4637,6 +4656,7 @@
         private System.Windows.Forms.Label saveslotlabel;
         private System.Windows.Forms.Label label119;
         private System.Windows.Forms.Button flsuhSlotbutton;
+        private System.Windows.Forms.CheckBox overrideFcheckBox;
     }
 }
 
