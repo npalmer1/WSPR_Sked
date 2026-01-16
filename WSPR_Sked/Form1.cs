@@ -6695,6 +6695,7 @@ namespace WSPR_Sked
         private void FlistBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             FlistBox2.SelectedIndex = FlistBox.SelectedIndex;
+            testFtextBox.Text = FlistBox.Text;
             testFreq(false);
         }
 
