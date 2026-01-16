@@ -125,6 +125,7 @@ namespace WSPR_Sked
         bool DBdown = false;
 
         bool repeatStatus = false;
+        bool savePrompt = true;
 
 
         DateTime currentSelectedDate;
@@ -534,6 +535,7 @@ namespace WSPR_Sked
             {
                 this.Hide();
                 //Msg.TMessageBox("Unable to connect to mySQL", "Check mySQL", 4000);
+                savePrompt = false;
                 LoadError loadError = new LoadError();
                 loadError.Show();
             }
@@ -7812,18 +7814,21 @@ namespace WSPR_Sked
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            stopRigCtlD(true); //true form closing
-            rxForm.Save_Config(serverName, db_user, db_pass);
-            var res = Msg.ynMessageBox("Save all settings before exit (y/n)?", "Save Settings");
-            if (res == DialogResult.Yes)
+            if (savePrompt)
             {
-                SaveAll();
-                SaveRigctl();
-              
-                Save_Audio();
+                stopRigCtlD(true); //true form closing
+                rxForm.Save_Config(serverName, db_user, db_pass);
+                var res = Msg.ynMessageBox("Save all settings before exit (y/n)?", "Save Settings");
+                if (res == DialogResult.Yes)
+                {
+                    SaveAll();
+                    SaveRigctl();
+
+                    Save_Audio();
+                }
+
+                Task.Delay(1000);
             }
-           
-            Task.Delay(1000);
         }
 
 
