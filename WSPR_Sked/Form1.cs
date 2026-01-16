@@ -624,7 +624,17 @@ namespace WSPR_Sked
                         double freq = (double)Reader["Frequency"];
                         freq = Math.Round(freq, 4);
                         Slot.Freq = freq;
-
+                        if (overrideFcheckBox.Checked || noSkedcheckBox.Checked)
+                        {
+                            if (testFtextBox.Text == "")
+                            {
+                                freq = defaultF;
+                            }
+                            else
+                            {
+                                freq = Convert.ToDouble(testFtextBox.Text);
+                            }
+                        }
                         TXFrequency = (freq * 1000000).ToString();
 
                         int offset = (int)Reader["Offset"];
@@ -3551,6 +3561,11 @@ namespace WSPR_Sked
             {
                 Msg.TMessageBox("RX only on 22 or 8m", "RX only", 2000);
                 Task.Delay(1000);
+                return;
+            }
+            if (FlistBox.Text == "")
+            {
+                Msg.OKMessageBox("Select frequency from list first", "");
                 return;
             }
             double f = Convert.ToDouble(FlistBox.Text.Trim());            
@@ -7798,6 +7813,15 @@ namespace WSPR_Sked
         {
             stopRigCtlD(true); //true form closing
             rxForm.Save_Config(serverName, db_user, db_pass);
+            var res = Msg.ynMessageBox("Save all settings before exit (y/n)?", "Save Settings");
+            if (res == DialogResult.Yes)
+            {
+                SaveAll();
+                SaveRigctl();
+              
+                Save_Audio();
+            }
+           
             Task.Delay(1000);
         }
 
