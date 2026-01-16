@@ -626,7 +626,7 @@ namespace WSPR_Sked
                         double freq = (double)Reader["Frequency"];
                         freq = Math.Round(freq, 4);
                         Slot.Freq = freq;
-                        if (overrideFcheckBox.Checked || noSkedcheckBox.Checked)
+                        if (noSkedcheckBox.Checked)
                         {
                             if (testFtextBox.Text == "")
                             {
