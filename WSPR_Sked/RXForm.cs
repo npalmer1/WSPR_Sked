@@ -180,7 +180,18 @@ namespace WSPR_Sked
             }
 
         }
-
+        public void change_header(string call, string serverName, string db_user, string db_pass, string loc, int audioDev, string wsprdpath)
+        {
+            Callsign = call;
+            ownlabel.Text = Callsign;
+            server = serverName;
+            user = db_user;
+            pass = db_pass;
+            my_loc = loc;                             
+            audioDevice = audioDev;
+            wsprdfilepath = wsprdpath;                                
+            myloclabel.Text = my_loc;
+        }
         public async Task set_frequency(string Freq)
         {
             Frequency = Freq;

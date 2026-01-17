@@ -4157,6 +4157,12 @@ namespace WSPR_Sked
                     saved = true;
                 }
             }
+            string call = baseCalltextBox.Text;
+            if (Type2checkBox.Checked)
+            {
+                call = CalltextBox.Text;
+            }
+            rxForm.change_header(call.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath);
             if (loc_changed)
             {
                 Msg.OKMessageBox("Settings saved - may need to update sunrise/set", "Update sunrise/set?");
@@ -8839,6 +8845,12 @@ namespace WSPR_Sked
             wsprmsglabel.Visible = C;
             wsprmsgtextBox.Visible = C;
             asOnecheckBox.Visible = C;
+            string call = baseCalltextBox.Text;
+            if (C)
+            {
+                call = CalltextBox.Text;
+            }
+            rxForm.change_header(call.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath);
         }
 
         private void wsprmsgbutton_Click(object sender, EventArgs e)
