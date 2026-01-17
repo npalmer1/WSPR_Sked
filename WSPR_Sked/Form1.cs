@@ -5579,6 +5579,7 @@ namespace WSPR_Sked
             testPTTtimer.Enabled = false;
             slotActive = false;
             flashTX(false);
+            stopPlay = true;
 
 
         }
