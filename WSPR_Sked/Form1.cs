@@ -5033,29 +5033,31 @@ namespace WSPR_Sked
                 //if (await (findSlot(-1, date, nexttime)))
                 if (findSlot(-1, date, nexttime))
                 {
-                   
-                    if (noRigctld)
+                    if (!noSkedcheckBox.Checked)
                     {
-                        Msg.TMessageBox("Ignoring slot frequency - RigCtlD disabled", "Frequency", 1000);
-                    }
-                   
-                    if (!enableTXcheckBox.Checked && slotActive)
-                    {
-                        //do nothing
-                        Msg.TMessageBox("Warning: TX not enabled", "TX Status", 4000);
-                        slotActive = false;
-                    }
-                    if (!checkRigctld() && !justLoaded)
-                    {
-                        Msg.TMessageBox("Error: RigCtld not running", "", 3000);
-                    }
-                    else
-                    {
-                        blockTXonErr = false; //unblock old errors
-                        WSPRtimer.Enabled = true;
-                        WSPRtimer.Start(); //start the time to starty the TX 
-                        prepDone = false;
+                        if (noRigctld)
+                        {
+                            Msg.TMessageBox("Ignoring slot frequency - RigCtlD disabled", "Frequency", 1000);
+                        }
 
+                        if (!enableTXcheckBox.Checked && slotActive)
+                        {
+                            //do nothing
+                            Msg.TMessageBox("Warning: TX not enabled", "TX Status", 4000);
+                            slotActive = false;
+                        }
+                        if (!checkRigctld() && !justLoaded)
+                        {
+                            Msg.TMessageBox("Error: RigCtld not running", "", 3000);
+                        }
+                        else
+                        {
+                            blockTXonErr = false; //unblock old errors
+                            WSPRtimer.Enabled = true;
+                            WSPRtimer.Start(); //start the time to starty the TX 
+                            prepDone = false;
+
+                        }
                     }
                 }
                 justLoaded = false;
