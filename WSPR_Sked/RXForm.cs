@@ -131,6 +131,7 @@ namespace WSPR_Sked
         {
             this.Text = "Transmissions received by this station";
             Callsign = call;
+            ownlabel.Text = Callsign;
             server = serverName;
             user = db_user;
             pass = db_pass;
