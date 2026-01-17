@@ -3584,6 +3584,7 @@ namespace WSPR_Sked
             }
             double f = Convert.ToDouble(FlistBox.Text.Trim());            
             TXFrequency = (f * 1000000).ToString();
+            TXAntenna = DefaultAntcomboBox.Text;
             slotNo = 1;
             if (Type2checkBox.Checked)
             {
