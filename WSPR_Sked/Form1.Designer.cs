@@ -2582,10 +2582,10 @@
             tabPage3.Controls.Add(label30);
             tabPage3.Controls.Add(label29);
             tabPage3.Controls.Add(label28);
-            tabPage3.Location = new System.Drawing.Point(4, 24);
+            tabPage3.Location = new System.Drawing.Point(4, 22);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1172, 650);
+            tabPage3.Size = new System.Drawing.Size(1172, 652);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
             // 
@@ -2864,10 +2864,10 @@
             tabPage4.Controls.Add(FreqlistBox);
             tabPage4.Controls.Add(AgroupBox);
             tabPage4.Controls.Add(AntlistBox);
-            tabPage4.Location = new System.Drawing.Point(4, 24);
+            tabPage4.Location = new System.Drawing.Point(4, 22);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1172, 650);
+            tabPage4.Size = new System.Drawing.Size(1172, 652);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
@@ -3378,7 +3378,7 @@
             // FreqlistBox
             // 
             FreqlistBox.FormattingEnabled = true;
-            FreqlistBox.Items.AddRange(new object[] { "0.136\t\t1.0", "0.4742\t\t1.0", "1.8366\t\t1.0", "3.5686\t\t1.0", "5.2872\t\t1.0", "5.3647\t\t1.0", "7.0386\t\t1.0", "10.1387\t\t1.0", "14.0956\t\t1.0", "13.5539\t\t0.0", "18.1046\t\t1.0", "21.0946\t\t1.0", "24.9246\t\t1.0", "28.1246\t\t1.0", "40.68\t\t0.0", "50.293\t\t1.0", "70.091\t\t1.0", "144.489\t\t1.0", "432.300\t\t1.0", "1296.500\t\t1.0" });
+            FreqlistBox.Items.AddRange(new object[] { "0.136\t\t1.0", "0.4742\t\t1.0", "1.8366\t\t1.0", "3.5686\t\t1.0", "5.2872\t\t1.0", "5.3647\t\t1.0", "7.0386\t\t1.0", "10.1387\t\t1.0", "13.5539\t\t0.0", "14.0956\t\t1.0", "18.1046\t\t1.0", "21.0946\t\t1.0", "24.9246\t\t1.0", "28.1246\t\t1.0", "40.68\t\t0.0", "50.293\t\t1.0", "70.091\t\t1.0", "144.489\t\t1.0", "432.300\t\t1.0", "1296.500\t\t1.0" });
             FreqlistBox.Location = new System.Drawing.Point(96, 49);
             FreqlistBox.Name = "FreqlistBox";
             FreqlistBox.Size = new System.Drawing.Size(138, 264);
