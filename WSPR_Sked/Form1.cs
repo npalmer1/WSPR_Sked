@@ -1595,29 +1595,30 @@ namespace WSPR_Sked
                         ActivecheckBox.Checked = false;
 
                     }
-
+                    int editrow = EditRow;
                     if ((msgT == 2 || msgT == 3) && !asOnecheckBox.Checked && checkNextSlot(EditRow))
                     {
                         if ((DaycheckBox.Checked || NightcheckBox.Checked) && !this_slot) //don't update all if only this one
                         {
-                            SaveSlot_Sun(false, msgT, this_slot);
+                            slotNo = 1;
+                            SaveSlot_Sun(false, msgT, this_slot,editrow);
 
-                            EditRow++;
+                            editrow++;
 
                             slotNo = 2;
 
-                            SaveSlot_Sun(true, msgT, this_slot);
+                            SaveSlot_Sun(true, msgT, this_slot,editrow);
                         }
                         else
                         {
+                            slotNo = 1;
+                            SaveSlot(false, msgT, this_slot,editrow);
 
-                            SaveSlot(false, msgT, this_slot);
-
-                            EditRow++;
+                            editrow++;
 
                             slotNo = 2;
 
-                            SaveSlot(true, msgT, this_slot);
+                            SaveSlot(true, msgT, this_slot,editrow);
 
                         }
 
@@ -1625,14 +1626,15 @@ namespace WSPR_Sked
                     }
                     else //if (msgT != 2 || (msgT == 3 && asOnecheckBox.Checked))
                     {
+                        slotNo = 1;
                         if ((DaycheckBox.Checked || NightcheckBox.Checked) && !this_slot) //don't update all if only this one
                         {
-                            SaveSlot_Sun(false, msgT, this_slot);
+                            SaveSlot_Sun(false, msgT, this_slot,editrow);
 
                         }
                         else
                         {
-                            SaveSlot(false, msgT, this_slot);
+                            SaveSlot(false, msgT, this_slot,editrow);
 
                         }
                     }
@@ -1693,9 +1695,9 @@ namespace WSPR_Sked
 
             return true;
         }
-        private async Task SaveSlot(bool slot2, int msgT, bool this_slot) //update the gridview
+        private async Task SaveSlot(bool slot2, int msgT, bool this_slot,int  editrow) //update the gridview
         {
-            int i = EditRow;
+            int i = editrow;
             DataGridViewRow DataRow = dataGridView1.Rows[i];
 
             saveslotlabel.Visible = true;
@@ -1899,9 +1901,9 @@ namespace WSPR_Sked
             saveslotlabel.Visible = false; ;
         }
 
-        private async Task SaveSlot_Sun(bool slot2, int msgT, bool this_slot) //update the gridview
+        private async Task SaveSlot_Sun(bool slot2, int msgT, bool this_slot, int editrow) //update the gridview
         {
-            int i = EditRow;
+            int i = editrow;
             DataGridViewRow DataRow = dataGridView1.Rows[i];
 
             saveslotlabel.Visible = true;
