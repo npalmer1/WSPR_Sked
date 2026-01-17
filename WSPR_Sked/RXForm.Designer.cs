@@ -74,6 +74,8 @@
             myloclabel = new System.Windows.Forms.Label();
             Timelabel = new System.Windows.Forms.Label();
             Clearbutton = new System.Windows.Forms.Button();
+            label11 = new System.Windows.Forms.Label();
+            ownlabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -93,9 +95,9 @@
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10 });
-            dataGridView1.Location = new System.Drawing.Point(23, 65);
+            dataGridView1.Location = new System.Drawing.Point(23, 84);
             dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new System.Drawing.Size(866, 443);
+            dataGridView1.Size = new System.Drawing.Size(877, 432);
             dataGridView1.TabIndex = 2;
             dataGridView1.RowHeaderMouseClick += dataGridView1_RowHeaderMouseClick;
             // 
@@ -503,12 +505,32 @@
             Clearbutton.UseVisualStyleBackColor = true;
             Clearbutton.Click += Clearbutton_Click;
             // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new System.Drawing.Point(23, 58);
+            label11.Name = "label11";
+            label11.Size = new System.Drawing.Size(56, 15);
+            label11.TabIndex = 50;
+            label11.Text = "Own call:";
+            // 
+            // ownlabel
+            // 
+            ownlabel.AutoSize = true;
+            ownlabel.Location = new System.Drawing.Point(85, 58);
+            ownlabel.Name = "ownlabel";
+            ownlabel.Size = new System.Drawing.Size(17, 15);
+            ownlabel.TabIndex = 51;
+            ownlabel.Text = "--";
+            // 
             // RXForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             ClientSize = new System.Drawing.Size(932, 620);
+            Controls.Add(ownlabel);
+            Controls.Add(label11);
             Controls.Add(Clearbutton);
             Controls.Add(Timelabel);
             Controls.Add(myloclabel);
@@ -601,5 +623,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label ownlabel;
     }
 }
