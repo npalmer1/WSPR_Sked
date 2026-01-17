@@ -441,7 +441,13 @@ namespace WSPR_Sked
                 Read_Audio();
 
                 startCount = 0;
-                rxForm.set_header(CalltextBox.Text.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath, ver, OpSystem);
+                string C = baseCalltextBox.Text;
+                if (Type2checkBox.Checked)
+                {
+                    C = CalltextBox.Text;
+                }
+               
+                rxForm.set_header(C.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath, ver, OpSystem);
                 if (!noRigctld) { getRigF(); }
 
                 //rxForm.set_frequency(defaultF.ToString("F6"));
