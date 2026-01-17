@@ -1712,7 +1712,7 @@ namespace WSPR_Sked
                     dt = dt.AddMinutes(2);
                 }
                 string date1 = dt.ToString(dateformat);
-                cells[0] = date1;
+                //cells[0] = date1;
                 Slot.Date = date1;
                 string time1 = dt.ToString("HH:mm"); //current time
                 cells[1] = time1;
@@ -1851,10 +1851,11 @@ namespace WSPR_Sked
                 cells[14] = Slot.GreyOffset.ToString();
 
                 bool result = false;
-                result = await Task.Run(() =>
+                /*result = await Task.Run(() =>
                 {
                     return locateSlotMembersDT(date1, time1, enddate, endtime, this_slot);
-                });
+                });*/
+                result = locateSlotMembersDT(date1, time1, enddate, endtime, this_slot);
                 if (result) //if able to save data
                 {
                     for (i = 0; i < maxcol; i++)
@@ -2105,10 +2106,11 @@ namespace WSPR_Sked
                 cells[14] = Slot.GreyOffset.ToString();
 
                 var ok = false;
-                ok = await Task.Run(() =>
+                /*ok = await Task.Run(() =>
                 {
                     return locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot);
-                });
+                });*/
+                ok = locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot);
 
                 if (ok && show) //if able to save data
                 {
@@ -2173,6 +2175,7 @@ namespace WSPR_Sked
 
 
 
+        // private async Task<bool> locateSlotMembersDT(string date1, string time1, string enddate, string endtime, bool this_slot)
         private bool locateSlotMembersDT(string date1, string time1, string enddate, string endtime, bool this_slot)
         {
             DateTime dt;
@@ -2277,7 +2280,8 @@ namespace WSPR_Sked
         }
 
 
-        private async Task<bool> locateSlotMembersDT_Sun(string date1, string time1, string enddate, string endtime, bool this_slot)
+        //private async Task<bool> locateSlotMembersDT_Sun(string date1, string time1, string enddate, string endtime, bool this_slot)
+        private bool locateSlotMembersDT_Sun(string date1, string time1, string enddate, string endtime, bool this_slot)
         {
             DateTime dt;
             DateTime Dend;
