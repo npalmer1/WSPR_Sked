@@ -3584,7 +3584,8 @@ namespace WSPR_Sked
             }
             double f = Convert.ToDouble(FlistBox.Text.Trim());            
             TXFrequency = (f * 1000000).ToString();
-            TXAntenna = DefaultAntcomboBox.Text;
+            //TXAntenna = DefaultAntcomboBox.Text;
+            TXAntenna = defaultAnt;
             slotNo = 1;
             if (Type2checkBox.Checked)
             {
@@ -3597,7 +3598,7 @@ namespace WSPR_Sked
             }
             showMsgType(msgType);
             Slot.Offset = defaultoffset;
-            TXAntenna = defaultAnt;
+            
             if (rigctldcheckBox.Checked)
             {
                 testFtextBox.Text = defaultF.ToString();
@@ -8381,6 +8382,7 @@ namespace WSPR_Sked
         private async void DefaultAntcomboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             await activateAntSwitch(DefaultAntcomboBox.Text);
+            defaultAnt = DefaultAntcomboBox.Text;
 
         }
 
