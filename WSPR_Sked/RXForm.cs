@@ -13,11 +13,12 @@ using System.Linq;
 using System.Management;
 using System.Net.Http;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace WSPR_Sked
 {
@@ -1880,10 +1881,12 @@ namespace WSPR_Sked
         private void callFiltertextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             // Allow only letters, digits, and basic punctuation
-            if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && !".,-_*".Contains(e.KeyChar))
+            if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && !".-*/".Contains(e.KeyChar))
             {
                 e.Handled = true; // Block the character
             }
+            e.KeyChar = char.ToUpper(e.KeyChar);
+
         }
 
         private void button2_Click(object sender, EventArgs e)
