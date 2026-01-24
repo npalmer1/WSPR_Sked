@@ -4283,7 +4283,7 @@ namespace WSPR_Sked
                 c = "UPDATE settings SET ConfigID = " + configID + ", Callsign = '" + callsign + "', BaseCall = '" + baseC + "', Offset = " + defaultoffset + ", DefaultF = " + defaultF + ", ";
                 c = c + "Power = " + defaultdB + ", PowerW = " + defaultW + ", Locator = '" + full_location + "', LocatorLong = " + L + ", DefaultAnt = '" + defaultAnt + "'";
                 c = c + ", Alpha = " + defaultAlpha + ", DefaultAudio = " + defA + ", HamlibPath = '" + HL + "', MsgType = " + msgT;
-                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopSolar + ", stopRX = " + stopRX + " WHERE settings.ConfigID = " + configID;
+                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopSolar + ", stopRX = " + stopRX + ", SlotDB = '"+slot_dbname+"' WHERE settings.ConfigID = " + configID;
 
                 command.CommandText = c;
                 connection.Open();
@@ -4382,7 +4382,7 @@ namespace WSPR_Sked
 
                     }
                     catch { }
-                    if (slot_dbname != "wspr_slots")
+                    if (slot_dbname == "wspr_slots_test")
                     {
                         dbbutton.Text = "test";
                     }
