@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
             dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -395,6 +395,8 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
+            label121 = new System.Windows.Forms.Label();
+            dbbutton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -447,23 +449,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle4;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -1073,6 +1075,8 @@
             // tabPage1
             // 
             tabPage1.BackColor = System.Drawing.SystemColors.Info;
+            tabPage1.Controls.Add(dbbutton);
+            tabPage1.Controls.Add(label121);
             tabPage1.Controls.Add(label119);
             tabPage1.Controls.Add(flsuhSlotbutton);
             tabPage1.Controls.Add(saveslotlabel);
@@ -1202,7 +1206,7 @@
             // label117
             // 
             label117.AutoSize = true;
-            label117.Location = new System.Drawing.Point(380, 634);
+            label117.Location = new System.Drawing.Point(482, 629);
             label117.Name = "label117";
             label117.Size = new System.Drawing.Size(20, 13);
             label117.TabIndex = 98;
@@ -1211,7 +1215,7 @@
             // localsetlabel
             // 
             localsetlabel.AutoSize = true;
-            localsetlabel.Location = new System.Drawing.Point(346, 634);
+            localsetlabel.Location = new System.Drawing.Point(448, 629);
             localsetlabel.Name = "localsetlabel";
             localsetlabel.Size = new System.Drawing.Size(13, 13);
             localsetlabel.TabIndex = 97;
@@ -1220,7 +1224,7 @@
             // localriselabel
             // 
             localriselabel.AutoSize = true;
-            localriselabel.Location = new System.Drawing.Point(270, 634);
+            localriselabel.Location = new System.Drawing.Point(372, 629);
             localriselabel.Name = "localriselabel";
             localriselabel.Size = new System.Drawing.Size(13, 13);
             localriselabel.TabIndex = 96;
@@ -1229,7 +1233,7 @@
             // label115
             // 
             label115.AutoSize = true;
-            label115.Location = new System.Drawing.Point(380, 613);
+            label115.Location = new System.Drawing.Point(482, 608);
             label115.Name = "label115";
             label115.Size = new System.Drawing.Size(29, 13);
             label115.TabIndex = 95;
@@ -1238,7 +1242,7 @@
             // utcsetlabel
             // 
             utcsetlabel.AutoSize = true;
-            utcsetlabel.Location = new System.Drawing.Point(346, 613);
+            utcsetlabel.Location = new System.Drawing.Point(448, 608);
             utcsetlabel.Name = "utcsetlabel";
             utcsetlabel.Size = new System.Drawing.Size(13, 13);
             utcsetlabel.TabIndex = 94;
@@ -1247,7 +1251,7 @@
             // utcriselabel
             // 
             utcriselabel.AutoSize = true;
-            utcriselabel.Location = new System.Drawing.Point(270, 613);
+            utcriselabel.Location = new System.Drawing.Point(372, 608);
             utcriselabel.Name = "utcriselabel";
             utcriselabel.Size = new System.Drawing.Size(13, 13);
             utcriselabel.TabIndex = 93;
@@ -1258,7 +1262,7 @@
             label114.AutoSize = true;
             label114.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
             label114.ForeColor = System.Drawing.SystemColors.HotTrack;
-            label114.Location = new System.Drawing.Point(303, 613);
+            label114.Location = new System.Drawing.Point(405, 608);
             label114.Name = "label114";
             label114.Size = new System.Drawing.Size(43, 13);
             label114.TabIndex = 92;
@@ -1269,7 +1273,7 @@
             label113.AutoSize = true;
             label113.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
             label113.ForeColor = System.Drawing.SystemColors.HotTrack;
-            label113.Location = new System.Drawing.Point(225, 613);
+            label113.Location = new System.Drawing.Point(327, 608);
             label113.Name = "label113";
             label113.Size = new System.Drawing.Size(45, 13);
             label113.TabIndex = 91;
@@ -1692,10 +1696,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 24);
+            tabPage2.Location = new System.Drawing.Point(4, 22);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1172, 650);
+            tabPage2.Size = new System.Drawing.Size(1172, 652);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -2866,10 +2870,10 @@
             tabPage4.Controls.Add(FreqlistBox);
             tabPage4.Controls.Add(AgroupBox);
             tabPage4.Controls.Add(AntlistBox);
-            tabPage4.Location = new System.Drawing.Point(4, 22);
+            tabPage4.Location = new System.Drawing.Point(4, 24);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1172, 652);
+            tabPage4.Size = new System.Drawing.Size(1172, 650);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
@@ -4230,6 +4234,29 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
+            // label121
+            // 
+            label121.AutoSize = true;
+            label121.Location = new System.Drawing.Point(12, 634);
+            label121.Name = "label121";
+            label121.Size = new System.Drawing.Size(106, 13);
+            label121.TabIndex = 105;
+            label121.Text = "Slot database in use:";
+            // 
+            // dbbutton
+            // 
+            dbbutton.BackColor = System.Drawing.Color.MediumSlateBlue;
+            dbbutton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            dbbutton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            dbbutton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            dbbutton.Location = new System.Drawing.Point(122, 630);
+            dbbutton.Name = "dbbutton";
+            dbbutton.Size = new System.Drawing.Size(48, 19);
+            dbbutton.TabIndex = 106;
+            dbbutton.Text = "main";
+            dbbutton.UseVisualStyleBackColor = false;
+            dbbutton.Click += dbbutton_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4656,6 +4683,8 @@
         private System.Windows.Forms.Label label119;
         private System.Windows.Forms.Button flsuhSlotbutton;
         private System.Windows.Forms.Label label120;
+        private System.Windows.Forms.Label label121;
+        private System.Windows.Forms.Button dbbutton;
     }
 }
 
