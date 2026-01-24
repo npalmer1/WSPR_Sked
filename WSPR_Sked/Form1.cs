@@ -4667,7 +4667,7 @@ namespace WSPR_Sked
 
                     string ant = antenna.PadRight(40, ' ');
                     ant = ant.Substring(0, 40);
-                    ant = ant + "\t" + antSwitch.ToString() + "\t" + antTuner.ToString(); // + "\t" + antSwPort.ToString() + "\t" + antDescription;
+                    ant = ant + "\t" + antSwitch.ToString() + "\t" + antSwitch2.ToString() + "\t" + antTuner.ToString(); // + "\t" + antSwPort.ToString() + "\t" + antDescription;
 
                     AntlistBox.Items.Add(ant);
                     DefaultAntcomboBox.Items.Add(antenna);
@@ -6580,7 +6580,7 @@ namespace WSPR_Sked
                 }
                 string AN = AntnametextBox.Text.PadRight(40, ' ');
                 AN = AN.Substring(0, 40);
-                AN = AN + "\t" + S + "\t" + T; // + "\t" + P + "\t"+AntdesctextBox.Text;
+                AN = AN + "\t" + S + "\t" + S2 + "\t" + T; // + "\t" + P + "\t"+AntdesctextBox.Text;
                 if (newAcheckBox.Checked)
                 {
                     string[] al;

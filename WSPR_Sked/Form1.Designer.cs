@@ -259,6 +259,7 @@
             label29 = new System.Windows.Forms.Label();
             label28 = new System.Windows.Forms.Label();
             tabPage4 = new System.Windows.Forms.TabPage();
+            label120 = new System.Windows.Forms.Label();
             label69 = new System.Windows.Forms.Label();
             label68 = new System.Windows.Forms.Label();
             label63 = new System.Windows.Forms.Label();
@@ -1691,10 +1692,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 22);
+            tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1172, 652);
+            tabPage2.Size = new System.Drawing.Size(1172, 650);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -2582,10 +2583,10 @@
             tabPage3.Controls.Add(label30);
             tabPage3.Controls.Add(label29);
             tabPage3.Controls.Add(label28);
-            tabPage3.Location = new System.Drawing.Point(4, 22);
+            tabPage3.Location = new System.Drawing.Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1172, 652);
+            tabPage3.Size = new System.Drawing.Size(1172, 650);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
             // 
@@ -2847,6 +2848,7 @@
             // tabPage4
             // 
             tabPage4.BackColor = System.Drawing.SystemColors.Info;
+            tabPage4.Controls.Add(label120);
             tabPage4.Controls.Add(label69);
             tabPage4.Controls.Add(label68);
             tabPage4.Controls.Add(label63);
@@ -2872,10 +2874,19 @@
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
             // 
+            // label120
+            // 
+            label120.AutoSize = true;
+            label120.Location = new System.Drawing.Point(782, 26);
+            label120.Name = "label120";
+            label120.Size = new System.Drawing.Size(44, 26);
+            label120.TabIndex = 26;
+            label120.Text = "Remote\r\nSwitch";
+            // 
             // label69
             // 
             label69.AutoSize = true;
-            label69.Location = new System.Drawing.Point(786, 39);
+            label69.Location = new System.Drawing.Point(840, 39);
             label69.Name = "label69";
             label69.Size = new System.Drawing.Size(35, 13);
             label69.TabIndex = 25;
@@ -2884,11 +2895,11 @@
             // label68
             // 
             label68.AutoSize = true;
-            label68.Location = new System.Drawing.Point(735, 39);
+            label68.Location = new System.Drawing.Point(727, 26);
             label68.Name = "label68";
-            label68.Size = new System.Drawing.Size(39, 13);
+            label68.Size = new System.Drawing.Size(39, 26);
             label68.TabIndex = 24;
-            label68.Text = "Switch";
+            label68.Text = "Local\r\nSwitch";
             // 
             // label63
             // 
@@ -3432,7 +3443,7 @@
             AntlistBox.FormattingEnabled = true;
             AntlistBox.Location = new System.Drawing.Point(408, 55);
             AntlistBox.Name = "AntlistBox";
-            AntlistBox.Size = new System.Drawing.Size(413, 172);
+            AntlistBox.Size = new System.Drawing.Size(474, 172);
             AntlistBox.TabIndex = 1;
             AntlistBox.MouseDoubleClick += AntlistBox_MouseDoubleClick;
             // 
@@ -4644,6 +4655,7 @@
         private System.Windows.Forms.Label saveslotlabel;
         private System.Windows.Forms.Label label119;
         private System.Windows.Forms.Button flsuhSlotbutton;
+        private System.Windows.Forms.Label label120;
     }
 }
 
