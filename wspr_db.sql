@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 30, 2025 at 08:46 PM
+-- Generation Time: Jan 24, 2026 at 06:22 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -255,15 +255,16 @@ CREATE TABLE `settings` (
   `stopRX` tinyint(1) NOT NULL,
   `Riseoff` int(11) NOT NULL,
   `Setoff` int(11) NOT NULL,
-  `RXonly` tinyint(1) NOT NULL
+  `RXonly` tinyint(1) NOT NULL,
+  `SlotDB` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `settings`
 --
 
-INSERT INTO `settings` (`ConfigID`, `Callsign`, `BaseCall`, `Offset`, `DefaultF`, `Power`, `PowerW`, `FList`, `Locator`, `LocatorLong`, `DefaultAnt`, `Alpha`, `DefaultAudio`, `HamlibPath`, `MsgType`, `TimeZone`, `AllowType2`, `oneMsg`, `WsprmsgPath`, `VolumeLevel`, `stopsolar`, `stopRX`, `Riseoff`, `Setoff`, `RXonly`) VALUES
-(0, 'G4GCI', 'G4GCI', 25, 7.0386, 37, 5, '', 'IO90GU', 0, 'Windom 80-6m', 0.05, 1, 'C:/WSPR_Sked', 1, 'UTC', 0, 1, 'C:/WSPR_Sked', 0, 0, 0, 0, 0, 0);
+INSERT INTO `settings` (`ConfigID`, `Callsign`, `BaseCall`, `Offset`, `DefaultF`, `Power`, `PowerW`, `FList`, `Locator`, `LocatorLong`, `DefaultAnt`, `Alpha`, `DefaultAudio`, `HamlibPath`, `MsgType`, `TimeZone`, `AllowType2`, `oneMsg`, `WsprmsgPath`, `VolumeLevel`, `stopsolar`, `stopRX`, `Riseoff`, `Setoff`, `RXonly`, `SlotDB`) VALUES
+(0, 'G4GCI', 'G4GCI', 25, 7.0386, 37, 5, '', 'IO90GU', 0, 'Windom 80-6m', 0.05, 1, 'C:/WSPR_Sked', 1, 'UTC', 0, 1, 'C:/WSPR_Sked', 0, 0, 0, 0, 0, 0, '');
 
 --
 -- Indexes for dumped tables
@@ -806,7 +807,7 @@ CREATE TABLE `slots` (
   `Frequency` double NOT NULL,
   `Offset` int(11) NOT NULL,
   `Power` int(11) NOT NULL,
-  `PowerW` double DEFAULT NULL,
+  `PowerW` double NOT NULL,
   `Antenna` text NOT NULL,
   `Tuner` int(3) NOT NULL,
   `Switch` int(3) NOT NULL,
@@ -814,12 +815,62 @@ CREATE TABLE `slots` (
   `Rotator` varchar(3) NOT NULL,
   `Azimuth` int(11) NOT NULL,
   `Elevation` int(11) NOT NULL,
-  `End` date DEFAULT NULL,
+  `End` date NOT NULL,
   `Active` tinyint(1) NOT NULL,
   `Repeating` tinyint(1) NOT NULL,
   `TimeEnd` time NOT NULL,
   `RptTime` tinyint(1) NOT NULL,
-  `Parent` text DEFAULT NULL,
+  `Parent` text NOT NULL,
+  `Audio` int(11) NOT NULL,
+  `SlotNo` int(11) NOT NULL,
+  `MsgType` int(11) NOT NULL,
+  `RptType` tinyint(4) NOT NULL,
+  `GreyOffset` int(11) NOT NULL,
+  `Switch2` int(3) NOT NULL,
+  `SwitchPort2` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `slots`
+--
+ALTER TABLE `slots`
+  ADD PRIMARY KEY (`Date`,`Time`);
+--
+-- Database: `wspr_slots_test`
+--
+CREATE DATABASE IF NOT EXISTS `wspr_slots_test` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `wspr_slots_test`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `slots`
+--
+
+CREATE TABLE `slots` (
+  `Date` date NOT NULL,
+  `Time` time NOT NULL,
+  `Frequency` double NOT NULL,
+  `Offset` int(11) NOT NULL,
+  `Power` int(11) NOT NULL,
+  `PowerW` double NOT NULL,
+  `Antenna` text NOT NULL,
+  `Tuner` int(3) NOT NULL,
+  `Switch` int(3) NOT NULL,
+  `SwitchPort` int(11) NOT NULL,
+  `Rotator` varchar(3) NOT NULL,
+  `Azimuth` int(11) NOT NULL,
+  `Elevation` int(11) NOT NULL,
+  `End` date NOT NULL,
+  `Active` tinyint(1) NOT NULL,
+  `Repeating` tinyint(1) NOT NULL,
+  `TimeEnd` time NOT NULL,
+  `RptTime` tinyint(1) NOT NULL,
+  `Parent` text NOT NULL,
   `Audio` int(11) NOT NULL,
   `SlotNo` int(11) NOT NULL,
   `MsgType` int(11) NOT NULL,
