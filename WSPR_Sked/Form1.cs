@@ -8,6 +8,9 @@ using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using MathNet.Numerics.Providers.LinearAlgebra;
 using MySql.Data.MySqlClient;
+using Mysqlx;
+using Mysqlx.Crud;
+using MySqlX.XDevAPI.Relational;
 using NAudio.Wave;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.Cms;
@@ -34,9 +37,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using W410A;
 
 using WsprSharp;
+using static Mysqlx.Expect.Open.Types.Condition.Types;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
@@ -56,6 +61,8 @@ namespace WSPR_Sked
         DateTime selectedDate = new DateTime();
         DataTable dtable = new DataTable();
         //string selectedTime;
+
+        string slot_dbname = "wspr_slots";
 
         int configID = 0; //primary key of config settings database table
         string callsign = "G4GCI"; //full caLLSIGN
@@ -107,7 +114,7 @@ namespace WSPR_Sked
 
         int rptType = 0;
         string orig_parents = "";
-        string orig_parents2 ="";
+        string orig_parents2 = "";
 
         string Results;
         bool stopUrl = false;
@@ -248,10 +255,10 @@ namespace WSPR_Sked
         }
 
         List<Antenna> Ant = new List<Antenna>();
-        
+
         RXForm rxForm = new RXForm();
 
-      
+
 
         int keypresses = 0;
 
@@ -307,7 +314,7 @@ namespace WSPR_Sked
         }
 
         private async void Form1_Load(object sender, EventArgs e)
-        {          
+        {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
             string ver = "0.1.28";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
@@ -318,7 +325,7 @@ namespace WSPR_Sked
             RigCtlPathtextBox.Text = HamlibPath;
 
             getUserandPassword();
-            if (checkSlotDB())
+            if (checkSlotDB("wspr_slots"))
             {
                 addNewSlotColumns();
                 DateTime localTime = DateTime.Now; // your current local time
@@ -446,7 +453,7 @@ namespace WSPR_Sked
                 {
                     C = CalltextBox.Text;
                 }
-               
+
                 rxForm.set_header(C.Trim(), serverName, db_user, db_pass, full_location, audioInDevice, wsprdfilepath, ver, OpSystem);
                 if (!noRigctld) { getRigF(); }
 
@@ -537,7 +544,7 @@ namespace WSPR_Sked
         private void Form1_Shown(object sender, EventArgs e)
         {
 
-            if (!checkSlotDB())
+            if (!checkSlotDB("wspr_slots"))
             {
                 this.Hide();
                 //Msg.TMessageBox("Unable to connect to mySQL", "Check mySQL", 4000);
@@ -569,9 +576,9 @@ namespace WSPR_Sked
             return null;
         }
 
-        private bool checkSlotDB()
+        private bool checkSlotDB(string slotdb)
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slotdb;
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
@@ -604,7 +611,7 @@ namespace WSPR_Sked
 
             bool slotFound = false;
             int readcount = 0;
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
             selSwitchtextBox.Text = "0";
             selSwitchtextBox2.Text = "0";
             selSwPorttextBox.Text = "0";
@@ -874,7 +881,7 @@ namespace WSPR_Sked
             //DateTime d = new DateTime();
 
             bool found = false;
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + ";database=" + slot_dbname;
 
             if (!databaseError)
             {
@@ -1074,7 +1081,7 @@ namespace WSPR_Sked
             dtable.Columns.Add("Rtype"); //11 
             dtable.Columns.Add("endT"); //12
             dtable.Columns.Add("rptT"); //13 //repeat time - hidden                      
-           
+
             dtable.Columns.Add("Goff"); //14 
             dtable.Columns.Add("Active");  //15
             dtable.Columns.Add("Slot"); //16
@@ -1109,7 +1116,7 @@ namespace WSPR_Sked
             dataGridView1.Columns[15].Width = 42; //active
             dataGridView1.Columns[16].Width = 40; //slot
             dataGridView1.Columns[17].Width = 40; //message type
-        
+
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -1142,7 +1149,7 @@ namespace WSPR_Sked
         private void dataGridView1_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
 
-           
+
             if (saveslotlabel.Visible)
             {
                 Msg.TMessageBox("Please wait...", "Saving slots", 1500);
@@ -1290,7 +1297,7 @@ namespace WSPR_Sked
                             }
                             greygroupBox.Visible = false;
                         }
-                        
+
 
                     }
                     else
@@ -1328,9 +1335,9 @@ namespace WSPR_Sked
                         {
                             msgTlabel.Text = "Message type 1";
                         }
-                        
+
                         findRepeatType(cells[11], cells[14]); //reapeat type and greyoffset
-                       
+
                     }
                 }
                 catch
@@ -1433,7 +1440,7 @@ namespace WSPR_Sked
                         {
                             timeEnd.Text = cells[12];
                         }
-                        catch{ timeEnd.Text = "23:59"; }
+                        catch { timeEnd.Text = "23:59"; }
                         break;
                     case 2:
                         DaycheckBox.Checked = true;
@@ -1528,7 +1535,7 @@ namespace WSPR_Sked
             {
                 if (validateSlot()) //check all fields ok
                 {
-                    
+
                     //MessageForm mForm = new MessageForm();
 
                     if (Type2checkBox.Checked)
@@ -1556,11 +1563,11 @@ namespace WSPR_Sked
                     int R = findRptType(); //get new repeat type  
                     if (repeatcheckBox.Checked && editslotcheckBox.Checked)
                     {
-                       
+
                         var res = Msg.ynMessageBox("Update all repeating slots (Y/N)?", "Repeating slots");
                         if (res == DialogResult.No)
                         {
-                                            
+
                             if (R != oldR && editslotcheckBox.Checked)
                             {
                                 SilentdeletethisRow(false);  //delete old slots if repeat type has changed
@@ -1607,24 +1614,24 @@ namespace WSPR_Sked
                         if ((DaycheckBox.Checked || NightcheckBox.Checked) && !this_slot) //don't update all if only this one
                         {
                             slotNo = 1;
-                            SaveSlot_Sun(false, msgT, this_slot,editrow);
+                            SaveSlot_Sun(false, msgT, this_slot, editrow);
 
                             editrow++;
 
                             slotNo = 2;
 
-                            SaveSlot_Sun(true, msgT, this_slot,editrow);
+                            SaveSlot_Sun(true, msgT, this_slot, editrow);
                         }
                         else
                         {
                             slotNo = 1;
-                            SaveSlot(false, msgT, this_slot,editrow);
+                            SaveSlot(false, msgT, this_slot, editrow);
 
                             editrow++;
 
                             slotNo = 2;
 
-                            SaveSlot(true, msgT, this_slot,editrow);
+                            SaveSlot(true, msgT, this_slot, editrow);
 
                         }
 
@@ -1635,12 +1642,12 @@ namespace WSPR_Sked
                         slotNo = 1;
                         if ((DaycheckBox.Checked || NightcheckBox.Checked) && !this_slot) //don't update all if only this one
                         {
-                            SaveSlot_Sun(false, msgT, this_slot,editrow);
+                            SaveSlot_Sun(false, msgT, this_slot, editrow);
 
                         }
                         else
                         {
-                            SaveSlot(false, msgT, this_slot,editrow);
+                            SaveSlot(false, msgT, this_slot, editrow);
 
                         }
                     }
@@ -1701,7 +1708,7 @@ namespace WSPR_Sked
 
             return true;
         }
-        private async Task SaveSlot(bool slot2, int msgT, bool this_slot,int  editrow) //update the gridview
+        private async Task SaveSlot(bool slot2, int msgT, bool this_slot, int editrow) //update the gridview
         {
             int i = editrow;
             DataGridViewRow DataRow = dataGridView1.Rows[i];
@@ -1733,7 +1740,7 @@ namespace WSPR_Sked
                 cells[4] = dBmcomboBox.Text;
                 Slot.PowerdB = Convert.ToInt32(dBmcomboBox.Text);
                 cells[5] = PowertextBox.Text;
-                Slot.PowerW = Convert.ToInt32(PowertextBox.Text);
+                Slot.PowerW = Convert.ToDouble(PowertextBox.Text);
                 if (AntselcomboBox.SelectedIndex > -1)
                 {
                     cells[6] = AntselcomboBox.SelectedItem.ToString();
@@ -1772,15 +1779,15 @@ namespace WSPR_Sked
                         endtime = time1;
                         cells[12] = findendT();
                     }
-                  
+
                 }
                 else
                 {
                     endtime = "n/a";
                     cells[12] = "once";
                 }
-                    Slot.EndTime = endtime;
-                
+                Slot.EndTime = endtime;
+
 
                 cells[9] = enddate;
                 Slot.Endslot = enddate;
@@ -2020,13 +2027,13 @@ namespace WSPR_Sked
                     enddate = date1;
                 }
 
-               
-               
-               
+
+
+
 
                 cells[9] = enddate;
                 Slot.Endslot = enddate;
-              
+
                 if (ActivecheckBox.Checked) { cells[15] = tick; Slot.Active = tick; }
                 else { cells[15] = cross; Slot.Active = cross; }
                 if (repeatcheckBox.Checked) { cells[10] = tick; Slot.Rpt = tick; }
@@ -2075,7 +2082,7 @@ namespace WSPR_Sked
                 {
                     rpt_type = 0;
                 }
-               
+
                 if (repeatTimecheckBox.Checked)
                 {
                     endtime = timeEnd.Value.ToString("HH:mm");
@@ -2136,7 +2143,7 @@ namespace WSPR_Sked
                     return;
                 }
                 else //!show
-                {                
+                {
                     for (i = 2; i < maxcol; i++)
                     {
                         if (cells[i] != null)
@@ -2146,7 +2153,7 @@ namespace WSPR_Sked
                         }
                     }
                 }
-                    var act = "";
+                var act = "";
                 if (DataRow.Cells[15].Value != null)
                 {
                     act = DataRow.Cells[15].Value.ToString();
@@ -2554,7 +2561,7 @@ namespace WSPR_Sked
 
         private bool SaveSlotData(string d, string t)  //to database
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             DateTime date = new DateTime();
             //string d = "";
@@ -2595,13 +2602,13 @@ namespace WSPR_Sked
                         R = true;
                     }
                     string dte = Convert.ToString(cells[0]);
-                    
+
                     p = dte + " " + cells[1]; //date and time of parent of this slot
                     if (orig_parents != p & editslotcheckBox.Checked) //if parent has changed and editing slot
                     {
                         p = orig_parents; //if editing save original slot parent
                     }
-                    if (rptType ==4)
+                    if (rptType == 4)
                     {
                         p = dte + "00:00"; //all day slots parent is date and 00:00
                     }
@@ -2887,7 +2894,7 @@ namespace WSPR_Sked
             int i = 0;
             int slot = 0;
             string msgT = "1";
-          
+
             for (i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 try
@@ -2906,11 +2913,11 @@ namespace WSPR_Sked
                 catch { }
             }
 
-         
-               
-               
-                try
-                {
+
+
+
+            try
+            {
                 //time = dataGridView1.Rows[dataGridView1.]
 
 
@@ -2937,20 +2944,20 @@ namespace WSPR_Sked
 
 
                 DeleteRow(slot);
-                        if ((msgT == "2" || msgT == "3") && !asOnecheckBox.Checked)
-                        {
-                            DeleteRow(slot + 1);
-                        }
-                        parents[slot] = "";
-                    
-                }
-                catch
+                if ((msgT == "2" || msgT == "3") && !asOnecheckBox.Checked)
                 {
-                   
+                    DeleteRow(slot + 1);
                 }
+                parents[slot] = "";
+
+            }
+            catch
+            {
+
+            }
 
 
-                dataGridView1.Focus();
+            dataGridView1.Focus();
         }
 
         private void DeleteRow(int slot)
@@ -2989,7 +2996,7 @@ namespace WSPR_Sked
             string time = dataGridView1.Rows[slot].Cells[1].Value.ToString();
             string date = dataGridView1.Rows[slot].Cells[0].Value.ToString();
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             try
@@ -3107,7 +3114,7 @@ namespace WSPR_Sked
         }
         private bool deleteAllSlotsBetween(string date1, string date2)
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
             string arrow = ">";
             string c = "";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
@@ -3582,7 +3589,7 @@ namespace WSPR_Sked
                 Msg.OKMessageBox("Select frequency from list first", "");
                 return;
             }
-            double f = Convert.ToDouble(FlistBox.Text.Trim());            
+            double f = Convert.ToDouble(FlistBox.Text.Trim());
             TXFrequency = (f * 1000000).ToString();
             //TXAntenna = DefaultAntcomboBox.Text;
             TXAntenna = defaultAnt;
@@ -3598,7 +3605,7 @@ namespace WSPR_Sked
             }
             showMsgType(msgType);
             Slot.Offset = defaultoffset;
-            
+
             if (rigctldcheckBox.Checked)
             {
                 testFtextBox.Text = defaultF.ToString();
@@ -4193,8 +4200,8 @@ namespace WSPR_Sked
                 {
 
                     MySqlCommand command = connection.CreateCommand();
-                    command.CommandText = "INSERT INTO settings(ConfigID,Callsign,BaseCall,Offset,DefaultF,Power,PowerW,Locator,LocatorLong,DefaultAnt,Alpha,DefaultAudio,HamlibPath,MsgType,AllowType2,oneMsg,WsprmsgPath,stopsolar,stopRX) ";
-                    command.CommandText += "VALUES(@ConfigID,@Callsign,@BaseCall,@Offset,@DefaultF,@Power,@PowerW,@Locator,@LocatorLong,@DefaultAnt,@Alpha,@DefaultAudio,@HamlibPath,@MsgType,@AllowType2,@oneMsg,@WsprmsgPath,@stopsolar,@stopRX)";
+                    command.CommandText = "INSERT INTO settings(ConfigID,Callsign,BaseCall,Offset,DefaultF,Power,PowerW,Locator,LocatorLong,DefaultAnt,Alpha,DefaultAudio,HamlibPath,MsgType,AllowType2,oneMsg,WsprmsgPath,stopsolar,stopRX,SlotDB) ";
+                   command.CommandText += "VALUES(@ConfigID,@Callsign,@BaseCall,@Offset,@DefaultF,@Power,@PowerW,@Locator,@LocatorLong,@DefaultAnt,@Alpha,@DefaultAudio,@HamlibPath,@MsgType,@AllowType2,@oneMsg,@WsprmsgPath,@stopsolar,@stopRX,@SlotDB)";
 
                     connection.Open();
 
@@ -4226,6 +4233,7 @@ namespace WSPR_Sked
 
                     command.Parameters.AddWithValue("@stopsolar", stopSolar);
                     command.Parameters.AddWithValue("@stopRX", stopRX);
+                    command.Parameters.AddWithValue("@SlotDB", slot_dbname);    
                     string zone = "UTC";
                     if (LTcheckBox.Checked)
                     {
@@ -4363,6 +4371,23 @@ namespace WSPR_Sked
                     solarcheckBox.Checked = !stopSolar;
                     stopRX = (bool)Reader["stopRX"];
                     stopRXcheckBox.Checked = stopRX;
+                    slot_dbname = "wspr_slots";
+                    try
+                    {
+                        string DB = (string)Reader["SlotDB"];
+                        if (DB != null && DB != "")
+                        {
+                            slot_dbname = DB;
+                        }
+
+                    }
+                    catch { }
+                    if (slot_dbname != "wspr_slots")
+                    {
+                        dbbutton.Text = "test";
+                    }
+
+
 
                     if (OpSystem == 0)
                     {
@@ -6677,7 +6702,7 @@ namespace WSPR_Sked
             string act = "0";
             string r = "0";
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             try
             {
@@ -7713,7 +7738,7 @@ namespace WSPR_Sked
 
             if (repeatTimecheckBox.Checked)
             {
-                
+
 
                 DaycheckBox.Checked = false;
                 NightcheckBox.Checked = false;
@@ -7847,7 +7872,7 @@ namespace WSPR_Sked
                     SaveAll();
                     SaveRigctl();
 
-                    Save_Audio();
+                    Save_Audio();                   
                 }
 
                 Task.Delay(1000);
@@ -8400,7 +8425,7 @@ namespace WSPR_Sked
         {
             currHour(false, true);
         }
-        private void currHour(bool nochangeIfmatch, bool exactMin)
+        private void currHour(bool nochangeIfmatch, bool exactMin) //set time to current hour
         {
             string oldtime = "";
 
@@ -8644,7 +8669,7 @@ namespace WSPR_Sked
                 endT = "once";
                 rptType = 0;
             }
-                return endT;
+            return endT;
         }
 
         private string findendTType(int rpt)
@@ -8653,27 +8678,27 @@ namespace WSPR_Sked
             string t = tick.Trim();
             if (SlotRow.Rpt.Contains(t))
             {
-                endT = "1hr";                
+                endT = "1hr";
 
-                if (rpt ==1)
+                if (rpt == 1)
                 {
                     endT = SlotRow.EndTime;
-                  
+
                 }
                 else
                 {
-                    if (rpt ==2)
+                    if (rpt == 2)
                     {
-                        endT = "Day+/-";                    
+                        endT = "Day+/-";
                     }
-                    else if (rpt ==3)
+                    else if (rpt == 3)
                     {
                         endT = "Night+/-";
                         rptType = 3;
                     }
-                    else if (rpt ==4)
+                    else if (rpt == 4)
                     {
-                        endT = "24hr";                       
+                        endT = "24hr";
                     }
 
                 }
@@ -8741,7 +8766,7 @@ namespace WSPR_Sked
 
                 cells[9] = SlotRow.Endslot;
                 cells[15] = SlotRow.Active;
-                cells[10] = SlotRow.Rpt;              
+                cells[10] = SlotRow.Rpt;
 
                 cells[13] = SlotRow.RptTime;
 
@@ -8756,7 +8781,7 @@ namespace WSPR_Sked
                 {
                     cells[12] = findendTType(SlotRow.RptType);
                 }
-                    cells[14] = SlotRow.GreyOffset.ToString();
+                cells[14] = SlotRow.GreyOffset.ToString();
 
                 for (int i = 2; i < maxcol; i++)
                 {
@@ -9519,8 +9544,8 @@ namespace WSPR_Sked
                         Msg.TMessageBox("Unable to update sunrise/sunset times", "Sunrise/set", 2000);
                         break;
                     }
-                   
-                        date = date.AddDays(1);
+
+                    date = date.AddDays(1);
                 }
             }
             catch
@@ -9760,7 +9785,7 @@ namespace WSPR_Sked
 
         private void idletimer_Tick(object sender, EventArgs e)
         {
-            if (checkSlotDB())
+            if (checkSlotDB(slot_dbname))
             {
                 daytimer.Enabled = true;
                 daytimer.Start();
@@ -9825,30 +9850,67 @@ namespace WSPR_Sked
         private void addNewSlotColumns()
         {
             bool ok = false;
-            string ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
+            string ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
 
 
             using (MySqlConnection conn = new MySqlConnection(ConnectionString))
             {
                 conn.Open();
 
-                ok = AddIntColumnIfNotExists(conn, "slots", "Switch2");
-                ok = AddIntColumnIfNotExists(conn, "slots", "SwitchPort2");
+                ok = AddColumnIfNotExists(conn, "slots", "Switch2", "INT NOT NULL");
+                ok = AddColumnIfNotExists(conn, "slots", "SwitchPort2", "INT NOT NULL");
             }
             ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
             using (MySqlConnection conn = new MySqlConnection(ConnectionString))
             {
                 conn.Open();
 
-                ok = AddIntColumnIfNotExists(conn, "antennas", "Switch2");
-                ok = AddIntColumnIfNotExists(conn, "antennas", "SwitchPort2");
+                ok = AddColumnIfNotExists(conn, "antennas", "Switch2", "INT NOT NULL");
+                ok = AddColumnIfNotExists(conn, "antennas", "SwitchPort2", "INT NOT NULL");
             }
             if (ok)
             {
                 Msg.TMessageBox("Database updated with new columns", "Database Update", 1000);
             }
         }
-        private bool AddIntColumnIfNotExists(MySqlConnection conn, string table, string column)
+
+        void AddPrimaryKeyIfNotExists(MySqlConnection conn, string table, string key1, string key2) //not used
+        {
+            string checkSql = @"
+            SELECT COUNT(*)
+            FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+            WHERE TABLE_SCHEMA = DATABASE()
+            AND TABLE_NAME = @table
+            AND CONSTRAINT_TYPE = 'PRIMARY KEY'";
+
+            using (var checkCmd = new MySqlCommand(checkSql, conn))
+            {
+                long count = (long)checkCmd.ExecuteScalar();
+                if (count > 0)
+                    return;
+            }
+
+            string pkSql = "";
+            if (string.IsNullOrWhiteSpace(key2))
+            {
+                // Single-column primary key
+                pkSql = $"ALTER TABLE `{table}` ADD PRIMARY KEY (`{key1}`)";
+            }
+            else
+            {
+                // Composite primary key
+                pkSql = $"ALTER TABLE `{table}` ADD PRIMARY KEY (`{key1}`, `{key2}`)";
+            }
+
+            using (var pkCmd = new MySqlCommand(pkSql, conn))
+            {
+                pkCmd.ExecuteNonQuery();
+            }
+        }
+
+
+
+        private bool AddColumnIfNotExists(MySqlConnection conn, string table, string column, string type)
         {
             bool ok = false;
             try
@@ -9869,12 +9931,18 @@ namespace WSPR_Sked
                 if (exists == 0)
                 {
                     //Msg.TMessageBox($"Adding missing column '{column}' to table '{table}'", "Database Update", 1000);
-                    string alterSql = $@"
-                    ALTER TABLE {table}
-                    ADD COLUMN {column} INT NOT NULL DEFAULT 0;";
-                    new MySqlCommand(alterSql, conn).ExecuteNonQuery();
+                    string alterSql =
+                    $"ALTER TABLE `{table}` " +
+                    $"ADD COLUMN `{column}` {type}";
+
+                    using (var cmd = new MySqlCommand(alterSql, conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+
                     ok = true;
                 }
+
             }
             catch
             {
@@ -9885,10 +9953,139 @@ namespace WSPR_Sked
             return ok;
         }
 
+
+        private void createSlotDatabase(string dbname)
+        {
+            bool ok = false;
+            string connStr = "Server=" + serverName + ";user id=" + db_user + ";Password=" + db_pass;
+            try
+            {
+                using (var conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    string sql = "CREATE DATABASE IF NOT EXISTS " + dbname;
+
+
+                    using (var cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch
+            {
+                Msg.TMessageBox("Unable to create slot database", "Database Error", 2000);
+                return;
+            }
+            string ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + dbname;
+            try
+            {
+                using (var conn = new MySqlConnection(ConnectionString))
+                {
+                    conn.Open();
+
+                    string slotsStr = @"
+                    CREATE TABLE IF NOT EXISTS `slots` (
+                        `date` DATE NOT NULL,
+                        `time` TIME NOT NULL,
+                    PRIMARY KEY (`date`, `time`)
+                    );";
+
+                    using (var cmd = new MySqlCommand(slotsStr, conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch
+            {
+                Msg.TMessageBox("Unable to create slot table", "Database Error", 2000);
+                return;
+            }
+            try
+            {
+
+                using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+                {
+                    conn.Open();
+
+                    // Core data
+                    ok = AddColumnIfNotExists(conn, "slots", "frequency", "DOUBLE NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "offset", "INT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "power", "INT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "powerw", "DOUBLE NULL");
+
+                    // Equipment
+                    ok = AddColumnIfNotExists(conn, "slots", "antenna", "TEXT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "tuner", "INT(3) NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "switch", "INT(3) NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "switchport", "INT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "rotator", "VARCHAR(3) NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "azimuth", "INT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "elevation", "INT NOT NULL");
+
+                    // Scheduling
+                    ok = AddColumnIfNotExists(conn, "slots", "end", "DATE NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "active", "TINYINT(1) NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "repeating", "TINYINT(1) NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "timeend", "TIME NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "rpttime", "TINYINT(1) NOT NULL");
+
+                    // Relationships / metadata
+                    ok = AddColumnIfNotExists(conn, "slots", "parent", "TEXT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "audio", "INT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "slotno", "INT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "msgtype", "INT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "rpttype", "TINYINT(4) NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "slots", "greyoffset", "INT(4) NOT NULL");
+
+                    // Secondary switching
+                    ok = AddColumnIfNotExists(conn, "slots", "switch2", "INT NOT NULL DEFAULT 0");
+                    ok = AddColumnIfNotExists(conn, "slots", "switchport2", "INT NOT NULL DEFAULT 0");
+
+
+                }
+                if (ok)
+                {
+                    Msg.TMessageBox("New slot datavase created", "Database Update", 1000);
+                }
+            }
+            catch
+            {
+                Msg.TMessageBox("Unable to create slot database columns", "Database Error", 2000);
+                return;
+            }
+
+        }
+        private void addSlotDBNameField()   //add slot database name field
+        {
+            addNewField("wspr_configs", "settings", "SlotDB", "TEXT NOT NULL");
+        }
+        private void addNewField(string dbname, string table, string field, string type) //add new databse field if doesnt exist 
+        {
+            bool ok = false;
+            string ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + dbname;
+
+
+            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                ok = AddColumnIfNotExists(conn, table, field, type);
+
+            }
+
+            if (ok)
+            {
+                Msg.TMessageBox("Database updated with new columns", "Database Update", 1000);
+            }
+        }
+
         private bool checkNewSlotColumns()
         {
             bool exists = false;
-            string ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
+            string ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
 
 
             using (MySqlConnection conn = new MySqlConnection(ConnectionString))
@@ -10021,11 +10218,87 @@ namespace WSPR_Sked
                 }
             }
         }
-       
+
+        private void dbbutton_Click(object sender, EventArgs e)
+        {
+            string txt = dbbutton.Text;
+            if (!checkSlotDB("wspr_slots"))
+            {
+                Msg.OKMessageBox("Database connection error", "Database Error");
+                return;
+            }
+            if (txt == "main")
+            {
+                txt = "test";
+
+            }
+            else
+            {
+                txt = "main";
+
+            }
+            var res = Msg.ynMessageBox("Switch slot database to \"" + txt + "\" (y/n)?", "Database switch");
+            if (res == DialogResult.Yes)
+            {
+                if (dbbutton.Text == "main")
+                {
+                    dbbutton.Text = "test";
+                    slot_dbname = "wspr_slots_test";
+
+                    if (!checkSlotDB("wspr_slots_test"))
+                    {
+                        createSlotDatabase(slot_dbname);    //add the new database
+                        addSlotDBNameField();               // add new database name field to wspr_configs if it doesn't exist
+                    }
+                }
+                else
+                {
+
+                    dbbutton.Text = "main";
+                    slot_dbname = "wspr_slots";
+                }
+                currHour(false, true);
+
+            }
+        }
+        private void SaveDBName() //save configuration settings
+        {
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs";
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
+            lock (_lock)
+            {
+                try
+                {
+
+                    MySqlCommand command = connection.CreateCommand();
+
+
+                    command.CommandText = "INSERT INTO settings(SlotDB)";
+                    command.CommandText += " VALUES('" + slot_dbname + "')";
+                    command.CommandText += " ON DUPLICATE KEY UPDATE SlotDB = '" + slot_dbname + "'";
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+              
+
+               
+
+
+                }
+                catch
+                {
+
+                    connection.Close();
+                }
+            }
+            
+        }
     }
-
-
 }
+
+
+            
 
 
 
