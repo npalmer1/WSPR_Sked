@@ -29,8 +29,9 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
             dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -94,6 +95,8 @@
             label13 = new System.Windows.Forms.Label();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            dbbutton = new System.Windows.Forms.Button();
+            label121 = new System.Windows.Forms.Label();
             label119 = new System.Windows.Forms.Label();
             flsuhSlotbutton = new System.Windows.Forms.Button();
             saveslotlabel = new System.Windows.Forms.Label();
@@ -380,6 +383,45 @@
             label97 = new System.Windows.Forms.Label();
             audioOutlistBox = new System.Windows.Forms.ListBox();
             audioInlistBox = new System.Windows.Forms.ListBox();
+            tabPage7 = new System.Windows.Forms.TabPage();
+            selrigtextBox = new System.Windows.Forms.TextBox();
+            label137 = new System.Windows.Forms.Label();
+            addrigbutton = new System.Windows.Forms.Button();
+            riglistBox = new System.Windows.Forms.ListBox();
+            RiggroupBox = new System.Windows.Forms.GroupBox();
+            rigPTTcmdtextBox = new System.Windows.Forms.TextBox();
+            label134 = new System.Windows.Forms.Label();
+            rigeditcheckBox = new System.Windows.Forms.CheckBox();
+            rigrxcmdtextBox = new System.Windows.Forms.TextBox();
+            label136 = new System.Windows.Forms.Label();
+            rigtxcmdtextBox = new System.Windows.Forms.TextBox();
+            label125 = new System.Windows.Forms.Label();
+            label124 = new System.Windows.Forms.Label();
+            label123 = new System.Windows.Forms.Label();
+            rigserialgroupBox = new System.Windows.Forms.GroupBox();
+            rigflowcomboBox = new System.Windows.Forms.ComboBox();
+            rigdatacomboBox = new System.Windows.Forms.ComboBox();
+            label126 = new System.Windows.Forms.Label();
+            rigstopcomboBox = new System.Windows.Forms.ComboBox();
+            label127 = new System.Windows.Forms.Label();
+            rigparitycomboBox = new System.Windows.Forms.ComboBox();
+            label128 = new System.Windows.Forms.Label();
+            label129 = new System.Windows.Forms.Label();
+            rigporttextBox = new System.Windows.Forms.TextBox();
+            rigbaudcomboBox = new System.Windows.Forms.ComboBox();
+            rigBPlabel = new System.Windows.Forms.Label();
+            rigiptextBox = new System.Windows.Forms.TextBox();
+            rigportcomboBox = new System.Windows.Forms.ComboBox();
+            rigportlabel = new System.Windows.Forms.Label();
+            rigprotocolcomboBox = new System.Windows.Forms.ComboBox();
+            label132 = new System.Windows.Forms.Label();
+            label133 = new System.Windows.Forms.Label();
+            rignolabel = new System.Windows.Forms.Label();
+            rignametextBox = new System.Windows.Forms.TextBox();
+            rigcancelbutton = new System.Windows.Forms.Button();
+            saverigbutton = new System.Windows.Forms.Button();
+            label135 = new System.Windows.Forms.Label();
+            label122 = new System.Windows.Forms.Label();
             WSPRtimer = new System.Windows.Forms.Timer(components);
             daytimer = new System.Windows.Forms.Timer(components);
             Timelabel = new System.Windows.Forms.Label();
@@ -395,8 +437,7 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
-            label121 = new System.Windows.Forms.Label();
-            dbbutton = new System.Windows.Forms.Button();
+            editrigbutton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -417,6 +458,9 @@
             HwSerialgroupBox.SuspendLayout();
             tabPage6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBarGain).BeginInit();
+            tabPage7.SuspendLayout();
+            RiggroupBox.SuspendLayout();
+            rigserialgroupBox.SuspendLayout();
             SuspendLayout();
             // 
             // monthCalendar1
@@ -449,23 +493,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -1065,6 +1109,7 @@
             tabControl1.Controls.Add(tabPage4);
             tabControl1.Controls.Add(tabPage5);
             tabControl1.Controls.Add(tabPage6);
+            tabControl1.Controls.Add(tabPage7);
             tabControl1.Location = new System.Drawing.Point(3, -1);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
@@ -1138,6 +1183,29 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Slots";
             tabPage1.Click += tabPage1_Click;
+            // 
+            // dbbutton
+            // 
+            dbbutton.BackColor = System.Drawing.Color.MediumSlateBlue;
+            dbbutton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            dbbutton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            dbbutton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            dbbutton.Location = new System.Drawing.Point(122, 630);
+            dbbutton.Name = "dbbutton";
+            dbbutton.Size = new System.Drawing.Size(48, 19);
+            dbbutton.TabIndex = 106;
+            dbbutton.Text = "main";
+            dbbutton.UseVisualStyleBackColor = false;
+            dbbutton.Click += dbbutton_Click;
+            // 
+            // label121
+            // 
+            label121.AutoSize = true;
+            label121.Location = new System.Drawing.Point(12, 634);
+            label121.Name = "label121";
+            label121.Size = new System.Drawing.Size(106, 13);
+            label121.TabIndex = 105;
+            label121.Text = "Slot database in use:";
             // 
             // label119
             // 
@@ -1696,10 +1764,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 22);
+            tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1172, 652);
+            tabPage2.Size = new System.Drawing.Size(1172, 650);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -3872,7 +3940,7 @@
             // 
             // tabPage6
             // 
-            tabPage6.BackColor = System.Drawing.Color.Beige;
+            tabPage6.BackColor = System.Drawing.SystemColors.Info;
             tabPage6.Controls.Add(samecheckBox);
             tabPage6.Controls.Add(gainlabel);
             tabPage6.Controls.Add(label108);
@@ -4142,6 +4210,405 @@
             audioInlistBox.TabIndex = 2;
             audioInlistBox.SelectedIndexChanged += audioInlistBox_SelectedIndexChanged;
             // 
+            // tabPage7
+            // 
+            tabPage7.BackColor = System.Drawing.SystemColors.Info;
+            tabPage7.Controls.Add(editrigbutton);
+            tabPage7.Controls.Add(selrigtextBox);
+            tabPage7.Controls.Add(label137);
+            tabPage7.Controls.Add(addrigbutton);
+            tabPage7.Controls.Add(riglistBox);
+            tabPage7.Controls.Add(RiggroupBox);
+            tabPage7.Controls.Add(label122);
+            tabPage7.Location = new System.Drawing.Point(4, 22);
+            tabPage7.Name = "tabPage7";
+            tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            tabPage7.Size = new System.Drawing.Size(1172, 652);
+            tabPage7.TabIndex = 6;
+            tabPage7.Text = "Non Rigctl TX";
+            // 
+            // selrigtextBox
+            // 
+            selrigtextBox.Location = new System.Drawing.Point(55, 287);
+            selrigtextBox.Name = "selrigtextBox";
+            selrigtextBox.ReadOnly = true;
+            selrigtextBox.Size = new System.Drawing.Size(207, 20);
+            selrigtextBox.TabIndex = 28;
+            // 
+            // label137
+            // 
+            label137.AutoSize = true;
+            label137.Location = new System.Drawing.Point(55, 272);
+            label137.Name = "label137";
+            label137.Size = new System.Drawing.Size(66, 13);
+            label137.TabIndex = 27;
+            label137.Text = "Selected rig:";
+            // 
+            // addrigbutton
+            // 
+            addrigbutton.Location = new System.Drawing.Point(102, 211);
+            addrigbutton.Name = "addrigbutton";
+            addrigbutton.Size = new System.Drawing.Size(60, 23);
+            addrigbutton.TabIndex = 26;
+            addrigbutton.Text = "Add";
+            addrigbutton.UseVisualStyleBackColor = true;
+            addrigbutton.Click += addrigbutton_Click;
+            // 
+            // riglistBox
+            // 
+            riglistBox.FormattingEnabled = true;
+            riglistBox.Items.AddRange(new object[] { "0\tNone specified" });
+            riglistBox.Location = new System.Drawing.Point(55, 95);
+            riglistBox.Name = "riglistBox";
+            riglistBox.Size = new System.Drawing.Size(270, 95);
+            riglistBox.TabIndex = 25;
+            riglistBox.MouseClick += riglistBox_MouseClick;
+            riglistBox.MouseDoubleClick += riglistBox_MouseDoubleClick;
+            // 
+            // RiggroupBox
+            // 
+            RiggroupBox.BackColor = System.Drawing.Color.AntiqueWhite;
+            RiggroupBox.Controls.Add(rigPTTcmdtextBox);
+            RiggroupBox.Controls.Add(label134);
+            RiggroupBox.Controls.Add(rigeditcheckBox);
+            RiggroupBox.Controls.Add(rigrxcmdtextBox);
+            RiggroupBox.Controls.Add(label136);
+            RiggroupBox.Controls.Add(rigtxcmdtextBox);
+            RiggroupBox.Controls.Add(label125);
+            RiggroupBox.Controls.Add(label124);
+            RiggroupBox.Controls.Add(label123);
+            RiggroupBox.Controls.Add(rigserialgroupBox);
+            RiggroupBox.Controls.Add(rigporttextBox);
+            RiggroupBox.Controls.Add(rigbaudcomboBox);
+            RiggroupBox.Controls.Add(rigBPlabel);
+            RiggroupBox.Controls.Add(rigiptextBox);
+            RiggroupBox.Controls.Add(rigportcomboBox);
+            RiggroupBox.Controls.Add(rigportlabel);
+            RiggroupBox.Controls.Add(rigprotocolcomboBox);
+            RiggroupBox.Controls.Add(label132);
+            RiggroupBox.Controls.Add(label133);
+            RiggroupBox.Controls.Add(rignolabel);
+            RiggroupBox.Controls.Add(rignametextBox);
+            RiggroupBox.Controls.Add(rigcancelbutton);
+            RiggroupBox.Controls.Add(saverigbutton);
+            RiggroupBox.Controls.Add(label135);
+            RiggroupBox.Location = new System.Drawing.Point(377, 111);
+            RiggroupBox.Name = "RiggroupBox";
+            RiggroupBox.Size = new System.Drawing.Size(655, 430);
+            RiggroupBox.TabIndex = 24;
+            RiggroupBox.TabStop = false;
+            RiggroupBox.Text = "Rig";
+            RiggroupBox.Visible = false;
+            // 
+            // rigPTTcmdtextBox
+            // 
+            rigPTTcmdtextBox.Location = new System.Drawing.Point(150, 328);
+            rigPTTcmdtextBox.Name = "rigPTTcmdtextBox";
+            rigPTTcmdtextBox.Size = new System.Drawing.Size(335, 20);
+            rigPTTcmdtextBox.TabIndex = 24;
+            // 
+            // label134
+            // 
+            label134.AutoSize = true;
+            label134.Location = new System.Drawing.Point(44, 322);
+            label134.Name = "label134";
+            label134.Size = new System.Drawing.Size(109, 26);
+            label134.TabIndex = 23;
+            label134.Text = "Command to start TX \r\n(blank if none):";
+            // 
+            // rigeditcheckBox
+            // 
+            rigeditcheckBox.AutoSize = true;
+            rigeditcheckBox.Location = new System.Drawing.Point(575, 393);
+            rigeditcheckBox.Name = "rigeditcheckBox";
+            rigeditcheckBox.Size = new System.Drawing.Size(57, 17);
+            rigeditcheckBox.TabIndex = 22;
+            rigeditcheckBox.Text = "rig edit";
+            rigeditcheckBox.UseVisualStyleBackColor = true;
+            rigeditcheckBox.Visible = false;
+            // 
+            // rigrxcmdtextBox
+            // 
+            rigrxcmdtextBox.Location = new System.Drawing.Point(124, 390);
+            rigrxcmdtextBox.Name = "rigrxcmdtextBox";
+            rigrxcmdtextBox.Size = new System.Drawing.Size(361, 20);
+            rigrxcmdtextBox.TabIndex = 21;
+            // 
+            // label136
+            // 
+            label136.AutoSize = true;
+            label136.Location = new System.Drawing.Point(44, 393);
+            label136.Name = "label136";
+            label136.Size = new System.Drawing.Size(75, 13);
+            label136.TabIndex = 20;
+            label136.Text = "RX Command:";
+            // 
+            // rigtxcmdtextBox
+            // 
+            rigtxcmdtextBox.Location = new System.Drawing.Point(124, 285);
+            rigtxcmdtextBox.Name = "rigtxcmdtextBox";
+            rigtxcmdtextBox.Size = new System.Drawing.Size(361, 20);
+            rigtxcmdtextBox.TabIndex = 19;
+            // 
+            // label125
+            // 
+            label125.AutoSize = true;
+            label125.Location = new System.Drawing.Point(44, 361);
+            label125.Name = "label125";
+            label125.Size = new System.Drawing.Size(220, 26);
+            label125.TabIndex = 18;
+            label125.Text = "Enter a command to put it into RX (if any).\r\nFor example: CONFIG:call,grid,pwr,00000000";
+            // 
+            // label124
+            // 
+            label124.AutoSize = true;
+            label124.Location = new System.Drawing.Point(44, 292);
+            label124.Name = "label124";
+            label124.Size = new System.Drawing.Size(74, 13);
+            label124.TabIndex = 17;
+            label124.Text = "TX Command:";
+            // 
+            // label123
+            // 
+            label123.AutoSize = true;
+            label123.Location = new System.Drawing.Point(44, 217);
+            label123.Name = "label123";
+            label123.Size = new System.Drawing.Size(348, 65);
+            label123.TabIndex = 16;
+            label123.Text = resources.GetString("label123.Text");
+            // 
+            // rigserialgroupBox
+            // 
+            rigserialgroupBox.Controls.Add(rigflowcomboBox);
+            rigserialgroupBox.Controls.Add(rigdatacomboBox);
+            rigserialgroupBox.Controls.Add(label126);
+            rigserialgroupBox.Controls.Add(rigstopcomboBox);
+            rigserialgroupBox.Controls.Add(label127);
+            rigserialgroupBox.Controls.Add(rigparitycomboBox);
+            rigserialgroupBox.Controls.Add(label128);
+            rigserialgroupBox.Controls.Add(label129);
+            rigserialgroupBox.Location = new System.Drawing.Point(44, 160);
+            rigserialgroupBox.Name = "rigserialgroupBox";
+            rigserialgroupBox.Size = new System.Drawing.Size(390, 40);
+            rigserialgroupBox.TabIndex = 15;
+            rigserialgroupBox.TabStop = false;
+            rigserialgroupBox.Text = "Serial settings:";
+            rigserialgroupBox.Visible = false;
+            // 
+            // rigflowcomboBox
+            // 
+            rigflowcomboBox.FormattingEnabled = true;
+            rigflowcomboBox.Items.AddRange(new object[] { "none", "xon/xoff" });
+            rigflowcomboBox.Location = new System.Drawing.Point(299, 13);
+            rigflowcomboBox.Name = "rigflowcomboBox";
+            rigflowcomboBox.Size = new System.Drawing.Size(68, 21);
+            rigflowcomboBox.TabIndex = 8;
+            // 
+            // rigdatacomboBox
+            // 
+            rigdatacomboBox.FormattingEnabled = true;
+            rigdatacomboBox.Items.AddRange(new object[] { "7", "8" });
+            rigdatacomboBox.Location = new System.Drawing.Point(49, 14);
+            rigdatacomboBox.Name = "rigdatacomboBox";
+            rigdatacomboBox.Size = new System.Drawing.Size(36, 21);
+            rigdatacomboBox.TabIndex = 7;
+            // 
+            // label126
+            // 
+            label126.AutoSize = true;
+            label126.Location = new System.Drawing.Point(12, 17);
+            label126.Name = "label126";
+            label126.Size = new System.Drawing.Size(33, 13);
+            label126.TabIndex = 4;
+            label126.Text = "Data:";
+            // 
+            // rigstopcomboBox
+            // 
+            rigstopcomboBox.FormattingEnabled = true;
+            rigstopcomboBox.Items.AddRange(new object[] { "1", "2" });
+            rigstopcomboBox.Location = new System.Drawing.Point(224, 14);
+            rigstopcomboBox.Name = "rigstopcomboBox";
+            rigstopcomboBox.Size = new System.Drawing.Size(31, 21);
+            rigstopcomboBox.TabIndex = 6;
+            // 
+            // label127
+            // 
+            label127.AutoSize = true;
+            label127.Location = new System.Drawing.Point(186, 17);
+            label127.Name = "label127";
+            label127.Size = new System.Drawing.Size(32, 13);
+            label127.TabIndex = 5;
+            label127.Text = "Stop:";
+            // 
+            // rigparitycomboBox
+            // 
+            rigparitycomboBox.FormattingEnabled = true;
+            rigparitycomboBox.Items.AddRange(new object[] { "none", "odd", "even" });
+            rigparitycomboBox.Location = new System.Drawing.Point(133, 13);
+            rigparitycomboBox.Name = "rigparitycomboBox";
+            rigparitycomboBox.Size = new System.Drawing.Size(47, 21);
+            rigparitycomboBox.TabIndex = 3;
+            // 
+            // label128
+            // 
+            label128.AutoSize = true;
+            label128.Location = new System.Drawing.Point(261, 17);
+            label128.Name = "label128";
+            label128.Size = new System.Drawing.Size(32, 13);
+            label128.TabIndex = 2;
+            label128.Text = "Flow:";
+            // 
+            // label129
+            // 
+            label129.AutoSize = true;
+            label129.Location = new System.Drawing.Point(91, 16);
+            label129.Name = "label129";
+            label129.Size = new System.Drawing.Size(36, 13);
+            label129.TabIndex = 1;
+            label129.Text = "Parity:";
+            // 
+            // rigporttextBox
+            // 
+            rigporttextBox.Location = new System.Drawing.Point(185, 63);
+            rigporttextBox.Name = "rigporttextBox";
+            rigporttextBox.Size = new System.Drawing.Size(63, 20);
+            rigporttextBox.TabIndex = 14;
+            rigporttextBox.Visible = false;
+            // 
+            // rigbaudcomboBox
+            // 
+            rigbaudcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
+            rigbaudcomboBox.FormattingEnabled = true;
+            rigbaudcomboBox.Items.AddRange(new object[] { "110", "300", "600", "1200", "2400", "4800", "9600", "14400", "19200", "28800", "38400", "57600", "115200", "128000", "256000", "512000", "1000000" });
+            rigbaudcomboBox.Location = new System.Drawing.Point(297, 66);
+            rigbaudcomboBox.Name = "rigbaudcomboBox";
+            rigbaudcomboBox.Size = new System.Drawing.Size(105, 88);
+            rigbaudcomboBox.TabIndex = 13;
+            rigbaudcomboBox.Visible = false;
+            // 
+            // rigBPlabel
+            // 
+            rigBPlabel.AutoSize = true;
+            rigBPlabel.Location = new System.Drawing.Point(254, 68);
+            rigBPlabel.Name = "rigBPlabel";
+            rigBPlabel.Size = new System.Drawing.Size(35, 13);
+            rigBPlabel.TabIndex = 12;
+            rigBPlabel.Text = "Baud:";
+            rigBPlabel.Visible = false;
+            // 
+            // rigiptextBox
+            // 
+            rigiptextBox.Location = new System.Drawing.Point(286, 65);
+            rigiptextBox.Name = "rigiptextBox";
+            rigiptextBox.Size = new System.Drawing.Size(131, 20);
+            rigiptextBox.TabIndex = 10;
+            rigiptextBox.Visible = false;
+            // 
+            // rigportcomboBox
+            // 
+            rigportcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
+            rigportcomboBox.FormattingEnabled = true;
+            rigportcomboBox.Location = new System.Drawing.Point(185, 63);
+            rigportcomboBox.Name = "rigportcomboBox";
+            rigportcomboBox.Size = new System.Drawing.Size(49, 74);
+            rigportcomboBox.TabIndex = 9;
+            rigportcomboBox.Visible = false;
+            // 
+            // rigportlabel
+            // 
+            rigportlabel.AutoSize = true;
+            rigportlabel.Location = new System.Drawing.Point(150, 66);
+            rigportlabel.Name = "rigportlabel";
+            rigportlabel.Size = new System.Drawing.Size(29, 13);
+            rigportlabel.TabIndex = 8;
+            rigportlabel.Text = "Port:";
+            rigportlabel.Visible = false;
+            // 
+            // rigprotocolcomboBox
+            // 
+            rigprotocolcomboBox.AllowDrop = true;
+            rigprotocolcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
+            rigprotocolcomboBox.FormattingEnabled = true;
+            rigprotocolcomboBox.Items.AddRange(new object[] { "Serial", "TCP", "UDP" });
+            rigprotocolcomboBox.Location = new System.Drawing.Point(91, 63);
+            rigprotocolcomboBox.Name = "rigprotocolcomboBox";
+            rigprotocolcomboBox.Size = new System.Drawing.Size(40, 75);
+            rigprotocolcomboBox.TabIndex = 7;
+            rigprotocolcomboBox.SelectedIndexChanged += rigprotocolcomboBox_SelectedIndexChanged;
+            // 
+            // label132
+            // 
+            label132.AutoSize = true;
+            label132.Location = new System.Drawing.Point(26, 68);
+            label132.Name = "label132";
+            label132.Size = new System.Drawing.Size(49, 13);
+            label132.TabIndex = 6;
+            label132.Text = "Protocol:";
+            // 
+            // label133
+            // 
+            label133.AutoSize = true;
+            label133.Location = new System.Drawing.Point(355, 31);
+            label133.Name = "label133";
+            label133.Size = new System.Drawing.Size(47, 13);
+            label133.TabIndex = 5;
+            label133.Text = "Number:";
+            // 
+            // rignolabel
+            // 
+            rignolabel.AutoSize = true;
+            rignolabel.Location = new System.Drawing.Point(408, 31);
+            rignolabel.Name = "rignolabel";
+            rignolabel.Size = new System.Drawing.Size(13, 13);
+            rignolabel.TabIndex = 4;
+            rignolabel.Text = "--";
+            // 
+            // rignametextBox
+            // 
+            rignametextBox.Location = new System.Drawing.Point(76, 28);
+            rignametextBox.MaxLength = 50;
+            rignametextBox.Name = "rignametextBox";
+            rignametextBox.Size = new System.Drawing.Size(210, 20);
+            rignametextBox.TabIndex = 3;
+            // 
+            // rigcancelbutton
+            // 
+            rigcancelbutton.Location = new System.Drawing.Point(536, 342);
+            rigcancelbutton.Name = "rigcancelbutton";
+            rigcancelbutton.Size = new System.Drawing.Size(48, 23);
+            rigcancelbutton.TabIndex = 2;
+            rigcancelbutton.Text = "Cancel";
+            rigcancelbutton.UseVisualStyleBackColor = true;
+            rigcancelbutton.Click += rigcancelbutton_Click;
+            // 
+            // saverigbutton
+            // 
+            saverigbutton.Location = new System.Drawing.Point(536, 302);
+            saverigbutton.Name = "saverigbutton";
+            saverigbutton.Size = new System.Drawing.Size(48, 23);
+            saverigbutton.TabIndex = 1;
+            saverigbutton.Text = "Save";
+            saverigbutton.UseVisualStyleBackColor = true;
+            saverigbutton.Click += saverigbutton_Click;
+            // 
+            // label135
+            // 
+            label135.AutoSize = true;
+            label135.Location = new System.Drawing.Point(32, 31);
+            label135.Name = "label135";
+            label135.Size = new System.Drawing.Size(38, 13);
+            label135.TabIndex = 0;
+            label135.Text = "Name:";
+            // 
+            // label122
+            // 
+            label122.AutoSize = true;
+            label122.Location = new System.Drawing.Point(55, 32);
+            label122.Name = "label122";
+            label122.Size = new System.Drawing.Size(613, 13);
+            label122.TabIndex = 0;
+            label122.Text = "Some transceivers can be controlled by commands sent via the COM port rather then using Rigctl - these can be configured here";
+            // 
             // WSPRtimer
             // 
             WSPRtimer.Interval = 1000;
@@ -4234,28 +4701,15 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
-            // label121
+            // editrigbutton
             // 
-            label121.AutoSize = true;
-            label121.Location = new System.Drawing.Point(12, 634);
-            label121.Name = "label121";
-            label121.Size = new System.Drawing.Size(106, 13);
-            label121.TabIndex = 105;
-            label121.Text = "Slot database in use:";
-            // 
-            // dbbutton
-            // 
-            dbbutton.BackColor = System.Drawing.Color.MediumSlateBlue;
-            dbbutton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            dbbutton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            dbbutton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            dbbutton.Location = new System.Drawing.Point(122, 630);
-            dbbutton.Name = "dbbutton";
-            dbbutton.Size = new System.Drawing.Size(48, 19);
-            dbbutton.TabIndex = 106;
-            dbbutton.Text = "main";
-            dbbutton.UseVisualStyleBackColor = false;
-            dbbutton.Click += dbbutton_Click;
+            editrigbutton.Location = new System.Drawing.Point(202, 211);
+            editrigbutton.Name = "editrigbutton";
+            editrigbutton.Size = new System.Drawing.Size(60, 23);
+            editrigbutton.TabIndex = 29;
+            editrigbutton.Text = "Edit";
+            editrigbutton.UseVisualStyleBackColor = true;
+            editrigbutton.Click += editrigbutton_Click;
             // 
             // Form1
             // 
@@ -4312,6 +4766,12 @@
             tabPage6.ResumeLayout(false);
             tabPage6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)trackBarGain).EndInit();
+            tabPage7.ResumeLayout(false);
+            tabPage7.PerformLayout();
+            RiggroupBox.ResumeLayout(false);
+            RiggroupBox.PerformLayout();
+            rigserialgroupBox.ResumeLayout(false);
+            rigserialgroupBox.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -4685,6 +5145,46 @@
         private System.Windows.Forms.Label label120;
         private System.Windows.Forms.Label label121;
         private System.Windows.Forms.Button dbbutton;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.GroupBox RiggroupBox;
+        private System.Windows.Forms.GroupBox rigserialgroupBox;
+        private System.Windows.Forms.ComboBox rigflowcomboBox;
+        private System.Windows.Forms.ComboBox rigdatacomboBox;
+        private System.Windows.Forms.Label label126;
+        private System.Windows.Forms.ComboBox rigstopcomboBox;
+        private System.Windows.Forms.Label label127;
+        private System.Windows.Forms.ComboBox rigparitycomboBox;
+        private System.Windows.Forms.Label label128;
+        private System.Windows.Forms.Label label129;
+        private System.Windows.Forms.TextBox rigporttextBox;
+        private System.Windows.Forms.ComboBox rigbaudcomboBox;
+        private System.Windows.Forms.Label rigBPlabel;
+        private System.Windows.Forms.TextBox rigiptextBox;
+        private System.Windows.Forms.ComboBox rigportcomboBox;
+        private System.Windows.Forms.Label rigportlabel;
+        private System.Windows.Forms.ComboBox rigprotocolcomboBox;
+        private System.Windows.Forms.Label label132;
+        private System.Windows.Forms.Label label133;
+        private System.Windows.Forms.Label rignolabel;
+        private System.Windows.Forms.TextBox rignametextBox;
+        private System.Windows.Forms.Button rigcancelbutton;
+        private System.Windows.Forms.Button saverigbutton;
+        private System.Windows.Forms.Label label135;
+        private System.Windows.Forms.Label label122;
+        private System.Windows.Forms.Label label123;
+        private System.Windows.Forms.Label label124;
+        private System.Windows.Forms.TextBox rigrxcmdtextBox;
+        private System.Windows.Forms.Label label136;
+        private System.Windows.Forms.TextBox rigtxcmdtextBox;
+        private System.Windows.Forms.Label label125;
+        private System.Windows.Forms.ListBox riglistBox;
+        private System.Windows.Forms.Button addrigbutton;
+        private System.Windows.Forms.CheckBox rigeditcheckBox;
+        private System.Windows.Forms.TextBox rigPTTcmdtextBox;
+        private System.Windows.Forms.Label label134;
+        private System.Windows.Forms.TextBox selrigtextBox;
+        private System.Windows.Forms.Label label137;
+        private System.Windows.Forms.Button editrigbutton;
     }
 }
 

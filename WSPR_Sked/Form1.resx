@@ -165,6 +165,13 @@
   <metadata name="Column16.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="label123.Text" xml:space="preserve">
+    <value>Enter the command to set callsign, grid, power (dBm) and frequency:
+Use the following variables in places of actual values: call, grid, pwr, freq
+For example: CONFIG:call,grid,pwr,freq
+Where: call = G4GCI, grid = IO90, pwr = 23, freq = 14097100
+This example will send: CONFIG:G4GCI,IO90,23,14097100</value>
+  </data>
   <metadata name="WSPRtimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
