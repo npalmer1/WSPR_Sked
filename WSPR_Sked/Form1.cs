@@ -1,4 +1,5 @@
 ﻿using Arduino;
+using ClickHouse.Client.Utility;
 using FSK;
 //using Google.Protobuf.WellKnownTypes;
 using Logging;
@@ -20,7 +21,7 @@ using System.Collections.Generic;
 
 using System.Data;
 using System.Diagnostics;
-
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
@@ -39,6 +40,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using W410A;
+using Other_TX;
 
 using WsprSharp;
 using static Mysqlx.Expect.Open.Types.Condition.Types;
@@ -228,6 +230,29 @@ namespace WSPR_Sked
         List<Hardware> SW = new List<Hardware>();
         List<Hardware> TU = new List<Hardware>();
 
+        public struct Rigs
+        {
+            public int Id;
+            public string Name;
+            public int Type;
+            public int Selected;
+            public string Protocol;
+            public string Port;
+            public string IP;
+            public string Baud;
+            public string Serial;
+            public string TXcommand;
+            public string RXcommand;
+            public string TXptt;
+            public string command1;
+            public string command2;
+            public string command3;
+            public string command4;
+
+        }
+        Rigs rig = new Rigs();
+        int selectedRig = 0;
+
         public struct SwitchType
         {
             public string TypeName;
@@ -316,7 +341,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.28";
+            string ver = "0.1.29";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -325,6 +350,8 @@ namespace WSPR_Sked
             RigCtlPathtextBox.Text = HamlibPath;
 
             getUserandPassword();
+            rig.Name = "";
+            rig.Type = 0;
             if (checkSlotDB("wspr_slots"))
             {
                 addNewSlotColumns();
@@ -531,6 +558,9 @@ namespace WSPR_Sked
                     Msg.TMessageBox("No sunrise/sunset times - building table - please wait", "Sunrise/sunset Times", 4000);
                     updateSunriseSunset();
                 }
+                rig = ReadRigs(true, 0);
+                selectedRig = rig.Selected;
+                
             } //if checkslotDB
             else
             {
@@ -3753,7 +3783,7 @@ namespace WSPR_Sked
             double freq = 0;
             bool ok = false;
 
-            if (noRigctld)
+            if (noRigctld && selectedRig == 0)
             {
                 if (FlistBox2.SelectedIndex > -1)
                 {
@@ -3768,10 +3798,11 @@ namespace WSPR_Sked
                     return false;
                 }
             }
-            else
+            else if (!noRigctld)
             {
                 await Task.Run(() =>
                 {
+                    
                     var reply = sendTXRigCommand(rigcmd);
                     string R = reply.ToString();
                     if (R.StartsWith("RPRT -"))
@@ -3792,19 +3823,71 @@ namespace WSPR_Sked
                             freq = freq / 1000000;
                             ok = true;
                         }
-                        catch { }
+                        catch { ok = false; }
                         Msg.TMessageBox("Changed to: " + freq.ToString() + " MHz", "", 1000);
 
                     }
 
                 });
-                if (ok) { rxForm.set_frequency(freq.ToString("F6")); return true; }
+            }
+            else //no rigctld, but seleted TX > 0
+            {
+                //may not need to change Freq on other rigs here?
+                rig = ReadRigs(false, selectedRig);  //global rig variable
+                sendOtherTXRigCommand(rig, rig.TXcommand);
+                try
+                {
+                    freq = Convert.ToDouble(f);
+                    freq = freq / 1000000;
+                    ok = true;
+                }
+                catch { ok = false; }
+                Msg.TMessageBox("Changed to: " + freq.ToString() + " MHz", "", 1000);
+            }
+            if (ok) { rxForm.set_frequency(freq.ToString("F6")); return true; }
+            else
+            {
+                return false;
+            }
+            
+
+
+        }
+
+        private async Task<string> sendOtherTXRigCommand(Rigs N, string msg) //send a TX message to RigCtlD and wait for reply
+        {
+            string ip = RigctlIPv4;
+            string port = RigctlPort;
+            
+            if (!blockTXonErr)
+            {
+                if (noRigctld && selectedRig >0)
+                {
+                   
+                    var r = new Other_TX.OtherTX(N.Protocol, N.IP, N.Port, N.Baud, N.Serial, msg);
+
+                    if ((r.reply == "error") && !blockTXonErr)
+                    {
+                        blockTXonErr = true;
+                        Msg.TMessageBox("Error contacting RigCtlD - is it running?", "Warning", 4000);
+                        return r.reply;
+                    }
+                    else
+                    {
+                        return "ok";
+                    }
+                }
                 else
                 {
-                    return false;
+                    return "ok";
                 }
-            }
 
+
+            }
+            else
+            {
+                return "error";
+            }
 
         }
 
@@ -4201,7 +4284,7 @@ namespace WSPR_Sked
 
                     MySqlCommand command = connection.CreateCommand();
                     command.CommandText = "INSERT INTO settings(ConfigID,Callsign,BaseCall,Offset,DefaultF,Power,PowerW,Locator,LocatorLong,DefaultAnt,Alpha,DefaultAudio,HamlibPath,MsgType,AllowType2,oneMsg,WsprmsgPath,stopsolar,stopRX,SlotDB) ";
-                   command.CommandText += "VALUES(@ConfigID,@Callsign,@BaseCall,@Offset,@DefaultF,@Power,@PowerW,@Locator,@LocatorLong,@DefaultAnt,@Alpha,@DefaultAudio,@HamlibPath,@MsgType,@AllowType2,@oneMsg,@WsprmsgPath,@stopsolar,@stopRX,@SlotDB)";
+                    command.CommandText += "VALUES(@ConfigID,@Callsign,@BaseCall,@Offset,@DefaultF,@Power,@PowerW,@Locator,@LocatorLong,@DefaultAnt,@Alpha,@DefaultAudio,@HamlibPath,@MsgType,@AllowType2,@oneMsg,@WsprmsgPath,@stopsolar,@stopRX,@SlotDB)";
 
                     connection.Open();
 
@@ -4233,7 +4316,7 @@ namespace WSPR_Sked
 
                     command.Parameters.AddWithValue("@stopsolar", stopSolar);
                     command.Parameters.AddWithValue("@stopRX", stopRX);
-                    command.Parameters.AddWithValue("@SlotDB", slot_dbname);    
+                    command.Parameters.AddWithValue("@SlotDB", slot_dbname);
                     string zone = "UTC";
                     if (LTcheckBox.Checked)
                     {
@@ -4283,7 +4366,7 @@ namespace WSPR_Sked
                 c = "UPDATE settings SET ConfigID = " + configID + ", Callsign = '" + callsign + "', BaseCall = '" + baseC + "', Offset = " + defaultoffset + ", DefaultF = " + defaultF + ", ";
                 c = c + "Power = " + defaultdB + ", PowerW = " + defaultW + ", Locator = '" + full_location + "', LocatorLong = " + L + ", DefaultAnt = '" + defaultAnt + "'";
                 c = c + ", Alpha = " + defaultAlpha + ", DefaultAudio = " + defA + ", HamlibPath = '" + HL + "', MsgType = " + msgT;
-                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopSolar + ", stopRX = " + stopRX + ", SlotDB = '"+slot_dbname+"' WHERE settings.ConfigID = " + configID;
+                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopSolar + ", stopRX = " + stopRX + ", SlotDB = '" + slot_dbname + "' WHERE settings.ConfigID = " + configID;
 
                 command.CommandText = c;
                 connection.Open();
@@ -5062,9 +5145,9 @@ namespace WSPR_Sked
                 {
                     if (!noSkedcheckBox.Checked)
                     {
-                        if (noRigctld)
+                        if (noRigctld && selectedRig ==0)
                         {
-                            Msg.TMessageBox("Ignoring slot frequency - RigCtlD disabled", "Frequency", 1000);
+                            Msg.TMessageBox("Ignoring slot: RigCtlD disabled or no TX selected", "Frequency", 1000);
                         }
 
                         if (!enableTXcheckBox.Checked && slotActive)
@@ -5234,6 +5317,10 @@ namespace WSPR_Sked
                     }
 
                 });
+            }
+            else if (selectedRig > 0)
+            {
+                sendOtherTXRigCommand(rig, rig.TXptt); //already have rig from changefreq()
             }
             else
             {
@@ -7872,7 +7959,8 @@ namespace WSPR_Sked
                     SaveAll();
                     SaveRigctl();
 
-                    Save_Audio();                   
+                    Save_Audio();
+                    saveAllRigs();
                 }
 
                 Task.Delay(1000);
@@ -10272,7 +10360,6 @@ namespace WSPR_Sked
 
                     MySqlCommand command = connection.CreateCommand();
 
-
                     command.CommandText = "INSERT INTO settings(SlotDB)";
                     command.CommandText += " VALUES('" + slot_dbname + "')";
                     command.CommandText += " ON DUPLICATE KEY UPDATE SlotDB = '" + slot_dbname + "'";
@@ -10280,10 +10367,6 @@ namespace WSPR_Sked
                     connection.Open();
                     command.ExecuteNonQuery();
                     connection.Close();
-              
-
-               
-
 
                 }
                 catch
@@ -10292,7 +10375,577 @@ namespace WSPR_Sked
                     connection.Close();
                 }
             }
+
+        }
+
+        private void riglistBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            int i = riglistBox.SelectedIndex;
+            if (riglistBox.SelectedIndex == null || riglistBox.SelectedIndex < 0)
+            {
+                return;
+            }
             
+            selrigtextBox.Text = riglistBox.SelectedItem.ToString();
+            
+            var res = Msg.ynMessageBox("Set this as current rig (Y/N)?", "Rig Name");
+            if (res == DialogResult.Yes)
+            {
+                //rig.Name = selrigtextBox.Text;
+
+                selectedRig = i;
+                if (i > -1)
+                {
+                   
+                   
+                    for (int n = 1; n < riglistBox.Items.Count; n++)
+                    {
+                        rig = ReadRigs(false, n); //read only one rig
+                        rig.Selected = selectedRig;
+                        SaveRigInfo(rig);
+                    }
+                }
+            }
+            else
+            {
+                selrigtextBox.Text = rig.Id + "\t" + rig.Name;
+
+            }            
+        }
+        private void saveAllRigs()
+        {
+            for (int i = 1; i < riglistBox.Items.Count; i++)
+            {
+                rig = ReadRigs(false, i); //read only one rig
+               
+                SaveRigInfo(rig);
+            }
+        }
+
+        private void riglistBox_MouseClick(object sender, MouseEventArgs e)
+        {
+
+            if (riglistBox.SelectedIndex == null || riglistBox.SelectedIndex < 1)
+            {
+                return;
+            }
+            else
+            {
+                int i = riglistBox.SelectedIndex;
+                if (e.Button == MouseButtons.Right)
+                {
+                    if (riglistBox.SelectedIndex < 1)
+                    {
+                        return;
+                    }
+                    //delete
+                }
+               
+            }
+        }
+
+        private void addrigbutton_Click(object sender, EventArgs e)
+        {
+            int i = riglistBox.Items.Count;
+            if (i > 0)
+            {
+                rignolabel.Text = i.ToString();
+            }
+            rigeditcheckBox.Checked = false;
+            RiggroupBox.Visible = true;
+        }
+
+        private void saverigbutton_Click(object sender, EventArgs e)
+        {
+            if (rigprotocolcomboBox.SelectedIndex < 0)
+            {
+                Msg.OKMessageBox("No protocol selected", "");
+                return;
+            }
+            if (rigprotocolcomboBox.SelectedItem.ToString() == "Serial")
+            {
+                if (rigportcomboBox.SelectedIndex < 0 || rigbaudcomboBox.SelectedIndex < 0)
+                {
+                    Msg.OKMessageBox("Invalid port or baud rate", "");
+                    return;
+                }
+            }
+            else
+            {
+                if (!checkIP(rigiptextBox.Text) || !checkIsNumber(rigporttextBox.Text))
+                {
+                    Msg.OKMessageBox("Invalid IP or port", "");
+                    return;
+                }
+            }   //otherwise (mostly) ok
+
+
+            if (SaveRig())
+            {
+
+                Msg.TMessageBox("Saved", "", 500);
+            }
+        }
+
+        private bool SaveRig()
+        {
+            if (rignametextBox.Text == "")
+            {
+                Msg.OKMessageBox("Rig name is empty", "");
+                return false;
+            }
+            createRigTable(); //create rig table if it doesn't exist
+            rig.Selected = rig.Id;
+            rig.Id = Convert.ToInt32(rignolabel.Text);
+            rig.Name = rignametextBox.Text;
+            rig.Type = 1;
+            //rig.Selected = 0;
+            rig.TXcommand = rigtxcmdtextBox.Text;
+            rig.RXcommand = rigrxcmdtextBox.Text;
+            rig.TXptt = rigPTTcmdtextBox.Text;
+            rig.command1 = "";
+            rig.command2 = "";
+            rig.command3 = "";
+            rig.command4 = "";
+           
+            string s1 = "";
+            string s2 = "";
+            string s3 = "";
+            string s4 = "";
+
+            if (riglistBox.SelectedIndex == 0)
+            {
+                rig.Type = 0; //no rig
+            }
+            else
+            {
+                rig.Type = 1; //a rig
+            }
+            if (rigprotocolcomboBox.SelectedIndex > -1)
+            {
+                rig.Protocol = rigprotocolcomboBox.SelectedItem.ToString();
+            }
+
+            if (rig.Protocol.Contains("Serial"))
+            {
+                if (rigportcomboBox.SelectedIndex > -1)
+                {
+                    rig.Port = rigportcomboBox.SelectedItem.ToString();
+                }
+
+                if (rigbaudcomboBox.SelectedIndex > -1)
+                {
+                    rig.Baud = rigbaudcomboBox.SelectedItem.ToString();
+                }
+                if (rigdatacomboBox.SelectedIndex > -1)
+                {
+                    s1 = rigdatacomboBox.SelectedItem.ToString();
+                }
+                try
+                {
+                    if (rigparitycomboBox.SelectedIndex > -1)
+                    {
+                        s2 = rigparitycomboBox.SelectedItem.ToString();
+                    }
+                    if (rigstopcomboBox.SelectedIndex > -1)
+                    {
+
+                        s3 = rigstopcomboBox.SelectedItem.ToString();
+                    }
+                    if (rigflowcomboBox.SelectedIndex > -1)
+                    {
+                        s4 = rigflowcomboBox.SelectedItem.ToString();
+                    }
+
+                }
+                catch
+                {
+
+                }
+                rig.Serial = s1 + "," + s2 + "," + s3 + "," + s4;
+            }
+            else
+            {
+                rig.Port = rigporttextBox.Text;
+                rig.IP = rigiptextBox.Text;
+            }
+
+
+
+            if (SaveRigInfo(rig))
+            {
+                string S = rignolabel.Text + "\t" + rignametextBox.Text.Trim();
+                if (!rigeditcheckBox.Checked) //id adding a new rig
+                {
+                    riglistBox.Items.Add(S);
+                }
+                else
+                {
+                    riglistBox.Items[riglistBox.SelectedIndex] = S;
+                }
+
+            }
+            RiggroupBox.Visible = false;
+            return true;
+        }
+
+        private void createRigTable()
+        {
+            bool ok = false;
+            string dbname = "wspr";
+            string connStr = "Server=" + serverName + ";user id=" + db_user + ";Password=" + db_pass;
+            try
+            {
+                using (var conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    string sql = "CREATE DATABASE IF NOT EXISTS " + dbname;
+
+
+                    using (var cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch
+            {
+                Msg.TMessageBox("Unable to create database", "Database Error", 2000);
+                return;
+            }
+            string ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + dbname;
+            try
+            {
+                using (var conn = new MySqlConnection(ConnectionString))
+                {
+                    conn.Open();
+
+                    string slotsStr = @"
+                    CREATE TABLE IF NOT EXISTS `rigs` (
+                        `id` INT NOT NULL,                       
+                    PRIMARY KEY (`id`)
+                    );";
+
+                    using (var cmd = new MySqlCommand(slotsStr, conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch
+            {
+                Msg.TMessageBox("Unable to create table", "Database Error", 2000);
+                return;
+            }
+            try
+            {
+
+                using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+                {
+                    conn.Open();
+
+                    // Core data
+                    ok = AddColumnIfNotExists(conn, "rigs", "rigname", "TEXT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "type", "INT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "selected", "INT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "TXcommand", "TEXT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "RXcommand", "TEXT NOT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "TXptt", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "command1", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "command2", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "command3", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "command4", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "Protocol", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "Port", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "IP", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "Baud", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "Serial", "TEXT NULL");
+
+
+                }
+                if (ok)
+                {
+                    Msg.TMessageBox("New slot datavase created", "Database Update", 1000);
+                }
+            }
+            catch
+            {
+                Msg.TMessageBox("Unable to create slot database columns", "Database Error", 2000);
+                return;
+            }
+
+        }
+        private bool SaveRigInfo(Rigs N) //save rig settings
+        {
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
+
+            //Rigs N = new Rigs();
+           
+            int no = 0;
+            
+         
+           
+            lock (_lock)
+            {
+                try
+                {
+
+                    MySqlCommand command = connection.CreateCommand();
+                    connection.Open();
+
+                    command.CommandText = "INSERT INTO rigs(id,rigname,type,selected,TXcommand,RXcommand,TXptt,command1,command2,command3,command4,Protocol,Port,IP,Baud,Serial) ";
+                    command.CommandText += "VALUES(@id,@rigname,@type,@selected,@TXcommand,@RXcommand,@TXptt,@command1,@command2,@command3,@command4";
+                    command.CommandText += ",@Protocol,@Port,@IP,@Baud,@Serial)";
+                    command.CommandText += " ON DUPLICATE KEY UPDATE id = " + N.Id + ", rigname = '" + N.Name + "', type = " + N.Type + ", selected = " + N.Selected + ", TXcommand = '" + N.TXcommand + "'";
+                    command.CommandText += ", RXcommand = '" + N.RXcommand + "', TXptt = '" + N.TXptt + "'";
+                    command.CommandText += ", command1 = '" + N.command1 + "', command2 = '" + N.command2 + "', command3 = '" + N.command3 + "'";
+                    command.CommandText += ", command4 = '" + N.command4 + "', Protocol = '" + N.Protocol + "', Port = '" + N.Port + "', IP = '" + N.IP + "'";
+                    command.CommandText += ", Baud = '" + N.Baud + "', Serial = '" + N.Serial + "'";
+
+
+                    command.Parameters.AddWithValue("@id", N.Id);
+                    command.Parameters.AddWithValue("@rigname", N.Name);
+                    command.Parameters.AddWithValue("@type", N.Type);
+                    command.Parameters.AddWithValue("@selected", N.Selected);
+                    command.Parameters.AddWithValue("TXcommand", N.TXcommand);
+                    command.Parameters.AddWithValue("@RXcommand", N.RXcommand);
+                    command.Parameters.AddWithValue("@TXptt", N.TXptt);
+                    command.Parameters.AddWithValue("@command1", N.command1);
+                    command.Parameters.AddWithValue("@command2", N.command2);
+                    command.Parameters.AddWithValue("@command3", N.command3);
+                    command.Parameters.AddWithValue("@command4", N.command4);
+                    command.Parameters.AddWithValue("@Protocol", N.Protocol);
+                    command.Parameters.AddWithValue("@Port", N.Port);
+                    command.Parameters.AddWithValue("@IP", N.IP);
+                    command.Parameters.AddWithValue("@Baud", N.Baud);
+                    command.Parameters.AddWithValue("@Serial", N.Serial);
+
+
+                    command.ExecuteNonQuery();
+                    connection.Close();
+
+
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+        private Rigs ReadRigs(bool all, int Id)
+        {
+            Rigs N = new Rigs();
+
+            N.Id = 0;
+            N.Name = "";
+            N.Type = 0;
+            N.Protocol = "";
+            N.Port = "";
+            N.IP = "";
+            N.Baud = "";
+            N.Serial = "";
+            N.TXcommand = "";
+            N.RXcommand = "";
+            N.TXptt = "";
+            N.command1 = "";
+            N.command2 = "";
+            N.command3 = "";
+            N.command4 = "";
+            rig = N; //global rig info
+
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
+
+            try
+            {
+                connection.Open();
+
+
+                int count = 0;
+
+
+                MySqlCommand command = connection.CreateCommand();
+
+                if (all)
+                {
+                    command.CommandText = "SELECT * FROM rigs";
+                }
+                else
+                {
+                    command.CommandText = "SELECT * FROM rigs WHERE id = " + Id;
+                }
+
+                MySqlDataReader Reader;
+                Reader = command.ExecuteReader();
+
+
+
+                while (Reader.Read())
+                {
+                    count++;
+
+                    N.Id = (int)Reader["id"]; //starts at zero, but 0 displayed as 1
+                    N.Name = (string)Reader["rigname"];
+                    N.Type = (int)Reader["type"];
+                    N.Selected = (int)Reader["selected"];
+                    
+                    N.Protocol = (string)Reader["Protocol"];
+                    N.Port = (string)Reader["Port"];
+                    N.IP = (string)Reader["IP"];
+                    N.Baud = (string)Reader["Baud"];
+                    N.Serial = (string)Reader["Serial"];
+                    N.TXcommand = (string)Reader["TXcommand"];
+                    N.RXcommand = (string)Reader["RXcommand"];
+                    N.TXptt = (string)Reader["TXptt"];
+                    N.command1 = (string)Reader["command1"];
+                    N.command2 = (string)Reader["command2"];
+                    N.command3 = (string)Reader["command3"];
+                    N.command4 = (string)Reader["command4"];
+
+
+                    try
+                    {
+                        if (count > 0)
+                        {
+                            if (all)
+                            {
+
+                                riglistBox.Items.Add(N.Id.ToString() + "\t" + N.Name);
+                                selrigtextBox.Text = riglistBox.Items[N.Selected].ToString();
+                            }
+                            else
+                            {
+                                //rig = N; //global rig info
+                                //just return item
+                            }
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+
+                }
+
+                Reader.Close();
+                connection.Close();
+
+            }
+            catch
+            {
+                Msg.TMessageBox("Unable to load rigs", "", 1000);
+                connection.Close();
+            }
+            return N;
+        }
+
+        private void rigprotocolcomboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int p = rigprotocolcomboBox.SelectedIndex;
+            if (p < 0)
+            {
+                return;
+            }
+            if (p == 0)
+            {
+                setrigBoxes(true); //serial
+            }
+            else
+            {
+                setrigBoxes(false); //tcp/udp
+            }
+        }
+
+        private void setrigBoxes(bool serial)
+        {
+            rigportcomboBox.Visible = serial;
+            rigBPlabel.Visible = serial;
+            rigbaudcomboBox.Visible = serial;
+            rigporttextBox.Visible = !serial;
+            rigiptextBox.Visible = !serial;
+
+            if (serial)
+            {
+                rigBPlabel.Text = "Baud:";
+                getrigComports();
+            }
+            else
+            {
+                rigBPlabel.Text = "IP:";
+            }
+            rigBPlabel.Visible = true;
+            rigportlabel.Visible = true;
+            rigserialgroupBox.Visible = serial;
+        }
+
+        private void hiderigBoxes()
+        {
+            bool hide = false;
+            rigportcomboBox.Visible = hide;
+            rigporttextBox.Visible = hide;
+            rigBPlabel.Visible = hide;
+            rigbaudcomboBox.Visible = hide;
+            rigiptextBox.Visible = hide;
+            rigportlabel.Visible = hide;
+            rigserialgroupBox.Visible = hide;
+        }
+        private void getrigComports()
+        {
+            string[] ports = SerialPort.GetPortNames();
+            rigportcomboBox.Items.Clear();
+            rigportcomboBox.Items.AddRange(ports);
+
+        }
+
+        private void rigcancelbutton_Click(object sender, EventArgs e)
+        {
+            RiggroupBox.Visible = false;
+        }
+
+        private void editrigbutton_Click(object sender, EventArgs e)
+        {
+            rigeditcheckBox.Checked = true;
+            int i = riglistBox.SelectedIndex;
+            if (i > 0)
+            {
+                rignolabel.Text = i.ToString();              
+
+                string[] S = riglistBox.Text.Split('\t');
+                rignametextBox.Text = S[1];
+                Rigs R = ReadRigs(false, i);
+                if (R.Protocol.Contains("Serial"))
+                {
+                    rigprotocolcomboBox.SelectedIndex = 0;
+                    rigportcomboBox.SelectedItem = R.Port;
+                    rigbaudcomboBox.SelectedItem = R.Baud;
+                    rigdatacomboBox.SelectedItem = R.Serial.Split(',')[0];
+                    rigparitycomboBox.SelectedItem = R.Serial.Split(',')[1];
+                    rigstopcomboBox.SelectedItem = R.Serial.Split(',')[2];
+                    rigflowcomboBox.SelectedItem = R.Serial.Split(',')[3];
+                    rigbaudcomboBox.Visible = true;
+                    rigportcomboBox.Visible = true;
+                    rigserialgroupBox.Visible = true;
+                    rigporttextBox.Visible = false;
+                    rigiptextBox.Visible = false;
+                }
+                else
+                {
+                    rigiptextBox.Text = R.IP;
+                    rigporttextBox.Text = R.Port;
+                    rigporttextBox.Visible = true;
+                    rigiptextBox.Visible = true;
+                    rigportcomboBox.Visible = false;
+                    rigbaudcomboBox.Visible = false;
+                    rigserialgroupBox.Visible = false;
+                    rigprotocolcomboBox.SelectedIndex = 1;
+                }
+
+
+                RiggroupBox.Visible = true;
+            }
         }
     }
 }
