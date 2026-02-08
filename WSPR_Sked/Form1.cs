@@ -3,7 +3,6 @@ using ClickHouse.Client.Utility;
 using FSK;
 //using Google.Protobuf.WellKnownTypes;
 using Logging;
-
 using Maidenhead;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Factorization;
@@ -15,10 +14,11 @@ using MySqlX.XDevAPI.Relational;
 using NAudio.Wave;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.Cms;
+using Org.BouncyCastle.Ocsp;
+using Other_TX;
 using Security;
 using System;
 using System.Collections.Generic;
-
 using System.Data;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
@@ -30,20 +30,18 @@ using System.Management;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Reflection;
-
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.Pkcs;
 using System.Text;
-
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using W410A;
-using Other_TX;
-
 using WsprSharp;
 using static Mysqlx.Expect.Open.Types.Condition.Types;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
@@ -162,6 +160,7 @@ namespace WSPR_Sked
             public int MessageType;
             public int Switch2;
             public int SwPort2;
+            public int Filter;
             public int RptType;
             public int GreyOffset;
 
@@ -196,7 +195,7 @@ namespace WSPR_Sked
         string RigctlPort = "4532";
         string RigctlIPv4 = "127.0.0.1";
 
-
+        int selectedFilter = 0;
         string Radio = "";
         bool flatcode = false; //if testing with single tone
         bool stopPlay = false;
@@ -229,6 +228,7 @@ namespace WSPR_Sked
         List<Hardware> HW = new List<Hardware>();
         List<Hardware> SW = new List<Hardware>();
         List<Hardware> TU = new List<Hardware>();
+        List<Hardware> FIL = new List<Hardware>();
 
         public struct Rigs
         {
@@ -248,7 +248,10 @@ namespace WSPR_Sked
             public string command2;
             public string command3;
             public string command4;
-
+            public string reply1;
+            public string reply2;
+            public string reply3;
+            public string reply4;
         }
         Rigs rig = new Rigs();
         int selectedRig = 0;
@@ -276,7 +279,7 @@ namespace WSPR_Sked
             public int SwitchPort;
             public int Switch2;
             public int SwitchPort2;
-
+            //public int Filter;
         }
 
         List<Antenna> Ant = new List<Antenna>();
@@ -355,6 +358,8 @@ namespace WSPR_Sked
             if (checkSlotDB("wspr_slots"))
             {
                 addNewSlotColumns();
+                addFilterField(); //add filter field to wspr settings
+                CopyTable("wspr", "tuners", "filters");
                 DateTime localTime = DateTime.Now; // your current local time
                 DateTime utcTime = localTime.ToUniversalTime();
 
@@ -411,6 +416,7 @@ namespace WSPR_Sked
 
                 ReadHardware("switches");
                 ReadHardware("tuners");
+                ReadHardware("filters");
                 ReadConfig();
                 TXRXAntlabel.Text = defaultAnt;
                 TXRXAntlabel2.Text = defaultAnt;
@@ -560,7 +566,7 @@ namespace WSPR_Sked
                 }
                 rig = ReadRigs(true, 0);
                 selectedRig = rig.Selected;
-                
+
             } //if checkslotDB
             else
             {
@@ -832,6 +838,7 @@ namespace WSPR_Sked
                             }
                         }
 
+
                     }
                     readcount = 2;
                     Reader.Close();
@@ -1062,7 +1069,6 @@ namespace WSPR_Sked
                             int swPort2 = (int)Reader["SwitchPort2"];
                             SlotRow.SwPort2 = swPort2;
                         }
-
 
                     }
                     Reader.Close();
@@ -2603,9 +2609,10 @@ namespace WSPR_Sked
             string N2 = "";
             string N3 = "";
 
+
             if (checkNewSlotColumns())
             {
-                N = ",Switch2,SwitchPort2) ";
+                N = ",Switch2,SwitchPort2)";
                 N2 = ",@Switch2,@SwitchPort2)";
                 N3 = ",Switch2 = " + Slot.Switch2 + ", SwitchPort2 = " + Slot.SwPort2;
             }
@@ -2615,6 +2622,7 @@ namespace WSPR_Sked
                 N2 = ")";
                 N3 = "";
             }
+
             lock (_lock)
             {
                 try
@@ -3727,6 +3735,7 @@ namespace WSPR_Sked
             {
                 prepDone = true;
                 await activateAntSwitch(TXAntenna);
+                await changeFilter(TXFrequency);
                 await Task.Delay(100);
                 await activateTX(TXFrequency);
                 double freq = Convert.ToDouble(TXFrequency);
@@ -3802,7 +3811,7 @@ namespace WSPR_Sked
             {
                 await Task.Run(() =>
                 {
-                    
+
                     var reply = sendTXRigCommand(rigcmd);
                     string R = reply.ToString();
                     if (R.StartsWith("RPRT -"))
@@ -3849,7 +3858,7 @@ namespace WSPR_Sked
             {
                 return false;
             }
-            
+
 
 
         }
@@ -3858,12 +3867,12 @@ namespace WSPR_Sked
         {
             string ip = RigctlIPv4;
             string port = RigctlPort;
-            
+
             if (!blockTXonErr)
             {
-                if (noRigctld && selectedRig >0)
+                if (noRigctld && selectedRig > 0)
                 {
-                   
+
                     var r = new Other_TX.OtherTX(N.Protocol, N.IP, N.Port, N.Baud, N.Serial, msg);
 
                     if ((r.reply == "error") && !blockTXonErr)
@@ -4283,8 +4292,8 @@ namespace WSPR_Sked
                 {
 
                     MySqlCommand command = connection.CreateCommand();
-                    command.CommandText = "INSERT INTO settings(ConfigID,Callsign,BaseCall,Offset,DefaultF,Power,PowerW,Locator,LocatorLong,DefaultAnt,Alpha,DefaultAudio,HamlibPath,MsgType,AllowType2,oneMsg,WsprmsgPath,stopsolar,stopRX,SlotDB) ";
-                    command.CommandText += "VALUES(@ConfigID,@Callsign,@BaseCall,@Offset,@DefaultF,@Power,@PowerW,@Locator,@LocatorLong,@DefaultAnt,@Alpha,@DefaultAudio,@HamlibPath,@MsgType,@AllowType2,@oneMsg,@WsprmsgPath,@stopsolar,@stopRX,@SlotDB)";
+                    command.CommandText = "INSERT INTO settings(ConfigID,Callsign,BaseCall,Offset,DefaultF,Power,PowerW,Locator,LocatorLong,DefaultAnt,Alpha,DefaultAudio,HamlibPath,MsgType,AllowType2,oneMsg,WsprmsgPath,stopsolar,stopRX,SlotDB,selectedFilter) ";
+                    command.CommandText += "VALUES(@ConfigID,@Callsign,@BaseCall,@Offset,@DefaultF,@Power,@PowerW,@Locator,@LocatorLong,@DefaultAnt,@Alpha,@DefaultAudio,@HamlibPath,@MsgType,@AllowType2,@oneMsg,@WsprmsgPath,@stopsolar,@stopRX,@SlotDB,@selectedFilter)";
 
                     connection.Open();
 
@@ -4317,6 +4326,7 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@stopsolar", stopSolar);
                     command.Parameters.AddWithValue("@stopRX", stopRX);
                     command.Parameters.AddWithValue("@SlotDB", slot_dbname);
+                    command.Parameters.AddWithValue("@selectedFilter", selectedFilter);
                     string zone = "UTC";
                     if (LTcheckBox.Checked)
                     {
@@ -4366,8 +4376,8 @@ namespace WSPR_Sked
                 c = "UPDATE settings SET ConfigID = " + configID + ", Callsign = '" + callsign + "', BaseCall = '" + baseC + "', Offset = " + defaultoffset + ", DefaultF = " + defaultF + ", ";
                 c = c + "Power = " + defaultdB + ", PowerW = " + defaultW + ", Locator = '" + full_location + "', LocatorLong = " + L + ", DefaultAnt = '" + defaultAnt + "'";
                 c = c + ", Alpha = " + defaultAlpha + ", DefaultAudio = " + defA + ", HamlibPath = '" + HL + "', MsgType = " + msgT;
-                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "', stopsolar = " + stopSolar + ", stopRX = " + stopRX + ", SlotDB = '" + slot_dbname + "' WHERE settings.ConfigID = " + configID;
-
+                c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "'";
+                c = c+ ", stopsolar = " + stopSolar + ", stopRX = " + stopRX + ", SlotDB = '" + slot_dbname + "', selectedFilter = " + selectedFilter+" WHERE settings.ConfigID = " + configID;
                 command.CommandText = c;
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -4469,7 +4479,13 @@ namespace WSPR_Sked
                     {
                         dbbutton.Text = "test";
                     }
-
+                    try
+                    {
+                        selectedFilter = (int)Reader["selectedFilter"];
+                        selFiltertextBox.Text = FilistBox.Items[selectedFilter].ToString();
+                    }
+                    catch
+                    { }
 
 
                     if (OpSystem == 0)
@@ -4531,15 +4547,17 @@ namespace WSPR_Sked
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             string N = "";
             string N2 = "";
+
             lock (_lock)
             {
                 try
                 {
 
                     MySqlCommand command = connection.CreateCommand();
+
                     if (checkNewSlotColumns())
                     {
-                        N = "Switch2,SwitchPort2) ";
+                        N = "Switch2,SwitchPort2)";
                         N2 = "@Switch2,@SwitchPort2)";
                     }
                     else
@@ -4650,7 +4668,9 @@ namespace WSPR_Sked
                 int swP = 0;
                 int sw2 = 0;
                 int swP2 = 0;
+                int fi = 0;
                 string N = "";
+                string F = "";
                 string ant = AntnametextBox.Text;
                 string desc = AntdesctextBox.Text;
                 if (ShowSwlistBox.SelectedIndex < 0)
@@ -4683,7 +4703,7 @@ namespace WSPR_Sked
                 {
                     if (ShowSwlistBox2.SelectedIndex < 0)
                     {
-                        sw = 0;
+                        sw2 = 0;
                     }
                     else
                     {
@@ -4697,7 +4717,7 @@ namespace WSPR_Sked
                     {
                         swP2 = AntPortlistBox2.SelectedIndex;
                     }
-                    N = ", Switch2 = " + sw2 + ", SwitchPort2 = " + swP2;
+                    N = ", Switch2 = " + sw2 + ", SwitchPort2 = " + swP2 + fi;
                 }
                 else { N = ""; }
                 MySqlCommand command = connection.CreateCommand();
@@ -4736,6 +4756,7 @@ namespace WSPR_Sked
                 int antSwPort;
                 int antSwitch2 = 0;
                 int antSwitchPort2 = 0;
+                int antFilter = 0;
                 Antenna A;
                 Ant.Clear();
 
@@ -4763,6 +4784,7 @@ namespace WSPR_Sked
                         antSwitchPort2 = (int)Reader["SwitchPort2"];
 
                     }
+
 
                     A.AntNo = antNo;
                     A.AntName = antenna;
@@ -5145,7 +5167,7 @@ namespace WSPR_Sked
                 {
                     if (!noSkedcheckBox.Checked)
                     {
-                        if (noRigctld && selectedRig ==0)
+                        if (noRigctld && selectedRig == 0)
                         {
                             Msg.TMessageBox("Ignoring slot: RigCtlD disabled or no TX selected", "Frequency", 1000);
                         }
@@ -5683,6 +5705,7 @@ namespace WSPR_Sked
             double f = Convert.ToDouble(testFtextBox.Text);
             f = f * 1000000; //convert to MHz
             await selectAntenna();
+            await selectFilter(testFtextBox.Text);
             if (!noTX)
             {
                 //await activateAntSwitch(DefaultAntcomboBox.Text);
@@ -6191,7 +6214,7 @@ namespace WSPR_Sked
                 bool high = LEDcheckBox.Checked;
                 await Task.Run(() =>
                 {
-                    ArduinoComms ard = new ArduinoComms(ip, port, pin, high);
+                    ArduinoComms ard = new ArduinoComms(ip, port, pin, high,"","");
                     reply = ard.response;
                     ok = ard.ok;
                 });
@@ -6682,6 +6705,7 @@ namespace WSPR_Sked
                 A.SwitchPort = P; //ports start at 1
                 A.Switch2 = S2;
                 A.SwitchPort2 = P2;
+
                 if (!newAcheckBox.Checked)
                 {
                     Ant[sel] = A;
@@ -6957,6 +6981,22 @@ namespace WSPR_Sked
             HwgroupBox.Visible = false;
             TulistBox.Enabled = true;
         }
+        private void SaveFi()
+        {
+            if (HwtextBox.Text == "")
+            {
+                Msg.OKMessageBox("Filter name is empty", "");
+                return;
+            }
+            if (SaveHardware("filters"))
+            {
+                string S = Hwnolabel.Text + "\t" + HwtextBox.Text.Trim();
+                int i = FilistBox.SelectedIndex;
+                FilistBox.Items[i] = S;
+            }
+            HwgroupBox.Visible = false;
+            FilistBox.Enabled = true;
+        }
 
 
         private void editSwbutton_Click(object sender, EventArgs e)
@@ -6970,9 +7010,13 @@ namespace WSPR_Sked
             {
                 sel = SwlistBox.SelectedIndex;
             }
-            else
+            else if (hwtype == "tuner")
             {
                 sel = TulistBox.SelectedIndex;
+            }
+            else
+            {
+                sel = FilistBox.SelectedIndex;
             }
             if (sel == 0)
             {
@@ -6987,7 +7031,14 @@ namespace WSPR_Sked
                     hwtype = "switches";
                     HwgroupBox.Text = "Switch";
                 }
-                else { hwtype = "tuners"; HwgroupBox.Text = "Tuner"; }
+                else if (hwtype == "tuner")
+                {
+                    hwtype = "tuners"; HwgroupBox.Text = "Tuner";
+                }
+                else
+                {
+                    hwtype = "filters"; HwgroupBox.Text = "Filter";
+                }
 
 
                 editHW(hwtype);
@@ -7026,10 +7077,15 @@ namespace WSPR_Sked
                     H.Type = type;
                     SW[no] = H;
                 }
-                else
+                else if (table == "tuners")
                 {
                     H.Type = type;
                     TU[no] = H;
+                }
+                else
+                {
+                    H.Type = type;
+                    FIL[no] = H;
                 }
 
             }
@@ -7074,6 +7130,20 @@ namespace WSPR_Sked
                 }
 
             }
+            else
+            {
+                selected = FilistBox.SelectedIndex;
+                if (selected > -1)
+                {
+                    S = FilistBox.SelectedItem.ToString().Split('\t');
+                    type = FIL[selected].Type;
+                    int index = HwFiTypelistBox.Items.IndexOf(type);
+                    if (index > -1)
+                    {
+                        HwFiTypelistBox.SelectedIndex = index;
+                    }
+                }
+            }
 
             if (selected < 0)
             {
@@ -7105,9 +7175,13 @@ namespace WSPR_Sked
             {
                 hwItem = SW[i];
             }
-            else
+            else if (table == "tuners")
             {
                 hwItem = TU[i];
+            }
+            else
+            {
+                hwItem = FIL[i];
             }
             try
             {
@@ -7164,12 +7238,20 @@ namespace WSPR_Sked
 
                 HwSwTypegroupBox.Visible = true;
                 HwTuTypegroupBox.Visible = false;
+                HwFiTypegroupBox.Visible = false;
             }
-            else
+            else if (table == "tuners")
             {
 
                 HwSwTypegroupBox.Visible = false;
                 HwTuTypegroupBox.Visible = true;
+                HwFiTypegroupBox.Visible = false;
+            }
+            else
+            {
+                HwSwTypegroupBox.Visible = false;
+                HwTuTypegroupBox.Visible = false;
+                HwFiTypegroupBox.Visible = true;
             }
         }
 
@@ -7202,10 +7284,15 @@ namespace WSPR_Sked
                     count = SwlistBox.Items.Count;
                     SW.Clear();
                 }
-                else
+                else if (table == "tuners")
                 {
                     count = TulistBox.Items.Count;
                     TU.Clear();
+                }
+                else
+                {
+                    count = FilistBox.Items.Count;
+                    FIL.Clear();
                 }
 
 
@@ -7234,9 +7321,13 @@ namespace WSPR_Sked
                     {
                         SW.Add(N);
                     }
-                    else
+                    else if (table == "tuners")
                     {
                         TU.Add(N);
+                    }
+                    else
+                    {
+                        FIL.Add(N);
                     }
                 }
                 while (Reader.Read())
@@ -7263,12 +7354,17 @@ namespace WSPR_Sked
                                 SwlistBox.Items[hwId] = hwId.ToString() + "\t" + hw;
                                 ShowSwlistBox.Items[hwId] = hwId.ToString() + "\t" + hw;
                             }
-                            else
+                            else if (table == "tuners")
                             {
                                 TulistBox.Items[hwId] = hwId.ToString() + "\t" + hw;
                                 ShowTulistBox.Items[hwId] = hwId.ToString() + "\t" + hw;
                             }
-                            AddtoHwList(hwId, hw, protocol, port, IP, baud, serial, type, channels, table);
+                           else 
+                            {
+                                FilistBox.Items[hwId] = hwId.ToString() + "\t" + hw;
+                               
+                            }
+                                AddtoHwList(hwId, hw, protocol, port, IP, baud, serial, type, channels, table);
                         }
                     }
                     catch
@@ -7304,9 +7400,13 @@ namespace WSPR_Sked
             {
                 SW[hwId] = N;
             }
-            else
+            else if (table == "tuners")
             {
                 TU[hwId] = N;
+            }
+            else
+            {
+                FIL[hwId] = N;
             }
         }
 
@@ -7405,7 +7505,7 @@ namespace WSPR_Sked
                             }
                             channels = Convert.ToInt32(HwAntportstextBox.Text);
                         }
-                        else
+                        else if (table == "tuners")
                         {
                             if (HwTuTypelistBox.SelectedIndex > -1)
                             {
@@ -7415,6 +7515,16 @@ namespace WSPR_Sked
                                 type = t[0];
                             }
                             channels = 1; //tuner
+                        }
+                        else //filters
+                        {
+                            if (HwFiTypelistBox.SelectedIndex > -1)
+                            {
+                                string fi = HwFiTypelistBox.SelectedItem.ToString();
+                                string[] f = fi.Split('\t');
+                                type = f[0];
+                            }
+                            
                         }
                     }
                     catch
@@ -7536,6 +7646,15 @@ namespace WSPR_Sked
                     return;
                 }
                 SaveTu();
+            }
+            else if (HwgroupBox.Text == "Filter")
+            {
+                if (HwFiTypelistBox.SelectedIndex < 0)
+                {
+                    Msg.OKMessageBox("You must select and highlight a filter type", "No tuner type");
+                    return;
+                }
+                SaveFi();
             }
 
             hideHwBoxes();
@@ -8155,6 +8274,7 @@ namespace WSPR_Sked
                     tu = Ant[i].Tuner;
                     ch = Ant[i].SwitchPort;
                     ch2 = Ant[i].SwitchPort2;
+
                     found = true;
                 }
             }
@@ -8169,6 +8289,7 @@ namespace WSPR_Sked
                         tu = Ant[i].Tuner;
                         ch = Ant[i].SwitchPort;
                         ch2 = Ant[i].SwitchPort2;
+
                     }
                 }
             }
@@ -8176,6 +8297,7 @@ namespace WSPR_Sked
             changeAntenna(TXAntenna, sw, sw2, tu, ch, ch2);
 
         }
+       
         private async void set410Mode()
         {
             var ret = "";
@@ -8340,6 +8462,42 @@ namespace WSPR_Sked
 
         }
 
+        private async Task<bool> changeFilter(string freq)
+        {
+            try
+            {
+                if (selectedFilter != null && selectedFilter != 0)
+                {
+                    string fiType = FIL[selectedFilter].Type;
+                    var ret = "";
+                    if (fiType.StartsWith("Arduino"))
+                    {
+                        await Task.Run(() =>
+                        {
+                            ret = Arduino_Comms_Filter(selectedFilter, freq).Result;
+                        });
+                        if (ret == "ok")
+                        {
+                          
+                        }
+                        else
+                        {
+                            Msg.TMessageBox("Filter error", "Filter reply", 3000);
+                            return false;
+                        }
+
+
+                    }
+                }
+            }
+            catch
+            {
+                Msg.TMessageBox("Error selecting filter", "", 4000);
+                return false;
+            }
+            return true;
+        }
+
         private async Task<string> Arduino_Comms_1(int sw, int channel)
         {
             string ip = "192.168.0.207";
@@ -8358,7 +8516,44 @@ namespace WSPR_Sked
 
             await Task.Run(() =>
             {
-                ArduinoComms ard = new ArduinoComms(ip, port, channel - 1, high); //channels start at 1, board data pins at 0
+                ArduinoComms ard = new ArduinoComms(ip, port, channel - 1, high, "switch", ""); //channels start at 1, board data pins at 0
+                reply = ard.response;
+                if (!ard.ok)
+                {
+                    ok = false;
+
+                    Msg.TMessageBox(ard.response, "Error", 3000);
+                }
+                else { ok = true; }
+            });
+            if (!ok)
+            {
+                Msg.TMessageBox(reply, "Error", 3000);
+                return "error";
+            }
+            else { return "ok"; }
+        }
+
+        private async Task<string> Arduino_Comms_Filter(int fi, string freq)
+        {
+            string ip = "192.168.0.208";
+          
+            int port = 5000;
+            bool high = true;
+            ip = FIL[fi].IP;
+            if (FIL[fi].Port.StartsWith("COM"))
+            {
+                Msg.TMessageBox("Port error - should be a number", "Port:" + FIL[fi].Port, 3000);
+                return "error";
+            }
+            int.TryParse(FIL[fi].Port, out port);
+            bool ok = false;
+            string reply = "";
+
+
+            await Task.Run(() =>
+            {
+                ArduinoComms ard = new ArduinoComms(ip, port, 0, high, "filter", freq); 
                 reply = ard.response;
                 if (!ard.ok)
                 {
@@ -8488,6 +8683,16 @@ namespace WSPR_Sked
                 await activateAntSwitch(DefaultAntcomboBox.Text);
                 TXRXAntlabel.Text = DefaultAntcomboBox.SelectedItem.ToString();
                 TXRXAntlabel2.Text = DefaultAntcomboBox.SelectedItem.ToString();
+            }
+        }
+
+        private async Task selectFilter(string freq)
+        {
+            if (wsprTXtimer.Enabled == false)
+            {
+
+                await changeFilter(freq);
+            
             }
         }
 
@@ -10150,6 +10355,10 @@ namespace WSPR_Sked
         {
             addNewField("wspr_configs", "settings", "SlotDB", "TEXT NOT NULL");
         }
+        private void addFilterField()
+        {
+            addNewField("wspr_configs", "settings", "selectedFilter", "INT NOT NULL");
+        }
         private void addNewField(string dbname, string table, string field, string type) //add new databse field if doesnt exist 
         {
             bool ok = false;
@@ -10208,6 +10417,44 @@ namespace WSPR_Sked
                 return false;
             }
         }
+
+        /* private bool checkNewSlotColumns_2()
+         {
+             bool exists = false;
+             string ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
+
+
+             using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+             {
+                 conn.Open();
+
+                 exists = CheckIfColumnExists(conn, "slots", "Filter");
+                 if (!exists)
+                 {
+                     return false;
+                 }
+
+             }
+             ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+             using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+             {
+                 conn.Open();
+
+                 exists = CheckIfColumnExists(conn, "antennas", "Filter");
+                 if (!exists)
+                 {
+                     return false;
+                 }
+             }
+             if (exists)
+             {
+                 return true;
+             }
+             else
+             {
+                 return false;
+             }
+         }*/
         private bool CheckIfColumnExists(MySqlConnection conn, string table, string column)
         {
             bool exists = false;
@@ -10385,9 +10632,9 @@ namespace WSPR_Sked
             {
                 return;
             }
-            
+
             selrigtextBox.Text = riglistBox.SelectedItem.ToString();
-            
+
             var res = Msg.ynMessageBox("Set this as current rig (Y/N)?", "Rig Name");
             if (res == DialogResult.Yes)
             {
@@ -10396,8 +10643,8 @@ namespace WSPR_Sked
                 selectedRig = i;
                 if (i > -1)
                 {
-                   
-                   
+
+
                     for (int n = 1; n < riglistBox.Items.Count; n++)
                     {
                         rig = ReadRigs(false, n); //read only one rig
@@ -10410,14 +10657,14 @@ namespace WSPR_Sked
             {
                 selrigtextBox.Text = rig.Id + "\t" + rig.Name;
 
-            }            
+            }
         }
         private void saveAllRigs()
         {
             for (int i = 1; i < riglistBox.Items.Count; i++)
             {
                 rig = ReadRigs(false, i); //read only one rig
-               
+
                 SaveRigInfo(rig);
             }
         }
@@ -10425,22 +10672,35 @@ namespace WSPR_Sked
         private void riglistBox_MouseClick(object sender, MouseEventArgs e)
         {
 
-            if (riglistBox.SelectedIndex == null || riglistBox.SelectedIndex < 1)
+        }
+
+        private bool DeleteOtherTX()
+        {
+            string c = "";
+
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
+
+            try
             {
-                return;
+                connection.Open();
+                MySqlCommand command = connection.CreateCommand();
+                string Rig = riglistBox.SelectedItem.ToString();
+                //string[] R = ant.Split('\t');
+
+                c = "DELETE FROM rigs WHERE id = " + riglistBox.SelectedIndex;
+
+                command.CommandText = c;
+
+                command.ExecuteNonQuery();
+                connection.Close();
+                return true;
             }
-            else
+            catch
             {
-                int i = riglistBox.SelectedIndex;
-                if (e.Button == MouseButtons.Right)
-                {
-                    if (riglistBox.SelectedIndex < 1)
-                    {
-                        return;
-                    }
-                    //delete
-                }
-               
+                Msg.OKMessageBox("Error deleting TX", "");
+                connection.Close();
+                return false;
             }
         }
 
@@ -10507,7 +10767,11 @@ namespace WSPR_Sked
             rig.command2 = "";
             rig.command3 = "";
             rig.command4 = "";
-           
+            rig.reply1 = "";
+            rig.reply2 = "";
+            rig.reply3 = "";
+            rig.reply4 = "";
+
             string s1 = "";
             string s2 = "";
             string s3 = "";
@@ -10656,6 +10920,10 @@ namespace WSPR_Sked
                     ok = AddColumnIfNotExists(conn, "rigs", "command2", "TEXT NULL");
                     ok = AddColumnIfNotExists(conn, "rigs", "command3", "TEXT NULL");
                     ok = AddColumnIfNotExists(conn, "rigs", "command4", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "reply1", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "reply2", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "reply3", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "reply4", "TEXT NULL");
                     ok = AddColumnIfNotExists(conn, "rigs", "Protocol", "TEXT NULL");
                     ok = AddColumnIfNotExists(conn, "rigs", "Port", "TEXT NULL");
                     ok = AddColumnIfNotExists(conn, "rigs", "IP", "TEXT NULL");
@@ -10682,11 +10950,11 @@ namespace WSPR_Sked
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             //Rigs N = new Rigs();
-           
+
             int no = 0;
-            
-         
-           
+
+
+
             lock (_lock)
             {
                 try
@@ -10695,8 +10963,8 @@ namespace WSPR_Sked
                     MySqlCommand command = connection.CreateCommand();
                     connection.Open();
 
-                    command.CommandText = "INSERT INTO rigs(id,rigname,type,selected,TXcommand,RXcommand,TXptt,command1,command2,command3,command4,Protocol,Port,IP,Baud,Serial) ";
-                    command.CommandText += "VALUES(@id,@rigname,@type,@selected,@TXcommand,@RXcommand,@TXptt,@command1,@command2,@command3,@command4";
+                    command.CommandText = "INSERT INTO rigs(id,rigname,type,selected,TXcommand,RXcommand,TXptt,command1,command2,command3,command4,reply1,reply2,reply3,reply4,Protocol,Port,IP,Baud,Serial) ";
+                    command.CommandText += "VALUES(@id,@rigname,@type,@selected,@TXcommand,@RXcommand,@TXptt,@command1,@command2,@command3,@command4,@reply1,@reply2,@reply3,@reply4";
                     command.CommandText += ",@Protocol,@Port,@IP,@Baud,@Serial)";
                     command.CommandText += " ON DUPLICATE KEY UPDATE id = " + N.Id + ", rigname = '" + N.Name + "', type = " + N.Type + ", selected = " + N.Selected + ", TXcommand = '" + N.TXcommand + "'";
                     command.CommandText += ", RXcommand = '" + N.RXcommand + "', TXptt = '" + N.TXptt + "'";
@@ -10716,6 +10984,10 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@command2", N.command2);
                     command.Parameters.AddWithValue("@command3", N.command3);
                     command.Parameters.AddWithValue("@command4", N.command4);
+                    command.Parameters.AddWithValue("@reply1", N.reply1);
+                    command.Parameters.AddWithValue("@reply2", N.reply2);
+                    command.Parameters.AddWithValue("@reply3", N.reply3);
+                    command.Parameters.AddWithValue("@reply4", N.reply4);
                     command.Parameters.AddWithValue("@Protocol", N.Protocol);
                     command.Parameters.AddWithValue("@Port", N.Port);
                     command.Parameters.AddWithValue("@IP", N.IP);
@@ -10754,6 +11026,11 @@ namespace WSPR_Sked
             N.command2 = "";
             N.command3 = "";
             N.command4 = "";
+            N.reply1 = "";
+            N.reply2 = "";
+            N.reply3 = "";
+            N.reply4 = "";
+
             rig = N; //global rig info
 
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
@@ -10791,7 +11068,7 @@ namespace WSPR_Sked
                     N.Name = (string)Reader["rigname"];
                     N.Type = (int)Reader["type"];
                     N.Selected = (int)Reader["selected"];
-                    
+
                     N.Protocol = (string)Reader["Protocol"];
                     N.Port = (string)Reader["Port"];
                     N.IP = (string)Reader["IP"];
@@ -10804,7 +11081,10 @@ namespace WSPR_Sked
                     N.command2 = (string)Reader["command2"];
                     N.command3 = (string)Reader["command3"];
                     N.command4 = (string)Reader["command4"];
-
+                    N.reply1 = (string)Reader["reply1"];
+                    N.reply2 = (string)Reader["reply2"];
+                    N.reply3 = (string)Reader["reply3"];
+                    N.reply4 = (string)Reader["reply4"];
 
                     try
                     {
@@ -10911,7 +11191,7 @@ namespace WSPR_Sked
             int i = riglistBox.SelectedIndex;
             if (i > 0)
             {
-                rignolabel.Text = i.ToString();              
+                rignolabel.Text = i.ToString();
 
                 string[] S = riglistBox.Text.Split('\t');
                 rignametextBox.Text = S[1];
@@ -10947,7 +11227,111 @@ namespace WSPR_Sked
                 RiggroupBox.Visible = true;
             }
         }
+
+        private void CopyTable(string dbname, string old_table, string new_table)
+        {
+            if (TableExists(dbname, new_table))
+            {
+                return;
+            }
+            string connStr = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + dbname;
+            using var conn = new MySqlConnection(connStr);
+            conn.Open();
+
+            using (var cmd = new MySqlCommand("CREATE TABLE " + new_table + " LIKE " + old_table, conn))
+            {
+                cmd.ExecuteNonQuery();
+            }
+            conn.Close();
+        }
+        private bool TableExists(string dbname, string tableName)
+        {
+
+            const string sql = @"SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = @schema AND table_name = @tableName";
+
+            string connStr = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + dbname;
+            try
+            {
+                using var conn = new MySqlConnection(connStr);
+
+                using var cmd = new MySqlCommand(sql, conn);
+                conn.Open();
+                cmd.Parameters.AddWithValue("@schema", conn.Database);
+                cmd.Parameters.AddWithValue("@tableName", tableName);
+
+                object result = cmd.ExecuteScalar();
+                conn.Close();
+                return Convert.ToInt32(result) > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void editFibutton_Click(object sender, EventArgs e)
+        {
+            editButtonAction("filter");
+        }
+
+        private void riglistBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (riglistBox.SelectedIndex == null || riglistBox.SelectedIndex < 1)
+            {
+                return;
+            }
+            else
+            {
+                int i = riglistBox.SelectedIndex;
+                if (e.Button == MouseButtons.Right)
+                {
+                    if (riglistBox.SelectedIndex < 1)
+                    {
+                        return; //delete
+                    }
+                    //delete
+                    if (riglistBox.SelectedIndex > 0)
+                    {
+                        var res = Msg.ynMessageBox("Delete this rig (Y/N)?", "Delete Rig");
+                        if (res == DialogResult.Yes)
+                        {
+                            DeleteOtherTX();
+                            riglistBox.Items.RemoveAt(i);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void FilistBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            editButtonAction("filter");
+        }
+
+        private void FilistBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (FilistBox.SelectedIndex == null || FilistBox.SelectedIndex < 0)
+            {
+                return;
+            }
+            else
+            {
+                int i = FilistBox.SelectedIndex;
+                string old = selFiltertextBox.Text;
+                selFiltertextBox.Text = FilistBox.SelectedItem.ToString();
+                var res = Msg.ynMessageBox("Select this as current filter (Y/N)?", "Select Filter");
+                if (res == DialogResult.Yes)
+                {
+                    selectedFilter = i;
+                }
+                else
+                {
+                    selFiltertextBox.Text = old;
+                }
+            }
+        }
     }
+
 }
 
 

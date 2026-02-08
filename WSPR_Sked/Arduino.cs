@@ -16,11 +16,18 @@ namespace Arduino
         //public string reply;
         public bool ok;
         public string response;
-        public ArduinoComms(string serverIP, int port, int pin, bool high)
+        public ArduinoComms(string serverIP, int port, int pin, bool high, string type, string freq)
         {
             //string serverIP = "192.168.0.207"; // Replace with Arduino's IP
             //int port = 5000;
-           response = setSWitch(serverIP, port, pin, high);
+            if (type.Contains("switch)"))
+            {
+                response = setSWitch(serverIP, port, pin, high);
+            }
+            else if (type.Contains("filter"))
+            {
+                    response = setFilter(serverIP, port, freq);
+            }
             if (response !="error" || response != "")
             {
                 ok = true;
@@ -68,6 +75,39 @@ namespace Arduino
 
                 //reply = ex.Message;
                 reply = "Switching error";
+                return reply;
+            }
+            return reply;
+        }
+
+        private string setFilter(string serverIP, int port, string freq)
+        {
+            string reply = "";
+          
+            try
+            {
+                using (TcpClient client = new TcpClient(serverIP, port))
+                using (NetworkStream stream = client.GetStream())
+                {
+                    // Send antenna settiings to Arduino
+                    string message = "filter:" + freq;
+                    byte[] data = Encoding.ASCII.GetBytes(message + "\n");
+                    stream.Write(data, 0, data.Length);
+
+
+                    // Receive response from Arduino
+                    byte[] buffer = new byte[1024];
+                    int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                    string response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                    //MessageBox.Show("Received: " + response);
+                    reply = response;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                //reply = ex.Message;
+                reply = "Filter error";
                 return reply;
             }
             return reply;
