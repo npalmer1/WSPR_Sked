@@ -1651,7 +1651,10 @@ namespace WSPR_Sked
                     {
                         timeout = 5000;
                     }
-                    Msg.TMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", timeout);
+                    if (asOnecheckBox.Checked && (msgT ==2 || msgT == 3))
+                    {
+                        Msg.TMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", timeout);
+                    }
                     Savelabel.Text = "Saving - please wait....";
                     Savelabel.Visible = true;
                     repeatStatus = false;
