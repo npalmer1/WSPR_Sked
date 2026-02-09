@@ -99,13 +99,31 @@ namespace Other_TX
         }
         private void runSerial(string port, string serial, string baud, string message)
         {
+            string parity = "none";
+            int bits = 0;
+            int stop = 1;
+            string handshake = "none";
+            if (message.Trim() == "")
+            {
+                return;
+            }
             try
             {
                 string[] S = serial.Split(',');
-                string parity = S[0];
-                int bits = Convert.ToInt32(S[1]);
-                int stop = Convert.ToInt32(S[2]);
-                string handshake = S[3];
+                try
+                {
+                    parity = S[0];
+                    bits = Convert.ToInt32(S[1]);
+                    stop = Convert.ToInt32(S[2]);
+                    handshake = S[3];
+                }
+                catch
+                {
+                    parity = "none";
+                    bits = 8;
+                    stop = 1;
+                    handshake = "none";
+                }
 
                 int baudrate = 9600;
                 baudrate = Convert.ToInt32(baud);
@@ -186,7 +204,7 @@ namespace Other_TX
             {
                 ErrorMessage = ex.Message;
                 reply = ex.Message;
-                return;
+              
 
             }
             finally
