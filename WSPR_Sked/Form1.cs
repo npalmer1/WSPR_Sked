@@ -1538,12 +1538,31 @@ namespace WSPR_Sked
 
         private bool checkNextSlot(int i)
         {
+            string F = "";
             DialogResult res;
-            string F = Convert.ToString(dataGridView1.Rows[i + 1].Cells[2].Value);
-            if (F.Trim() != "")
+            if (i < 29 && i >= 0)
             {
-                Msg.OKMessageBox("Type 2 message - adjacent slot occupied", "Next slot occupied");
-                res = Msg.ynMessageBox("Overwrite adjacent slot(s) (y/n)?", "");
+                F = Convert.ToString(dataGridView1.Rows[i + 1].Cells[2].Value);
+
+                if (F.Trim() != "")
+                {
+                    Msg.OKMessageBox("Type 2 message - adjacent slot occupied", "Next slot occupied");
+                    res = Msg.ynMessageBox("Overwrite adjacent slot(s) (y/n)?", "Next slot");
+                    if (res == DialogResult.Yes)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+            }
+            else
+            {
+                Msg.OKMessageBox("Type 2 slot in next hour - can't tell if free", "Adjacent slot");
+                res = Msg.ynMessageBox("Overwrite adjacent slot anyway (y/n)?", "Next slot");
                 if (res == DialogResult.Yes)
                 {
                     return true;
@@ -1552,9 +1571,8 @@ namespace WSPR_Sked
                 {
                     return false;
                 }
-
             }
-            return true;
+                return true;
         }
 
         private async void SaveSlotbutton_Click(object sender, EventArgs e)
@@ -1653,7 +1671,10 @@ namespace WSPR_Sked
                             SaveSlot_Sun(false, msgT, this_slot, editrow);
 
                             editrow++;
-
+                            if (editrow == 30)
+                            {
+                                editrow = 0;
+                            }
                             slotNo = 2;
 
                             SaveSlot_Sun(true, msgT, this_slot, editrow);
@@ -1664,6 +1685,10 @@ namespace WSPR_Sked
                             SaveSlot(false, msgT, this_slot, editrow);
 
                             editrow++;
+                            if (editrow == 30)
+                            {
+                                editrow = 0;
+                            }
 
                             slotNo = 2;
 
@@ -1747,6 +1772,7 @@ namespace WSPR_Sked
         private async Task SaveSlot(bool slot2, int msgT, bool this_slot, int editrow) //update the gridview
         {
             int i = editrow;
+            
             DataGridViewRow DataRow = dataGridView1.Rows[i];
 
             saveslotlabel.Visible = true;
@@ -1758,10 +1784,23 @@ namespace WSPR_Sked
 
                 if (slot2)
                 {
-                    dt = dt.AddMinutes(2);
+                    if (dt.Minute == 58)
+                    {
+                        if (dt.Hour == 23)
+                        {
+                            dt = dt.AddDays(1);
+                            dt = dt.AddHours(-23);
+                        }
+                     
+                        dt = dt.AddMinutes(-58);
+                    }
+                    else
+                    {
+                        dt = dt.AddMinutes(2);
+                    }
                 }
                 string date1 = dt.ToString(dateformat);
-                //cells[0] = date1;
+                cells[0] = date1;
                 Slot.Date = date1;
                 string time1 = dt.ToString("HH:mm"); //current time
                 cells[1] = time1;
@@ -1819,7 +1858,8 @@ namespace WSPR_Sked
                 }
                 else
                 {
-                    endtime = "n/a";
+                    //endtime = "n/a";
+                    endtime = time1;
                     cells[12] = "once";
                 }
                 Slot.EndTime = endtime;
@@ -2016,7 +2056,15 @@ namespace WSPR_Sked
 
                 if (slot2)
                 {
-                    dt = dt.AddMinutes(2);
+                    if (dt.Minute == 58)
+                    {
+                        dt = dt.AddHours(1);
+                        dt = dt.AddMinutes(-58);
+                    }
+                    else
+                    {
+                        dt = dt.AddMinutes(2);
+                    }
                 }
                 string date1 = dt.ToString(dateformat);
                 cells[0] = date1;
@@ -2640,7 +2688,8 @@ namespace WSPR_Sked
                         R = true;
                     }
                     string dte = Convert.ToString(cells[0]);
-
+                  
+                   
                     p = dte + " " + cells[1]; //date and time of parent of this slot
                     if (orig_parents != p & editslotcheckBox.Checked) //if parent has changed and editing slot
                     {
@@ -2896,8 +2945,16 @@ namespace WSPR_Sked
 
                             if ((msgT == "2" || msgT == "3") && !asOnecheckBox.Checked)
                             {
-                                DeleteSlot(true, slot + 1, parents[slot + 1]);  //if type 2
-                                parents[slot + 1] = "";
+                                if (slot < 29)
+                                {
+                                    DeleteSlot(true, slot + 1, parents[slot+1]);  //if type 2
+                                    parents[slot + 1] = "";
+                                }
+                                else
+                                {
+                                    DeleteSlot(true, slot + 1, parents[slot]);  //if type 2
+                                    parents[slot] = "";
+                                }
                             }
                         }
                         else
@@ -2905,8 +2962,16 @@ namespace WSPR_Sked
                             DeleteSlot(false, slot, parents[slot]);
                             if ((msgT == "2" || msgT == "3") && !asOnecheckBox.Checked)
                             {
-                                DeleteSlot(false, slot + 1, parents[slot + 1]);  //type 2
-                                parents[slot + 1] = "";
+                                if (slot < 29)
+                                {
+                                    DeleteSlot(false, slot + 1, parents[slot + 1]);  //type 2
+                                    parents[slot + 1] = "";
+                                }
+                                else
+                                {
+                                    DeleteSlot(true, slot + 1, parents[slot]);  //if type 2
+                                    parents[slot] = "";
+                                }
                             }
                         }
                         DeleteRow(slot);
@@ -2952,8 +3017,6 @@ namespace WSPR_Sked
             }
 
 
-
-
             try
             {
                 //time = dataGridView1.Rows[dataGridView1.]
@@ -2966,8 +3029,16 @@ namespace WSPR_Sked
 
                     if ((msgT == "2" || msgT == "3") && !asOnecheckBox.Checked)
                     {
-                        DeleteSlot(true, slot + 1, orig_parents2);  //if type 2
-                        parents[slot + 1] = "";
+                        if (slot < 29)
+                        {
+                            DeleteSlot(true, slot + 1, orig_parents2);  //if type 2
+                            parents[slot + 1] = "";
+                        }
+                        else
+                        {
+                            DeleteSlot(true, slot + 1, orig_parents2);  //if type 2
+                            parents[slot] = "";
+                        }
                     }
                 }
                 else
@@ -2975,8 +3046,16 @@ namespace WSPR_Sked
                     DeleteSlot(false, slot, orig_parents);
                     if ((msgT == "2" || msgT == "3") && !asOnecheckBox.Checked)
                     {
-                        DeleteSlot(false, slot + 1, orig_parents2);  //type 2
-                        parents[slot + 1] = "";
+                        if (slot < 29)
+                        {
+                            DeleteSlot(false, slot + 1, orig_parents2);  //type 2
+                            parents[slot + 1] = "";
+                        }
+                        else
+                        {
+                            DeleteSlot(true, slot + 1, orig_parents2);  //if type 2
+                            parents[slot] = "";
+                        }
                     }
                 }
 
@@ -2984,7 +3063,10 @@ namespace WSPR_Sked
                 DeleteRow(slot);
                 if ((msgT == "2" || msgT == "3") && !asOnecheckBox.Checked)
                 {
-                    DeleteRow(slot + 1);
+                    if (slot < 29)
+                    {
+                        DeleteRow(slot + 1);
+                    }
                 }
                 parents[slot] = "";
 
@@ -3014,13 +3096,18 @@ namespace WSPR_Sked
         }
         private void DeleteSlot(bool all, int slot, string parent)
         {
+            int s2 = slot;
+            if (slot == 30)
+            {
+                slot = 29;
+            }
             string c = "";
             try
             {
                 DateTime s, e = new DateTime();
                 if (all)
                 {
-                    Slot.Endslot = Convert.ToString(dataGridView1.Rows[slot].Cells[10].Value);
+                    Slot.Endslot = Convert.ToString(dataGridView1.Rows[slot].Cells[9].Value); //end date of slot to be deleted - to check if next slot is a dual slot and if so delete that too
 
                 }
                 else
@@ -3032,7 +3119,32 @@ namespace WSPR_Sked
 
             }
             string time = dataGridView1.Rows[slot].Cells[1].Value.ToString();
+            DateTime t = Convert.ToDateTime(time);
+            if (t.Minute == 58 && s2 == 30) //next slot begins in next hour in dual slot txn (type 2/3)
+            {
+                if (t.Hour < 23)
+                {
+                    t = t.AddHours(1);
+                    t = t.AddMinutes(-58);
+                    time = t.ToString("HH:mm");
+                }
+                else
+                {
+                    time = "00:00";
+                }
+            
+            }
             string date = dataGridView1.Rows[slot].Cells[0].Value.ToString();
+            if (s2 == 30 && time == "00:00")
+            {
+                DateTime d = Convert.ToDateTime(date);
+                d = d.AddDays(1);
+                date = d.ToString(dateformat);
+            }
+            if (s2 == 30)
+            {
+                parent = date + " " + time;
+            }
 
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
             MySqlConnection connection = new MySqlConnection(myConnectionString);
@@ -3646,7 +3758,7 @@ namespace WSPR_Sked
 
             if (rigctldcheckBox.Checked)
             {
-                testFtextBox.Text = defaultF.ToString();
+                //testFtextBox.Text = defaultF.ToString();
             }
             //TXFrequency = Convert.ToString(defaultF * 1000000);
             if (testFtextBox.Text == "" && !rigctldcheckBox.Checked)
@@ -3843,14 +3955,38 @@ namespace WSPR_Sked
             {
                 //may not need to change Freq on other rigs here?
                 rig = ReadRigs(false, selectedRig);  //global rig variable
-                sendOtherTXRigCommand(rig, rig.TXcommand);
+                string R = rig.TXcommand;
+                string R2 = "";
+                double freq1 = 0;
                 try
                 {
-                    freq = Convert.ToDouble(f);
-                    freq = freq / 1000000;
+                    freq1 = Convert.ToDouble(f);
+                    freq = freq1 / 1000000;
                     ok = true;
                 }
                 catch { ok = false; }
+                string C = callsign;
+                if (!Type2checkBox.Checked)
+                {
+                    C = base_call;
+                }
+                string L = location;
+                if (!longcheckBox.Checked)
+                {
+                    L = location.Substring(0, 4);
+                }
+                if (R.Length > 0 && ok)
+                {
+                    f = (freq1 + 1400 + Slot.Offset).ToString();
+                  
+                    R = R.Replace("freq", f);
+                    R = R.Replace("grid", L);
+                    R = R.Replace("call", C);
+                    R = R.Replace("pwr", Slot.PowerdB.ToString());
+
+                }
+                sendOtherTXRigCommand(rig, R);
+              
                 Msg.TMessageBox("Changed to: " + freq.ToString() + " MHz", "", 1000);
             }
             if (ok) { rxForm.set_frequency(freq.ToString("F6")); return true; }
@@ -5682,7 +5818,7 @@ namespace WSPR_Sked
             }
             if (rigctldcheckBox.Checked)
             {
-                testFtextBox.Text = defaultF.ToString();
+                //testFtextBox.Text = defaultF.ToString();
             }
             if (testFtextBox.Text == "" && !rigctldcheckBox.Checked)
             {
@@ -5701,7 +5837,11 @@ namespace WSPR_Sked
             }
 
             blockTXonErr = false; //unblock any errors contacting rigctld
-
+            if (testFtextBox.Text.Trim() == "")
+            {
+                Msg.OKMessageBox("No frequency selected", "");
+                return;
+            }
             double f = Convert.ToDouble(testFtextBox.Text);
             f = f * 1000000; //convert to MHz
             await selectAntenna();
@@ -5736,8 +5876,7 @@ namespace WSPR_Sked
             testPTTtimer.Enabled = false;
             slotActive = false;
             flashTX(false);
-            stopPlay = true;
-
+            stopPlay = true;         
 
         }
 
@@ -8068,11 +8207,17 @@ namespace WSPR_Sked
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            var res = Msg.ynMessageBox("Exit app (y/n)?", "Exit");
+            if (res == DialogResult.No)
+            {
+                e.Cancel = true;
+                return;
+            }
             if (savePrompt)
             {
                 stopRigCtlD(true); //true form closing
                 rxForm.Save_Config(serverName, db_user, db_pass);
-                var res = Msg.ynMessageBox("Save all settings before exit (y/n)?", "Save Settings");
+                res = Msg.ynMessageBox("Save all settings before exit (y/n)?", "Save Settings");
                 if (res == DialogResult.Yes)
                 {
                     SaveAll();
@@ -11098,6 +11243,9 @@ namespace WSPR_Sked
                             }
                             else
                             {
+                                rigtxcmdtextBox.Text = N.TXcommand;
+                                rigrxcmdtextBox.Text = N.RXcommand;
+                                rigPTTcmdtextBox.Text = N.TXptt;
                                 //rig = N; //global rig info
                                 //just return item
                             }

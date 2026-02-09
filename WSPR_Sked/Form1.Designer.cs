@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
@@ -318,6 +318,9 @@
             EditAbutton = new System.Windows.Forms.Button();
             AntlistBox = new System.Windows.Forms.ListBox();
             tabPage5 = new System.Windows.Forms.TabPage();
+            label141 = new System.Windows.Forms.Label();
+            label140 = new System.Windows.Forms.Label();
+            label139 = new System.Windows.Forms.Label();
             selFiltertextBox = new System.Windows.Forms.TextBox();
             label131 = new System.Windows.Forms.Label();
             editFibutton = new System.Windows.Forms.Button();
@@ -446,9 +449,6 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
-            label139 = new System.Windows.Forms.Label();
-            label140 = new System.Windows.Forms.Label();
-            label141 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -505,23 +505,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -3550,12 +3550,39 @@
             tabPage5.Controls.Add(label42);
             tabPage5.Controls.Add(TulistBox);
             tabPage5.Controls.Add(SwlistBox);
-            tabPage5.Location = new System.Drawing.Point(4, 22);
+            tabPage5.Location = new System.Drawing.Point(4, 24);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            tabPage5.Size = new System.Drawing.Size(1172, 652);
+            tabPage5.Size = new System.Drawing.Size(1172, 650);
             tabPage5.TabIndex = 4;
             tabPage5.Text = "Switches&Tuners";
+            // 
+            // label141
+            // 
+            label141.AutoSize = true;
+            label141.Location = new System.Drawing.Point(54, 449);
+            label141.Name = "label141";
+            label141.Size = new System.Drawing.Size(223, 13);
+            label141.TabIndex = 36;
+            label141.Text = "Filters - these are switchable band or low pass";
+            // 
+            // label140
+            // 
+            label140.AutoSize = true;
+            label140.Location = new System.Drawing.Point(54, 302);
+            label140.Name = "label140";
+            label140.Size = new System.Drawing.Size(210, 13);
+            label140.TabIndex = 35;
+            label140.Text = "Tuners - allow automatic antenna matching";
+            // 
+            // label139
+            // 
+            label139.AutoSize = true;
+            label139.Location = new System.Drawing.Point(41, 159);
+            label139.Name = "label139";
+            label139.Size = new System.Drawing.Size(297, 13);
+            label139.TabIndex = 34;
+            label139.Text = "Antenna switches - to automatically switch between antennas";
             // 
             // selFiltertextBox
             // 
@@ -4316,10 +4343,10 @@
             tabPage7.Controls.Add(riglistBox);
             tabPage7.Controls.Add(RiggroupBox);
             tabPage7.Controls.Add(label122);
-            tabPage7.Location = new System.Drawing.Point(4, 24);
+            tabPage7.Location = new System.Drawing.Point(4, 22);
             tabPage7.Name = "tabPage7";
             tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            tabPage7.Size = new System.Drawing.Size(1172, 650);
+            tabPage7.Size = new System.Drawing.Size(1172, 652);
             tabPage7.TabIndex = 6;
             tabPage7.Text = "Non Rigctl TX";
             // 
@@ -4505,7 +4532,7 @@
             // rigflowcomboBox
             // 
             rigflowcomboBox.FormattingEnabled = true;
-            rigflowcomboBox.Items.AddRange(new object[] { "none", "xon/xoff" });
+            rigflowcomboBox.Items.AddRange(new object[] { "none", "xon/xoff", "rts" });
             rigflowcomboBox.Location = new System.Drawing.Point(299, 13);
             rigflowcomboBox.Name = "rigflowcomboBox";
             rigflowcomboBox.Size = new System.Drawing.Size(68, 21);
@@ -4617,7 +4644,7 @@
             rigportcomboBox.FormattingEnabled = true;
             rigportcomboBox.Location = new System.Drawing.Point(185, 63);
             rigportcomboBox.Name = "rigportcomboBox";
-            rigportcomboBox.Size = new System.Drawing.Size(49, 74);
+            rigportcomboBox.Size = new System.Drawing.Size(63, 74);
             rigportcomboBox.TabIndex = 9;
             rigportcomboBox.Visible = false;
             // 
@@ -4807,33 +4834,6 @@
             // 
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
-            // 
-            // label139
-            // 
-            label139.AutoSize = true;
-            label139.Location = new System.Drawing.Point(41, 159);
-            label139.Name = "label139";
-            label139.Size = new System.Drawing.Size(297, 13);
-            label139.TabIndex = 34;
-            label139.Text = "Antenna switches - to automatically switch between antennas";
-            // 
-            // label140
-            // 
-            label140.AutoSize = true;
-            label140.Location = new System.Drawing.Point(54, 302);
-            label140.Name = "label140";
-            label140.Size = new System.Drawing.Size(210, 13);
-            label140.TabIndex = 35;
-            label140.Text = "Tuners - allow automatic antenna matching";
-            // 
-            // label141
-            // 
-            label141.AutoSize = true;
-            label141.Location = new System.Drawing.Point(54, 449);
-            label141.Name = "label141";
-            label141.Size = new System.Drawing.Size(223, 13);
-            label141.TabIndex = 36;
-            label141.Text = "Filters - these are switchable band or low pass";
             // 
             // Form1
             // 
