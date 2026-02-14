@@ -10,6 +10,7 @@ using MathNet.Numerics.Providers.LinearAlgebra;
 using MySql.Data.MySqlClient;
 using Mysqlx;
 using Mysqlx.Crud;
+using MySqlX.XDevAPI.Common;
 using MySqlX.XDevAPI.Relational;
 using NAudio.Wave;
 using Newtonsoft.Json.Linq;
@@ -344,7 +345,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.29";
+            string ver = "0.1.30";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -1191,6 +1192,8 @@ namespace WSPR_Sked
                 Msg.TMessageBox("Please wait...", "Saving slots", 1500);
                 return;
             }
+            slotlabel.Text = "";
+            slotlabel.Visible = false;
 
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
@@ -1589,7 +1592,7 @@ namespace WSPR_Sked
             {
                 if (validateSlot()) //check all fields ok
                 {
-
+                   
                     //MessageForm mForm = new MessageForm();
 
                     if (Type2checkBox.Checked)
@@ -1612,7 +1615,7 @@ namespace WSPR_Sked
                             msgTlabel.Text = "Message type 2";
                         }
                     }
-
+                
                     int oldR = rptType;
                     int R = findRptType(); //get new repeat type  
                     if (repeatcheckBox.Checked && editslotcheckBox.Checked)
@@ -1646,6 +1649,11 @@ namespace WSPR_Sked
                     {
                         this_slot = false;
                     }
+                    Savelabel.Text = "Saving - please wait....";
+                    Savelabel.Visible = true;
+                    slotlabel.Text = "Saving ... please wait";
+                    slotlabel.Visible = true;
+                    await Task.Delay(500);
                     int timeout = 50000;
                     if (this_slot)
                     {
@@ -1671,6 +1679,10 @@ namespace WSPR_Sked
                         if ((DaycheckBox.Checked || NightcheckBox.Checked) && !this_slot) //don't update all if only this one
                         {
                             slotNo = 1;
+                            /*await Task.Run(() =>
+                            {
+                                SaveSlot_Sun(false, msgT, this_slot, editrow);
+                            });*/
                             SaveSlot_Sun(false, msgT, this_slot, editrow);
 
                             editrow++;
@@ -1680,11 +1692,20 @@ namespace WSPR_Sked
                             }
                             slotNo = 2;
 
+                            /*await Task.Run(() =>
+                            {
+                                SaveSlot_Sun(true, msgT, this_slot, editrow);
+                            });*/
                             SaveSlot_Sun(true, msgT, this_slot, editrow);
                         }
                         else
                         {
                             slotNo = 1;
+
+                            /*await Task.Run(() =>
+                            {
+                                SaveSlot(false, msgT, this_slot, editrow);
+                            });*/
                             SaveSlot(false, msgT, this_slot, editrow);
 
                             editrow++;
@@ -1694,7 +1715,10 @@ namespace WSPR_Sked
                             }
 
                             slotNo = 2;
-
+                            /*await Task.Run(() =>
+                            {
+                                SaveSlot(true, msgT, this_slot, editrow);
+                            });*/
                             SaveSlot(true, msgT, this_slot, editrow);
 
                         }
@@ -1706,16 +1730,26 @@ namespace WSPR_Sked
                         slotNo = 1;
                         if ((DaycheckBox.Checked || NightcheckBox.Checked) && !this_slot) //don't update all if only this one
                         {
+                            /*await Task.Run(() =>
+                            {
+                                SaveSlot_Sun(false, msgT, this_slot, editrow);
+                            });*/
                             SaveSlot_Sun(false, msgT, this_slot, editrow);
 
                         }
                         else
                         {
+                            /*await Task.Run(() =>
+                            {
+                                SaveSlot(false, msgT, this_slot, editrow);
+                            });*/
                             SaveSlot(false, msgT, this_slot, editrow);
 
                         }
                     }
                     Savelabel.Text = "--";
+                    slotlabel.Visible = false;
+                    slotlabel.Text = "--";
                     slotgroupBox.Visible = false;
                     greygroupBox.Visible = false;
                     //mForm.Dispose();
@@ -1942,13 +1976,13 @@ namespace WSPR_Sked
                 cells[11] = Slot.RptType.ToString();
                 cells[14] = Slot.GreyOffset.ToString();
 
-                bool result = false;
-                /*result = await Task.Run(() =>
+                bool ok = false;
+                ok = await Task.Run(() =>
                 {
                     return locateSlotMembersDT(date1, time1, enddate, endtime, this_slot);
-                });*/
-                result = locateSlotMembersDT(date1, time1, enddate, endtime, this_slot);
-                if (result) //if able to save data
+                });
+                //ok = await locateSlotMembersDT(date1, time1, enddate, endtime, this_slot);
+                if (ok) //if able to save data
                 {
                     for (i = 0; i < maxcol; i++)
                     {
@@ -2206,11 +2240,11 @@ namespace WSPR_Sked
                 cells[14] = Slot.GreyOffset.ToString();
 
                 var ok = false;
-                /*ok = await Task.Run(() =>
+                ok = await Task.Run(() =>
                 {
                     return locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot);
-                });*/
-                ok = locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot);
+                });
+                //ok =  await locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot);
 
                 if (ok && show) //if able to save data
                 {
@@ -2275,8 +2309,8 @@ namespace WSPR_Sked
 
 
 
-        // private async Task<bool> locateSlotMembersDT(string date1, string time1, string enddate, string endtime, bool this_slot)
-        private bool locateSlotMembersDT(string date1, string time1, string enddate, string endtime, bool this_slot)
+        private async Task<bool> locateSlotMembersDT(string date1, string time1, string enddate, string endtime, bool this_slot)
+        //private bool locateSlotMembersDT(string date1, string time1, string enddate, string endtime, bool this_slot)
         {
             DateTime dt;
             DateTime Dend;
@@ -2341,8 +2375,13 @@ namespace WSPR_Sked
                         {
                             string newdate = dt.ToString(dateformat);
                             time1 = T.ToString("HH:mm"); //update time by one hour
-
-                            if (!SaveSlotData(newdate, time1))
+                            bool ok = await SaveSlotData(newdate, time1);
+                        
+                            /*bool ok = await Task.Run(() =>
+                            {
+                                return SaveSlotData(newdate, time);
+                            });*/
+                            if (!ok)
                             {
                                 return false;
                             }
@@ -2366,7 +2405,17 @@ namespace WSPR_Sked
                 else
                 {
                     string newdate = dt.ToString(dateformat);
-                    if (!SaveSlotData(newdate, time1))
+                    /*bool result = await Task.Run(() =>
+                    {
+                        return SaveSlotData(newdate, time);
+                    });
+                    if (!result)
+                    {
+                        return false;
+                    }*/
+                    bool ok = await SaveSlotData(newdate, time1);
+                                      
+                    if (!ok)
                     {
                         return false;
                     }
@@ -2380,8 +2429,8 @@ namespace WSPR_Sked
         }
 
 
-        //private async Task<bool> locateSlotMembersDT_Sun(string date1, string time1, string enddate, string endtime, bool this_slot)
-        private bool locateSlotMembersDT_Sun(string date1, string time1, string enddate, string endtime, bool this_slot)
+        private async Task<bool> locateSlotMembersDT_Sun(string date1, string time1, string enddate, string endtime, bool this_slot)
+        //private bool locateSlotMembersDT_Sun(string date1, string time1, string enddate, string endtime, bool this_slot)
         {
             DateTime dt;
             DateTime Dend;
@@ -2545,7 +2594,13 @@ namespace WSPR_Sked
                             T = new DateTime(T.Year, T.Month, T.Day, T.Hour, mins.Minute, 0); // set minutes to same as curr time
                             time1 = T.ToString("HH:mm"); //update time by one hour
 
-                            if (!SaveSlotData(newdate, time1))
+                            /*bool ok = await Task.Run(() =>
+                            {
+                                return SaveSlotData(newdate, time);
+                            });*/
+                           
+                            bool ok = await SaveSlotData(newdate, time1);
+                            if (!ok)
                             {
                                 return false;
                             }
@@ -2630,7 +2685,12 @@ namespace WSPR_Sked
                 else
                 {
                     string newdate = dt.ToString(dateformat);
-                    if (!SaveSlotData(newdate, time1))
+                    /*bool ok = await Task.Run(() =>
+                    {
+                        return SaveSlotData(newdate, time);
+                    });*/
+                    bool ok = await SaveSlotData(newdate, time1);
+                    if (!ok)
                     {
                         return false;
                     }
@@ -2646,7 +2706,8 @@ namespace WSPR_Sked
 
 
 
-        private bool SaveSlotData(string d, string t)  //to database
+        //private bool SaveSlotData(string d, string t)  //to database
+        private async Task<bool> SaveSlotData(string d, string t)  //to database
         {
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
             MySqlConnection connection = new MySqlConnection(myConnectionString);
@@ -4409,7 +4470,7 @@ namespace WSPR_Sked
             }
             else
             {
-                Msg.OKMessageBox("Settings saved", "");
+                Msg.TMessageBox("Settings saved", "Saved", 1500);
             }
 
 
