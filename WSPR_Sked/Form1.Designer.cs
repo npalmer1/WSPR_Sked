@@ -52,6 +52,7 @@
             Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             slotgroupBox = new System.Windows.Forms.GroupBox();
+            slotlabel = new System.Windows.Forms.Label();
             selSwPorttextBox2 = new System.Windows.Forms.TextBox();
             selSwitchtextBox2 = new System.Windows.Forms.TextBox();
             AllcheckBox = new System.Windows.Forms.CheckBox();
@@ -662,6 +663,7 @@
             // slotgroupBox
             // 
             slotgroupBox.BackColor = System.Drawing.Color.FromArgb(255, 192, 192);
+            slotgroupBox.Controls.Add(slotlabel);
             slotgroupBox.Controls.Add(selSwPorttextBox2);
             slotgroupBox.Controls.Add(selSwitchtextBox2);
             slotgroupBox.Controls.Add(AllcheckBox);
@@ -706,6 +708,21 @@
             slotgroupBox.TabStop = false;
             slotgroupBox.Text = "Timeslot Configuration";
             slotgroupBox.Visible = false;
+            // 
+            // slotlabel
+            // 
+            slotlabel.AutoSize = true;
+            slotlabel.BackColor = System.Drawing.Color.Red;
+            slotlabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            slotlabel.ForeColor = System.Drawing.SystemColors.HighlightText;
+            slotlabel.Location = new System.Drawing.Point(310, 151);
+            slotlabel.Margin = new System.Windows.Forms.Padding(3);
+            slotlabel.Name = "slotlabel";
+            slotlabel.Padding = new System.Windows.Forms.Padding(3);
+            slotlabel.Size = new System.Drawing.Size(23, 21);
+            slotlabel.TabIndex = 52;
+            slotlabel.Text = "--";
+            slotlabel.Visible = false;
             // 
             // selSwPorttextBox2
             // 
@@ -1243,13 +1260,14 @@
             // 
             saveslotlabel.AutoSize = true;
             saveslotlabel.BackColor = System.Drawing.Color.Firebrick;
-            saveslotlabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            saveslotlabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             saveslotlabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             saveslotlabel.Location = new System.Drawing.Point(442, 181);
             saveslotlabel.Name = "saveslotlabel";
-            saveslotlabel.Size = new System.Drawing.Size(81, 15);
+            saveslotlabel.Padding = new System.Windows.Forms.Padding(4);
+            saveslotlabel.Size = new System.Drawing.Size(202, 23);
             saveslotlabel.TabIndex = 102;
-            saveslotlabel.Text = "Saving slots...";
+            saveslotlabel.Text = "Processing && saving slots......";
             saveslotlabel.Visible = false;
             // 
             // skedstoplabel
@@ -4343,10 +4361,10 @@
             tabPage7.Controls.Add(riglistBox);
             tabPage7.Controls.Add(RiggroupBox);
             tabPage7.Controls.Add(label122);
-            tabPage7.Location = new System.Drawing.Point(4, 22);
+            tabPage7.Location = new System.Drawing.Point(4, 24);
             tabPage7.Name = "tabPage7";
             tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            tabPage7.Size = new System.Drawing.Size(1172, 652);
+            tabPage7.Size = new System.Drawing.Size(1172, 650);
             tabPage7.TabIndex = 6;
             tabPage7.Text = "Non Rigctl TX";
             // 
@@ -5322,6 +5340,7 @@
         private System.Windows.Forms.Label label139;
         private System.Windows.Forms.Label label141;
         private System.Windows.Forms.Label label140;
+        private System.Windows.Forms.Label slotlabel;
     }
 }
 
