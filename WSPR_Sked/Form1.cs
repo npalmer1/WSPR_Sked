@@ -576,6 +576,11 @@ namespace WSPR_Sked
                 daytimer.Enabled = false;
 
             }
+            repeatcheckBox.Checked = false;
+            repeatTimecheckBox.Checked = false;
+            DaycheckBox.Checked = false;
+            NightcheckBox.Checked = false;
+            AllcheckBox.Checked = false;
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -3397,12 +3402,8 @@ namespace WSPR_Sked
             else
             {
                 greygroupBox.Visible = false;
-            }
-            if (repeatcheckBox.Checked)
-            {
-
-                checkPeriod();
-            }
+            }            
+                checkPeriod();            
         }
 
         //--------------------------------WSPR Sharp encoding------------------------------------
@@ -8153,6 +8154,8 @@ namespace WSPR_Sked
             DateTime startdate = DateTime.Now;
             int days = (enddate - startdate).Days;
             int t = 0;
+            rangelabel.Text = "--";
+            rangelabel.Visible = false;
             if (repeatcheckBox.Checked)
             {
                 if (repeatTimecheckBox.Checked && days > 60)
@@ -8173,7 +8176,9 @@ namespace WSPR_Sked
                 }
                 if (t > 0)
                 {
-                    Msg.TMessageBox("Selecting dates >" + t + " days not advised (slow)", "Range " + t + " days", 2500);
+                    //Msg.TMessageBox("Selecting dates >" + t + " days not advised (slow)", "Range " + t + " days", 2500);
+                    rangelabel.Text = "Note: saving the slots may be slower if the date range is more than "+t+ " days";
+                    rangelabel.Visible = true;
                 }
             }
         }
@@ -8187,10 +8192,11 @@ namespace WSPR_Sked
                 NightcheckBox.Checked = false;
                 greygroupBox.Visible = false;
                 AllcheckBox.Checked = false;
-                checkPeriod();
+               
 
             }
             timeEnd.Enabled = repeatTimecheckBox.Checked;
+            checkPeriod();
 
         }
 
@@ -8203,10 +8209,9 @@ namespace WSPR_Sked
             {
                 //Msg.OKMessageBox("Note: Date before today", "");
             }
-            if (repeatcheckBox.Checked)
-            {
+           
                 checkPeriod();
-            }
+            
         }
 
 
@@ -10142,9 +10147,14 @@ namespace WSPR_Sked
                 timeEnd.Enabled = false;
                 greygroupBox.Visible = true;
                 greylistBox.Text = "1";
-                checkPeriod();
+               
 
             }
+            else
+            {
+                greygroupBox.Visible = false;
+            }
+                checkPeriod();
 
         }
 
@@ -10160,9 +10170,14 @@ namespace WSPR_Sked
                 AllcheckBox.Checked = false;
                 greygroupBox.Visible = true;
                 greylistBox.Text = "1";
-                checkPeriod();
+               
 
             }
+            else
+            {
+                greygroupBox.Visible = false;
+            }
+            checkPeriod();
         }
 
         private void AllcheckBox_CheckedChanged(object sender, EventArgs e)
@@ -10175,9 +10190,10 @@ namespace WSPR_Sked
                 repeatTimecheckBox.Checked = false;
                 timeEnd.Enabled = false;
                 greygroupBox.Visible = false;
-                checkPeriod();
+                
 
             }
+            checkPeriod();
         }
 
         private async Task<bool> Save_SunSet_SunRise(string locator, string date, string sunrise, string sunset)

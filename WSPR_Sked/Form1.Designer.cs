@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
@@ -52,6 +52,7 @@
             Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             slotgroupBox = new System.Windows.Forms.GroupBox();
+            rangelabel = new System.Windows.Forms.Label();
             slotlabel = new System.Windows.Forms.Label();
             selSwPorttextBox2 = new System.Windows.Forms.TextBox();
             selSwitchtextBox2 = new System.Windows.Forms.TextBox();
@@ -506,23 +507,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle4;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -663,6 +664,7 @@
             // slotgroupBox
             // 
             slotgroupBox.BackColor = System.Drawing.Color.FromArgb(255, 192, 192);
+            slotgroupBox.Controls.Add(rangelabel);
             slotgroupBox.Controls.Add(slotlabel);
             slotgroupBox.Controls.Add(selSwPorttextBox2);
             slotgroupBox.Controls.Add(selSwitchtextBox2);
@@ -703,11 +705,25 @@
             slotgroupBox.Controls.Add(OffsettextBox);
             slotgroupBox.Location = new System.Drawing.Point(303, 232);
             slotgroupBox.Name = "slotgroupBox";
-            slotgroupBox.Size = new System.Drawing.Size(704, 363);
+            slotgroupBox.Size = new System.Drawing.Size(704, 373);
             slotgroupBox.TabIndex = 8;
             slotgroupBox.TabStop = false;
             slotgroupBox.Text = "Timeslot Configuration";
             slotgroupBox.Visible = false;
+            // 
+            // rangelabel
+            // 
+            rangelabel.AutoSize = true;
+            rangelabel.BackColor = System.Drawing.Color.Beige;
+            rangelabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            rangelabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            rangelabel.Location = new System.Drawing.Point(24, 140);
+            rangelabel.Name = "rangelabel";
+            rangelabel.Padding = new System.Windows.Forms.Padding(3);
+            rangelabel.Size = new System.Drawing.Size(21, 19);
+            rangelabel.TabIndex = 53;
+            rangelabel.Text = "--";
+            rangelabel.Visible = false;
             // 
             // slotlabel
             // 
@@ -715,7 +731,7 @@
             slotlabel.BackColor = System.Drawing.Color.Red;
             slotlabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             slotlabel.ForeColor = System.Drawing.SystemColors.HighlightText;
-            slotlabel.Location = new System.Drawing.Point(310, 151);
+            slotlabel.Location = new System.Drawing.Point(316, 180);
             slotlabel.Margin = new System.Windows.Forms.Padding(3);
             slotlabel.Name = "slotlabel";
             slotlabel.Padding = new System.Windows.Forms.Padding(3);
@@ -743,7 +759,7 @@
             // AllcheckBox
             // 
             AllcheckBox.AutoSize = true;
-            AllcheckBox.Location = new System.Drawing.Point(143, 321);
+            AllcheckBox.Location = new System.Drawing.Point(145, 332);
             AllcheckBox.Name = "AllcheckBox";
             AllcheckBox.Size = new System.Drawing.Size(141, 30);
             AllcheckBox.TabIndex = 49;
@@ -755,7 +771,7 @@
             // greygroupBox
             // 
             greygroupBox.Controls.Add(greylistBox);
-            greygroupBox.Location = new System.Drawing.Point(31, 254);
+            greygroupBox.Location = new System.Drawing.Point(33, 265);
             greygroupBox.Name = "greygroupBox";
             greygroupBox.Size = new System.Drawing.Size(95, 49);
             greygroupBox.TabIndex = 48;
@@ -775,7 +791,7 @@
             // NightcheckBox
             // 
             NightcheckBox.AutoSize = true;
-            NightcheckBox.Location = new System.Drawing.Point(143, 285);
+            NightcheckBox.Location = new System.Drawing.Point(145, 296);
             NightcheckBox.Name = "NightcheckBox";
             NightcheckBox.Size = new System.Drawing.Size(165, 30);
             NightcheckBox.TabIndex = 45;
@@ -787,7 +803,7 @@
             // DaycheckBox
             // 
             DaycheckBox.AutoSize = true;
-            DaycheckBox.Location = new System.Drawing.Point(143, 254);
+            DaycheckBox.Location = new System.Drawing.Point(145, 265);
             DaycheckBox.Name = "DaycheckBox";
             DaycheckBox.Size = new System.Drawing.Size(165, 30);
             DaycheckBox.TabIndex = 44;
@@ -837,7 +853,7 @@
             // repeatTimecheckBox
             // 
             repeatTimecheckBox.AutoSize = true;
-            repeatTimecheckBox.Location = new System.Drawing.Point(143, 201);
+            repeatTimecheckBox.Location = new System.Drawing.Point(145, 212);
             repeatTimecheckBox.Name = "repeatTimecheckBox";
             repeatTimecheckBox.Size = new System.Drawing.Size(165, 43);
             repeatTimecheckBox.TabIndex = 39;
@@ -898,7 +914,7 @@
             timeEnd.CustomFormat = "HH:mm";
             timeEnd.Enabled = false;
             timeEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            timeEnd.Location = new System.Drawing.Point(42, 211);
+            timeEnd.Location = new System.Drawing.Point(44, 222);
             timeEnd.Name = "timeEnd";
             timeEnd.ShowUpDown = true;
             timeEnd.Size = new System.Drawing.Size(84, 20);
@@ -909,7 +925,7 @@
             // repeatcheckBox
             // 
             repeatcheckBox.AutoSize = true;
-            repeatcheckBox.Location = new System.Drawing.Point(173, 151);
+            repeatcheckBox.Location = new System.Drawing.Point(179, 180);
             repeatcheckBox.Name = "repeatcheckBox";
             repeatcheckBox.Size = new System.Drawing.Size(101, 30);
             repeatcheckBox.TabIndex = 30;
@@ -923,7 +939,7 @@
             dateEnd.CustomFormat = "\"yyyy-MM-dd\"";
             dateEnd.Enabled = false;
             dateEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            dateEnd.Location = new System.Drawing.Point(40, 158);
+            dateEnd.Location = new System.Drawing.Point(46, 187);
             dateEnd.Name = "dateEnd";
             dateEnd.Size = new System.Drawing.Size(119, 20);
             dateEnd.TabIndex = 29;
@@ -1004,7 +1020,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new System.Drawing.Point(40, 135);
+            label8.Location = new System.Drawing.Point(46, 164);
             label8.Name = "label8";
             label8.Size = new System.Drawing.Size(152, 13);
             label8.TabIndex = 16;
@@ -5341,6 +5357,7 @@
         private System.Windows.Forms.Label label141;
         private System.Windows.Forms.Label label140;
         private System.Windows.Forms.Label slotlabel;
+        private System.Windows.Forms.Label rangelabel;
     }
 }
 
