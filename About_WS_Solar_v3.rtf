@@ -1,0 +1,657 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang2057\deflangfe2057{\fonttbl{\f0\fswiss\fprq2\fcharset0 Aptos;}{\f1\fnil\fcharset0 Calibri;}{\f2\fnil\fcharset0 Cambria Math;}{\f3\fswiss\fprq2 Arial;}{\f4\froman\fprq2\fcharset0 Times New Roman;}{\f5\fnil\fcharset1 Cambria Math;}}
+{\colortbl ;\red0\green0\blue255;\red0\green0\blue0;}
+{\*\generator Riched20 10.0.19041}{\*\mmathPr\mmathFont2\mnaryLim0\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
+\pard\hyphpar0\widctlpar\sa160\sl276\slmult1\kerning1\b\f0\fs24 The WS_Solar App\b0\par
+\b What is WS_Solar?\b0\par
+\b WS_Solar\b0  is an app that was developed as part of a suite of tools with an app called WSPR Scheduler. WSPR (Weak Signal Propagation Reporter) is a digital radio transmission mode designed to test and study radio propagation using extremely weak signals, operating within amateur radio bands from LF through to SHF. It transmits narrow band signals using low power in two-minute timeslots. Receiving stations then decode the transmissions and upload them to the Internet and the results are made available for anyone to download. WSPR Scheduler was developed to enable the scheduling of these transmissions and to allow seamless band and antenna switching. It also decodes received signals and uploads them to the Internet. A separate app (WSPR Scheduler Live) downloads reported transmission from the Internet to display the results. WSPR Scheduler Map then displays the results on a World map. \par
+Since WSPR was originally designed to investigate radio propagation the primary driver of propagation conditions is the Sun. Therefore, in order to be able to predict propagation conditions it is necessary to study what the Sun is doing based on historical and current data.\par
+Therefore, WSPR Solar retrieves solar geomagnetic data from NOAA in Boulder, Colorado and its two GOES satellites. It can also display a daily propagation forecast. This data is stored and displayed for current and future recording of propagation information.\par
+\b\par
+Installing WS_Solar\b0\par
+If you install WSPR Scheduler then you can install WS_Solar at the same time. Just install WSPR Scheduler and then the WS_Solar.msi file.\par
+\par
+\b Using WSPR Solar\b0\par
+When you start WS_Solar the main window is displayed.\par
+There are two panes at the top of the app. \par
+\b Current Solar Data from Boulder, Co.\b0\par
+
+\pard 
+{\pntext\f0 1)\tab}{\*\pn\pnlvlbody\pnf0\pnindent0\pnstart1\pndec{\pntxta)}}
+\nowidctlpar\hyphpar0\sa160\sl276\slmult1 The left hand pane shows a summary of the solar geomagnetic data retrieved from NOAA in Colorado. It displays the 3 hourly K indices and A indices for some terrestrial observation stations, including Boulder, for the previous day and today. The A index is a figure taken from a calculation of the overall 3 hourly K indices. This pane also includes the planetary A and K indices for each day (Ap and Kp), which are global figures based on the overall results of the observations from these stations. \par
+{\pntext\f0 2)\tab}The right hand pane displays a summary of solar and geophysical activity for the previous day. This includes energetic events such as solar flares and radio bursts. It also includes the daily 10cm Solar Flux Index (SFI), sunspot number (SSN) and X-ray background level (for this previous day). It also includes the daily proton fluence (the accumulation over 24hrs) and electron fluence (again the accumulation over 24hr).\par
+{\pntext\f0 3)\tab}Below this is a table containing the current planetary 3 hourly K indices (Kp) and the current estimated planetary A index (Ap) \endash  estimated as the overall picture won\rquote t be known until the end of the day. This also includes the SFI (Solar Flux Index), SSN (Sunspot number) and background X-ray levels based on yesterday\rquote s values (again todays values won\rquote t be known until the end of the day).\par
+
+\pard\hyphpar0\widctlpar\sa160\sl276\slmult1 The K and A indices are also shown for the Boulder observation station.\par
+The K index is quasi-logarithmic local index and is a measure of the Sun\rquote s magnetic field fluctuations, measured in nano-Tesla (nT), as the deviation from a local baseline over 3 hour intervals by magnetometers at several ground stations (for example Boulder, CO. or Learmouth, Western Australia). \par
+A planetary (worldwide) K index (Kp) is derived by the combining K-indices from the magnetometer stations around the world, normalised to a standard reference station, so that local effects are removed. \par
+These three hourly Kp indices then have to be converted to a single Ap index. First of all each Kp value is rounded the nearest third in value (eg. a Kp value of 3.25 would become 3.33 or 3+ and a Kp value of 4.7 would be 4.66 or 5-) and then the \b Kp\b0  values are mapped to the corresponding \b ap\b0  values according to this table:\par
+
+\pard\pagebb\hyphpar0\widctlpar\sa160\sl276\slmult1\fs20\par
+\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1 Kp value\fs24\cell\fs20 ap value\fs24\cell\fs20 Kp value\fs24\cell\fs20 ap value\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 0o\fs24\cell\fs20 0\fs24\cell\fs20 5-\fs24\cell\fs20 39\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 0+\fs24\cell\fs20 2\fs24\cell\fs20 5o\fs24\cell\fs20 48\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 1-\fs24\cell\fs20 3\fs24\cell\fs20 5+\fs24\cell\fs20 56\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 1o\fs24\cell\fs20 4\fs24\cell\fs20 6-\fs24\cell\fs20 67\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh256\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 1+\fs24\cell\fs20 5\fs24\cell\fs20 6o\fs24\cell\fs20 80\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 2-\fs24\cell\fs20 6\fs24\cell\fs20 6+\fs24\cell\fs20 94\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 2o\fs24\cell\fs20 7\fs24\cell\fs20 7-\fs24\cell\fs20 111\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 2+\fs24\cell\fs20 9\fs24\cell\fs20 7o\fs24\cell\fs20 132\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 3-\fs24\cell\fs20 12\fs24\cell\fs20 7+\fs24\cell\fs20 154\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 3o\fs24\cell\fs20 15\fs24\cell\fs20 8-\fs24\cell\fs20 179\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 3+\fs24\cell\fs20 18\fs24\cell\fs20 8o\fs24\cell\fs20 207\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 4-\fs24\cell\fs20 22\fs24\cell\fs20 8+\fs24\cell\fs20 236\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 4o\fs24\cell\fs20 27\fs24\cell\fs20 9-\fs24\cell\fs20 300\fs24\cell\row\trowd\trgaph10\trleft-118\trqc\trrh242\trpaddl10\trpaddr10\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx1896\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx4008\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx6119\clbrdrl\brdrw10\brdrs\brdrcf2\clbrdrt\brdrw10\brdrs\brdrcf2\clbrdrr\brdrw10\brdrs\brdrcf2\clbrdrb\brdrw10\brdrs\brdrcf2 \cellx8231 
+\pard\intbl\hyphpar0\widctlpar\sl276\slmult1\fs20 4+\fs24\cell\fs20 32\fs24\cell\fs20 9\fs24\cell\fs20 400\fs24\cell\row 
+\pard\hyphpar0\widctlpar\sl276\slmult1\par
+See: {{\field{\*\fldinst{HYPERLINK https://www.ngdc.noaa.gov/geomag/indices/kp_ap.html }}{\fldrslt{https://www.ngdc.noaa.gov/geomag/indices/kp_ap.html\ul0\cf0}}}}\f0\fs24\par
+\par
+Then the average of the 8 ap values is taken, eg:\par
+\kerning0\f1\fs22\lang9{\pict{\*\picprop{\sp{\sn wzDescription}{\sv Image}}{\sp{\sn posv}{\sv 1}}
+}\pngblip\picw3223\pich1575\picwgoal1827\pichgoal893 
+89504e470d0a1a0a0000000d49484452000000ae0000005d0802000000b368ca0e000000017352
+474200aece1ce90000000467414d410000b18f0bfc6105000000097048597300000ec300000ec3
+01c76fa86400000bc749444154785eed9c694c135d17c7fbbc2a51511e08b844dc17c01d342208
+eea80841500cc61585802446a28091b8c625d144a38918c5358a20a80801453f1001358a4b2222
+518944501483f24105158568dfffd3736826144b3badd296fbfb50ee39776867eefce79c73ef4c
+fb8f52a95408040ac5fff8afa0dd23a420608414048c90828011521030420a02464841c0887505
+83a8aaaa3a70e0c0fbf7ef3d3c3c222323adacacb8c30c1151413e3535352b57ae8c8989494e4e
+b6b6b6f6f4f4e40ef34448413e8989894b962c717474447bd5aa555dbb762d2929a12e73444841
+3e8d8d8d870f1f468e201369c2cece8edae688a815e483183065ca143476edda5554543462c488
+d8d858ea324784140ca2a0a060debc7968f4eedd3b272767d8b061e437474482900f22c1dab56b
+efddbb87b943757535cac68a8a0aee3347101504f2f0f6f6cececea6f6d3a74f513f4647479369
+8eb4afa8505656565f5fcf86c1141717fbf8f8501b85c2faf5eb31bd24d31c692f52f8fcf9735c
+5c9cbbbb3bae637619ccc89123d3d3d3d950285ebe7c3973e64c36cc10cb2f1b71e1a2d4ffd9c4
+891327162d5ac47d86815a21242424303070f4e8d1376edce8d4a9d3a953a7b8cf0cb17c29bc7b
+f70eaf7dfaf4193366ccab57af8c2805d0d0d050585888b7f5f7f777707060af7962f909022200
+6c181b2b2baba953a78686869abb0e80984c0a1821050123a420608414048c9082806947b7a374
+9f4c9696966272c88691707676be76ed1a1b268990420b3434340c1e3cb8b6b696cc152b566cdc
+b891da5a282929a185e72f5fbe1416163e7efcb8b2b292ba88dcdcdc891327b26182400aed84d1
+a34777efde3d2d2d8d6dad3c7af4c8d6d616db03346072873efcf8f1232727c7d5d595de273434
+943b4c12512bb48c9b9bdbdab56ba9fdf3e74f0412840a3275c7cacacacfcfafa8a8e8f2e5cb36
+36365959599f3e7de23ed3a3bd48e1f3e7cf88db68bc7efd5ac793ba73e7ce49932651bbbaba7a
+e9d2a5d496c1ac59b320887ffffd77f7eeddec3241383a18c083070ff2f3f3d9303d162e5c48f1
+b9194f9e3ce12d7ecf870f1f1c1d1df91fba774f4a4ae20e59e013f16ec81a6c9b18864a018385
+548ae166dbe2484f4f6721a88a065d04a485a3478f161414b06162182a85b0b0308cd1b871e3d8
+b644e2e3e3490a00476ab297b58118542bdcbe7dfbd2a54b6834363692c722d9b16387faf9d5b2
+b2b20d1b3650dbc230685d61fcf8f1fdfaf5cbcbcb435b3d0bb7486a6a6a9c9c9c309520d3b80f
+3d9808f2a3c2f1e3c77bf4e8b17dfb76b62d1a1c696262221b0a456c6cac593fc6d8329427f4e5
+e3c78f03060c400d0528896ad653984363bcd8502ad1969ae6c8e2c58be96081b7b7377b8d0d6a
+91aaaa2a3634a8acac54172b68484d03912985681568603f68689a49012174d4a851f6f6f618be
+b76fdf7a79794d983061e8d0a17062d2c11b991b38585ab224b66eddca1d460223b360c1829e3d
+7bd2585dbc78312828483db0f8748c9eabab2b46f5d1a347090909fdfbf79f3c7932ccfdfbf7d3
+368620a756282929993b776e7979397d87dcc6c606afd2f48978809dc606ebd6ad4b4e4ec6a865
+6666babbbb373434b8b8b8606e8d7a93b66c06265aaf5fbf66a335468c18812163e36f51545434
+63c60c75d170f3e64d3737376a1b080ad2e9d3a77b7a7aa6a4a460602f5cb8101111017f4e4e0e
+ce371a7171710e0e0ee1e1e143860cc106b367cf3e73e60c1a870f1fdeb4691374e3ebebab7a27
+99c8a9155042efd9b38774005039e255ba8487dd0a0e0ec60650034ca8013a40031e549ac5c5c5
+a5a5a5aa0dcd0f9cf898981836148a808000a3ac2563f4fcfdfdbf7efd7ae4c8111a58baae3a74
+e8a0be8395919111151545433776ecd8f3e7cfd39653a74ec56b5252d27f1b19020507dd494b4b
+6b962629664aa325745a58588886adad6daf5ebdc849e8754fc864090c0cfc2f43a830caf21a46
+0f6f151616c6b652f9fcf97378d4435d5d5d8da880c6ce9d3be19766040c263c1858b695ca2d5b
+b6c8b87fa69f1490ae30c3c6076b121f1fcf1b3571ebd62df8316a6cffbeb0f843d067698737d5
+13e982341a28a2b9432eb860f056d7af5f675ba93c76ec183c9ae5c89c3973e0979e695a01532b
+9234949e9e4ea6eee82705ec9954b9042df26b5e1c502efc52fde250e1691627cc1412baecfbd7
+52d4b3305c2aec6a5ac6958a83c0e8351b40440e6c6978e5a847ad50515171faf4e9bd7bf7b2dd
+047dcba0aeae8e4c35b9b9b97845914526c081e175d9b265646ab262c50a14a13ab279f366feb7
+b6e0d5ab5748e4898989c62a1b070e1ca82ebf407e7e3ede1fa38722fde4c993e444b9fdeddb37
+0f0f0f32012a15d45ed812e524bb64c392d00184a616a547794e9aab0888177e3654d9011ea384
+d33687d2b3b12a1e0ae9d2b04a21870a050caf7ad829d04ab306ea77785040a08d1146198b0a7d
+f5ead5d4ab173a49a1aaaa8a5657ae5ebdcaae262052cc64d085d30c85b2b7e960001ae4c1a11a
+259cb63938041c88661637045ce883060da2f68b172f060c1880a123710c1f3e5c7df150a18057
+32694fd41a8a8d8d45aec18ec9bb3bd8ba14f0beaa73cae0f3b843a984fad8db843a8d917e4343
+43913e962e5d4a6b233848ea355fa860d42c8c0c844ebfa7a7a7afafafb3b3334c7c043e081ea9
+e630bc009725fc4141413d7bf694f61e3c7810afa8eb112ac8a317fa958dba43fa454840d8a8ac
+ac6cf32567ecc6c3870f0b0a0aa4a14b5f108171614c9b364d5adf19110c146043158ca5e34681
+964202bab0a5e66edcbb770fdb949797b3ad0f7f4a0a9a2b0a6d08ae125c40b88c80bdbd7d7070
+b08c73493a007f4807ada2b9a2a009e61da41519cf95fd112948f5dbe660828ef387a840261a30
+65ec1b456c036fa02026c90e4bea40cb764be0f2c3f166676763d2c12e9d31be14222323511960
+a731cb4295f0775693b480dcd9acd427a5a26e675b0790928d52f3a23c440c6743673009473cc3
+0e60b731a43b76ece00e0d30e9888e8e96378330fe5762ce9e3dcb2d15818181380636da021b1b
+1bcc71e2e3e3d956dd4ef3f2f2ba73e70e26c0ecd2cab973e730be191919d3a74f67972cb66ddb
+969b9b5b5858c8b6ce3c7efcb8b8b8980d85020526ea15363478f7ee9dccdf9320455830102248
+4848605b553a20d4eb98f28db584400b00da337ddb62f952a0155c80b485495a5e5e1e2a47cd05
+dd1631ca12c2d3a74f7d7c7c681f4c7979cdf2a580ab1fe194ce04ce6b8f1e3d106fb94f2b862c
+21a0367cf6ecd9debd7bd5df92037e7e7edc6d92b48bafcfe2aca0fcaeafafa7872a708251636b
+ff115e6c8c12acacacccceceae63c78eecd5812f5fbefceea721535252020202d8303d2c5f0aea
+a2cfc9c969e5ca95f7efdf8713b56451511122046dd30c28c6d3d3133a60db1874eddab5b2b252
+7ac3c9d4b0702960b23065ca9443870e2d5fbe9c3c50c6faf5eb71b2972c59227d88590a7a5353
+53d93012dacb7e53c0c2a5101e1e9e9f9f4fcfd5a9a1e713fbf5ebf7e4c91376092cfe9bd4b5b5
+b5ddba7563a3093737377a1e5020c5c2a580b0fce6cd1baa16a5d4d5d5fdfda7a54d1d24080b06
+13424c203121942e28252525c169e0dd04cbc3f267100f1e3c08090941233838d8dadafaca952b
+1f3f7ecccccc34d683681643bb58574082a01fe5c6a47fd4a8519828ea3ba9c35cc3d1d151c6aa
+404242c2fcf9f3fbf6edcbb629a38a0d82564042a1e7077504caf3f5f5eddfbf7ff7bff5a4bfe1
+b48ba8f0f7a9afafefd0a103d250444484eeb740db160b9f41b4155dba7431e585c51611526885
+b0b0301f1f1f039f54300b4482d0c6a953a768852a2a2a0af30e348a8b8bd7ac59a3ea6c997dfb
+f6a12ca5367d1bda5c1284281bb5418f93fbf9f9c9fb21567aecc55cca469120b4b16eddba4f9f
+3eddbd7b373838985d968b90422b2047d8d9d9050404141414c04482f0d68a8c47174d058e0e82
+df80b31b1d1d5d5e5e2efd5a988e9857821065632b848787fffaf5abb6b636353555f7f9615656
+564c4cccf7efdfebeaeaa086ce9d3be7e4e4b8b8b870b74922a4d03af21f27372b8414048c281b
+058c90828011521030420a02464841c00829081821050123a420608414048c9082801152103042
+0a02464841c00829081821050123a42050a150fc1f28caf78d9de1a2330000000049454e44ae42
+6082
+}\kerning1\f0\fs24\lang2057\par
+This then gives a planetary A index \b Ap\b0 .\par
+\par
+
+\pard\hyphpar0\widctlpar\sa160\sl276\slmult1 If the planetary A index (Ap) is equal to or exceeds 30 then a storm will also be reported according to the following Ap values:\par
+0-7 quiet, 8-15 unsettled, 16-29 active, \par
+And then 30-49 minor storm, 50-99 major storm, 100-400 severe storm\par
+In WS_Solar if any of the K indices (the Boulder K indices or the planetary Kp) equal or exceed a level of 5 a geomagnetic storm level value will be displayed in brackets adjacent to that K index in the table. The storm levels are:\par
+
+\pard\hyphpar0\widctlpar\sl276\slmult1 >=5 = G1 minor\par
+>=6 = G2 moderate\par
+>=7 = G3 strong\par
+>=8 = G4 severe\par
+>=9 = G5 extreme\par
+
+\pard\hyphpar0\widctlpar\sa160\sl276\slmult1 More on this later.\par
+4)\tab At the bottom of the page this SFI value is shown along with an estimate, based on this value, of the expected propagation conditions for the higher High Frequency (HF) bands which relates to the Maximum Useable Frequency (MUF). The MUF is the highest frequency at which propagation over a given path is possible. The estimated propagation conditions are based upon previous research that indicates that a low level of SFI will result in poorer HF propagation conditions (ie. lower MUF), whilst a higher level will likely allow better long-range propagation and higher MUFs. Higher Solar Flux Index levels indicate a higher level of ionisation in the ionosphere (upper atmosphere) which is better for long range HF propagation at higher MUFs. Higher sunspot numbers (SSN values) indicate that the sun is more active, and this gives rise to higher values of SFI during sunspot maxima in particular (the Sun\rquote s activity and sunspot numbers varying over an approximately 11-year cycle \endash  from minima to maxima and back again).\par
+SFI values can be approximated to the following higher HF propagation conditions: \par
+SFI: <70 poor, 70-99 poor to fair, 100-129 fair, 130-149 good, 150-199 very good, 200+ outstanding\par
+The current estimated Ap level also determines the suns activity and this is also shown.\par
+However, the estimated propagation conditions can be influenced by solar flares and storms. This may cause a deterioration in HF propagation conditions or even a partial or more serious black out in which propagation over long distances is either restricted or not possible. If no storms or blackouts are reported today then a comment of \ldblquote Likely normal - (no storm or blackout)\rdblquote  will indicate that the forecast conditions are likely to be reasonably accurate.\par
+Below this - if significant solar radio bursts have been reported - the likely effect of these will be shown in terms of the intensity and frequencies affected. If the frequencies given are wideband - this means that any range of frequencies may be affected from VLF through to UHF. These bursts are likely to have most effect on HF communication and will increase the noise level in particular. \par
+\par
+5)\tab Also at the bottom of the page is a \ldblquote Storms reported\rdblquote  section. This indicates whether any Geomagnetic, Radiation storms or Radio Blackouts have been reported at any time today. As we have seen Geomagnetic storms are represented by a G value. Whereas radiation storms are represented by an S value and flares that may cause radio blackouts by an R value. Flares greater than or equal to M1 class may cause a radio blackout. There are 5 levels as follows: R1 minor, R2 moderate, R3 strong, R4 severe, R5 extreme, depending on the severity of the flare. \par
+Radiation storm occur when the number of Proton Flux values of greater than 10MeV exceed a certain level. The severity of radiation storms are measured on a scale of 5 as follows:\par
+S1 minor, S2 moderate, S3 strong, S4 severe, S5 extreme\par
+Therefore, if any G, R or S value appears in the storms reported area a note will be made of this and the propagation predication will be appended with a comment like: \ldblquote Possibly unstable/degraded (storm or blackout)\rdblquote .\par
+The storm/blackout may have been reported earlier in the day, in which case a further field shows whether they have occurred in the last 3 hours or so. If they haven\rquote t you may see a comment such as \ldblquote "Likely normal, but storm or blackout reported earlier".\par
+An Ap level above 30 will be shown as a storm here (as previously mentioned). This will also impact the comment attached to the propagation estimate.\par
+Current radio bursts will be shown below this. These will indicate intensity and bands affected, or none/insigniificant if the bursts are short lived and low intensity.\par
+6)\tab A summary of radio bursts can be viewed from the "Radio bursts" button (press the button again to hide this popup window). This shows the total duration of significant radio bursts that may impact on radio propagation and reception, the maximum intensity level of bursts (from weak to extreme), and also the radio bands that may be affected due to the nature of the radio burst - for example from Wideband, 25 MHz and upwards or VHF only. \par
+Also shown will be short bursts (RBR) and the intensity and longer radio noise storms (RNS) and the intensity of those. The frequency affected is shown in the more detail in the database of geophysical data. This summary is extrapolated from the detailed Radio Burst data recorded in the Database of Geophysical data - see below.\par
+\par
+\b Database of Solar Geophysical data\b0\par
+All of the following information is downloaded from NOAA and recorded locally in the wspr_solar MySQL database. This can be used for future research on Solar activity and propagation predication \endash  perhaps using machine learning or other AI techniques to analyse the data (which could be combined with the output of the data recorded by WSPR Scheduler and WSPR Scheduler Live)\par
+\par
+\par
+
+\pard 
+{\pntext\f0 1)\tab}{\*\pn\pnlvlbody\pnf0\pnindent0\pnstart1\pndec{\pntxta)}}
+\nowidctlpar\hyphpar0\sa160\sl276\slmult1\b Ap/Kp/SSN Indices\b0\par
+
+\pard\hyphpar0\widctlpar\sa160\sl276\slmult1 If the Database button is selected a Solar physical database is displayed. This shows the daily Ap and Kp hourly indices over time. When you first start the WS_Solar app these will be blank, but over a number of days the database will start to be populated with this data.\par
+If any of the Kp indices have a value of 5 or above then a geomagnetic storm level is recorded in brackets, between G1 to G5 as previously mentioned.\par
+The daily values for SFI, SSN and X-ray background are also shown. \par
+\b 2)\tab PF/flare/burst data\b0\par
+If the PF/Flare/Burst data button is pressed the display changes to show the daily values of:\par
+
+\pard 
+{\pntext\f0 a)\tab}{\*\pn\pnlvlbody\pnf0\pnindent0\pnstart1\pnlcltr{\pntxta)}}
+\nowidctlpar\hyphpar0\fi-360\li720\sa160\sl276\slmult1 The \b Proton Flux\b0  measured as the number of protons/cm2.s.sr >= 10MeV.\par
+
+\pard\hyphpar0\widctlpar\li720\sa160\sl276\slmult1 That is the number of protons (that each exceed an energy level of greater than 10 million electron Volts) per square cm per second per steradian (or directional solid angle).\par
+These are recorded in the database in three hourly periods. For each an average value and then a "/" followed by the maximum value is shown. It is the maximum that we are interested in to define storm levels.\par
+If the Proton Flux value exceeds 10 this value then the threshold for a Solar radiation Storm is met. There are 5 values for these storms as follows:\par
+
+\pard\hyphpar0\widctlpar\li720\sl276\slmult1 Flux level >:\par
+10 = \tab S1, Minor\par
+100 = \tab S2, Moderate\par
+1000 =\tab S3, Strong\par
+10000 = S4, Severe\par
+100000 = S5, Extreme\par
+
+\pard\hyphpar0\widctlpar\li720\sa160\sl276\slmult1 If any column exceeds these thresholds, then the appropriate S number will be appended in brackets.\par
+These will be reflected on the Storm reported area on the main page as previously and if reported with the last 3 hours or so the appropriate entry will be added there too. This will influence the comment on propagation conditions in a similar fashion to Geomagnetic storms mentioned previously. \par
+
+\pard\hyphpar0\widctlpar\fi-360\li720\sa160\sl276\slmult1\b b)\tab Solar Flares\b0  are shown below the proton flux values in 3 hour periods. More than one flare may have occurred in any three hour period (or none) and they will be listed in the appropriate column. For each flare three figures are shown (separated by /). The first figure is the time when the flare was at its maximum, the second figure is the class of flare (A, B, C, M or X) and its peak intensity within each class. The intensity of flares are measured as X-ray flux in W/cm2 (Watts per square meter). Flare classes are as follows:\par
+
+\pard\hyphpar0\widctlpar\li720\sl276\slmult1 Class\tab Peak X-ray flux\par
+A\tab < 10\f2\u8315?\f3\u8311?\f0  W/m\'b2\par
+B\tab >=10\f2\u8315?\f3\u8311?\f0\par
+C\tab >=10\f2\u8315?\f3\u8310?\f0\par
+M\tab >=10\f2\u8315?\f3\u8309?\f0\par
+X\tab >=10\f2\u8315?\super 4\nosupersub\f0\par
+
+\pard\hyphpar0\widctlpar\sl276\slmult1 The third figure is the total energy or fluence delivered over the whole duration of the flare in Joules per square m (J/m\super 2\nosupersub ). This is calculated by integrating each measurement made over the duration of the flare\par
+
+\pard\hyphpar0\widctlpar\li720\sl276\slmult1\kerning0\f1\fs22\lang9{\pict{\*\picprop{\sp{\sn wzDescription}{\sv Image}}{\sp{\sn posv}{\sv 1}}
+}\pngblip\picw3961\pich1529\picwgoal2246\pichgoal867 
+89504e470d0a1a0a0000000d49484452000000d90000005508020000004baed682000000017352
+474200aece1ce90000000467414d410000b18f0bfc6105000000097048597300000ec300000ec3
+01c76fa86400000d9c49444154785eed9c6b6c15d516c7cfbdc41a31022aa1462d94620115ac52
+6b7d003e505a08be9f35a0a6981682d6c6f2c598f2414954521f5c0403b48941549426220a1601
+abd4076868a914140da50236488b5454e4a1f6fe9cb51da7e7d133f4bcc676fd3e4cf75a337366
+bae73f7bafb567cffca7bdbddda7281ee0bfe6afa2241ad5a2e215548b8a57502d2a5e41b5a878
+05d5a2e215548b8a57502d2a5e41b59830a64d9b76efbdf71a43512d2690f7df7f3f3333d3188a
+6a3151ecddbbb7b5b575f4e8d1c6567c3e7d1e1d6f1a1b1befbbefbe969696fdfbf70f1b362c3b
+3b7beedcb9665dcf46b518737efae9a743870ef5e9d3a76fdfbec6e5f34d9d3af5c081032b56ac
+30b6a27d74ac59b468d19021438a8a8a860e1dface3bef18afcf575d5d3d66cc1863587afde8a3
+8f6823b76edd6a5c3d10da452546bcf7de7ba79d765a595919ddf1881123d2d3d3c5bf67cf1efc
+b5b5b562425d5dddf6eddb717ef9e597c6d5f3502dc6909123472627271f3d7ab4b4b4149d81f8
+172e5c885fca349052801eae45eda363455555555353536e6e6e5252527e7efec08103efbfff7e
+59b569d3a68b2fbe98023df8912347c4a9a81663c5b265cb584e983081656a6a6a4343c3bc79f3
+ac35be891327363737cf9c3993f405b18a53d13c3a261c3b768c86f0f0e1c3bb77efeed7af9ff1
+3a205961e9ccac815cfb934f3ea16737760f43dbc598f0c1071f20449ac3a0420454e8274445b5
+1813c8a059666565891996cacacac993275378fcf1c75f78e10571f634b48f8e09999999df7efb
+6d5959594141817129e1d07631fab4b5b521440aeedb4505548bd167fdfaf52c7bf5ea75c92597
+884771836a31fa6cd8b081655a5a9a988a4b548bd1e7e38f3f6629a3d98a7b548b51c60e162fb8
+e002f1788dd6d6d663c78e1923046eb6893aaac528b371e346295c76d96552f014cf3efbecf4e9
+d39392928c1d0242deb163c7c6598e5118d39181b1b02c5dbad494ba35b366cd9201c2504f5ca2
+829b3abff4d24b8b8b8b8d61f1c61b6f94949434363686d522f08fac5ab5eab3cf3e73b3b1939b
+6eba69dbb66dbffffefba143870e1e3c68bc2e88548bdc3aafbffefa2fbffcf2d8638f61de7efb
+edd75c738dac829d3b777ef8e1875bb66ca1cc9989b37b939b9bfbe9a79ff6efdf9f4b6e5cd126
+6c9db3f6871f7ec8c9c959be7cb9f1fa7c2d2d2d43870e6555d027e05f7cf1054be72014471931
+62c43df7dcf3c4134f18973b2a2b2bb9e84b962cb9f2ca2babaaaa8cd7e72374f9eebbefaebffe
+7a63078216234726e4859af25454543472e448637477680ba9077460ec98d1499d1f3d7a74f0e0
+c1a5a5a5c6b6c8cfcfbffcf2cb8dd1115a2f4e7bd4a851c6fe9bf2f272fcdc54c676cdc2850b39
+31bf13484f4fe7d78c118ce8c48bab57af66d9bb77efa0cff5b93fce3efb6c63746beaeaeafef8
+e30f0ac3860d134fec903aa7010eac737ad5cccccc73cf3dd7d83edfae5dbb68231f7cf0416377
+64cd9a359c7660e23f65ca94934f3e79fefcf9c676cddab56b59de70c30d62c2d6ad5bf7eddb47
+436bec6044478b9b366d62e99c344f0bbf6edd3a63f87c679c718629756ba4a703623529c40ea9
+739a3a3103193870a0295991224b7a7331fd20a860397efc78316dd0341d7a1702fdcd9b37f7ea
+d52b3b3bdbd83e1f7127cb6bafbd56cca044478bd5d5d52c9df7c15b6fbd456822657a13da7f29
+776f441fd079031015a4ce9d912239f2934f3e2965a2c9d4d454290359887491c6ee880c881257
+88e9843eedf0e1c3353535c60e0dad0f179a024d606b6b2b35e04c7a8820593a151204d3574740
+60e042bc82f8081ac4ec39f05f4b55183b66d875fed5575f19577b3b6de4860d1b8cd111b6cccb
+cb33c6df141616ca8f3859b66c99596d515b5b8bb3acacccd8c1d8bf7fff840913060c1840ea33
+68d0a0e9d3a7b38b048b73e7ceb57eb5037e71a44d14c674162d5a3473e64c0a24f32c0f1c38c0
+3ff0db6fbf6ddfbedd19b22496152b56c8f45537d018d08a18c335340c446f14d8974e4a9c3142
+eafc94534e9933678e78b8f3d125e973e0100c0dd555575d555c5cec9711d37a719956ae5c493e
+4ebe8c44702627273b7fa1adad8dbefece3befaca8a830ae8e901dd3f35e71c515afbefa2a3bbe
+f2ca2b3366ccc0ffe69b6fd2bfcbfbb83b76ecb8edb6db50eacb2fbfcc2a6a8933b7f6ee4014fa
+68e998323232688161d2a44944871c2f9e424407a69438ec0e3a0e4fffec63212fa1a1a181f82c
+5088f0cd37dfb00cbcbbb846292929b276dcb87194c1ef17a45b0f351e47b523c45f7ffd75c182
+05b223e90e3a2358bceebaeb30fbf6edcb6fcaf016f7831c22a810ff429ac748183c78300dafb3
+479e376f5e7e7ebe31dadbbffffe7b538a01050505d49717c68ce8c8a40f8a43701258e737df7c
+73a8be8f6e978dfd3a5f1baa8eb5070f1e347600ac1d3d7ab4313ac21159ebbcd6c46981dbdf71
+c71d3843c50f3691b68b5f7ffd354d3d85b163c78a0768b7eda48c3bd899be11a3985238b8b4fc
+b83142c3f598366d9a31128add2f9f7ffef9528811769dd3338a078e1c3912263308065d705353
+5327ef4208a1c21b420596f4e06242d07c3930ad0e4aa45a94f951b4f6c3870f170f10b1de7df7
+dd527ee9a597ec612dfef31f7ffc51ca61213c3f7efcb8313ae5a4934e32a584525f5f2f85b095
+1e21769d3b4716b921bb705c996ad9f9500b049dff46184a8a4d41ba6341f265026e3141ee9c50
+f1839348b528c70e35cac5e9565555114388f9cc33cf48c10fce556e749b9696161912f3a3d9c2
+18270267d8c735afbdf69ad9cd35f688066159d84a8f10a973bfefe5dd72cb2da18e2b0f1a242e
+f443646d4ba7bcbc7cefdebd5276d2c9dd4e9bea3ceec68d1b2558e4d2f36b78e410f64c11f460
+07bb7e44aa459996e21ce5b221477be08107264f9e2ce74a4bbe78f1e2eaeaea214386d80f25e9
+cd39cbff595090d956ebd6ad23e0e09e230d62e3b7df7e1b675d5d1d2dc1ead5ab9f7bee39ae37
+a6f5036ee13c09c05dd2854f74c63371913a77df23135cb29436cc0f195924ab60c9fd3f7bf6ec
+010306586b0c1226058d3a44a0ce274c353535b42932b2b87cf972e9d99d2d2577eca38f3eea77
+887f3071639778f7dd778949812b615cededfccfbb77ef7efae9a7070d1ac42ae7d34c62583086
+350c79ce39e7ac5cb9524c0a9838294b08ec7cd22a2355329c565454e47cb44a049df0dc256e89
+8b5de76bd7ae352e1724272793dc18c3810c88529021e1caca4af1dbc8278102fd025701a14b99
+0655aeb85c62e42bf9505e5e1e4eb994ac22e5ff6beb6074518b13274ee400616133b3838525c5
+7fb4c865631b111f50c0946b19a84540e56c83d05f7cf145d61aaf37b4482ec92981f38b4dd125
+689d2320b3ba53a876fb0b3e4e48aec95ae8dfcf3befbc254b9618af03c9944365d9f4fbe88f14
+2a37379706129303d1a0e0b1937a2ae4cc33cf1c376e1ceda5ed0c4a74e6e9b8c492e23f5a94ff
+d318169872ba815a94c17dfe1f8448dce9dc915d12ae45820a4e29e8f5f60232ac137454858492
+db9bfbdcd81de1fff26b500261773086358447776f0c0be92a3990b1431085b1ee2e306bd62c62
+5bf97002a7284e29048e90cb90c15d77ddf5e79f7fb2d78c19336400a2c9c2da24f1343434b0f4
+ec3b2eb7de7a2b399944de7ec87074d0f1e75dbb76d5d7d7871d3293116c6358a91291bd312cf8
+713608fb9d8cb86a91ead8b76f1f85e3c78f13f94e9d3a158ffddc7dcd9a3598688ef2e9a79fce
+923b8c685762642245fb154f999c4b906a670c8985005fa68a79f625549209eeff8a8a0afbce77
+03a94c4646c68d37de68ec5863dac7b820a1434949496161a1788830b2b2b2c8ad8002a6f88198
+976068ca94291281959797b32f29d1430f3d444c4999ed498c0a0a0ac8cb6829d3d2d264c7f843
+684f0f0844fac6e5497272729ccf483a876aa756fd42f69812572d02c947e02341c20bbf0843c0
+e98c632471b1731def406e285aece4499a1720e6e6f60ef530d00995ec72cb28126f2d764b48c8
+1062c2f32737204752da9f7ffed9d82178e49147ecb1b6b8a1df768a02175d741159542713ab14
+3724268fee4e905d493a1ff4e193e21ed562a46cdbb64d0a616718289da35a8c1479df2a2525c5
+3b93d8ffa5a8162345c63843cd5452dca35a8c1419780f7ca113e8b5ed17f394b0a8162382c445
+e6b9c9b42b276d6d6d9b376fced24fd3ba46b51811d2415f78e18581c1a2cc2ad5bedb3daac588
+08fc5807c85ce0c2c242b43869d2a4e79f7fdeac503a45c7ba4f98e6e6e6534f3d55669d8c1933
+a6de42e64e3b61158a7ceaa9a78cad8443dbc51363fdfaf5c3870f4f4d4d251c942955682e5088
+ac65d5d5575f6d6ceb95b97c0b79774e0982f52450718b4c4aedd7afdf9e3d7b4a4a4a28079da0
+2a53f3ed691c8d8d8db491521e356a14fb4a5971a2ede289919393d3bb77efc58b17d353575454
+1417173bbfae6683163332329292926820b76cd9425879d65967c9aab4b434f95c9de2876af1c4
+a045aca9a99933674e5e5e9ef5ed90e0df6cadadada5fda3307bf66c224bbf173d83bef7a9a816
+4f98f4f4f4cf3fff7ce7ce9d0f3ffcb07105307efcf81d3b76101d6665650546934a50548b31a1
+b4b474e9d2a5f3e7cf97ef67f8bdeb1ef6cd8f9e896a3156f4777cd98d66525ef4010ae4315256
+9ca816e3417676764a4aca2a0b0ab1fee0cebf141deb8e1ff225a01ef219fd2ea05a54bc82f6d1
+8a57502d2a5e41b5a87805d5a2e215548b8a57502d2a5e41b5a87805d5a2e215548b8a57502d2a
+5e41b5a87805d5a2e215548b8a57502d2adec0e7fb3f2c96257e2da2b9c10000000049454e44ae
+426082
+}\kerning1\f0\fs24\lang2057\par
+Where:\par
+\kerning0\f1\fs22\lang9{\pict{\*\picprop{\sp{\sn wzDescription}{\sv Image}}{\sp{\sn posv}{\sv 1}}
+}\pngblip\picw6748\pich2446\picwgoal3826\pichgoal1387 
+89504e470d0a1a0a0000000d49484452000001770000008a0802000000ded99dda000000017352
+474200aece1ce90000000467414d410000b18f0bfc6105000000097048597300000ec300000ec3
+01c76fa86400001e9749444154785eed9d7f6c5757ddc7799eca92b950ab222c9429ad6e1d05e6
+0061b00219c4aec43519b36c86c032ad32885b58f39898680389208b2660ba274b1c03b2fd2199
+d546eae2804614c2567ecccc2a0d14b6000dbf02960c46e6b05d08cf9bfb3edff37c38f7e7b7df
+ef2ddfb69fd71f97f339bfee39e79ef3bee79cefa5e7bf6edcb8314251142535fedbfcab288a92
+0eaa328aa2a48baa8ca228e9a22aa3284abaa8ca288a922ee9aaccb56bd73efae823638490248e
+a22883971455a6a3a363e6cc997d7d7dc60ee1e38f3ffec637be81c8c65614656811ffbdccb265
+cb8c2b1cc844434383313c7a7a7aa64e9dba65cb96850b171aaf702031d5d5d57ffef39f91c478
+29439ae2e2623a6a6a6a7efffbdfd3ad0c55625406339137de7803d38d9ffce42730ebeaea1e79
+e411068113274e20f4e2c58bfebe0271292d2dddba75abb1057ffbdbdf709d3163064df2c20b2f
+bcf3ce3b070e1cb8e38e3b8c973244e9ecec3c7af4e877bef31d38aaaaaa366fde0cb709538624
+509958ce9c3933cae3f0e1c3c62b436f6f6f5959d9ead5ab8dedb173e74e443e79f2a4b105972f
+5f2e292999366d9ab133d07fc3860dc61e364c9932c5b62d9a110e13303c407d7ffbdbdf1a63c0
+419ba3004eef55f24ea27d991d3b76e03a7af4680c09fa5830f5983e7dfaf8f1e38dedf1b39ffd
+6ceedcb9501f630bdadadaae5fbffee0830f1a3b0324e6f1c71fdfb46993b1f3075e98989f3ff0
+c003c6ce40ff279f7cd2d8b70396eaaa87bf6df30e6e079a9b9b51f1356bd618df0cf0813f428d
+9d21ac9590558ead873b4e9830011399b0226505ca139b4360050792db5e80db4222953974e810
+aeb366cda2e9e7cb5ffeb2718d1871ead4a923478e40328c7d2bfbf7efc7f5d1471fa529c172ec
+c2850bbb76ed32769ec0e86d6868e8eeee76bae0d2a54bd1c56fefa6004ab568d12263a40caa8f
+dbe1edcde549575717fd2dadadadb8e2d9d1241c128b172fa66981462337bf7f72a050b823ca03
+378a847553535313b265683f40798c2b047fe6e81bd0f7b56bd71a3b6572a9dda02691caecd9b3
+0757b923b371e3c675ebd6d1fdf1c71f63b8d20dfef0873fe03a6fde3c9a0eefbcf30eae353535
+342598fee08ad516cd3c826e8412a2131b3b33e41a1b1b8d3d0c40f53192e946fb63524937a16a
+a095a835168a4e6565254d0b9bb4dffb29987740a12831045921c3011bf0ca8062564ee1d84d19
+bcfd8cd78d1b98d7ecdbb7cf18b782de83e58f3132ac58b1829948fc0b72f4e63973e61823af70
+058eb239ee68ec46c9cde26616f04c6eb1ab7a5407a653a9404f80bb7ba90d2c8cdc97e15d9c84
+78f702babd74b76ce2c0b4a10e3267e02f1523f08a5b1bdf5bef2891c95178c491cdc236e15d88
+73afc0c6677c7977079921b079b2d812fa4b9c0667a59c46663e7078516ec272faab2691a50a6c
+2b1258806142bcca6cdab4098d3266cc98d733cc9e3d1b3ad2dbdb6b62dc0a9acfdf823d3d3da7
+4f9f7ef9e59791d5f2e5cbe106fe1cf08e1d3b76ac31f20dfb107a0c9fb7f18d8449501dd9f5a5
+c91e66bb29dccef881e96f0d0be2cb5e6b7b39700600b9d9b299dc18c1269769fd20955330e7d6
+0805fe9b3ad188732f2484690bc650783a3eb6d118df22f387e954598250e3f2e5099cacfcf86b
+e7f8304f4013fe70b3b4d247e6e0140355b691fdf80b304c885799fafa7a340d54a63c034cc881
+09f6c17d5c63dccaaa55aba25b593ed140f8980349f2f0d809124606ec43d17d570e607ff9a393
+3ba1bc1ddd813d12f702c610f11939fa46d159d9e4f0b4d5616bdb2164411c792fd65a464304c7
+c7e61f8dbc7b2c4e9eb1b7f037a9e383e44e04564dfac812c666e8101d3a8489df97e1a6ccba75
+eb4e6458b060c1cc993319eae7faf5eb23478e34c6ad30abc04d19c9d9b3678dcb0756effc45c6
+4f923d026ec4a000596d2844ff9252515171fcf871bab9c16c7f44a023bd9fb1b88b819b729724
+6c53839b8ecedecaa2458bbabbbb1924cb89ead82d9b9696165c31ae68124446427fa564346482
+f2481f98fefd663fb23163499867b6c8869a387122aeb2b7c812f2a703198a2aa3546c37c512a3
+32c78e1dbb74e9121c5825d107fce73fffa9aeae364662ae5cb9c2fd454c768c5708972f5f36ae
+7c83c51a0a8051648580c02c163c70ebcfdece3003189c266a71b1dc46753a191c50347ff23cc2
+9f6650866ddbb619af645026384e504e149be5c48b1a57aa0f8693ff951058292437aedce0a88e
+403e297427e39b57923f2f6a9c294d86944a35a88951997dfbf6e1ea7c29b372e5ca871e7ac818
+89f9cb5ffe82ebfcf9f3694680d78571e5158e2bcc5a31482037f424ce1409714c4010e8495555
+55ededed8cec8c43cc11aceec0c1413b0064ab65880f69e038819ad836e79b19eac35f9d9cf2c3
+73202b25a1b2e3c1b1d941bea42d175006531ac1edfd3ca200895199bd7bf7e23a7dfa749a0403
+29e2ff0140924e9e3c690c0105ebe1871fa6b965cb96b0955144e6cea443e24c4f1c108ae1c19f
+72b9aee9df428669d193c24635b3c5ed589eac96667e9caf57fc60d4353434a0aff7a33a1444bf
+9a20b7d6d6560e15679d054f84e658a9082256405c15a2e58d5d0060e6a5339724c4a8ccc18307
+71cd6a7d545a5a8a25953104fc5206b3005c7b7a7a7efef39f8f1933c60bf97f204fe849c608c2
+997448a2bb3e4623261d8c0381c0c8c400a310640586815342e4635c1e9c236059c19585f1cd1e
+aa9833ea9c3e4d65c1f06b6c6c8ca80eb33a7af4284dcba44993705dba7429aeb2f5b865c39a3a
+628ad519428d910e61335939e102144763648810294bac702787edcf174f72f25880c14294cabc
+f5d65bdc94292f2fa74f12eebbefbe3367ce84fdc187f1e3c72368e1c2851b376ef4cf59ce9d3b
+3779f26463e40f7f6fe08bd159372581af2f3b9e9d1d1c82318f2181619f6dff73a0146238d174
+ee85322094b33368847f1928a1f01923039505d571d490cd85cc1d416175c2f698f3026e1ab61c
+83c4c8d6e0eb4a825ad87dd940f80248a244094186b8299457ea7b609720792fc0602158651e7b
+ec31ac41962c5942f3dbdffe364c67dd1406fff7c05ffffa579a961ffff8c74545454f3cf1045e
+a1183f7575752620033ad0279f7c22bf30ce0b1833e89db8a3f35ae6ef4d117d22108c318e676f
+95568c4c9c210a307a3174fd13816ce1bd309cecbd902783d05628034c3b07a1048455878b2363
+08587867cf9583010eca8d05cb2834a33152806355ceaa245cacd9d6686f6fb7ad411001cdce50
+e3e563dbb66d680744c8f6b987819ba24d6c7f00d173bdbc176070607ed1ce1fbdbdbd252525ab
+56ad32b6e0ca952ba74f9f869418fb56366cd88084972f5f36f6606654b2cf4306921cbfd4405a
+e470d8f7ed4c1e81ba6122630c6508917f9501f5f5f5f7de7baf3112336bd6ac679e79c6188319
+7edc658c8221c752a52d0154316328438b5454e65ffffa1766255bb66c31760276eedc8924817f
+926670c1ef3b0b6d22432013100b631412949861f851ec30211595019b366d2a2d2d0dfbbf4e0e
+8886debf76ed5a630f4ea82f052b318a72bb48f19cec175e78e1fcf9f3fcec229a356bd6747575
+2589a928caa023e67b995c78e9a597bef295afc46ac7eeddbbb1c252895194a14a8a7319455114
+90e25c46511405a8ca288a922eaa328aa2a48baa8ca228e9a22aa3284abaa8ca288a922eaa328a
+a2a48baa8ca228e9a22aa3284abaa8ca288a922eaa328aa2a48baa8ca228e912af322d2d2d3d3d
+3dc6501445c9921895d9ba756b7d7dfd2bafbc626c2588cecc5193117f321a418c83c84f3ef9e4
+f0fae3d2caf026466576edda85eb8c193368160ecddef16fc6e82f79c904aa515555d5d0d07035
+fc504a6a0acf8d9a92dbc1068a32e8885199f7de7bafa8a868c18205c62e18f27274565e32e169
+6acea1220edddddd691f96a628054b94caf028fe871e7a28e2485945519418bcbffeeb525a5aca
+3f942d3161038eb9bd07ffccbd3132d8bfe6bd78f162e3e5414fc23fdf6fff0038ff68be24e24f
+823b91e59fda375e19fc7f85df29120f1b71ce12b0a522b2240c42b6cc47a6f2e21a10cdf82a4a
+e111ac32a73d6a6b6bd183b76fdf0ef7b973e74cd800c23166471d069b1dc6f04410dd8443d118
+def941724c72603b49fc99f8e1f0b6c31877914502f4891ee74e124765e076f2b7d5640b20824c
+ee340b6b6193284aa11175524a595959494989ffb493fdfbf72ff578f7dd778d57bfc0f0b04325
+108e1f63dc4a441071063fc5c2198a0933094ce5e88235034104595347651c108408745b95a149
+6404e2f75194c221745fa6b3b3337053a6b9b9f9f9e79fdfecb172e54a790e79b6ac5dbbb6b5b5
+35e2c8fa499326e1dabf5b545656e2caad594bd819cc61b4b4b4c8b3a809377a9d9cf348454585
+73aabcdc39c673e9eeee86a618db23ec186c4529044255e6c08103b8ce9c3993a605efe4868686
+3b3de080690282e04fc51160c034353585090d863706398f3a4fa8359000e65c555565bc323887
+b72701a31d63de18193071c0352fbf4f59ec1737c0af17545b427593c7bf03b4214315a5000955
+99bd7bf7e25a5d5d4d937474745cb87061f2e4c934316e611e3b768ca61fc8043f1209033940aa
+30a931097c60c9806870705cd1331048152330e7f6f676fa173e283634110566c96b6a6a4c4038
+36b2c484294a8111aa32070f1e2c2a2ac28a89e6ba75eb707dfffdf771fdcc673ee3f98d282929
+c1f59ffffc27cd6c812e60aa1f2131160c21aa46c46729789f43b0f27b7a9c7ff10230efc055ce
+2f7281f338549053a4580257828a52c804ab0cbf94c19c859b32afbefa2a96360cca23d0972412
+43300831f171c63c07bc75c8919f5c6e6c267e162f5e8c8a3b8b35e69ced164f185d5d5dce522e
+7a8785edb07efd7a632b4ac1133a970177df7d37ae5825bdf8e28b1b376ea4e74082f7bc1de1d0
+020cf8c6c6469ace162c270276ec215592ad8ad87d5c4809d62f58ac592562ce9b376fa6993b13
+274e944296e4ff37a11190444eeb6443294ac1617e6bf2b164c992d2d252ac68bef6b5af9d3d7b
+969e2d2d2df2575bfeceba73e74e9a7967b5f79bb125f0176500074c1686407468da249895c093
+6e899349204e316cf549eebf64c3f432be097293a14e2d2cb2b220b06a8a5220449d937dfefcf9
+ebd7afdf73cf3dc61e310272535959f9da6bafd5d5d5c1c4fb13ef79cc05c68f1fcf088aa2280e
+512ba671e3c64989015093af7ffdeb1f7cf001cd53a74ec1548951142582a8b94c201d1d1db5b5
+b5dcf5f8e94f7ffabbdffd6eead4a90c521445f193b5ca806bd7aeedd9b3e7aebbee9a3d7bb6fe
+776d4551a2e98fca288aa224276a5f465114257754651445491755194551d24555465194745195
+5114255d54651445491755194551d245554651947451955114255d54651445491755194551d245
+554651947451955114255de255a6a5a5a5a7a7c7188aa2285912a3325bb76eadafaf7fe595578c
+3df8b1c736e5823d5b2eec6f7a77664e71e35f0b878327a228ca3024466576edda85eb8c193368
+2a0012d3d6d6e69db37635f0bc14484c555555434303221c3e7cd8f82aca70254665de7befbda2
+a2a2050b16185bf18eb58d3efe9147afc8934c14653813a5323cfbcd7f20bfa2284a72825566fc
+f8f1c5c5c53c8a7ffffefdde0e43ae7b19fda6591ce9ef1c8a061f1e78c650e0dffee0460c4938
+bfc05d4c825befc8acbabbbbb16272822cf05fbe7c391c5834c11db87163b77588f1f54010b2b5
+db3a36794423284aa1732388d31eb5b5b5a3468ddabe7d3bdce7ce9d3361030b4f5cb367aa4d99
+320526dd80079e2d5ebc98260f6073ce5793c9edf96a34fdf034359b2170ee08e41d03f19f0307
+d3968ae7bad10d901b3046e64038e78ed18da028054ee8d992a0acacaca4a4a4b7b7d7d8f90683
+c78ebd4038e6e5c98a8e0fdc806ee28d59336839da6572103d4465720be23bba908bca38389191
+334c59e6d84650940227745f0693f6884d996bd7ae253f483f0ce4d0dada1af113afffdc7b8cf0
+091326b4b4b4187bc4086723b6a2a2022b1aba110d919d9f81162d5a645c3e50657914b705b738
+7efcb831f24d656525aece59ddb2cc491a41510a9950953970e000aedc9a91343535c133612f97
+bb0981605423c330a1e9eaeac2d544cd6045844c9c38d1b83ca4096980e81823011cea1cf6121e
+986f8c3c61b766aaaaaa8c5706b4ad7179246904452964425566efdebdb8565757d3b47cef7bdf
+7bf7dd77e7cd9b67ec48f006e67725616044353434444c8b10c14415f0f53e48e116321cac4b7b
+7b3bfd23187a8da00c2b4255e6e0c1834545455831d15cb76e1d1d9ffbdce7e8c81d8c37ac5f22
+2426c749042632fe950ea70681042e5e009238f38b5cc0dc0dc29a5c23d2984929ca4012ac32fc
+5266f2e4c9dc9479f5d557d3e8e8d097088901fce13962e3261a8ecfcece4e637bb4b5b519970f
+ee77ac5fbfded81990246237272b5898499326d104b17293632328ca6d27742e03eebefb6e5c3b
+3a3a5e7cf1c58d1b37d27320c1b0afa9a9c1cb5f7e7592fc6b11481854436e7c206df4ac64dbb6
+6d10260e6cc224d16a981cd408572b64a8176a477718393682a2dc768255e6fefbefafadad3d70
+e0c0134f3cf1d4534fb5b7b797949498b08105af7aac2f962f5fce5d4f90d5b4e2f0e1c3d00893
+b2b8b8b1b1313a3986f4d5ab57f9d11dc1b20b9998e07c80c684903173c84d927d991c1b41516e
+2f51a7f19f3f7ffefaf5ebf7dc738fb10578db1f3f7e3cbfc34f51942149d48a69dcb8718112a3
+288a929c2895511445c99da81553202b56acd8bd7bf7471f7dd4d7d7f7a52f7da9acac0ca60953
+1445f191b5ca288aa26485ae981445491755194551d245554651947451955114255d5465144549
+1755194551d245554651947451955114255d54651445491755194551d245554651947451955114
+255d546514454997f8ff93bd6cd932e38ae437bff98d7129ca10a2387390794d4dcd303f9da6b9
+b99967c083cd9b373be72946103397e9ebebabaeae9e3d7bf69b1e23478e8469292f2f3f7dfa34
+834c0245194274767662385df58ecd6a6b6b937fe07d1872e4c811ef28b0abfc2bd4c6370998cb
+c472e6cc99511e87c5d9cf9655ab564df19d2dad0c3cfef3b923e0b1ffc6f09d057e7b41c10aa7
+301634919e4d4ed8d38c918044fb323b76ecc0f5b39ffd2c1e3f7d240f3ffcf0b871e38ca12803
+c2031ec6f080298fb89144042564cd9a35137c67aee71194d02ecd24f074aa09783ca973d05842
+900a69739c94ad5fbf1ed31938d0aa494a9248650e1d3a84ebdcb9736902aca4e41fe2fcc217be
+605ccae004d3e041b4e98061d6dddd9df0080d8c0144c6e4c8d8d983b1d4dada9aea891d3cfac6
+19aed402149ea6058581e405bef263e153ce452e212b282d4f28436e3535354b972e6550188954
+66cf9e3db8568b33b3b76fdffec61b6fd08df5d4b469d3e8569401a0a9a969f3e6cdc6888387ff
+f57b5c612a01854afb50204eb51ca16f696941c9e170a61ed09d8a8a0a6364090f50364696701e
+8417923c04918a1f3339322ba770fc9b32bdbdbd90954d9b36d11cd4e085c0da01b9ea5ebd7a35
+7ce090111824894dce2098f407f42168525c198aae0c37e358023d2d5c1e139484a67d4c84a144
+062167243186172dba1832326b4710647c6fdc6075500c662293843514714261ca6c1d6cdb3a84
+a5629e74b3222c2761add97444160fa1112591c83c01b3b538f7f5b7004004600c0fe683ab2c03
+8b1a980340cc9b37f0f0979c698d91c99fb720ec213213c624285ee07d593b630411af325013de
+0ff322b070e1c23163c6c084fa9818e9035d33aebc825ad827c1078016a7c9a647dbb1dd01dcf0
+a19b64951cb093d924b6cf311573709ea20df5c35bd8f83481bd23f3b7c99df84ecfb031638b81
+8430e90670db7c78479836328167584301990380096c7c3f881c181ae8cf5a1b2353787b3b86c2
+d3f1b16dc8f816a75e16a6b28dc6769085e12de069ec209ca232135c65f180134d826832a62c00
+41a8f4443ec0560aa1301141fa00ba01e35b6c2bf199d21d48bccad4d7d7238b3973e6bceef1f2
+cb2fdf7ffffd6565652638659e7df6d992921259d540bc5a07e06f688bf3f080f4e1b3b4cd0d9c
+e1976d728050278933e49c0233d43e4b09bba0933fd2caf8b897cc0d481f595a10510cd685d9fa
+8b247d582aa78ece8d80f4811b49e826cc4416c001a1f6294864ed2cf094adc4dbc9f22382e303
+d369d868586027099bc59693f70d2cb6c549c266b7feb68481d5042c46c42d18c1a9a97d108011
+a48f73eb30626f1dbf2fc34d99a79f7efa198fe73ce6cf9fcf5070fefc79e3f24e6b32ae38366c
+d870ecd83163848399d4ca952b8d118ef72b7e00113b9a6d6d6dce69d378785861ca1d38f9c344
+656525ae478e1ca1996d72ee413636361adbc3d92cc08219d91a23b32cc75337b680f592cb6380
+021857c896270a2cf30fa3a6a646466b6d6d850f8be12f12ab20dbd96996e88642a8b34d80ccb9
+19110853f159c4d2dcdc8c1bc9a74064f92b2a2a9c1ac1eceaea324602029f059bc5f61612bd37
+c450b4304d363b1cac2cefc2c73a71e2c49b313c8a333f42d907e47907c0fd29595320f7771824
+1f166f7df4e8519a6130a15359498cca40082e5dba04c7bc79f3e8033ef8e083471f7d94ee4387
+0ed5d5d5d17de5ca950f3ffc90ee58b0e0faf4d34f8d11c9c891238d2b7fb0b3363535e12159fc
+1f1ac94722ddfd481efba800c783dd48c3087454c98261103114016f270ff007283043a359b366
+0dae2c06bbb555abe3c78fc334d965609065d2a449c615d7500c95f1f30b869cd5474b74bbf583
+b067e1a85592fb5a7d97cd8ef2dbacf858fdba49f896420b074608ec4e52b07221ba76312ab36f
+df3e5c478f1e8d55127dc04b2fbd6455f9d7bffef50f7ef003ba7ff9cb5fd2e1009da254597a7a
+7a0237a5312d9233a3b4e1679d0e4ea78ca01fc9a35fc2ec4f7c1db17da2df7eb1b4b7b79b6209
+4c5838b2187c85ca626024988c04ce9bdc21c776ee1f18a81857ce6caec061695172aa89ed2d76
+128a878247239b0e2d89050bdd780a302955d01a39c4f8e6c8b13bf59b1895d9bb772faeb366cd
+a2e980e6d8b56b17165370433ed199b0bcfaea57bffacd6f7e931130eb993973e6ff7ac001139e
+bb77ef9e3367ce279f7c525b5b8bc87ffce31fe1d9d1d1012ddbb163c7af7ef5ab7befbd17a697
+4152bc77640061aacfe71431c78ba61fc903279f7c994b647fe2843910bc82f0ae334606599e84
+73dd306c31ecbc9d60828de98c311210dd5061a1feaa2501a9e49b19fa88013900e32af05900a7
+3c4960695172474d38dd836ae0a1c4fe868de4d01a2497936b3cc77eff809d84e84716a332070f
+1ec4f591471ea129b976edda77bffbdd65cb96dd71c71d3051b7f91e274e9ce0077b7d7d7d3057
+af5e0d890570c084273488efc93ffde94f88fcf8e38fc3fdf6db6f2308eab361c3866f7deb5b3f
+fce10fe1999c9b2fc720f82a0e048327e10a22906c93b3c7b0e2167ff1eca209fd29e23d6cbb1d
+4d829e645cdeedd0cfd6af5f6fec2c6131f829045f830445828f73df68a21b0a8594c506d199b3
+19fdea49bd968b2fdcd4d90f4a09db5634096b11f6928b800d82a72f0b4ff561e749383b637236
+0b0a83a7d68fc26445c4ca374a65de7aeb2dae741e7cf041fa0088cb993367b038824e636ef2dc
+73cf99001fafbffe3ac6b97d13c201139e341d56ad5a75f1e2c5f2f272647edf7df7f57b96911c
+760bf9f9361e86d35722e84772ccf5d07b6c1cc4770618c0284243411dd0db22dec3084234bcac
+ec6cc8df87b00877fa166ecdde1f0b450ac5c395039be0bef091f705fe4fe025d10db56ddb3659
+48648bcc710b9a8120d4116b80d718fc6d8b317f78d24c15b40fa6091035dbb6ac053c65d32504
+ea800681c379a078dc9c5d86f50adc5426c1b343121600ddc9bad380158fe8aec12af3d8638f61
+b9b164c9129a987d700102c68e1d0bd142b93ffcf0c3b973e7969595318e9fb367cfe2ca998e75
+d0d34f4f4f4f5d5dddf4e9d3df7cf3cd7ffffbdfc6374dd0e8503d3c5153316f573279bfec4772
+3c06080dba23e3a30ded8a5ac2f942ec7b18f320749daaaa2ae606d1f7ff80c5ff49cc08003d2f
+a22b38b0bbfb8b8132cbfb82b02d6a12dd5008958544b688cca03050248e3780fecd8458c7c9c6
+444d535d2038a03a78b2a8170b835ac0ec9fc659a57044815318b43ccd40e4b3c6c28a3365a80f
+1adfca7a1a40f4a30b96e8ff6427040d01e0c0e2088f1c6b9f51a3465dbe7c99a170c0e417c308
+b5bfc33309166528e8cd7899ef004f79c0446e6871060d31d80ece8706093f5218cef81b4da20d
+28c1f84a75f804f66187987d99ac80825eb870018e4f3ffd74e4c891dffffef7e1f3f6db6f3394
+42fbd4534fc1fdf9cf7f1ed773e7cef5f5f5f187eaaeaeaea953a7de8c3762c43ffef10f5c0f79
+d067a8c2b78d33bf487b7e3b04c03c05130763f8d006b460228371173dd9cc114cd9d0da317364
+a336f9e0ef7ffffb17bff8c51ffde8472b56aca0cffbefbf3f63c68cfff1800326fd019663d3a6
+4d7bfae9a7910ae6962d5b90f617bff8c5f3cf3f8fb90cdc887ff2e4c9679f7d76cc9831252525
+e5e5e54c3878c15b454a3e5fb9ce4b0013377d0f2721ed57b492043c057457638413ff1739b302
+73934b972e397f6e865bc8a3478fa66981ff5d77dd75e79d77d244da8b172f8e1d3bd66ee50c31
+9ac51f3424edededf6958b95337f8b919e8a3204c8b3ca288aa238e4735f465114c58faa8ca228
+e9a22aa3284abaa8ca288a922eaa328aa2a48baa8ca228e9a22aa3284abaa8ca288a92262346fc
+1fe9b0e329d41624db0000000049454e44ae426082
+}\kerning1\f0\fs24\lang2057\par
+\par
+
+\pard\hyphpar0\widctlpar\sl276\slmult1 For example if the third figure shows 0.0016 this means 1.6 x 10\super -3\nosupersub  J/m\super 2\nosupersub .\par
+It would be useful to add the start and end time of the flare, but this isn\rquote t really necessary if you have this figure.\par
+
+\pard\hyphpar0\widctlpar\sa160\sl276\slmult1 A solar flare of M or X class is indicative of a potential Radio Blackout, classified as an R value and blackout effects as follows:\par
+
+\pard\hyphpar0\widctlpar\sl240\slmult1 R1, Minor\tab = M1 >= 10\super -5\nosupersub  W/cm\super 2\nosupersub\par
+R2, Moderate = M5 >= 5 X 10\super -5\nosupersub  W/cm\super 2\nosupersub\par
+
+\pard\hyphpar0\widctlpar\sa160\sl240\slmult1 R3, Strong\tab = X1 >= 10\super -4 \nosupersub W/cm\super 2\par
+\nosupersub R4, Severe\tab = X10 >= 10\super -3\nosupersub  W/cm\super 2\nosupersub\par
+
+\pard\hyphpar0\widctlpar\sl240\slmult1 R5, Extreme\tab = X20 >= 2 x 10\super -3\nosupersub  W/cm\super 2\nosupersub\par
+
+\pard\hyphpar0\widctlpar\sa160\sl276\slmult1 If a radio blackout level is reached the appropriate R level is added to the corresponding flare in the columns.\par
+\par
+
+\pard\hyphpar0\widctlpar\fi-360\li720\sa160\sl276\slmult1\b c)\tab Radio Bursts\b0\par
+
+\pard\hyphpar0\widctlpar\sa160\sl276\slmult1 To see the Radio Burst hit the Show Burst button (to hide them hit it again).\par
+This shows radio burst, again in three hour intervals. There may be more than one radio burst (or none) in each 3 hour period. Bursts are radio noise generated by the Sun triggered by solar activity events such as Coronal Mass Ejections (CME) or solar flares. These can increase background noise levels on Earth at HF/VHF especially.\par
+Explanation of burst types:\par
+\b RBR\b0  \endash  a short duration Radio Burst was observed. The start and end time (usually short, possibly only one minute) time and intensity in Solar Flux Units (SFU) at a standard measurement frequency of 245MHz are given.\par
+Example: RBR/0115-0115/110\par
+A short duration radio burst at 0115 UTC with a maximum intensity in Solar Flux Units (SFU) of 100 (very low intensity) \endash  see table below\par
+\b RNS\b0  \endash  Radio Noise Storm. Not a single burst, but a permanent emission of noise that may last hours or days \endash  usually effects VHF or even HF. The start and ends times are given and the intensity in SFU at a standard measurement frequency of 245MHz. Usually broadband noise.\par
+Example: RNS/1003-1035/330\par
+A radio noise storm started at 10:03 UTC and ended at 10.35 UTC with a maximum intensity in SFU of 330 measured at 245MHz (moderate intensity) \endash  see table below.\par
+
+\pard\hyphpar0\widctlpar\sa100\sl276\slmult1\b RSP\b0  \endash  Radio Spectral Peak. This is usually a short burst and shows t\kerning0 he peak intensity of a radio burst in the radio spectrum. The start and end time are given. Then the type (eg. III) followed by an intensity level (eg. 2). This can cause increased noise on HF.\kerning1\par
+\kerning0 Example: RSP/0217-0218/III/2\kerning1\par
+\kerning0 A radio burst occurred between 0217-0218 of type III (fast electron beam burst) and with a moderate intensity level. \kerning1\par
+\kerning0 If you see \b CTM\b0  instead of a type \f4\endash\f0  this means continuum, which corresponds to a type IV radio burst \f4\endash\f0  that is broadband and long lasting (a post flare continuum).\kerning1\par
+\kerning0 eg. RSP/1539-1704/CTM/1\kerning1\par
+\kerning0 Radio spectral peak lasting between 1539 to 1704 UTC, type IV - post flare continuum of weak intensity (1).\kerning1\par
+\kerning0\line Note: the effects of a flare may last for some time (perhaps days) after the flare has itself receded\kerning1\par
+\kerning0\par
+\par
+\b Solar Flux Units (SFU)\kerning1\b0\par
+\kerning0 This is a measure how much radio energy from the Sun reaches Earth per square metre, per Hertz of bandwidth. This determines how much noise will be received on Earth from the Sun\rquote s radio emissions.\kerning1\par
+\kerning0\fs28 1\~SFU\tab  = 10\super\f5\u8722?\f0\lang2057 22\nosupersub\~W/(m\super 2\nosupersub\f5\u8901?\f0\lang2057 Hz)\kerning1\fs24\par
+\kerning0\par
+\b Table 1.\tab NOAA Burst Types:\kerning1\b0\par
+\kerning0 Term\tab Burst Type\tab Meaning\kerning1\par
+\kerning0 RNS\tab Type I\tab\tab Radio noise storm (many small bursts  hours\f4\endash\f0 days, VHF)\kerning1\par
+\kerning0 RBR\tab Type II\tab CME-driven shock burst\f3\u8198?\f0  \f3\u8198?\f0  (may affect 25 \endash  150 MHz)\kerning1\par
+\kerning0 RBR\tab Type III\tab Fast electron-beam burst\f3\u8198?\f0  \f3\u8198?\f0  (may affect VLF up to 1GHz)\kerning1\par
+\kerning0 RBR\tab Type IV\tab Post-flare continuum\f3\u8198?\f0  \f3\u8198?\f0  (may affect 25MHz to 2GHz)\kerning1\par
+\kerning0 RBR\tab Type V\tab Short continuum after Type III\f3\u8198?\f0  \f3\u8198?\f0  (may affect 25-200MHz)\kerning1\par
+\kerning0 RSP\tab I\f4\endash\f0 V (any)\tab Peak radio intensity of the burst\kerning1\par
+\kerning0 Type VI - less common - usually a sequence of Type III bursts occurring repeatedly over a period - may be referred to as a Type VI storm\kerning1\par
+\kerning0 For full details see:\f3\u8198?\f0  \f3\u8198?\f0  {\f4{\field{\*\fldinst{HYPERLINK https://www.sws.bom.gov.au/Category/World%20Data%20Centre/Data%20Display%20and%20Download/Spectrograph/Solar%20Radio%20Burst%20Classifications.pdf }}{\fldrslt{https://www.sws.bom.gov.au/Category/World%20Data%20Centre/Data%20Display%20and%20Download/Spectrograph/Solar%20Radio%20Burst%20Classifications.pdf\ul0\cf0}}}}\kerning1\f0\fs24\par
+\kerning0\par
+
+\pard\hyphpar0\widctlpar\sl276\slmult1\b Table 2.\tab Intensity levels for RSP:\kerning1\b0\par
+\kerning0 Number\tab Meaning\kerning1\par
+\kerning0 1\tab\tab Weak\kerning2\par
+\kerning0 2\tab\tab Moderate\kerning1\par
+\kerning0 3\tab\tab Strong\kerning1\par
+\kerning0 4\tab\tab Very strong\kerning1\par
+\kerning0 5\tab\tab Extreme (rare)\kerning1\par
+
+\pard\hyphpar0\widctlpar\sa100\sl276\slmult1\kerning0\b\par
+Table 3.\tab Intensity levels for RNS and RBR:\kerning1\b0\par
+
+\pard\hyphpar0\widctlpar\sa120\sl276\slmult1\kerning0 Category\tab SFU Range\tab Meaning\kerning1\par
+
+\pard\hyphpar0\widctlpar\sl276\slmult1\kerning0 Quiet\tab\tab 20-50\tab\tab Normal background\kerning1\par
+\kerning0 Low\tab\tab 50-200\tab Small bursts, weak noise storms\kerning1\par
+\kerning0 Moderate\tab 200-500\tab Noticeable bursts, active region noise\kerning1\par
+\kerning0 High\tab\tab 500-1000\tab Strong bursts, often associated with flares\kerning1\par
+\kerning0 Very high\tab 1000-10000\tab Major Type III/IV bursts, strong flare activity\kerning1\par
+\kerning0 Extreme\tab >10000\tab Rare, powerful events - significant radio impact\kerning1\par
+\par
+\par
+
+\pard\hyphpar0\widctlpar\sa100\sl276\slmult1\kerning0 This information is summarised in the Radio bursts popup window on the main page. This includes the total duration of radio bursts, the maximum intensity level recorded and the bands affected (from wideband, 25-200MHz or just VHF etc).\kerning1\par
+\kerning0\b\par
+Current Summary\kerning1\b0\par
+\kerning0 If the Current Summary button is used then a pop up displays a list of the current events for today. Whist the data relating to proton flux, flares and bursts is sourced from NOAA the summary also includes events, such as flares, reported by other observatories such as Learmouth in Western Australia.\kerning1\par
+\kerning0 Select Hide to close this summary window.\kerning1\par
+\kerning0\b\par
+Current Data button\kerning1\b0\par
+\kerning0 To return to the main page hit the Current Data button.\kerning1\par
+\kerning0\par
+\b Forecast\kerning1\b0\par
+\kerning0 On the main page a Forecast button will display a current propagation forecast courtesy of N0NBH from hamqsl.com.\kerning1\par
+\kerning0 If you click on the forecast button you will be presented with information about the hamqsl propagation forecaster (see link in appendix below).\kerning1\par
+\kerning0 Hit Close to close the forecast window.\kerning1\par
+\kerning0\par
+\par
+
+\pard\hyphpar0\widctlpar\sa160\sl276\slmult1\kerning1 Note: at present these Radio Burst are not accounted for on the storm reporting in WS_Solar, but further work is being conducted to factor these into this.\par
+Further work is intended to improve the overall propagation prediction and storm reporting within WS_Solar.\par
+\par
+\par
+
+\pard\pagebb\hyphpar0\widctlpar\sa160\sl276\slmult1\b Appendix\b0\par
+
+\pard\hyphpar0\widctlpar\sa160\sl276\slmult1\b Useful Links:\b0\par
+NOAA space weather scales explanation:\par
+{\f4{\field{\*\fldinst{HYPERLINK https://www.swpc.noaa.gov/noaa-scales-explanation }}{\fldrslt{https://www.swpc.noaa.gov/noaa-scales-explanation\ul0\cf0}}}}\f0\fs24\par
+NOAA geomagnetic kp and ap indices:\par
+{\f4{\field{\*\fldinst{HYPERLINK https://www.ngdc.noaa.gov/geomag/indices/kp_ap.html }}{\fldrslt{https://www.ngdc.noaa.gov/geomag/indices/kp_ap.html\ul0\cf0}}}}\f0\fs24\par
+Australian Space Weather Forecasting Centre:\par
+{\f4{\field{\*\fldinst{HYPERLINK https://www.sws.bom.gov.au/ }}{\fldrslt{https://www.sws.bom.gov.au/\ul0\cf0}}}}\f0\fs24\par
+Explanation of Solar indices by Ian Polle, G3YWX:\par
+{\f4{\field{\*\fldinst{HYPERLINK https://www.qsl.net/4/4x4xm//Books-and-Articles/Understanding-Solar-Indices-Ian-Poole-G3YWX-QST-September-2002.pdf }}{\fldrslt{https://www.qsl.net/4/4x4xm//Books-and-Articles/Understanding-Solar-Indices-Ian-Poole-G3YWX-QST-September-2002.pdf\ul0\cf0}}}}\f0\fs24\par
+RSGB links to various propagation resources:\par
+{\f4{\field{\*\fldinst{HYPERLINK https://rsgb.org/main/technical/propagation/ }}{\fldrslt{https://rsgb.org/main/technical/propagation/\ul0\cf0}}}}\f0\fs24\par
+Information about the hamqsl.com propagation forecast and other valuable information about propagation:\par
+{\f4{\field{\*\fldinst{HYPERLINK https://www.hamqsl.com/solar2.html }}{\fldrslt{https://www.hamqsl.com/solar2.html\ul0\cf0}}}}\f0\fs24\par
+\par
+\par
+
+\pard\hyphpar0\widctlpar\li720\sa160\sl276\slmult1\par
+
+\pard\pagebb\hyphpar0\widctlpar\sa160\sl276\slmult1\b Source Code\b0\par
+
+\pard\hyphpar0\widctlpar\sa160\sl276\slmult1 The source code for all four apps is available on GitHub at:\par
+{\f4{\field{\*\fldinst{HYPERLINK https://github.com/npalmer1/WSPR_Solar }}{\fldrslt{https://github.com/npalmer1/WSPR_Solar\ul0\cf0}}}}\f0\fs24\par
+\par
+This is an Open Source project that is free to use under the GNU GPL v3 license.\par
+It uses other libraries that are acknowledged within the code.\par
+See also WSPR Scheduler and associated applications.\par
+\par
+}
+ 

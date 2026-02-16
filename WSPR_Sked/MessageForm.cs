@@ -77,6 +77,7 @@ namespace WSPR_Sked
                 {
                     label1.Text = "null";
                 }
+                this.BringToFront();
 
             }
             catch

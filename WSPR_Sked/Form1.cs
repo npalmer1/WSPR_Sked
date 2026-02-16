@@ -3375,6 +3375,7 @@ namespace WSPR_Sked
 
         private void repeatcheckBox_CheckedChanged(object sender, EventArgs e)
         {
+           
             if (!repeatcheckBox.Checked && repeatStatus)
             {
                 var res = Msg.ynMessageBox("Only modify this slot (Y/N)?", "Modify slots");
@@ -3396,6 +3397,11 @@ namespace WSPR_Sked
             else
             {
                 greygroupBox.Visible = false;
+            }
+            if (repeatcheckBox.Checked)
+            {
+
+                checkPeriod();
             }
         }
 
@@ -8141,18 +8147,47 @@ namespace WSPR_Sked
             }
 
         }
+        private async Task checkPeriod()
+        {
+            DateTime enddate = dateEnd.Value;
+            DateTime startdate = DateTime.Now;
+            int days = (enddate - startdate).Days;
+            int t = 0;
+            if (repeatcheckBox.Checked)
+            {
+                if (repeatTimecheckBox.Checked && days > 60)
+                {
+                    t = 60;
+                }
+                else if ((DaycheckBox.Checked || NightcheckBox.Checked) && days > 30)
+                {
+                    t = 30;
+                }
+                else if (AllcheckBox.Checked && days > 40)
+                {
+                    t = 40;
+                }
+                else if (repeatcheckBox.Checked && days > 90)
+                {
+                    t = 90;
+                }
+                if (t > 0)
+                {
+                    Msg.TMessageBox("Selecting dates >" + t + " days not advised (slow)", "Range " + t + " days", 2500);
+                }
+            }
+        }
 
         private void repeatTimecheckBox_CheckedChanged(object sender, EventArgs e)
         {
 
             if (repeatTimecheckBox.Checked)
-            {
-
-
+            {               
                 DaycheckBox.Checked = false;
                 NightcheckBox.Checked = false;
                 greygroupBox.Visible = false;
                 AllcheckBox.Checked = false;
+                checkPeriod();
 
             }
             timeEnd.Enabled = repeatTimecheckBox.Checked;
@@ -8167,6 +8202,10 @@ namespace WSPR_Sked
             if (dateEnd.Value.DayOfYear < dt.DayOfYear)
             {
                 //Msg.OKMessageBox("Note: Date before today", "");
+            }
+            if (repeatcheckBox.Checked)
+            {
+                checkPeriod();
             }
         }
 
@@ -10096,12 +10135,14 @@ namespace WSPR_Sked
         {
             if (DaycheckBox.Checked)
             {
+                
                 NightcheckBox.Checked = false;
                 repeatTimecheckBox.Checked = false;
                 AllcheckBox.Checked = false;
                 timeEnd.Enabled = false;
                 greygroupBox.Visible = true;
                 greylistBox.Text = "1";
+                checkPeriod();
 
             }
 
@@ -10111,6 +10152,7 @@ namespace WSPR_Sked
         {
             if (NightcheckBox.Checked)
             {
+               
                 DaycheckBox.Checked = false;
 
                 repeatTimecheckBox.Checked = false;
@@ -10118,6 +10160,7 @@ namespace WSPR_Sked
                 AllcheckBox.Checked = false;
                 greygroupBox.Visible = true;
                 greylistBox.Text = "1";
+                checkPeriod();
 
             }
         }
@@ -10126,11 +10169,13 @@ namespace WSPR_Sked
         {
             if (AllcheckBox.Checked)
             {
+               
                 DaycheckBox.Checked = false;
                 NightcheckBox.Checked = false;
                 repeatTimecheckBox.Checked = false;
                 timeEnd.Enabled = false;
                 greygroupBox.Visible = false;
+                checkPeriod();
 
             }
         }
