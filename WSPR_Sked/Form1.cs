@@ -34,6 +34,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.Pkcs;
 using System.Text;
+using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
@@ -345,7 +346,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.30";
+            string ver = "0.1.31";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -674,211 +675,219 @@ namespace WSPR_Sked
                     command.CommandText = "SELECT * FROM slots WHERE Date = '" + date + "' AND Time = '" + time.Trim() + "'";
                     MySqlDataReader Reader;
                     Reader = command.ExecuteReader();
-
-                    while (Reader.Read())
+                    Monitor.Enter(_lock);
+                    try
                     {
-                        slotFound = true;
-                        double freq = (double)Reader["Frequency"];
-                        freq = Math.Round(freq, 4);
-                        Slot.Freq = freq;
-                        if (noSkedcheckBox.Checked)
+                        while (Reader.Read())
                         {
-                            if (testFtextBox.Text == "")
+                            slotFound = true;
+                            double freq = (double)Reader["Frequency"];
+                            freq = Math.Round(freq, 4);
+                            Slot.Freq = freq;
+                            if (noSkedcheckBox.Checked)
                             {
-                                freq = defaultF;
+                                if (testFtextBox.Text == "")
+                                {
+                                    freq = defaultF;
+                                }
+                                else
+                                {
+                                    freq = Convert.ToDouble(testFtextBox.Text);
+                                }
                             }
-                            else
+                            TXFrequency = (freq * 1000000).ToString();
+
+                            int offset = (int)Reader["Offset"];
+                            Slot.Offset = offset;
+                            int powerdB = (int)Reader["Power"];
+                            Slot.PowerdB = powerdB;
+                            double powerW = (double)Reader["PowerW"];
+                            Slot.PowerW = powerW;
+                            ant = (string)Reader["Antenna"];
+                            Slot.Ant = ant;
+                            int tuner = (int)Reader["Tuner"];
+                            Slot.Tuner = tuner;
+                            int swi = (int)Reader["Switch"];
+                            Slot.Switch = swi;
+                            int swPort = (int)Reader["SwitchPort"];
+                            Slot.SwPort = swPort;
+                            TXAntenna = ant;
+                            if (ant != null)
                             {
-                                freq = Convert.ToDouble(testFtextBox.Text);
+                                AntselcomboBox.Text = ant;
+
                             }
-                        }
-                        TXFrequency = (freq * 1000000).ToString();
-
-                        int offset = (int)Reader["Offset"];
-                        Slot.Offset = offset;
-                        int powerdB = (int)Reader["Power"];
-                        Slot.PowerdB = powerdB;
-                        double powerW = (double)Reader["PowerW"];
-                        Slot.PowerW = powerW;
-                        ant = (string)Reader["Antenna"];
-                        Slot.Ant = ant;
-                        int tuner = (int)Reader["Tuner"];
-                        Slot.Tuner = tuner;
-                        int swi = (int)Reader["Switch"];
-                        Slot.Switch = swi;
-                        int swPort = (int)Reader["SwitchPort"];
-                        Slot.SwPort = swPort;
-                        TXAntenna = ant;
-                        if (ant != null)
-                        {
-                            AntselcomboBox.Text = ant;
-
-                        }
-                        //TXRXAntlabel.Text = ant;
-                        if (tuner > -1) { selTunertextBox.Text = tuner.ToString(); }
-                        if (swi > -1) { selSwitchtextBox.Text = swi.ToString(); }
-                        if (swPort > -1) { selSwPorttextBox.Text = swPort.ToString(); }
-                        string endslot;
-                        try
-                        {
-                            dt = (DateTime)Reader["End"];
-                            endslot = dt.ToString("yyyy-MM-dd");
-                        }
-                        catch
-                        {
-                            endslot = "2024-01-01";
-                        }
-                        Slot.Endslot = endslot;
-                        bool a = false;
-                        a = (bool)Reader["Active"];
-                        string active;
-                        if (a)
-                        {
-                            active = tick;
-                            slotActive = true;
-                        }
-                        else
-                        {
-                            active = cross;
-                            slotActive = false;
-                        }
-                        Slot.Active = active;
-
-                        a = false;
-                        a = (bool)Reader["Repeating"];
-                        string rpt;
-                        if (a) { rpt = tick; } else { rpt = cross; }
-                        Slot.Rpt = rpt;
-
-                        TimeSpan t = (TimeSpan)Reader["TimeEnd"];
-                        string endTime;
-                        endTime = t.ToString(@"hh\:mm");
-                        Slot.EndTime = endTime;
-
-                        a = (bool)Reader["RptTime"];
-                        if (a)
-                        {
-                            Slot.RptTime = "1";
-                            repeatTimecheckBox.Checked = true;
-                        }
-                        else
-                        {
-                            Slot.RptTime = "0";
-                            repeatTimecheckBox.Checked = false;
-                        }
-
-                        string prt = "";
-                        try
-                        { prt = (string)Reader["Parent"]; }
-                        catch { prt = ""; }
-                        if (slot > -1)
-                        {
-                            parents[slot] = prt;
-                        }
-                        Slot.Parent = prt;
-
-                        slotNo = (int)Reader["SlotNo"];
-                        Slot.SlotNo = slotNo;
-                        currentMsgType = (int)Reader["MsgType"];
-                        Slot.MessageType = currentMsgType;
-                        msgType = currentMsgType;
-                        if (slotActive && enableTXcheckBox.Checked)
-                        {
-                            if (Type2checkBox.Checked && overcheckBox.Checked)
-                            {
-                                msgType = 3;
-                            }
-                            else if (overcheckBox.Checked)
-                            {
-                                msgType = 1;
-                            }
-                        }
-
-                        Slot.RptType = (sbyte)Reader["RptType"];
-                        setRptBoxes(Slot.RptType); //enable relevant checkboxes
-                        int greyoffset = 0;
-                        try
-                        {
-                            greyoffset = (int)Reader["GreyOffset"];
-                        }
-                        catch
-                        {
-                            greyoffset = (sbyte)Reader["GreyOffset"];
-                        }
-
-                        if (greyoffset != null)
-                        {
-                            if (Slot.RptType == 1 || Slot.RptType == 4)
-                            {
-                                greyoffset = 0;
-                            }
-                            if (greyoffset == 127)
-                            {
-                                greyoffset = 120;   //older versions max offset 120 mins                                
-                            }
-                            greylistBox.Text = greyoffset.ToString();
-                            Slot.GreyOffset = greyoffset;
-                        }
-                        else
-                        {
-                            greylistBox.Text = "0";
-                            Slot.GreyOffset = 0;
-                        }
-                        if (checkNewSlotColumns())
-                        {
+                            //TXRXAntlabel.Text = ant;
+                            if (tuner > -1) { selTunertextBox.Text = tuner.ToString(); }
+                            if (swi > -1) { selSwitchtextBox.Text = swi.ToString(); }
+                            if (swPort > -1) { selSwPorttextBox.Text = swPort.ToString(); }
+                            string endslot;
                             try
                             {
-                                int swi2 = (int)Reader["Switch2"];
-                                Slot.Switch2 = swi2;
-                                if (swi2 > -1) { selSwitchtextBox2.Text = swi2.ToString(); }
-                                int swPort2 = (int)Reader["SwitchPort2"];
-                                Slot.SwPort2 = swPort2;
-                                if (swPort2 > -1) { selSwPorttextBox2.Text = swPort2.ToString(); }
+                                dt = (DateTime)Reader["End"];
+                                endslot = dt.ToString("yyyy-MM-dd");
                             }
                             catch
                             {
-                                Slot.Switch2 = 0;
-                                Slot.SwPort2 = 0;
-                                selSwPorttextBox2.Text = "0";
-                                selSwitchtextBox2.Text = "0";
+                                endslot = "2024-01-01";
                             }
+                            Slot.Endslot = endslot;
+                            bool a = false;
+                            a = (bool)Reader["Active"];
+                            string active;
+                            if (a)
+                            {
+                                active = tick;
+                                slotActive = true;
+                            }
+                            else
+                            {
+                                active = cross;
+                                slotActive = false;
+                            }
+                            Slot.Active = active;
+
+                            a = false;
+                            a = (bool)Reader["Repeating"];
+                            string rpt;
+                            if (a) { rpt = tick; } else { rpt = cross; }
+                            Slot.Rpt = rpt;
+
+                            TimeSpan t = (TimeSpan)Reader["TimeEnd"];
+                            string endTime;
+                            endTime = t.ToString(@"hh\:mm");
+                            Slot.EndTime = endTime;
+
+                            a = (bool)Reader["RptTime"];
+                            if (a)
+                            {
+                                Slot.RptTime = "1";
+                                repeatTimecheckBox.Checked = true;
+                            }
+                            else
+                            {
+                                Slot.RptTime = "0";
+                                repeatTimecheckBox.Checked = false;
+                            }
+
+                            string prt = "";
+                            try
+                            { prt = (string)Reader["Parent"]; }
+                            catch { prt = ""; }
+                            if (slot > -1)
+                            {
+                                parents[slot] = prt;
+                            }
+                            Slot.Parent = prt;
+
+                            slotNo = (int)Reader["SlotNo"];
+                            Slot.SlotNo = slotNo;
+                            currentMsgType = (int)Reader["MsgType"];
+                            Slot.MessageType = currentMsgType;
+                            msgType = currentMsgType;
+                            if (slotActive && enableTXcheckBox.Checked)
+                            {
+                                if (Type2checkBox.Checked && overcheckBox.Checked)
+                                {
+                                    msgType = 3;
+                                }
+                                else if (overcheckBox.Checked)
+                                {
+                                    msgType = 1;
+                                }
+                            }
+
+                            Slot.RptType = (sbyte)Reader["RptType"];
+                            setRptBoxes(Slot.RptType); //enable relevant checkboxes
+                            int greyoffset = 0;
+                            try
+                            {
+                                greyoffset = (int)Reader["GreyOffset"];
+                            }
+                            catch
+                            {
+                                greyoffset = (sbyte)Reader["GreyOffset"];
+                            }
+
+                            if (greyoffset != null)
+                            {
+                                if (Slot.RptType == 1 || Slot.RptType == 4)
+                                {
+                                    greyoffset = 0;
+                                }
+                                if (greyoffset == 127)
+                                {
+                                    greyoffset = 120;   //older versions max offset 120 mins                                
+                                }
+                                greylistBox.Text = greyoffset.ToString();
+                                Slot.GreyOffset = greyoffset;
+                            }
+                            else
+                            {
+                                greylistBox.Text = "0";
+                                Slot.GreyOffset = 0;
+                            }
+                            if (checkNewSlotColumns())
+                            {
+                                try
+                                {
+                                    int swi2 = (int)Reader["Switch2"];
+                                    Slot.Switch2 = swi2;
+                                    if (swi2 > -1) { selSwitchtextBox2.Text = swi2.ToString(); }
+                                    int swPort2 = (int)Reader["SwitchPort2"];
+                                    Slot.SwPort2 = swPort2;
+                                    if (swPort2 > -1) { selSwPorttextBox2.Text = swPort2.ToString(); }
+                                }
+                                catch
+                                {
+                                    Slot.Switch2 = 0;
+                                    Slot.SwPort2 = 0;
+                                    selSwPorttextBox2.Text = "0";
+                                    selSwitchtextBox2.Text = "0";
+                                }
+                            }
+
+
                         }
+                        readcount = 2;
+                        Reader.Close();
+                        connection.Close();
 
+                        if (DBdown)
+                        {
+                            currHour(false, true);
+                        }
+                        dblabel.Text = "Slot Database OK";
+                        DBdown = false;
+                        dblabel.BackColor = Color.LightBlue;
 
                     }
-                    readcount = 2;
-                    Reader.Close();
-                    connection.Close();
-
-                    if (DBdown)
+                    catch
                     {
-                        currHour(false, true);
-                    }
-                    dblabel.Text = "Slot Database OK";
-                    DBdown = false;
-                    dblabel.BackColor = Color.LightBlue;
+                        dblabel.Text = "Slot Database Error";
+                        DBdown = true;
+                        dblabel.BackColor = Color.Pink;
+                        if (showmsg)
+                        {
+                            Msg.TMessageBox("Unable to read from database", "", 1000);
+                            showmsg = false;
 
-                }
-                catch
-                {
-                    dblabel.Text = "Slot Database Error";
-                    DBdown = true;
-                    dblabel.BackColor = Color.Pink;
-                    if (showmsg)
+
+                        }
+                        //databaseError = true; //stop wasting time trying to connect if database error
+                        slotFound = false;
+                        connection.Close();
+
+                        //}
+                    }
+                    finally
                     {
-                        Msg.TMessageBox("Unable to read from database", "", 1000);
-                        showmsg = false;
-
-
+                        Monitor.Exit(_lock);
                     }
-                    //databaseError = true; //stop wasting time trying to connect if database error
-                    slotFound = false;
-                    connection.Close();
-
-                    //}
+                    readcount++;
                 }
-                readcount++;
-            }
+                catch { }
+            } //end of while
             return slotFound;
         }
 
