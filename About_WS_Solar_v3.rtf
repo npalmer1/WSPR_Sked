@@ -1,6 +1,6 @@
 {\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang2057\deflangfe2057{\fonttbl{\f0\fswiss\fprq2\fcharset0 Aptos;}{\f1\fnil\fcharset0 Calibri;}{\f2\fnil\fcharset0 Cambria Math;}{\f3\fswiss\fprq2 Arial;}{\f4\froman\fprq2\fcharset0 Times New Roman;}{\f5\fnil\fcharset1 Cambria Math;}}
 {\colortbl ;\red0\green0\blue255;\red0\green0\blue0;}
-{\*\generator Riched20 10.0.19041}{\*\mmathPr\mmathFont2\mnaryLim0\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
+{\*\generator Riched20 10.0.19041}{\*\mmathPr\mmathFont2\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
 \pard\hyphpar0\widctlpar\sa160\sl276\slmult1\kerning1\b\f0\fs24 The WS_Solar App\b0\par
 \b What is WS_Solar?\b0\par
 \b WS_Solar\b0  is an app that was developed as part of a suite of tools with an app called WSPR Scheduler. WSPR (Weak Signal Propagation Reporter) is a digital radio transmission mode designed to test and study radio propagation using extremely weak signals, operating within amateur radio bands from LF through to SHF. It transmits narrow band signals using low power in two-minute timeslots. Receiving stations then decode the transmissions and upload them to the Internet and the results are made available for anyone to download. WSPR Scheduler was developed to enable the scheduling of these transmissions and to allow seamless band and antenna switching. It also decodes received signals and uploads them to the Internet. A separate app (WSPR Scheduler Live) downloads reported transmission from the Internet to display the results. WSPR Scheduler Map then displays the results on a World map. \par
@@ -166,7 +166,7 @@ SFI values can be approximated to the following higher HF propagation conditions
 SFI: <70 poor, 70-99 poor to fair, 100-129 fair, 130-149 good, 150-199 very good, 200+ outstanding\par
 The current estimated Ap level also determines the suns activity and this is also shown.\par
 However, the estimated propagation conditions can be influenced by solar flares and storms. This may cause a deterioration in HF propagation conditions or even a partial or more serious black out in which propagation over long distances is either restricted or not possible. If no storms or blackouts are reported today then a comment of \ldblquote Likely normal - (no storm or blackout)\rdblquote  will indicate that the forecast conditions are likely to be reasonably accurate.\par
-Below this - if significant solar radio bursts have been reported - the likely effect of these will be shown in terms of the intensity and frequencies affected. If the frequencies given are wideband - this means that any range of frequencies may be affected from VLF through to UHF. These bursts are likely to have most effect on HF communication and will increase the noise level in particular. \par
+Below this - if significant solar radio bursts have been reported - the likely effect of these will be shown in terms of the intensity and frequencies affected. If the frequencies given are wideband - this means that any range of frequencies may be affected from HF through to UHF. These bursts are likely to have most effect on HF communication and will increase the noise level in particular. \par
 \par
 5)\tab Also at the bottom of the page is a \ldblquote Storms reported\rdblquote  section. This indicates whether any Geomagnetic, Radiation storms or Radio Blackouts have been reported at any time today. As we have seen Geomagnetic storms are represented by a G value. Whereas radiation storms are represented by an S value and flares that may cause radio blackouts by an R value. Flares greater than or equal to M1 class may cause a radio blackout. There are 5 levels as follows: R1 minor, R2 moderate, R3 strong, R4 severe, R5 extreme, depending on the severity of the flare. \par
 Radiation storm occur when the number of Proton Flux values of greater than 10MeV exceed a certain level. The severity of radiation storms are measured on a scale of 5 as follows:\par
@@ -175,12 +175,10 @@ Therefore, if any G, R or S value appears in the storms reported area a note wil
 The storm/blackout may have been reported earlier in the day, in which case a further field shows whether they have occurred in the last 3 hours or so. If they haven\rquote t you may see a comment such as \ldblquote "Likely normal, but storm or blackout reported earlier".\par
 An Ap level above 30 will be shown as a storm here (as previously mentioned). This will also impact the comment attached to the propagation estimate.\par
 Current radio bursts will be shown below this. These will indicate intensity and bands affected, or none/insigniificant if the bursts are short lived and low intensity.\par
-6)\tab A summary of radio bursts can be viewed from the "Radio bursts" button (press the button again to hide this popup window). This shows the total duration of significant radio bursts that may impact on radio propagation and reception, the maximum intensity level of bursts (from weak to extreme), and also the radio bands that may be affected due to the nature of the radio burst - for example from Wideband, 25 MHz and upwards or VHF only. \par
-Also shown will be short bursts (RBR) and the intensity and longer radio noise storms (RNS) and the intensity of those. The frequency affected is shown in the more detail in the database of geophysical data. This summary is extrapolated from the detailed Radio Burst data recorded in the Database of Geophysical data - see below.\par
-\par
+6)\tab A summary of radio bursts can be viewed from the "Radio bursts" button (press the button again to hide this popup window). This shows the total duration of significant radio bursts that may impact on radio propagation and reception and the maximum intensity level of bursts (from weak to extreme).\par
+There are three types of radio burst reported: i) swept frequency radio bursts (RSP). These may affect a range of frequencies (wideband) or just VHF and above, ii) short radio bursts (RBR) and iii) longer noise storms (RNS). The total duration and intensity for each type of radio burst is given and for the swept frequency burst the bands affected (eg. wideband, 25Mhz and above). This summary is extrapolated from the detailed Radio Burst data recorded in the Database of Geophysical data. A more detailed explanation is given below in the section on Radio Bursts.\par
 \b Database of Solar Geophysical data\b0\par
 All of the following information is downloaded from NOAA and recorded locally in the wspr_solar MySQL database. This can be used for future research on Solar activity and propagation predication \endash  perhaps using machine learning or other AI techniques to analyse the data (which could be combined with the output of the data recorded by WSPR Scheduler and WSPR Scheduler Live)\par
-\par
 \par
 
 \pard 
@@ -223,7 +221,7 @@ X\tab >=10\f2\u8315?\super 4\nosupersub\f0\par
 \pard\hyphpar0\widctlpar\sl276\slmult1 The third figure is the total energy or fluence delivered over the whole duration of the flare in Joules per square m (J/m\super 2\nosupersub ). This is calculated by integrating each measurement made over the duration of the flare\par
 
 \pard\hyphpar0\widctlpar\li720\sl276\slmult1\kerning0\f1\fs22\lang9{\pict{\*\picprop{\sp{\sn wzDescription}{\sv Image}}{\sp{\sn posv}{\sv 1}}
-}\pngblip\picw3961\pich1529\picwgoal2246\pichgoal867 
+}\pngblip\picw3962\pich1529\picwgoal2246\pichgoal867 
 89504e470d0a1a0a0000000d49484452000000d90000005508020000004baed682000000017352
 474200aece1ce90000000467414d410000b18f0bfc6105000000097048597300000ec300000ec3
 01c76fa86400000d9c49444154785eed9c6b6c15d516c7cfbdc41a31022aa1462d94620115ac52
@@ -320,7 +318,7 @@ b4b474e9d2a5f3e7cf97ef67f8bdeb1ef6cd8f9e896a3156f4777cd98d66525ef4010ae4315256
 }\kerning1\f0\fs24\lang2057\par
 Where:\par
 \kerning0\f1\fs22\lang9{\pict{\*\picprop{\sp{\sn wzDescription}{\sv Image}}{\sp{\sn posv}{\sv 1}}
-}\pngblip\picw6748\pich2446\picwgoal3826\pichgoal1387 
+}\pngblip\picw6749\pich2447\picwgoal3826\pichgoal1387 
 89504e470d0a1a0a0000000d49484452000001770000008a0802000000ded99dda000000017352
 474200aece1ce90000000467414d410000b18f0bfc6105000000097048597300000ec300000ec3
 01c76fa86400001e9749444154785eed9d7f6c5757ddc7799eca92b950ab222c9429ad6e1d05e6
@@ -556,7 +554,8 @@ A short duration radio burst at 0115 UTC with a maximum intensity in Solar Flux 
 Example: RNS/1003-1035/330\par
 A radio noise storm started at 10:03 UTC and ended at 10.35 UTC with a maximum intensity in SFU of 330 measured at 245MHz (moderate intensity) \endash  see table below.\par
 
-\pard\hyphpar0\widctlpar\sa100\sl276\slmult1\b RSP\b0  \endash  Radio Spectral Peak. This is usually a short burst and shows t\kerning0 he peak intensity of a radio burst in the radio spectrum. The start and end time are given. Then the type (eg. III) followed by an intensity level (eg. 2). This can cause increased noise on HF.\kerning1\par
+\pard\hyphpar0\widctlpar\sa100\sl276\slmult1\b RSP\b0  \endash  Radio Spectral Peak. This is a broadband, swept frequency radio burst that may affect a wide range of frequencies from VLF to SHF and above. This is usually a short burst and shows t\kerning0 he peak intensity of a radio burst in the radio spectrum. Whilst the ionosphere blocks frequencies emanating from space at frequencies below the middle of the HF band (below c.10MHz) solar activity associated with radio bursts can affect the ionspher at lower frequencies by increasing D layer ionisation and absorption, which can affect propagation down to VLF.\par
+For RSPs the start and end time are given. Then the type (eg. III) followed by an intensity level (eg. 2). The bursts can cause increased noise.\kerning1\par
 \kerning0 Example: RSP/0217-0218/III/2\kerning1\par
 \kerning0 A radio burst occurred between 0217-0218 of type III (fast electron beam burst) and with a moderate intensity level. \kerning1\par
 \kerning0 If you see \b CTM\b0  instead of a type \f4\endash\f0  this means continuum, which corresponds to a type IV radio burst \f4\endash\f0  that is broadband and long lasting (a post flare continuum).\kerning1\par
@@ -572,9 +571,9 @@ A radio noise storm started at 10:03 UTC and ended at 10.35 UTC with a maximum i
 \b Table 1.\tab NOAA Burst Types:\kerning1\b0\par
 \kerning0 Term\tab Burst Type\tab Meaning\kerning1\par
 \kerning0 RNS\tab Type I\tab\tab Radio noise storm (many small bursts  hours\f4\endash\f0 days, VHF)\kerning1\par
-\kerning0 RBR\tab Type II\tab CME-driven shock burst\f3\u8198?\f0  \f3\u8198?\f0  (may affect 25 \endash  150 MHz)\kerning1\par
-\kerning0 RBR\tab Type III\tab Fast electron-beam burst\f3\u8198?\f0  \f3\u8198?\f0  (may affect VLF up to 1GHz)\kerning1\par
-\kerning0 RBR\tab Type IV\tab Post-flare continuum\f3\u8198?\f0  \f3\u8198?\f0  (may affect 25MHz to 2GHz)\kerning1\par
+\kerning0 RBR\tab Type II\tab      CME-driven shock burst\f3\u8198?\f0  \f3\u8198?\f0  (may affect 25 - 150 MHz)\kerning1\par
+\kerning0 RBR\tab Type III\tab      Fast electron-beam burst\f3\u8198?\f0  \f3\u8198?\f0  (may affect HF - 1GHz)\kerning1\par
+\kerning0 RBR\tab Type IV\tab Post-flare continuum\f3\u8198?\f0  \f3\u8198?\f0  (may affect 25MHz - 2GHz)\kerning1\par
 \kerning0 RBR\tab Type V\tab Short continuum after Type III\f3\u8198?\f0  \f3\u8198?\f0  (may affect 25-200MHz)\kerning1\par
 \kerning0 RSP\tab I\f4\endash\f0 V (any)\tab Peak radio intensity of the burst\kerning1\par
 \kerning0 Type VI - less common - usually a sequence of Type III bursts occurring repeatedly over a period - may be referred to as a Type VI storm\kerning1\par
