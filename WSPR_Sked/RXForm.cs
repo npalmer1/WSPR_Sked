@@ -516,10 +516,18 @@ namespace WSPR_Sked
                     
                     int km;
                     int az;
-                    (km, az) = Calculate_km_az(DX.tx_loc, my_loc);
-
-                    DX.distance = km;
-                    DX.azimuth = (Int16)az;
+                    if (DX.tx_loc != "")
+                    {
+                        (km, az) = Calculate_km_az(DX.tx_loc, my_loc);
+                        DX.distance = km;
+                        DX.azimuth = (Int16)az;
+                    }
+                    else
+                    {
+                        DX.distance = -1;
+                        DX.azimuth = -1;
+                    }
+                   
                     DX.reporter = Callsign;
                     DX.reporter_loc = my_loc;
 
