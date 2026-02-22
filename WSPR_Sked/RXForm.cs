@@ -516,11 +516,15 @@ namespace WSPR_Sked
                     
                     int km;
                     int az;
-                    if (DX.tx_loc != "")
+                    if (DX.tx_loc.Trim() != "")
                     {
                         (km, az) = Calculate_km_az(DX.tx_loc, my_loc);
                         DX.distance = km;
                         DX.azimuth = (Int16)az;
+                        if (km ==0)
+                        {
+                            DX.azimuth = -1;
+                        }
                     }
                     else
                     {
