@@ -491,11 +491,29 @@ namespace WSPR_Sked
                     DX.band = (Int16)convertMHz(DX.frequency);
                     DX.drift = Convert.ToInt16(R[4 + off]);
 
-
-                    DX.power = Convert.ToInt16(R[7 + off]);
-
                     DX.tx_sign = R[5 + off];
-                    DX.tx_loc = R[6 + off];
+                    int x = 7;
+                    if (R.Count() > (7 + off))  //there is a locator
+                    {
+                        DX.tx_loc = R[6 + off];
+                        x = 7;
+                    }
+                    else
+                    {
+                        x = 6;  //account for type 2 messages with no locator
+                        DX.tx_loc = "";
+                    }
+                    try
+                    {
+                        DX.power = Convert.ToInt16(R[x + off]);
+                    }
+                    catch
+                    {
+                        DX.tx_loc = "";
+                    }
+                  
+
+                    
                     int km;
                     int az;
                     (km, az) = Calculate_km_az(DX.tx_loc, my_loc);
