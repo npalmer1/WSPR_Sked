@@ -568,7 +568,7 @@ namespace WSPR_Sked
                 }
                 rig = ReadRigs(true, 0);
                 selectedRig = rig.Selected;
-                saveUserandPassword(db_user,db_pass);
+                //saveUserandPassword(db_user,db_pass);
 
             } //if checkslotDB
             else
@@ -4266,7 +4266,7 @@ namespace WSPR_Sked
                             dbcall = reader.ReadLine();
                             reader.Close();
                         }
-                        if (content != null || content != "")
+                        if (content != null && content != "")
                         {
                             if (content.Contains("db_pass:"))
                             {
@@ -8343,6 +8343,7 @@ namespace WSPR_Sked
 
                     Save_Audio();
                     saveAllRigs();
+                    saveUserandPassword(db_user,db_pass);
                 }
 
                 Task.Delay(1000);
