@@ -568,6 +568,7 @@ namespace WSPR_Sked
                 }
                 rig = ReadRigs(true, 0);
                 selectedRig = rig.Selected;
+                saveUserandPassword(db_user,db_pass);
 
             } //if checkslotDB
             else
