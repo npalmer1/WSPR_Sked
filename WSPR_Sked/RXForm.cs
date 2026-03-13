@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Drawing;
 
 namespace WSPR_Sked
 {
@@ -152,6 +153,8 @@ namespace WSPR_Sked
             dataGridView1.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            dataGridView1.Columns[11].HeaderCell.Style.Font =    new Font("Segoe UI", 8);
+            dataGridView1.Columns[12].HeaderCell.Style.Font = new Font("Segoe UI", 8);
 
 
             dateTimePicker1.Format = DateTimePickerFormat.Custom;
