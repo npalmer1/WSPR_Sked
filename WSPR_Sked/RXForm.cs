@@ -1135,6 +1135,7 @@ namespace WSPR_Sked
                             cells[9] = "";
                             cells[10] = "";
                             cells[11] = "";
+                            cells[12] = "";
                         }
                         else
                         {
