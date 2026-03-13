@@ -346,7 +346,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.32";
+            string ver = "0.1.33";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -583,6 +583,7 @@ namespace WSPR_Sked
             DaycheckBox.Checked = false;
             NightcheckBox.Checked = false;
             AllcheckBox.Checked = false;
+            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -2913,13 +2914,13 @@ namespace WSPR_Sked
             {
                 case 0: { W = "0.001"; break; }
                 case 3: { W = "0.002"; break; }
-                case 7: { W = "005"; break; }
-                case 10: { W = "0.010"; break; }
-                case 13: { W = "0.020"; break; }
-                case 17: { W = "0.050"; break; }
-                case 20: { W = "0.100"; break; }
-                case 23: { W = "0.200"; break; }
-                case 27: { W = "0.500"; break; }
+                case 7: { W = "0.005"; break; }
+                case 10: { W = "0.01"; break; }
+                case 13: { W = "0.02"; break; }
+                case 17: { W = "0.05"; break; }
+                case 20: { W = "0.1"; break; }
+                case 23: { W = "0.2"; break; }
+                case 27: { W = "0.5"; break; }
                 case 30: { W = "1"; break; }
                 case 33: { W = "2"; break; }
                 case 37: { W = "5"; break; }

@@ -1155,10 +1155,10 @@
             tabControl1.Controls.Add(tabPage5);
             tabControl1.Controls.Add(tabPage6);
             tabControl1.Controls.Add(tabPage7);
-            tabControl1.Location = new System.Drawing.Point(3, -1);
+            tabControl1.Location = new System.Drawing.Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new System.Drawing.Size(1180, 678);
+            tabControl1.Size = new System.Drawing.Size(1185, 677);
             tabControl1.TabIndex = 0;
             tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
@@ -1224,7 +1224,7 @@
             tabPage1.Location = new System.Drawing.Point(4, 22);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            tabPage1.Size = new System.Drawing.Size(1172, 652);
+            tabPage1.Size = new System.Drawing.Size(1177, 651);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Slots";
             tabPage1.Click += tabPage1_Click;
@@ -1810,10 +1810,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 24);
+            tabPage2.Location = new System.Drawing.Point(4, 22);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1172, 650);
+            tabPage2.Size = new System.Drawing.Size(1177, 651);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -2701,10 +2701,10 @@
             tabPage3.Controls.Add(label30);
             tabPage3.Controls.Add(label29);
             tabPage3.Controls.Add(label28);
-            tabPage3.Location = new System.Drawing.Point(4, 24);
+            tabPage3.Location = new System.Drawing.Point(4, 22);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1172, 650);
+            tabPage3.Size = new System.Drawing.Size(1177, 651);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
             // 
@@ -2984,10 +2984,10 @@
             tabPage4.Controls.Add(FreqlistBox);
             tabPage4.Controls.Add(AgroupBox);
             tabPage4.Controls.Add(AntlistBox);
-            tabPage4.Location = new System.Drawing.Point(4, 24);
+            tabPage4.Location = new System.Drawing.Point(4, 22);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1172, 650);
+            tabPage4.Size = new System.Drawing.Size(1177, 651);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
@@ -3584,10 +3584,10 @@
             tabPage5.Controls.Add(label42);
             tabPage5.Controls.Add(TulistBox);
             tabPage5.Controls.Add(SwlistBox);
-            tabPage5.Location = new System.Drawing.Point(4, 24);
+            tabPage5.Location = new System.Drawing.Point(4, 22);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            tabPage5.Size = new System.Drawing.Size(1172, 650);
+            tabPage5.Size = new System.Drawing.Size(1177, 651);
             tabPage5.TabIndex = 4;
             tabPage5.Text = "Switches&Tuners";
             // 
@@ -4123,9 +4123,9 @@
             tabPage6.Controls.Add(label97);
             tabPage6.Controls.Add(audioOutlistBox);
             tabPage6.Controls.Add(audioInlistBox);
-            tabPage6.Location = new System.Drawing.Point(4, 24);
+            tabPage6.Location = new System.Drawing.Point(4, 22);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new System.Drawing.Size(1172, 650);
+            tabPage6.Size = new System.Drawing.Size(1177, 651);
             tabPage6.TabIndex = 5;
             tabPage6.Text = "RX & Sound config";
             // 
@@ -4377,10 +4377,10 @@
             tabPage7.Controls.Add(riglistBox);
             tabPage7.Controls.Add(RiggroupBox);
             tabPage7.Controls.Add(label122);
-            tabPage7.Location = new System.Drawing.Point(4, 24);
+            tabPage7.Location = new System.Drawing.Point(4, 22);
             tabPage7.Name = "tabPage7";
             tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            tabPage7.Size = new System.Drawing.Size(1172, 650);
+            tabPage7.Size = new System.Drawing.Size(1177, 651);
             tabPage7.TabIndex = 6;
             tabPage7.Text = "Non Rigctl TX";
             // 
@@ -4873,8 +4873,7 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            AutoSize = true;
-            AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            AutoScroll = true;
             BackColor = System.Drawing.Color.Beige;
             ClientSize = new System.Drawing.Size(1185, 677);
             Controls.Add(LTlabel2);

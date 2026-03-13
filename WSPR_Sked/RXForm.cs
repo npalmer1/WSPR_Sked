@@ -54,7 +54,7 @@ namespace WSPR_Sked
         decoded_data DX = new decoded_data();
         DateTime startTime;
 
-        string[] cells = new string[10];
+        string[] cells = new string[15];
         private static readonly object _lock = new object();
         int maxrows = 2000;
 
@@ -97,7 +97,7 @@ namespace WSPR_Sked
 
         MessageClass Msg = new MessageClass();
 
-       
+
 
         public RXForm()
         {
@@ -105,7 +105,7 @@ namespace WSPR_Sked
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.MinimizeBox = true;
             this.MaximizeBox = true;
-            OSDlistBox.SelectedIndex = 0;             
+            OSDlistBox.SelectedIndex = 0;
         }
 
         protected override CreateParams CreateParams
@@ -126,7 +126,7 @@ namespace WSPR_Sked
 
         }
 
-       
+
 
         public void set_header(string call, string serverName, string db_user, string db_pass, string loc, int audioDev, string wsprdpath, string ver, int opsys)
         {
@@ -150,6 +150,8 @@ namespace WSPR_Sked
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dataGridView1.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
 
 
             dateTimePicker1.Format = DateTimePickerFormat.Custom;
@@ -179,6 +181,10 @@ namespace WSPR_Sked
             {
 
             }
+            int index = cwssblistBox.FindStringExact("100");
+            if (index != ListBox.NoMatches) { cwssblistBox.SelectedIndex = index; }
+            string cwssbpwr = "100";
+            if (cwssblistBox.SelectedIndex > -1) { cwssbpwr = cwssblistBox.SelectedItem.ToString(); }
 
         }
         public void change_header(string call, string serverName, string db_user, string db_pass, string loc, int audioDev, string wsprdpath)
@@ -188,9 +194,9 @@ namespace WSPR_Sked
             server = serverName;
             user = db_user;
             pass = db_pass;
-            my_loc = loc;                             
+            my_loc = loc;
             audioDevice = audioDev;
-            wsprdfilepath = wsprdpath;                                
+            wsprdfilepath = wsprdpath;
             myloclabel.Text = my_loc;
         }
         public async Task set_frequency(string Freq)
@@ -413,6 +419,7 @@ namespace WSPR_Sked
 
             try
             {
+               
                 await save_result_lines(startT);
                 await Task.Delay(200);
                 int rows = table_count(server, user, pass);
@@ -511,9 +518,9 @@ namespace WSPR_Sked
                     {
                         DX.tx_loc = "";
                     }
-                  
 
-                    
+
+
                     int km;
                     int az;
                     if (DX.tx_loc.Trim() != "")
@@ -521,7 +528,7 @@ namespace WSPR_Sked
                         (km, az) = Calculate_km_az(DX.tx_loc, my_loc);
                         DX.distance = km;
                         DX.azimuth = (Int16)az;
-                        if (km ==0)
+                        if (km == 0)
                         {
                             DX.azimuth = -1;
                         }
@@ -531,7 +538,7 @@ namespace WSPR_Sked
                         DX.distance = -1;
                         DX.azimuth = -1;
                     }
-                   
+
                     DX.reporter = Callsign;
                     DX.reporter_loc = my_loc;
 
@@ -628,7 +635,7 @@ namespace WSPR_Sked
 
             DataGridViewRow row = new DataGridViewRow();
             row.CreateCells(dataGridView1);
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 13; i++)
             {
 
                 row.Cells[i].Value = cells[i];
@@ -1055,6 +1062,29 @@ namespace WSPR_Sked
             try
             {
 
+                string cwssbpwr = "100";
+                if (cwssblistBox.SelectedIndex > -1) { cwssbpwr = cwssblistBox.SelectedItem.ToString(); }
+
+                int pwrW = 100;
+                int dBm = 50;
+                //string cwssbpwr = CWSSBlistBox.SelectedItem.ToString();
+                if (cwssbpwr != "")
+                {
+                    if (int.TryParse(cwssbpwr, out pwrW))
+                    {
+                        pwrW = pwrW;
+                    }
+                    else
+                    {
+                        pwrW = 100;
+                    }
+
+                }
+                else
+                {
+                    pwrW = 100;
+                }
+                dBm = convertTodBm(pwrW);
 
                 connection.Open();
 
@@ -1103,6 +1133,8 @@ namespace WSPR_Sked
                             cells[7] = "";
                             cells[8] = "";
                             cells[9] = "";
+                            cells[10] = "";
+                            cells[11] = "";
                         }
                         else
                         {
@@ -1115,29 +1147,33 @@ namespace WSPR_Sked
                             //cells[3] = DX.snr.ToString();
                             cells[4] = DX.drift.ToString();
                             cells[5] = DX.power.ToString();
-                            cells[6] = DX.tx_loc;
+                            cells[6] = dBtoWatts(cells[5]);
+                            cells[7] = DX.tx_loc;
                             if (DX.distance > -1)
                             {
-                                cells[7] = DX.distance.ToString();
+                                cells[8] = DX.distance.ToString();
                                 string mls = convert_to_miles(DX.distance);
-                                cells[8] = mls;
+                                cells[9] = mls;
                             }
                             else
                             {
-                                cells[7] = "";
                                 cells[8] = "";
+                                cells[9] = "";
                             }
 
                             if (DX.azimuth > -1)
                             {
-                                cells[9] = DX.azimuth.ToString();
+                                cells[10] = DX.azimuth.ToString();
                             }
                             else
                             {
-                                cells[9] = "";
+                                cells[10] = "";
                             }
+                            cells[11] = getCW(DX.snr, DX.power, dBm);
+                            cells[12] = getSSB(DX.snr, DX.power, dBm);
 
                         }
+
                         update_grid(); //add this row to the datagridview
                         i++;
                     }
@@ -1160,6 +1196,84 @@ namespace WSPR_Sked
             return found;
         }
 
+        private int convertTodBm(int pwrW)
+        {
+            int dBm = 0;
+            try
+            {
+                //dBm = 10 * log10(pwrW);
+                dBm = (int)(10 * Math.Log10(pwrW * 1000));
+            }
+            catch
+            {
+                dBm = 50;
+            }
+            return dBm;
+        }
+        private string getSSB(int snr, int pwr, int dBm)
+        {
+
+            int diff = dBm - pwr;
+            int ssbL = snr + diff;
+
+            string ssb = "";
+            if (ssbL < 5)
+            {
+                ssb = "unusable";
+            }
+            else if (ssbL >= 5 && ssbL < 10)
+            {
+                ssb = "bordeline";
+            }
+            else if (ssbL >= 10 && ssbL < 12)
+            {
+                ssb = "workable";
+            }
+            else if (ssbL >= 12 && ssbL < 15)
+            {
+                ssb = "good";
+            }
+            else if (ssbL >= 15)
+            {
+                ssb = "excellent";
+            }
+            return ssb;
+        }
+        private string getCW(int snr, int pwr, int dBm)
+        {
+            int diff = dBm - pwr;
+            int cwL = snr + diff;
+            string cw = "";
+            if (cwL < -10)
+            {
+                cw = "unusable";
+            }
+            else if (cwL >= -10 && cwL < -6)
+            {
+                cw = "very weak";
+            }
+            else if (cwL >= -6 && cwL < -2)
+            {
+                cw = "copyable";
+            }
+            else if (cwL >= -2 && cwL < 3)
+            {
+                cw = "readable";
+            }
+            else if (cwL >= 3 && cwL < 8)
+            {
+                cw = "solid";
+            }
+            else if (cwL >= 8 && cwL < 13)
+            {
+                cw = "very good";
+            }
+            else if (cwL >= 13)
+            {
+                cw = "strong";
+            }
+            return cw;
+        }
         public void Save_Config(string serverName, string db_user, string db_pass)
         {
 
@@ -1303,7 +1417,7 @@ namespace WSPR_Sked
             //MessageForm nForm = new MessageForm();
             Msg.TMessageBox("Please wait....", "", 30000);
             show_results(server, user, pass);
-            
+
             //nForm.Dispose();
         }
 
@@ -1379,11 +1493,33 @@ namespace WSPR_Sked
                 try
                 {
 
+                    string cwssbpwr = "100";
+                    if (cwssblistBox.SelectedIndex > -1) { cwssbpwr = cwssblistBox.SelectedItem.ToString(); }
 
+                    int pwrW = 100;
+                    int dBm = 50;
+                    //string cwssbpwr = CWSSBlistBox.SelectedItem.ToString();
+                    if (cwssbpwr != "")
+                    {
+                        if (int.TryParse(cwssbpwr, out pwrW))
+                        {
+                            pwrW = pwrW;
+                        }
+                        else
+                        {
+                            pwrW = 100;
+                        }
+
+                    }
+                    else
+                    {
+                        pwrW = 100;
+                    }
+                    dBm = convertTodBm(pwrW);
                     connection.Open();
 
                     MySqlCommand command = connection.CreateCommand();
-
+                    string where = "";
                     if (callFiltertextBox.Text.Trim() != "")
                     {
                         if (callFiltertextBox.Text.Contains("*"))
@@ -1392,6 +1528,7 @@ namespace WSPR_Sked
                         }
                         callstr = and + " tx_sign LIKE '" + callFiltertextBox.Text.Trim() + "%' ";
                         and = "AND";
+                        where = "WHERE ";
                     }
                     fromstr = DFromtextBox.Text.Trim();
                     tostr = DTotextBox.Text.Trim();
@@ -1406,6 +1543,7 @@ namespace WSPR_Sked
                         }
                         fromstr = and + " distance >= " + fromstr + " ";
                         and = "AND";
+                        where = "WHERE ";
                     }
                     if (tostr != "")
                     {
@@ -1418,15 +1556,16 @@ namespace WSPR_Sked
                         }
                         tostr = and + " distance <= " + tostr + " ";
                         and = "AND";
+                        where = "WHERE ";
                     }
                     //command.CommandText = "SELECT * FROM reported ORDER BY time WHERE time >= '" + time1 + "' AND time <= '" + time2 + "' AND band = '" + bandstr + "' DESC LIMIT " + maxrows;
                     if (datecheckBox.Checked)
                     {
-                        command.CommandText = "SELECT * FROM received WHERE datetime >= '" + datetime1 + "' AND datetime <= '" + datetime2 + "' AND " + bandstr + callstr + fromstr + tostr + " ORDER BY datetime DESC LIMIT " + maxrows;
+                        command.CommandText = "SELECT * FROM received "+where+ " datetime >= '" + datetime1 + "' AND datetime <= '" + datetime2 + "' AND " + bandstr + callstr + fromstr + tostr + " ORDER BY datetime DESC LIMIT " + maxrows;
                     }
                     else
                     {
-                        command.CommandText = "SELECT * FROM received WHERE " + bandstr + callstr + fromstr + tostr + " ORDER BY datetime DESC LIMIT " + maxrows;
+                        command.CommandText = "SELECT * FROM received "+where+ " " + bandstr + callstr + fromstr + tostr + " ORDER BY datetime DESC LIMIT " + maxrows;
                     }
 
 
@@ -1472,6 +1611,9 @@ namespace WSPR_Sked
                                 cells[7] = "";
                                 cells[8] = "";
                                 cells[9] = "";
+                                cells[10] = "";
+                                cells[11] = "";
+                                cells[12] = "";
                             }
                             else
                             {
@@ -1484,27 +1626,30 @@ namespace WSPR_Sked
                                                  //cells[3] = DX.snr.ToString();
                                 cells[4] = DX.drift.ToString();
                                 cells[5] = DX.power.ToString();
-                                cells[6] = DX.tx_loc;
+                                cells[6] = dBtoWatts(DX.power.ToString());
+                                cells[7] = DX.tx_loc;
                                 if (DX.distance > -1)
                                 {
-                                    cells[7] = DX.distance.ToString();
+                                    cells[8] = DX.distance.ToString();
                                     string mls = convert_to_miles(DX.distance);
-                                    cells[8] = mls;
+                                    cells[9] = mls;
                                 }
                                 else
                                 {
-                                    cells[7] = "";
                                     cells[8] = "";
+                                    cells[9] = "";
                                 }
 
                                 if (DX.azimuth > -1)
                                 {
-                                    cells[9] = DX.azimuth.ToString();
+                                    cells[10] = DX.azimuth.ToString();
                                 }
                                 else
                                 {
-                                    cells[9] = "";
+                                    cells[10] = "";
                                 }
+                                cells[11] = getCW(DX.snr, DX.power, dBm);
+                                cells[12] = getSSB(DX.snr, DX.power, dBm);
 
                             }
                             update_grid(); //add this row to the datagridview
@@ -1531,6 +1676,36 @@ namespace WSPR_Sked
                 }
             }
             return found;
+        }
+
+        private string dBtoWatts(string db)
+        {
+            string W = "";
+
+            int dBm = int.Parse(db);
+            switch (dBm)
+            {
+                case 0: { W = "0.001"; break; }
+                case 3: { W = "0.002"; break; }
+                case 7: { W = "0.005"; break; }
+                case 10: { W = "0.01"; break; }
+                case 13: { W = "0.02"; break; }
+                case 17: { W = "0.05"; break; }
+                case 20: { W = "0.1"; break; }
+                case 23: { W = "0.2"; break; }
+                case 27: { W = "0.5"; break; }
+                case 30: { W = "1"; break; }
+                case 33: { W = "2"; break; }
+                case 37: { W = "5"; break; }
+                case 40: { W = "10"; break; }
+                case 43: { W = "20"; break; }
+                case 47: { W = "50"; break; }
+                case 50: { W = "100"; break; }
+                case 53: { W = "200"; break; }
+                case 57: { W = "500"; break; }
+                case 60: { W = "1000"; break; }
+            }
+            return W;
         }
         private string find_band()
         {
@@ -1929,7 +2104,11 @@ namespace WSPR_Sked
             myloclabel.Text = my_loc;
         }
 
-       
+        private void cwssblistBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            dataGridView1.Columns[10].HeaderText = "CW @" + cwssblistBox.SelectedItem.ToString() + "W";
+            dataGridView1.Columns[11].HeaderText = "SSB @" + cwssblistBox.SelectedItem.ToString() + "W";
+        }
     }
 }
 
