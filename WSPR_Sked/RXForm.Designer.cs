@@ -103,7 +103,7 @@
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column13, Column7, Column8, Column9, Column10, Column11, Column12 });
             dataGridView1.Location = new System.Drawing.Point(23, 76);
             dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new System.Drawing.Size(1058, 432);
+            dataGridView1.Size = new System.Drawing.Size(1073, 432);
             dataGridView1.TabIndex = 2;
             dataGridView1.RowHeaderMouseClick += dataGridView1_RowHeaderMouseClick;
             // 
@@ -572,14 +572,12 @@
             Column11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             Column11.HeaderText = "CW @100W";
             Column11.Name = "Column11";
-            Column11.Width = 90;
             // 
             // Column12
             // 
             Column12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             Column12.HeaderText = "SSB @100W";
             Column12.Name = "Column12";
-            Column12.Width = 90;
             // 
             // RXForm
             // 
@@ -587,7 +585,7 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoScroll = true;
             BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            ClientSize = new System.Drawing.Size(1096, 620);
+            ClientSize = new System.Drawing.Size(1117, 620);
             Controls.Add(cwssblistBox);
             Controls.Add(label13);
             Controls.Add(label12);
