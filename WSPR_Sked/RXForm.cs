@@ -2107,8 +2107,8 @@ namespace WSPR_Sked
 
         private void cwssblistBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            dataGridView1.Columns[10].HeaderText = "CW @" + cwssblistBox.SelectedItem.ToString() + "W";
-            dataGridView1.Columns[11].HeaderText = "SSB @" + cwssblistBox.SelectedItem.ToString() + "W";
+            dataGridView1.Columns[11].HeaderText = "CW @" + cwssblistBox.SelectedItem.ToString() + "W";
+            dataGridView1.Columns[12].HeaderText = "SSB @" + cwssblistBox.SelectedItem.ToString() + "W";
         }
     }
 }
