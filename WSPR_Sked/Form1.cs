@@ -346,7 +346,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.33";
+            string ver = "0.1.34";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -10080,17 +10080,22 @@ namespace WSPR_Sked
             LatLng ll;
             string sunrise = "";
             string sunset = "";
+            int daysOK = 0;
             string locator = LocatortextBox.Text.Trim().Substring(0, 4).ToUpper();
-
+            Msg.TMessageBox("Updating sunrise/set times ..please wait", "Sunrise/set", 6000);
             try
             {
                 ll = MaidenheadLocator.LocatorToLatLng(locator);
-
+                bool gotTime = false;
                 for (int i = 0; i < days; i++)
                 {
                     //if (i % 7 == 0) //get sunrise/set every week
                     //{
-                    Sunrise_Sunset(ll.Lat, ll.Long, date);
+                    gotTime = await Sunrise_Sunset(ll.Lat, ll.Long, date);
+                    if (gotTime)
+                    {
+                        daysOK++;
+                    }
                     sunrise = sunTimes.R.ToString("HH:mm");
                     sunset = sunTimes.S.ToString("HH:mm");
                     //}
@@ -10111,26 +10116,44 @@ namespace WSPR_Sked
 
                 Msg.TMessageBox("Error while saving sunrise/sunset times", "Sunrise/set", 2000);
             }
+            if (daysOK < days)
+            {
+                Msg.TMessageBox("Unable to get sunrise/set times for all days", "Sunrise/set", 3000);
+            }
+            else
+            {
+                Msg.TMessageBox("Sunrise/set times updated successfully", "Sunrise/set", 2000);
+            }
 
         }
 
         //static async Task<(DateTime R, DateTime S)> Sunrise_Sunset(double latitude, double longitude, DateTime Date)
-        private async void Sunrise_Sunset(double latitude, double longitude, DateTime Date)
+        private async Task<bool> Sunrise_Sunset(double latitude, double longitude, DateTime Date)
         {       //retrieves times as LocalConstant not UTC
-
-            //this method uses the REST API courtesy of sunrise-sunset.org
             DateTime sunrise = DateTime.MinValue;
             DateTime sunset = DateTime.MinValue;
-            try
-            {
+            try { 
+                //this method uses the REST API courtesy of sunrise-sunset.org
+                            
                 string date = Date.ToString("yyyy-MM-dd");
 
                 string url = $"https://api.sunrise-sunset.org/json?lat={latitude}&lng={longitude}&date={date}&formatted=0";
 
                 using HttpClient client = new HttpClient();
-                string response = await client.GetStringAsync(url);
-
+                //var response = await client.GetStringAsync(url);
+                var response = await client.GetStringAsync(url);
+                if (!response.TrimStart().StartsWith("{") && !response.TrimStart().StartsWith("["))
+                {
+                    // Not JSON – handle the status message
+                    sunrise = DateTime.MinValue;
+                    sunset = DateTime.MinValue;
+                    sunTimes.R = sunrise;
+                    sunTimes.S = sunset;
+                    return false;
+                }
+                string responseStr = response.ToString();
                 JObject json = JObject.Parse(response);
+               
                 var results = json["results"];
 
                 sunrise = DateTime.Parse(results["sunrise"].ToString());
@@ -10142,9 +10165,11 @@ namespace WSPR_Sked
                 sunset = DateTime.MinValue;
                 sunTimes.R = sunrise;
                 sunTimes.S = sunset;
+                return false;
             }
             sunTimes.R = sunrise;
             sunTimes.S = sunset;
+            return true;
 
         }
 
@@ -10311,11 +10336,12 @@ namespace WSPR_Sked
             Msg.TMessageBox("Sunrise and sunset times updating", "Sunrise/set", 3000);
             LatLng ll;
             ll = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
-            Sunrise_Sunset(ll.Lat, ll.Long, dt);
+            DateTime today = DateTime.Now.ToUniversalTime();
+            Sunrise_Sunset(ll.Lat, ll.Long, today);
             utcriselabel.Text = sunTimes.R.ToString("HH:mm");
             utcsetlabel.Text = sunTimes.S.ToString("HH:mm");
-            DateTime today = DateTime.Now;
-            SaveSunRiseSunset(today, 365);
+            DateTime janone = new DateTime(DateTime.Now.Year, 1, 1);    //start at jan 1st this year
+            SaveSunRiseSunset(janone, 365);
 
         }
 
