@@ -8163,6 +8163,11 @@ namespace WSPR_Sked
         {
             DateTime enddate = dateEnd.Value;
             DateTime startdate = DateTime.Now;
+            string[] D = datetimelabel.Text.Split(' ');
+            if (!DateTime.TryParse(D[0], out startdate))
+            {
+                startdate = DateTime.Now;
+            }
             int days = (enddate - startdate).Days;
             int t = 0;
             rangelabel.Text = "--";
