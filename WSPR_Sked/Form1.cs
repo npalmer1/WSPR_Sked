@@ -315,6 +315,10 @@ namespace WSPR_Sked
         Random randno = new Random();
 
         MessageClass Msg = new MessageClass();
+
+        private bool? _hasNewSlotColumns = null;
+
+       
         public Form1()
         {
             KeyPreview = true;
@@ -322,6 +326,13 @@ namespace WSPR_Sked
             this.Shown += Form1_Shown;
             InitializeComponent();
 
+        }
+
+        private bool HasNewSlotColumns()
+        {
+            if (_hasNewSlotColumns.HasValue) return _hasNewSlotColumns.Value;
+            _hasNewSlotColumns = checkNewSlotColumns();  // only hits DB once ever
+            return _hasNewSlotColumns.Value;
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -346,7 +357,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.34";
+            string ver = "0.1.35";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -2725,24 +2736,28 @@ namespace WSPR_Sked
         //private bool SaveSlotData(string d, string t)  //to database
         private async Task<bool> SaveSlotData(string d, string t)  //to database
         {
+           
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
-            MySqlConnection connection = new MySqlConnection(myConnectionString);
+            myConnectionString += ";Pooling=true;Min Pool Size=1;Max Pool Size=10";
+            
+            //MySqlConnection connection = new MySqlConnection(myConnectionString);
             DateTime date = new DateTime();
             //string d = "";
 
-            string e = "";
-            string p = "";
+            string endslot = "";
+            string parent = "";
             int msgT = 1;
             string N = "";
             string N2 = "";
             string N3 = "";
 
 
-            if (checkNewSlotColumns())
+            if (HasNewSlotColumns())
             {
                 N = ",Switch2,SwitchPort2)";
                 N2 = ",@Switch2,@SwitchPort2)";
                 N3 = ",Switch2 = " + Slot.Switch2 + ", SwitchPort2 = " + Slot.SwPort2;
+
             }
             else
             {
@@ -2751,160 +2766,121 @@ namespace WSPR_Sked
                 N3 = "";
             }
 
-            lock (_lock)
-            {
                 try
                 {
 
-                    e = Convert.ToString(Slot.Endslot);
-                    bool A = false; ;
+                    endslot = Convert.ToString(Slot.Endslot);
+                    bool Active = false; ;
                     if (cells[15].Contains(tick))
                     {
-                        A = true;
+                        Active = true;
                     }
-                    bool R = false;
+                    bool Repeat = false;
                     if (cells[10].Contains(tick))
                     {
-                        R = true;
+                        Repeat = true;
                     }
                     string dte = Convert.ToString(cells[0]);
-                  
-                   
-                    p = dte + " " + cells[1]; //date and time of parent of this slot
-                    if (orig_parents != p & editslotcheckBox.Checked) //if parent has changed and editing slot
+
+
+                    parent = dte + " " + cells[1]; //date and time of parent of this slot
+                    if (orig_parents != parent & editslotcheckBox.Checked) //if parent has changed and editing slot
                     {
-                        p = orig_parents; //if editing save original slot parent
+                        parent = orig_parents; //if editing save original slot parent
                     }
                     if (rptType == 4)
                     {
-                        p = dte + "00:00"; //all day slots parent is date and 00:00
+                        parent = dte + "00:00"; //all day slots parent is date and 00:00
                     }
 
                     if (Type2checkBox.Checked)
                     {
                         msgT = checkCall(callsign, location);
                     }
-
-                    MySqlCommand command = connection.CreateCommand();
-
-                    command.CommandText = "INSERT INTO slots(Date,Time,Frequency,Offset,Power,PowerW,Antenna,Tuner,Switch,SwitchPort,End,Active,Repeating,TimeEnd,RptTime,Parent,SlotNo,MsgType,RptType,GreyOffset" + N;
-                    command.CommandText += "VALUES(@Date,@Time,@Frequency,@Offset,@Power,@PowerW,@Antenna,@Tuner,@Switch,@SwitchPort,@End,@Active,@Repeating,@TimeEnd,@RptTime,@Parent,@SlotNo,@MsgType,@RptType,@GreyOffset" + N2;
-
-
-                    string c = "";
-                    c = " ON DUPLICATE KEY UPDATE Frequency = " + Slot.Freq + ", Offset = " + Slot.Offset + ", Power = " + Slot.PowerdB;
-                    c = c + ", PowerW = " + Slot.PowerW + ", Antenna = '" + Slot.Ant + "', Tuner = " + Slot.Tuner + ", Switch = " + Slot.Switch;
-                    c = c + ", SwitchPort = " + Slot.SwPort + ", End = '" + e + "', Active = " + A + ", Repeating = " + R + ", TimeEnd = '" + Slot.EndTime;
-                    c = c + "', RptTime = " + Slot.RptTime + ", Parent = '" + p + "'";
-                    c = c + ", SlotNo = " + slotNo + ", MsgType = " + msgT + ", RptType = " + Slot.RptType + ", GreyOffset = " + Slot.GreyOffset + N3;
-                    command.CommandText += c;
-                    connection.Open();
-
-
-                    //TimeSpan time = Convert.ToDateTime(cells[1]);
-                    command.Parameters.AddWithValue("@Date", d);
-                    command.Parameters.AddWithValue("@Time", t);
-                    command.Parameters.AddWithValue("@Frequency", Slot.Freq);
-                    command.Parameters.AddWithValue("@Offset", Slot.Offset);
-                    command.Parameters.AddWithValue("@Power", Slot.PowerdB);
-                    command.Parameters.AddWithValue("@PowerW", Slot.PowerW);
-                    command.Parameters.AddWithValue("@Antenna", Slot.Ant);
-                    command.Parameters.AddWithValue("@Tuner", Slot.Tuner);
-                    command.Parameters.AddWithValue("@Switch", Slot.Switch);
-                    command.Parameters.AddWithValue("@SwitchPort", Slot.SwPort);
-
-
-                    command.Parameters.AddWithValue("@End", e);
-
-                    command.Parameters.AddWithValue("@Active", A);
-                    command.Parameters.AddWithValue("@Repeating", R);
-                    //string endtime = timeEnd.Value.ToString("HH:mm");
-                    command.Parameters.AddWithValue("@TimeEnd", Slot.EndTime);
-                    command.Parameters.AddWithValue("@RptTime", Slot.RptTime);
-
-
-                    Slot.Parent = p;
-                    command.Parameters.AddWithValue("@Parent", p);
-                    command.Parameters.AddWithValue("@SlotNo", slotNo);
-
-
-
-                    command.Parameters.AddWithValue("@MsgType", msgT);
-                    command.Parameters.AddWithValue("@RptType", Slot.RptType);
-                    command.Parameters.AddWithValue("@GreyOffset", Slot.GreyOffset);
-                    if (N2 == ")")
-                    {
-                        //do nothing
-                    }
                     else
                     {
-                        command.Parameters.AddWithValue("@Switch2", Slot.Switch2);
-                        command.Parameters.AddWithValue("@SwitchPort2", Slot.SwPort2);
+                        msgT = 1;
                     }
+             
+                      
 
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                    return true;
+                    string c = "";
+                
+                c = "INSERT INTO slots(Date,Time,Frequency,Offset,Power,PowerW,Antenna,Tuner,Switch,SwitchPort,End,Active,Repeating,TimeEnd,RptTime,Parent,SlotNo,MsgType,RptType,GreyOffset" + N;
+                c += "VALUES(@Date,@Time,@Frequency,@Offset,@Power,@PowerW,@Antenna,@Tuner,@Switch,@SwitchPort,@End,@Active,@Repeating,@TimeEnd,@RptTime,@Parent,@SlotNo,@MsgType,@RptType,@GreyOffset" + N2;
+
+
+                
+                c += " ON DUPLICATE KEY UPDATE Frequency = " + Slot.Freq + ", Offset = " + Slot.Offset + ", Power = " + Slot.PowerdB;
+                c = c + ", PowerW = " + Slot.PowerW + ", Antenna = '" + Slot.Ant + "', Tuner = " + Slot.Tuner + ", Switch = " + Slot.Switch;
+                c = c + ", SwitchPort = " + Slot.SwPort + ", End = '" + endslot + "', Active = " + Active + ", Repeating = " + Repeat + ", TimeEnd = '" + Slot.EndTime;
+                c = c + "', RptTime = " + Slot.RptTime + ", Parent = '" + parent + "'";
+                c = c + ", SlotNo = " + slotNo + ", MsgType = " + msgT + ", RptType = " + Slot.RptType + ", GreyOffset = " + Slot.GreyOffset + N3;
+
+                //TimeSpan time = Convert.ToDateTime(cells[1]);
+
+
+                using (var connection = new MySqlConnection(myConnectionString))
+                  {
+                      connection.Open();
+                      using (var command = connection.CreateCommand())
+                      {
+                          command.CommandText += c;
+                        command.Parameters.AddWithValue("@Date", d);
+                        command.Parameters.AddWithValue("@Time", t);
+                        command.Parameters.AddWithValue("@Frequency", Slot.Freq);
+                        command.Parameters.AddWithValue("@Offset", Slot.Offset);
+                        command.Parameters.AddWithValue("@Power", Slot.PowerdB);
+                        command.Parameters.AddWithValue("@PowerW", Slot.PowerW);
+                        command.Parameters.AddWithValue("@Antenna", Slot.Ant);
+                        command.Parameters.AddWithValue("@Tuner", Slot.Tuner);
+                        command.Parameters.AddWithValue("@Switch", Slot.Switch);
+                        command.Parameters.AddWithValue("@SwitchPort", Slot.SwPort);
+
+
+                        command.Parameters.AddWithValue("@End", endslot);
+
+                        command.Parameters.AddWithValue("@Active", Active);
+                        command.Parameters.AddWithValue("@Repeating", Repeat);
+                        //string endtime = timeEnd.Value.ToString("HH:mm");
+                        command.Parameters.AddWithValue("@TimeEnd", Slot.EndTime);
+                        command.Parameters.AddWithValue("@RptTime", Slot.RptTime);
+
+
+                        Slot.Parent = parent;
+                        command.Parameters.AddWithValue("@Parent", parent);
+                        command.Parameters.AddWithValue("@SlotNo", slotNo);
+
+
+
+                        command.Parameters.AddWithValue("@MsgType", msgT);
+                        command.Parameters.AddWithValue("@RptType", Slot.RptType);
+                        command.Parameters.AddWithValue("@GreyOffset", Slot.GreyOffset);
+                        if (N2 == ")")
+                        {
+                            //do nothing
+                        }
+                        else
+                        {
+                            command.Parameters.AddWithValue("@Switch2", Slot.Switch2);
+                            command.Parameters.AddWithValue("@SwitchPort2", Slot.SwPort2);
+                        }
+                        await command.ExecuteNonQueryAsync();
+
+                      }
+                  }
+
+                return true;
                 }
                 catch
                 {         //if row already exists then try updating it in database
-                    connection.Close();
+                 
                     return false;
                     //return UpdateSlotData(d, t, e, p, msgT);
 
-                }
-            }
+                }            
         }
-        /*private bool UpdateSlotData(string d, string t, string e, string p, int msgT)
-        {
-            string c = "";
-            string act = "0";
-            string r = "0";
-            string N = "";
-            if (checkNewSlotColumns())
-            {
-                N = ",Switch2 = " + Slot.Switch2 + ", SwitchPort2 = " + Slot.SwPort2;
-            }
-            else
-            {
-                N = "";
-            }
-            if (cells[15].Contains(tick))
-            {
-                act = "1";
-            }
-            if (cells[10].Contains(tick))
-            {
-                r = "1";
-            }
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_slots";
-            MySqlConnection connection = new MySqlConnection(myConnectionString);
-            lock (_lock)
-            {
-                try
-                {
-                    MySqlCommand command = connection.CreateCommand();
-                    c = "UPDATE slots SET Frequency = " + Slot.Freq + ", Offset = " + Slot.Offset + ", Power = " + Slot.PowerdB;
-                    c = c + ", PowerW = " + Slot.PowerW + ", Antenna = '" + Slot.Ant + "', Tuner = " + Slot.Tuner + ", Switch = " + Slot.Switch;
-                    c = c + ", SwitchPort = " + Slot.SwPort + ", End = '" + e + "', Active = " + act + ", Repeating = " + r + ", TimeEnd = '" + Slot.EndTime;
-                    c = c + "', RptTime = " + Slot.RptTime + ", Parent = '" + p + "'";
-                    c = c + ", SlotNo = " + slotNo + ", MsgType = " + msgT + ", RptType = " + rpt_type + ", GreyOffset = " + greyoffset + N + " WHERE slots.Date = '" + d + "' AND slots.Time = '" + t + "'"; // + ";";              
-                                                                                                                                                                                                              //UPDATE `slots` SET `Antenna` = 'GP' WHERE `slots`.`Date` = '2025-02-28' AND `slots`.`Time` = '16:02:00'; 
-                    command.CommandText = c;
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                    return true;
-
-                }
-                catch
-                {   //exhausted insert and update
-                    connection.Close();
-                    Msg.OKMessageBox("Unable to save to database", "");
-                    return false;
-                }
-            }
-        }*/
+       
         private string dBtoWatts(string db)
         {
             string W = "";
@@ -8174,21 +8150,21 @@ namespace WSPR_Sked
             rangelabel.Visible = false;
             if (repeatcheckBox.Checked)
             {
-                if (repeatTimecheckBox.Checked && days > 60)
+                if (repeatTimecheckBox.Checked && days > 120)
+                {
+                    t = 120;
+                }
+                else if ((DaycheckBox.Checked || NightcheckBox.Checked) && days > 60)
                 {
                     t = 60;
                 }
-                else if ((DaycheckBox.Checked || NightcheckBox.Checked) && days > 30)
+                else if (AllcheckBox.Checked && days > 80)
                 {
-                    t = 30;
+                    t = 80;
                 }
-                else if (AllcheckBox.Checked && days > 40)
+                else if (repeatcheckBox.Checked && days > 180)
                 {
-                    t = 40;
-                }
-                else if (repeatcheckBox.Checked && days > 90)
-                {
-                    t = 90;
+                    t = 180;
                 }
                 if (t > 0)
                 {
