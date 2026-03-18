@@ -370,6 +370,7 @@ namespace WSPR_Sked
             rig.Type = 0;
             if (checkSlotDB("wspr_slots"))
             {
+                EnsureIndexes();
                 addNewSlotColumns();
                 addFilterField(); //add filter field to wspr settings
                 CopyTable("wspr", "tuners", "filters");
@@ -611,7 +612,40 @@ namespace WSPR_Sked
 
         }
 
+        private void EnsureIndexes()
+        {
+            try
+            {
+                string cs = "server=" + serverName + ";user id=" + db_user +
+                            ";password=" + db_pass + ";database=" + slot_dbname;
+                using (var con = new MySqlConnection(cs))
+                {
+                    con.Open();
 
+                    // Check table exists before indexing
+                    using (var cmd = new MySqlCommand(
+                        "SELECT COUNT(*) FROM information_schema.tables " +
+                        "WHERE table_schema = @db AND table_name = 'slots'", con))
+                    {
+                        cmd.Parameters.AddWithValue("@db", slot_dbname);
+                        int exists = Convert.ToInt32(cmd.ExecuteScalar());
+                        if (exists > 0)
+                        {
+                            var indexes = new[]
+                            {
+                        "CREATE INDEX IF NOT EXISTS idx_slots_date     ON slots (Date)",
+                        "CREATE INDEX IF NOT EXISTS idx_slots_datetime  ON slots (Date, Time)",
+                        "CREATE INDEX IF NOT EXISTS idx_slots_parent    ON slots (Parent)"
+                    };
+                            foreach (var sql in indexes)
+                                using (var idx = new MySqlCommand(sql, con))
+                                    idx.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+            catch { }  // silent - indexes are optimisation only
+        }
 
         private void startSolar()
         {
