@@ -51,6 +51,12 @@ namespace WSPR_Sked
 
         private bool resizing = false;
 
+        // Add at class level
+        private bool showTimeLabel = false;
+        private string displayedTimeLabel = "";
+      
+        private int timeLabelY = 10;
+
 
         public SpectrumForm()
         {
@@ -58,6 +64,7 @@ namespace WSPR_Sked
             this.Size = new Size(1200, 580);
 
             this.BackColor = Color.DarkSlateGray;
+            this.AutoScroll = true;
 
             // Frequency label
             freqLabel = new Label();
@@ -435,46 +442,7 @@ namespace WSPR_Sked
                     this.Invoke((Action)(() => DrawWaterfallLineDown(magnitudes)));
             }
 
-        private void DrawWaterfallLineUp(float[] magnitudes)
-        {
-            lock (lockObj)
-            {
-                if (waterfallBitmap == null) return;
-                int w = waterfallBitmap.Width;
-                int h = waterfallBitmap.Height;
-
-                // Scroll up by 1 pixel
-                Rectangle srcRect = new Rectangle(0, 1, w, h - 1);
-                Rectangle dstRect = new Rectangle(0, 0, w, h - 1);
-                using (var g = Graphics.FromImage(waterfallBitmap))
-                    g.DrawImage(waterfallBitmap, dstRect, srcRect, GraphicsUnit.Pixel);
-
-                // Draw new line at bottom
-                for (int x = 0; x < w; x++)
-                {
-                    int magIndex = (int)((float)x / w * magnitudes.Length);
-                    magIndex = Math.Max(0, Math.Min(magnitudes.Length - 1, magIndex));
-                    float db = magnitudes[magIndex];
-                    float norm = Math.Max(0, Math.Min(1, (db + 80) / 60f));
-                    waterfallBitmap.SetPixel(x, h - 1, MagnitudeToColor(norm));
-                }
-
-                // Draw time label on first line of new recording
-                if (drawTimeOnNextLine)
-                {
-                    drawTimeOnNextLine = false;
-                    using (var g = Graphics.FromImage(waterfallBitmap))
-                    using (var font = new Font("Courier New", 8, FontStyle.Bold))
-                    {
-                        g.FillRectangle(Brushes.DarkSlateGray, 0, h - 14, 180, 10);
-                        g.DrawString(pendingTimeLabel, font, Brushes.Yellow, 2, h - 14);
-                    }
-                }
-
-                DrawFrequencyScale();
-                waterfallBox.Image = waterfallBitmap;
-            }
-        }
+       
 
         private void DrawWaterfallLineDown(float[] magnitudes)
         {
@@ -484,13 +452,21 @@ namespace WSPR_Sked
                 int w = waterfallBitmap.Width;
                 int h = waterfallBitmap.Height;
 
-                // Scroll down by 1 pixel
+                // Scroll everything down by 1 pixel
                 Rectangle srcRect = new Rectangle(0, 0, w, h - 1);
                 Rectangle dstRect = new Rectangle(0, 1, w, h - 1);
                 using (var g = Graphics.FromImage(waterfallBitmap))
                     g.DrawImage(waterfallBitmap, dstRect, srcRect, GraphicsUnit.Pixel);
 
-                // Draw new line at bottom
+                // Scroll the label down with the waterfall
+                if (showTimeLabel)
+                {
+                    timeLabelY++;
+                    if (timeLabelY + 12 > h)
+                        showTimeLabel = false;  // scrolled off bottom
+                }
+
+                // Draw new spectrum line at top
                 for (int x = 0; x < w; x++)
                 {
                     int magIndex = (int)((float)x / w * magnitudes.Length);
@@ -500,19 +476,34 @@ namespace WSPR_Sked
                     waterfallBitmap.SetPixel(x, 22, MagnitudeToColor(norm));
                 }
 
-                // Draw time label at top after scroll
+                // Activate new label at top if flagged
                 if (drawTimeOnNextLine)
                 {
                     drawTimeOnNextLine = false;
+                    showTimeLabel = true;
+                    displayedTimeLabel = pendingTimeLabel;
+                    timeLabelY = 10;          // start just below frequency scale
+                }
+
+                // Draw frequency scale first so label can go on top
+                DrawFrequencyScale();
+
+                // Draw scrolling time label on top of everything
+                if (showTimeLabel)
+                {
                     using (var g = Graphics.FromImage(waterfallBitmap))
-                    using (var font = new Font("Courier New", 8, FontStyle.Bold))
+                    using (var font = new Font("Segoe UI", 8, FontStyle.Bold))
                     {
-                        g.FillRectangle(Brushes.DarkSlateGray, 0, 22, 205, 12);
-                        g.DrawString(pendingTimeLabel, font, Brushes.Yellow, 1, 22);
+                        float x1350 = (1350f - FREQ_MIN) / (FREQ_MAX - FREQ_MIN) * w;
+                        float bgWidth = Math.Max(g.MeasureString(displayedTimeLabel, font).Width + 2, x1350 + 6);
+
+                        using (var bgBrush = new SolidBrush(Color.DarkSlateGray))
+                            g.FillRectangle(bgBrush, 0, timeLabelY, bgWidth, 12);
+
+                        g.DrawString(displayedTimeLabel, font, Brushes.Yellow, 2, timeLabelY);
                     }
                 }
 
-                DrawFrequencyScale();
                 waterfallBox.Image = waterfallBitmap;
             }
         }
