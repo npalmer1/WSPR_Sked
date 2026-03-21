@@ -57,6 +57,8 @@ namespace WSPR_Sked
       
         private int timeLabelY = 10;
 
+        private System.Windows.Forms.Timer resizeTimer;
+
 
         public SpectrumForm()
         {
@@ -141,12 +143,19 @@ namespace WSPR_Sked
             using (var g = Graphics.FromImage(waterfallBitmap))
                 g.Clear(Color.DarkSlateGray);
 
+            resizeTimer = new System.Windows.Forms.Timer();
+            resizeTimer.Interval = 150;  // wait 150ms after last resize event
+            resizeTimer.Tick += (s, e) =>
+            {
+                resizeTimer.Stop();
+                ResizeBitmap();
+            };
+
             this.Resize += (s, e) =>
             {
-                if (this.InvokeRequired)
-                    this.Invoke((Action)ResizeBitmap);
-                else
-                    ResizeBitmap();
+                if (this.WindowState == FormWindowState.Minimized) return;
+                resizeTimer.Stop();
+                resizeTimer.Start();  // restart the debounce timer
             };
             this.MaximizeBox = false;
 
@@ -175,58 +184,67 @@ namespace WSPR_Sked
 
         private void DrawFrequencyScale()
         {
-            using (var g = Graphics.FromImage(waterfallBitmap))
-            using (var font = new Font("Arial", 9, FontStyle.Bold))
-            using (var smallFont = new Font("Arial", 7, FontStyle.Regular))
-            using (var brush = new SolidBrush(Color.Yellow))
-            using (var dimBrush = new SolidBrush(Color.FromArgb(180, 180, 180, 0))) // dim yellow
+            try
             {
-                // Background strip
-                g.FillRectangle(Brushes.DarkSlateGray, 0, 0, waterfallBitmap.Width, 22);
-
-                for (int freq = 1300; freq <= 1700; freq += 10)
+                if (waterfallBitmap == null) return;
+                using (var g = Graphics.FromImage(waterfallBitmap))
+                using (var font = new Font("Arial", 9, FontStyle.Bold))
+                using (var smallFont = new Font("Arial", 7, FontStyle.Regular))
+                using (var brush = new SolidBrush(Color.Yellow))
+                using (var dimBrush = new SolidBrush(Color.FromArgb(180, 180, 180, 0))) // dim yellow
                 {
-                    float x = (freq - FREQ_MIN) / (FREQ_MAX - FREQ_MIN) * waterfallBitmap.Width;
+                    // Background strip
+                    g.FillRectangle(Brushes.DarkSlateGray, 0, 0, waterfallBitmap.Width, 22);
 
-                    if (freq % 100 == 0)
+                    for (int freq = 1300; freq <= 1700; freq += 10)
                     {
-                        // Major tick and label at 1400, 1500, 1600
-                        g.DrawLine(Pens.Red, x, 14, x, 22);
+                        float x = (freq - FREQ_MIN) / (FREQ_MAX - FREQ_MIN) * waterfallBitmap.Width;
 
-                        // Label - full bright yellow
-                        float labelX = x - 12;
-                        if (freq == 1300) labelX = 2;
-                        if (freq == 1700) labelX = x - 25;
-                        g.DrawString($"{freq}", font, brush, labelX, 1);
+                        if (freq % 100 == 0)
+                        {
+                            // Major tick and label at 1400, 1500, 1600
+                            g.DrawLine(Pens.Red, x, 14, x, 22);
 
-                        // Solid continuous bright red line through entire waterfall
-                        using (var pen = new Pen(Color.FromArgb(200, 255, 0, 0)))
-                            g.DrawLine(pen, x, 22, x, waterfallBitmap.Height);
-                    }
-                    else if (freq % 50 == 0)
-                    {
-                        // Medium tick at 1350, 1450, 1550, 1650
-                        g.DrawLine(Pens.Red, x, 16, x, 22);
+                            // Label - full bright yellow
+                            float labelX = x - 12;
+                            if (freq == 1300) labelX = 2;
+                            if (freq == 1700) labelX = x - 25;
+                            g.DrawString($"{freq}", font, brush, labelX, 1);
 
-                        // Label - smaller and dimmer than major labels
-                        float labelX = x - 10;
-                        g.DrawString($"{freq}", smallFont, brush, labelX, 3);
+                            // Solid continuous bright red line through entire waterfall
+                            using (var pen = new Pen(Color.FromArgb(200, 255, 0, 0)))
+                                g.DrawLine(pen, x, 22, x, waterfallBitmap.Height);
+                        }
+                        else if (freq % 50 == 0)
+                        {
+                            // Medium tick at 1350, 1450, 1550, 1650
+                            g.DrawLine(Pens.Red, x, 16, x, 22);
 
-                        // Solid but dimmer than 100Hz lines
-                        using (var pen = new Pen(Color.FromArgb(120, 200, 0, 0)))
-                            g.DrawLine(pen, x, 22, x, waterfallBitmap.Height);
-                    }
-                    else
-                    {
-                        // Minor tick at every 10Hz
-                        g.DrawLine(Pens.DarkRed, x, 18, x, 22);
+                            // Label - smaller and dimmer than major labels
+                            float labelX = x - 10;
+                            g.DrawString($"{freq}", smallFont, brush, labelX, 3);
 
-                        // Very faint dotted line
-                        using (var pen = new Pen(Color.FromArgb(40, 100, 0, 0)))
-                            for (int y = 22; y < waterfallBitmap.Height; y += 10)
-                                g.DrawLine(pen, x, y, x, y + 2);
+                            // Solid but dimmer than 100Hz lines
+                            using (var pen = new Pen(Color.FromArgb(120, 200, 0, 0)))
+                                g.DrawLine(pen, x, 22, x, waterfallBitmap.Height);
+                        }
+                        else
+                        {
+                            // Minor tick at every 10Hz
+                            g.DrawLine(Pens.DarkRed, x, 18, x, 22);
+
+                            // Very faint dotted line
+                            using (var pen = new Pen(Color.FromArgb(40, 100, 0, 0)))
+                                for (int y = 22; y < waterfallBitmap.Height; y += 10)
+                                    g.DrawLine(pen, x, y, x, y + 2);
+                        }
                     }
                 }
+                
+            }
+            catch (Exception ex)
+            {
+                //System.Diagnostics.Debug.WriteLine($"DrawScale error: {ex.Message}");
             }
         }
         private void DrawCycleLabel(string timeStr)
@@ -247,29 +265,39 @@ namespace WSPR_Sked
 
         private void ResizeBitmap()
         {
+            if (this.WindowState == FormWindowState.Minimized) return;
+            if (resizing) return;
+            resizing = true;
             readTimer?.Stop();
 
             try
             {
-                waterfallBox.Size = new Size(this.ClientSize.Width - 20, this.ClientSize.Height - 50);
-               
+                int w = Math.Max(100, this.ClientSize.Width - 20);
+                int h = Math.Max(50, this.ClientSize.Height - 50);
 
-                int w = Math.Max(1, waterfallBox.Width);
-                int h = Math.Max(1, waterfallBox.Height);
+                waterfallBox.Size = new Size(w, h);
+
                 var newBmp = new Bitmap(w, h);
                 using (var g = Graphics.FromImage(newBmp))
                     g.Clear(Color.Black);
 
                 lock (lockObj)
                 {
-                    waterfallBitmap?.Dispose();
+                    var old = waterfallBitmap;
                     waterfallBitmap = newBmp;
+                    old?.Dispose();
                 }
 
                 DrawFrequencyScale();
+                waterfallBox.Image = waterfallBitmap;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ResizeBitmap error: {ex.Message}");
             }
             finally
             {
+                resizing = false;
                 readTimer?.Start();
             }
         }
@@ -298,68 +326,77 @@ namespace WSPR_Sked
         }
         private void ReadTimer_Tick(object sender, EventArgs e)
         {
-            statusLabel.Text = "Idle";
-            cycleTimeLabel.Text = DateTime.Now.ToString("HH:mm:ss");
-            if (string.IsNullOrEmpty(wavPath) || !File.Exists(wavPath))
-            {
-                statusLabel.Text = "Waiting for WAV file...";
-                return;
-            }
-
-            if (wavPath != lastWavPath)
-            {
-                lastWavPath = wavPath;
-                filePosition = 0;
-                fftPos = 0;
-                fileCompleteTime = DateTime.MinValue;
-                currentFileStartTime = DateTime.Now;
-                fileCompleteTime = DateTime.MinValue;
-                drawTimeOnNextLine = true;
-                pendingTimeLabel = GetWsprTime();  // ← use rounded time
-                pendingTimeLabel += " started on:  " + freq + " ^^";
-                DrawCycleLine();
-                statusLabel.Text = "New file: " + Path.GetFileName(wavPath);
-            }
-
+            if (resizing) return;
             try
             {
-                using (var fs = new FileStream(wavPath, FileMode.Open,
-                                               FileAccess.Read, FileShare.ReadWrite))
+                statusLabel.Text = "Idle";
+                cycleTimeLabel.Text = DateTime.Now.ToString("HH:mm:ss");
+                if (string.IsNullOrEmpty(wavPath) || !File.Exists(wavPath))
                 {
-                    if (filePosition == 0)
-                        filePosition = 44;  // skip WAV header
+                    statusLabel.Text = "Waiting for WAV file...";
+                    return;
+                }
 
-                    long available = fs.Length - filePosition;
-                    if (available <= 0)
+                if (wavPath != lastWavPath)
+                {
+                    lastWavPath = wavPath;
+                    filePosition = 0;
+                    fftPos = 0;
+                    fileCompleteTime = DateTime.MinValue;
+                    currentFileStartTime = DateTime.Now;
+                    fileCompleteTime = DateTime.MinValue;
+                    drawTimeOnNextLine = true;
+                    pendingTimeLabel = GetWsprTime();  // ← use rounded time
+                    pendingTimeLabel += " started on:  " + freq + " ^^";
+                    DrawCycleLine();
+                    statusLabel.Text = "New file: " + Path.GetFileName(wavPath);
+                }
+
+                try
+                {
+                    using (var fs = new FileStream(wavPath, FileMode.Open,
+                                                   FileAccess.Read, FileShare.ReadWrite))
                     {
-                        if (fileCompleteTime == DateTime.MinValue)
-                            fileCompleteTime = DateTime.Now;
+                        if (filePosition == 0)
+                            filePosition = 44;  // skip WAV header
 
-                        double idleSeconds = (DateTime.Now - fileCompleteTime).TotalSeconds;
-                        statusLabel.Text = $"Idle or TX in progress ({(int)idleSeconds}s)";
-                        return;
-                    }
-
-                    fs.Seek(filePosition, SeekOrigin.Begin);
-                    byte[] buffer = new byte[available];
-                    int bytesRead = fs.Read(buffer, 0, buffer.Length);
-                    filePosition += bytesRead;
-
-                    statusLabel.Text = $"{Path.GetFileName(wavPath)}  {filePosition / 1024}KB";
-
-                    int sampleCount = bytesRead / 2;
-                    for (int i = 0; i < sampleCount; i++)
-                    {
-                        short sample = BitConverter.ToInt16(buffer, i * 2);
-                        fftBuffer[fftPos] = sample / 32768f;
-                        fftPos++;
-
-                        if (fftPos >= FFT_SIZE)
+                        long available = fs.Length - filePosition;
+                        if (available <= 0)
                         {
-                            fftPos = 0;
-                            ProcessFFT();
+                            if (fileCompleteTime == DateTime.MinValue)
+                                fileCompleteTime = DateTime.Now;
+
+                            double idleSeconds = (DateTime.Now - fileCompleteTime).TotalSeconds;
+                            statusLabel.Text = $"Idle or TX in progress ({(int)idleSeconds}s)";
+                            return;
+                        }
+
+                        fs.Seek(filePosition, SeekOrigin.Begin);
+                        byte[] buffer = new byte[available];
+                        int bytesRead = fs.Read(buffer, 0, buffer.Length);
+                        filePosition += bytesRead;
+
+                        statusLabel.Text = $"{Path.GetFileName(wavPath)}  {filePosition / 1024}KB";
+
+                        int sampleCount = bytesRead / 2;
+                        for (int i = 0; i < sampleCount; i++)
+                        {
+                            short sample = BitConverter.ToInt16(buffer, i * 2);
+                            fftBuffer[fftPos] = sample / 32768f;
+                            fftPos++;
+
+                            if (fftPos >= FFT_SIZE)
+                            {
+                                fftPos = 0;
+                                ProcessFFT();
+                            }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    //System.Diagnostics.Debug.WriteLine($"Timer error: {ex.Message}");
+                    statusLabel.Text = "Error: " + ex.Message;
                 }
             }
             catch (Exception ex)
@@ -410,10 +447,12 @@ namespace WSPR_Sked
         }
 
         private void ProcessFFT()
+        {
+            if (resizing) return;
+            try
             {
-                
-            // Apply Hann window
-            Complex[] complexData = new Complex[FFT_SIZE];
+                // Apply Hann window
+                Complex[] complexData = new Complex[FFT_SIZE];
                 for (int i = 0; i < FFT_SIZE; i++)
                 {
                     double window = 0.5 * (1 - Math.Cos(2 * Math.PI * i / (FFT_SIZE - 1)));
@@ -430,7 +469,7 @@ namespace WSPR_Sked
                 int binCount = binMax - binMin;
 
                 float[] magnitudes = new float[binCount];
-               
+
                 for (int i = 0; i < binCount; i++)
                 {
                     var c = complexData[binMin + i];
@@ -438,73 +477,94 @@ namespace WSPR_Sked
                     magnitudes[i] = (float)(20 * Math.Log10(mag + 1e-6)) + gainDb;
                 }
 
-                if (!this.IsDisposed)
-                    this.Invoke((Action)(() => DrawWaterfallLineDown(magnitudes)));
+                if (!this.IsDisposed && this.IsHandleCreated)
+                {
+                    try
+                    {
+                        this.Invoke((Action)(() => DrawWaterfallLineDown(magnitudes)));
+                    }
+                    catch (ObjectDisposedException) { }
+                    catch (InvalidOperationException) { }
+                }
             }
+            catch (Exception ex)
+            {
+                //System.Diagnostics.Debug.WriteLine($"ProcessFFT error: {ex.Message}");
+            }
+        }
 
        
 
         private void DrawWaterfallLineDown(float[] magnitudes)
         {
-            lock (lockObj)
+            if (resizing) return;
+
+            try
             {
-                if (waterfallBitmap == null || waterfallBox.Width < 1 || waterfallBox.Height < 1) return;
-                int w = waterfallBitmap.Width;
-                int h = waterfallBitmap.Height;
-
-                // Scroll everything down by 1 pixel
-                Rectangle srcRect = new Rectangle(0, 0, w, h - 1);
-                Rectangle dstRect = new Rectangle(0, 1, w, h - 1);
-                using (var g = Graphics.FromImage(waterfallBitmap))
-                    g.DrawImage(waterfallBitmap, dstRect, srcRect, GraphicsUnit.Pixel);
-
-                // Scroll the label down with the waterfall
-                if (showTimeLabel)
+                lock (lockObj)
                 {
-                    timeLabelY++;
-                    if (timeLabelY + 12 > h)
-                        showTimeLabel = false;  // scrolled off bottom
-                }
+                    if (waterfallBitmap == null || waterfallBox.Width < 1 || waterfallBox.Height < 1) return;
+                    int w = waterfallBitmap.Width;
+                    int h = waterfallBitmap.Height;
 
-                // Draw new spectrum line at top
-                for (int x = 0; x < w; x++)
-                {
-                    int magIndex = (int)((float)x / w * magnitudes.Length);
-                    magIndex = Math.Max(0, Math.Min(magnitudes.Length - 1, magIndex));
-                    float db = magnitudes[magIndex];
-                    float norm = Math.Max(0, Math.Min(1, (db + 80) / 60f));
-                    waterfallBitmap.SetPixel(x, 22, MagnitudeToColor(norm));
-                }
-
-                // Activate new label at top if flagged
-                if (drawTimeOnNextLine)
-                {
-                    drawTimeOnNextLine = false;
-                    showTimeLabel = true;
-                    displayedTimeLabel = pendingTimeLabel;
-                    timeLabelY = 10;          // start just below frequency scale
-                }
-
-                // Draw frequency scale first so label can go on top
-                DrawFrequencyScale();
-
-                // Draw scrolling time label on top of everything
-                if (showTimeLabel)
-                {
+                    // Scroll everything down by 1 pixel
+                    Rectangle srcRect = new Rectangle(0, 0, w, h - 1);
+                    Rectangle dstRect = new Rectangle(0, 1, w, h - 1);
                     using (var g = Graphics.FromImage(waterfallBitmap))
-                    using (var font = new Font("Segoe UI", 8, FontStyle.Bold))
+                        g.DrawImage(waterfallBitmap, dstRect, srcRect, GraphicsUnit.Pixel);
+
+                    // Scroll the label down with the waterfall
+                    if (showTimeLabel)
                     {
-                        float x1350 = (1350f - FREQ_MIN) / (FREQ_MAX - FREQ_MIN) * w;
-                        float bgWidth = Math.Max(g.MeasureString(displayedTimeLabel, font).Width + 2, x1350 + 6);
-
-                        using (var bgBrush = new SolidBrush(Color.DarkSlateGray))
-                            g.FillRectangle(bgBrush, 0, timeLabelY, bgWidth, 12);
-
-                        g.DrawString(displayedTimeLabel, font, Brushes.Yellow, 2, timeLabelY);
+                        timeLabelY++;
+                        if (timeLabelY + 12 > h)
+                            showTimeLabel = false;  // scrolled off bottom
                     }
-                }
 
-                waterfallBox.Image = waterfallBitmap;
+                    // Draw new spectrum line at top
+                    for (int x = 0; x < w; x++)
+                    {
+                        int magIndex = (int)((float)x / w * magnitudes.Length);
+                        magIndex = Math.Max(0, Math.Min(magnitudes.Length - 1, magIndex));
+                        float db = magnitudes[magIndex];
+                        float norm = Math.Max(0, Math.Min(1, (db + 80) / 60f));
+                        waterfallBitmap.SetPixel(x, 22, MagnitudeToColor(norm));
+                    }
+
+                    // Activate new label at top if flagged
+                    if (drawTimeOnNextLine)
+                    {
+                        drawTimeOnNextLine = false;
+                        showTimeLabel = true;
+                        displayedTimeLabel = pendingTimeLabel;
+                        timeLabelY = 10;          // start just below frequency scale
+                    }
+
+                    // Draw frequency scale first so label can go on top
+                    DrawFrequencyScale();
+
+                    // Draw scrolling time label on top of everything
+                    if (showTimeLabel)
+                    {
+                        using (var g = Graphics.FromImage(waterfallBitmap))
+                        using (var font = new Font("Segoe UI", 8, FontStyle.Bold))
+                        {
+                            float x1350 = (1350f - FREQ_MIN) / (FREQ_MAX - FREQ_MIN) * w;
+                            float bgWidth = Math.Max(g.MeasureString(displayedTimeLabel, font).Width + 2, x1350 + 6);
+
+                            using (var bgBrush = new SolidBrush(Color.DarkSlateGray))
+                                g.FillRectangle(bgBrush, 0, timeLabelY, bgWidth, 12);
+
+                            g.DrawString(displayedTimeLabel, font, Brushes.Yellow, 2, timeLabelY);
+                        }
+                    }
+
+                    waterfallBox.Image = waterfallBitmap;
+                }
+            }
+            catch (Exception ex)
+            {
+                //System.Diagnostics.Debug.WriteLine($"DrawWaterfall error: {ex.Message}");
             }
         }
         private string GetWsprTime()
