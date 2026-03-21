@@ -555,7 +555,7 @@ namespace WSPR_Sked
                             using (var bgBrush = new SolidBrush(Color.DarkSlateGray))
                                 g.FillRectangle(bgBrush, 0, timeLabelY, bgWidth, 12);
 
-                            g.DrawString(displayedTimeLabel, font, Brushes.Yellow, 2, timeLabelY);
+                            g.DrawString(displayedTimeLabel, font, Brushes.Yellow, 1, timeLabelY);
                         }
                     }
 
