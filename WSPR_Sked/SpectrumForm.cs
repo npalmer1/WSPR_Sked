@@ -121,7 +121,7 @@ namespace WSPR_Sked
             // Waterfall display
             waterfallBox = new PictureBox();
             waterfallBox.Location = new Point(10, 40);
-            //waterfallBox.Size = new Size(this.ClientSize.Width - 30, 500);
+           
             waterfallBox.Size = new Size(this.ClientSize.Width - 20, 500);
             waterfallBox.BackColor = Color.DarkSlateGray;
             waterfallBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
@@ -129,7 +129,7 @@ namespace WSPR_Sked
             waterfallBox.MouseMove += WaterfallBox_MouseMove;
             this.Controls.Add(waterfallBox);
 
-            //waterfallBitmap = new Bitmap(this.ClientSize.Width - 30, 500);
+          
             waterfallBitmap = new Bitmap(this.ClientSize.Width - 20, 500);
             using (var g = Graphics.FromImage(waterfallBitmap))
                 g.Clear(Color.DarkSlateGray);
@@ -165,12 +165,14 @@ namespace WSPR_Sked
             this.MinimizeBox = true;
             this.MaximizeBox = true;
         }
-       
+
         private void DrawFrequencyScale()
         {
             using (var g = Graphics.FromImage(waterfallBitmap))
             using (var font = new Font("Arial", 9, FontStyle.Bold))
+            using (var smallFont = new Font("Arial", 7, FontStyle.Regular))
             using (var brush = new SolidBrush(Color.Yellow))
+            using (var dimBrush = new SolidBrush(Color.FromArgb(180, 180, 180, 0))) // dim yellow
             {
                 // Background strip
                 g.FillRectangle(Brushes.DarkSlateGray, 0, 0, waterfallBitmap.Width, 22);
@@ -179,29 +181,43 @@ namespace WSPR_Sked
                 {
                     float x = (freq - FREQ_MIN) / (FREQ_MAX - FREQ_MIN) * waterfallBitmap.Width;
 
-                    if (freq % 50 == 0)
+                    if (freq % 100 == 0)
                     {
-                        // Major tick and label at every 50Hz
+                        // Major tick and label at 1400, 1500, 1600
                         g.DrawLine(Pens.Red, x, 14, x, 22);
 
-                        // Keep labels inside edges
+                        // Label - full bright yellow
                         float labelX = x - 12;
                         if (freq == 1300) labelX = 2;
                         if (freq == 1700) labelX = x - 25;
-
                         g.DrawString($"{freq}", font, brush, labelX, 1);
 
-                        // Solid vertical line down through waterfall
-                        for (int y = 22; y < waterfallBitmap.Height; y += 6)
-                            g.DrawLine(new Pen(Color.FromArgb(120, 180, 0, 0)), x, y, x, y + 2);
+                        // Solid continuous bright red line through entire waterfall
+                        using (var pen = new Pen(Color.FromArgb(200, 255, 0, 0)))
+                            g.DrawLine(pen, x, 22, x, waterfallBitmap.Height);
+                    }
+                    else if (freq % 50 == 0)
+                    {
+                        // Medium tick at 1350, 1450, 1550, 1650
+                        g.DrawLine(Pens.Red, x, 16, x, 22);
+
+                        // Label - smaller and dimmer than major labels
+                        float labelX = x - 10;
+                        g.DrawString($"{freq}", smallFont, brush, labelX, 3);
+
+                        // Solid but dimmer than 100Hz lines
+                        using (var pen = new Pen(Color.FromArgb(120, 200, 0, 0)))
+                            g.DrawLine(pen, x, 22, x, waterfallBitmap.Height);
                     }
                     else
                     {
                         // Minor tick at every 10Hz
                         g.DrawLine(Pens.DarkRed, x, 18, x, 22);
-                        // Faint dotted vertical line
-                        for (int y = 22; y < waterfallBitmap.Height; y += 10)
-                            g.DrawLine(new Pen(Color.FromArgb(60, 120, 0, 0)), x, y, x, y + 2);
+
+                        // Very faint dotted line
+                        using (var pen = new Pen(Color.FromArgb(40, 100, 0, 0)))
+                            for (int y = 22; y < waterfallBitmap.Height; y += 10)
+                                g.DrawLine(pen, x, y, x, y + 2);
                     }
                 }
             }
