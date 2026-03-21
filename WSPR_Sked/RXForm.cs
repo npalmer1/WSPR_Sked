@@ -98,7 +98,8 @@ namespace WSPR_Sked
 
         MessageClass Msg = new MessageClass();
 
-
+        SpectrumForm Spectrumform = new SpectrumForm();
+        
 
         public RXForm()
         {
@@ -153,7 +154,7 @@ namespace WSPR_Sked
             dataGridView1.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
-            dataGridView1.Columns[11].HeaderCell.Style.Font =    new Font("Segoe UI", 8);
+            dataGridView1.Columns[11].HeaderCell.Style.Font = new Font("Segoe UI", 8);
             dataGridView1.Columns[12].HeaderCell.Style.Font = new Font("Segoe UI", 8);
 
 
@@ -207,6 +208,7 @@ namespace WSPR_Sked
             Frequency = Freq;
             RXFlabel.Text = Freq;
             myloclabel.Text = my_loc;
+            Spectrumform.freq = Freq;
         }
 
         public async Task set_time(string time)
@@ -220,7 +222,10 @@ namespace WSPR_Sked
             prevFreq = Frequency;
         }
 
-
+        public void setLabel(string label)
+        {
+            statuslabel.Text = label;
+        }
 
         private async void Record_Decode(int opsys)
         {
@@ -243,9 +248,7 @@ namespace WSPR_Sked
             {
                 finished = false;
             }
-
-
-
+          
             string outpath = wsprdir + slash + "temp" + wavno + ".wav";
             if (File.Exists(outpath))
             {
@@ -256,11 +259,15 @@ namespace WSPR_Sked
                 catch { }
             }
 
-
             await Task.Delay(200);
             statuslabel.Text = "receiving";
-            Msg.TMessageBox("Recording: " + wsprdir + slash + "temp" + wavno + ".wav", "", 3000);
-
+            string wavpath = wsprdir + slash + "temp" + wavno + ".wav";
+            Msg.TMessageBox("Recording: " +wavpath, "", 3000);
+            if (Spectrumform != null && !Spectrumform.IsDisposed)
+            {
+                Spectrumform.wavPath = wavpath;
+            }
+            
             string args = "";
             int mS = 110000;
 
@@ -395,12 +402,13 @@ namespace WSPR_Sked
 
                 statuslabel.Text = "saving";
                 await SaveReceived(originalDT);
+                statuslabel.Text = "receiving";
             }
 
 
             //statuslabel.Text = "idle";
             finished = true;
-            RXblock = false;
+           
             started = false;
             if (dataGridView1.Rows.Count > 0)
             {
@@ -422,7 +430,7 @@ namespace WSPR_Sked
 
             try
             {
-               
+
                 await save_result_lines(startT);
                 await Task.Delay(200);
                 int rows = table_count(server, user, pass);
@@ -1565,11 +1573,11 @@ namespace WSPR_Sked
                     //command.CommandText = "SELECT * FROM reported ORDER BY time WHERE time >= '" + time1 + "' AND time <= '" + time2 + "' AND band = '" + bandstr + "' DESC LIMIT " + maxrows;
                     if (datecheckBox.Checked)
                     {
-                        command.CommandText = "SELECT * FROM received "+where+ " datetime >= '" + datetime1 + "' AND datetime <= '" + datetime2 + "' AND " + bandstr + callstr + fromstr + tostr + " ORDER BY datetime DESC LIMIT " + maxrows;
+                        command.CommandText = "SELECT * FROM received " + where + " datetime >= '" + datetime1 + "' AND datetime <= '" + datetime2 + "' AND " + bandstr + callstr + fromstr + tostr + " ORDER BY datetime DESC LIMIT " + maxrows;
                     }
                     else
                     {
-                        command.CommandText = "SELECT * FROM received "+where+ " " + bandstr + callstr + fromstr + tostr + " ORDER BY datetime DESC LIMIT " + maxrows;
+                        command.CommandText = "SELECT * FROM received " + where + " " + bandstr + callstr + fromstr + tostr + " ORDER BY datetime DESC LIMIT " + maxrows;
                     }
 
 
@@ -2112,6 +2120,12 @@ namespace WSPR_Sked
         {
             dataGridView1.Columns[11].HeaderText = "CW @" + cwssblistBox.SelectedItem.ToString() + "W";
             dataGridView1.Columns[12].HeaderText = "SSB @" + cwssblistBox.SelectedItem.ToString() + "W";
+        }
+
+        private void Spectrumbutton_Click(object sender, EventArgs e)
+        {
+            
+            Spectrumform.Show();
         }
     }
 }
