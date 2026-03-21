@@ -131,7 +131,7 @@ namespace WSPR_Sked
             waterfallBox = new PictureBox();
             waterfallBox.Location = new Point(10, 40);
            
-            waterfallBox.Size = new Size(this.ClientSize.Width - 20, 500);
+            waterfallBox.Size = new Size(this.ClientSize.Width - 20, 510);
             waterfallBox.BackColor = Color.DarkSlateGray;
             waterfallBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
                                 | AnchorStyles.Left | AnchorStyles.Right;
@@ -139,7 +139,7 @@ namespace WSPR_Sked
             this.Controls.Add(waterfallBox);
 
           
-            waterfallBitmap = new Bitmap(this.ClientSize.Width - 20, 500);
+            waterfallBitmap = new Bitmap(this.ClientSize.Width - 20, 510);
             using (var g = Graphics.FromImage(waterfallBitmap))
                 g.Clear(Color.DarkSlateGray);
 
