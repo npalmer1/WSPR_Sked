@@ -30,6 +30,19 @@
         {
             button1 = new System.Windows.Forms.Button();
             dataGridView1 = new System.Windows.Forms.DataGridView();
+            Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             label1 = new System.Windows.Forms.Label();
             RXFlabel = new System.Windows.Forms.Label();
             OSDlistBox = new System.Windows.Forms.ListBox();
@@ -69,19 +82,7 @@
             label12 = new System.Windows.Forms.Label();
             label13 = new System.Windows.Forms.Label();
             cwssblistBox = new System.Windows.Forms.ListBox();
-            Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Spectrumbutton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -106,6 +107,102 @@
             dataGridView1.Size = new System.Drawing.Size(1073, 432);
             dataGridView1.TabIndex = 2;
             dataGridView1.RowHeaderMouseClick += dataGridView1_RowHeaderMouseClick;
+            // 
+            // Column1
+            // 
+            Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column1.HeaderText = "Date/time";
+            Column1.Name = "Column1";
+            Column1.ReadOnly = true;
+            Column1.Width = 110;
+            // 
+            // Column2
+            // 
+            Column2.HeaderText = "TX call";
+            Column2.Name = "Column2";
+            Column2.ReadOnly = true;
+            Column2.Width = 110;
+            // 
+            // Column3
+            // 
+            Column3.HeaderText = "Frequency";
+            Column3.Name = "Column3";
+            Column3.ReadOnly = true;
+            // 
+            // Column4
+            // 
+            Column4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column4.HeaderText = "SNR";
+            Column4.Name = "Column4";
+            Column4.ReadOnly = true;
+            Column4.Width = 50;
+            // 
+            // Column5
+            // 
+            Column5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column5.HeaderText = "drift";
+            Column5.Name = "Column5";
+            Column5.ReadOnly = true;
+            Column5.Width = 50;
+            // 
+            // Column6
+            // 
+            Column6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column6.HeaderText = "dBm";
+            Column6.Name = "Column6";
+            Column6.ReadOnly = true;
+            Column6.Width = 50;
+            // 
+            // Column13
+            // 
+            Column13.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column13.HeaderText = "W";
+            Column13.Name = "Column13";
+            Column13.Width = 55;
+            // 
+            // Column7
+            // 
+            Column7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column7.HeaderText = "Locator";
+            Column7.Name = "Column7";
+            Column7.ReadOnly = true;
+            Column7.Width = 75;
+            // 
+            // Column8
+            // 
+            Column8.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column8.HeaderText = "km";
+            Column8.Name = "Column8";
+            Column8.ReadOnly = true;
+            Column8.Width = 75;
+            // 
+            // Column9
+            // 
+            Column9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column9.HeaderText = "mls";
+            Column9.Name = "Column9";
+            Column9.ReadOnly = true;
+            Column9.Width = 75;
+            // 
+            // Column10
+            // 
+            Column10.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column10.HeaderText = "Az";
+            Column10.Name = "Column10";
+            Column10.ReadOnly = true;
+            Column10.Width = 60;
+            // 
+            // Column11
+            // 
+            Column11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column11.HeaderText = "CW @100W";
+            Column11.Name = "Column11";
+            // 
+            // Column12
+            // 
+            Column12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            Column12.HeaderText = "SSB @100W";
+            Column12.Name = "Column12";
             // 
             // label1
             // 
@@ -483,101 +580,16 @@
             cwssblistBox.TabIndex = 54;
             cwssblistBox.SelectedValueChanged += cwssblistBox_SelectedValueChanged;
             // 
-            // Column1
+            // Spectrumbutton
             // 
-            Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column1.HeaderText = "Date/time";
-            Column1.Name = "Column1";
-            Column1.ReadOnly = true;
-            Column1.Width = 110;
-            // 
-            // Column2
-            // 
-            Column2.HeaderText = "TX call";
-            Column2.Name = "Column2";
-            Column2.ReadOnly = true;
-            Column2.Width = 110;
-            // 
-            // Column3
-            // 
-            Column3.HeaderText = "Frequency";
-            Column3.Name = "Column3";
-            Column3.ReadOnly = true;
-            // 
-            // Column4
-            // 
-            Column4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column4.HeaderText = "SNR";
-            Column4.Name = "Column4";
-            Column4.ReadOnly = true;
-            Column4.Width = 50;
-            // 
-            // Column5
-            // 
-            Column5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column5.HeaderText = "drift";
-            Column5.Name = "Column5";
-            Column5.ReadOnly = true;
-            Column5.Width = 50;
-            // 
-            // Column6
-            // 
-            Column6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column6.HeaderText = "dBm";
-            Column6.Name = "Column6";
-            Column6.ReadOnly = true;
-            Column6.Width = 50;
-            // 
-            // Column13
-            // 
-            Column13.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column13.HeaderText = "W";
-            Column13.Name = "Column13";
-            Column13.Width = 55;
-            // 
-            // Column7
-            // 
-            Column7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column7.HeaderText = "Locator";
-            Column7.Name = "Column7";
-            Column7.ReadOnly = true;
-            Column7.Width = 75;
-            // 
-            // Column8
-            // 
-            Column8.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column8.HeaderText = "km";
-            Column8.Name = "Column8";
-            Column8.ReadOnly = true;
-            Column8.Width = 75;
-            // 
-            // Column9
-            // 
-            Column9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column9.HeaderText = "mls";
-            Column9.Name = "Column9";
-            Column9.ReadOnly = true;
-            Column9.Width = 75;
-            // 
-            // Column10
-            // 
-            Column10.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column10.HeaderText = "Az";
-            Column10.Name = "Column10";
-            Column10.ReadOnly = true;
-            Column10.Width = 60;
-            // 
-            // Column11
-            // 
-            Column11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column11.HeaderText = "CW @100W";
-            Column11.Name = "Column11";
-            // 
-            // Column12
-            // 
-            Column12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            Column12.HeaderText = "SSB @100W";
-            Column12.Name = "Column12";
+            Spectrumbutton.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            Spectrumbutton.Location = new System.Drawing.Point(1000, 589);
+            Spectrumbutton.Name = "Spectrumbutton";
+            Spectrumbutton.Size = new System.Drawing.Size(96, 23);
+            Spectrumbutton.TabIndex = 55;
+            Spectrumbutton.Text = "Show spectrum";
+            Spectrumbutton.UseVisualStyleBackColor = true;
+            Spectrumbutton.Click += Spectrumbutton_Click;
             // 
             // RXForm
             // 
@@ -586,6 +598,7 @@
             AutoScroll = true;
             BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             ClientSize = new System.Drawing.Size(1117, 620);
+            Controls.Add(Spectrumbutton);
             Controls.Add(cwssblistBox);
             Controls.Add(label13);
             Controls.Add(label12);
@@ -691,5 +704,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column10;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column11;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column12;
+        private System.Windows.Forms.Button Spectrumbutton;
     }
 }

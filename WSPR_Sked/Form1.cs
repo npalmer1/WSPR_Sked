@@ -357,7 +357,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.35";
+            string ver = "0.1.36";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -688,8 +688,8 @@ namespace WSPR_Sked
         }
 
 
-        //private  async Task<bool> findSlot(int slot, string date, string time) //find a slot in the database corresponding to the date/time from the slot to transmit/receive
-        private bool findSlot(int slot, string date, string time)
+        private  async Task<bool> findSlot(int slot, string date, string time) //find a slot in the database corresponding to the date/time from the slot to transmit/receive
+        //private bool findSlot(int slot, string date, string time)
         {
 
             if (noSkedcheckBox.Checked)
@@ -3958,13 +3958,16 @@ namespace WSPR_Sked
                     countdownlabel.Text = "TX start";
                     countdownlabel2.Text = "TX start";
                     await StartTX(false);
+                    rxForm.setLabel("idle");
+
                 }
-                else if (!slotActive)
+                else 
                 {
                     countdownlabel.Text = "RX start";
                     countdownlabel2.Text = "RX start";
                     if (!rigctldcheckBox.Checked)
                     { getRigF(); }
+                    
                 }
                 //await StartTX(false);
                 WSPRtimer.Stop();
@@ -5375,10 +5378,26 @@ namespace WSPR_Sked
                 Flag = false;
             }
 
-            if ((m % 2 == 1 && (s == 52 || s == 53 || s == 54) && !Flag) || justLoaded) //if odd minute and 53/4 second past minute
+            if ((m % 2 == 1 && (s == 52 || s == 53 || s == 54) && !Flag) || justLoaded)
             {
+                // Calculate next even minute correctly
 
-                nextT = now.AddMinutes(1);
+                // On startup, only act if we're in the normal trigger window
+                // otherwise just clear justLoaded and wait for normal timer
+                if (justLoaded && !(m % 2 == 1 && s >= 52))
+                {
+                    justLoaded = false;
+                    return;
+                }
+
+                if (justLoaded)
+                {
+                    nextT = now.AddMinutes(1);  // on odd minute 52-59 so +1 = correct even minute
+                }
+                else
+                {
+                    nextT = now.AddMinutes(1);
+                }
                 string nexttime = nextT.ToString("HH:mm:00");
 
                 Flag = true;
@@ -5390,8 +5409,9 @@ namespace WSPR_Sked
                 showmsg = true;
                 databaseError = false;
                 slotFound = false;
-                //if (await (findSlot(-1, date, nexttime)))
-                if (findSlot(-1, date, nexttime))
+                bool slotok = await (findSlot(-1, date, nexttime));
+               
+                if (slotok)
                 {
                     if (!noSkedcheckBox.Checked)
                     {
@@ -5994,19 +6014,25 @@ namespace WSPR_Sked
                         TXrunbutton2.BackColor = flashOn;
                     }
                 }
-                else
+                else 
                 {
                     if (noRigctld)
                     {
                         TXrunbutton.BackColor = Color.DarkKhaki;
                         TXrunbutton2.BackColor = Color.DarkKhaki;
                     }
-                    else
+                    else if (!slotActive)
                     {
                         TXrunbutton.BackColor = Color.RoyalBlue;
                         TXrunbutton2.BackColor = Color.RoyalBlue;
                     }
-                    TXRX = "RX: ";
+                    else
+                    {
+                        TXrunbutton.BackColor = Color.Olive;
+                        TXrunbutton2.BackColor = Color.Olive;
+
+                    }
+                        TXRX = "RX: ";
                 }
 
                 if (slotActive)
@@ -6024,7 +6050,7 @@ namespace WSPR_Sked
                 }
                 countdown++;
             }
-            else
+            else 
             {
                 TXrunbutton.BackColor = Color.Olive;
                 TXrunbutton.Text = "TX/RX idle";
@@ -6317,6 +6343,7 @@ namespace WSPR_Sked
             flashTX(false);
             mtypelabel.Text = "-";
             slotnolabel.Text = "-";
+            rxForm.RXblock = false;
         }
         private void stopTestbutton_Click(object sender, EventArgs e)
         {
@@ -8364,6 +8391,7 @@ namespace WSPR_Sked
 
                 Task.Delay(1000);
             }
+           
         }
 
 
