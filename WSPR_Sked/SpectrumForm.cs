@@ -63,7 +63,7 @@ namespace WSPR_Sked
         public SpectrumForm()
         {
             this.Text = "WSPR Spectrum";
-            this.Size = new Size(1200, 580);
+            this.Size = new Size(1200, 590);
 
             this.BackColor = Color.DarkSlateGray;
             this.AutoScroll = true;
