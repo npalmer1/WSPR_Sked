@@ -49,11 +49,14 @@ namespace WSPR_Sked
 
         private DateTime fileCompleteTime = DateTime.MinValue;
 
+        private bool resizing = false;
+
 
         public SpectrumForm()
         {
             this.Text = "WSPR Spectrum";
             this.Size = new Size(1200, 580);
+
             this.BackColor = Color.DarkSlateGray;
 
             // Frequency label
@@ -118,18 +121,28 @@ namespace WSPR_Sked
             // Waterfall display
             waterfallBox = new PictureBox();
             waterfallBox.Location = new Point(10, 40);
-            waterfallBox.Size = new Size(this.ClientSize.Width - 30, 500);
+            //waterfallBox.Size = new Size(this.ClientSize.Width - 30, 500);
+            waterfallBox.Size = new Size(this.ClientSize.Width - 20, 500);
             waterfallBox.BackColor = Color.DarkSlateGray;
             waterfallBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
                                 | AnchorStyles.Left | AnchorStyles.Right;
             waterfallBox.MouseMove += WaterfallBox_MouseMove;
             this.Controls.Add(waterfallBox);
 
-            waterfallBitmap = new Bitmap(this.ClientSize.Width - 30, 500);
+            //waterfallBitmap = new Bitmap(this.ClientSize.Width - 30, 500);
+            waterfallBitmap = new Bitmap(this.ClientSize.Width - 20, 500);
             using (var g = Graphics.FromImage(waterfallBitmap))
                 g.Clear(Color.DarkSlateGray);
 
-            this.Resize += (s, e) => ResizeBitmap();
+            this.Resize += (s, e) =>
+            {
+                if (this.InvokeRequired)
+                    this.Invoke((Action)ResizeBitmap);
+                else
+                    ResizeBitmap();
+            };
+            this.MaximizeBox = false;
+
             this.FormClosing += (s, e) =>
             {
                 e.Cancel = true;
@@ -170,7 +183,13 @@ namespace WSPR_Sked
                     {
                         // Major tick and label at every 50Hz
                         g.DrawLine(Pens.Red, x, 14, x, 22);
-                        g.DrawString($"{freq}", font, brush, x - 12, 1);
+
+                        // Keep labels inside edges
+                        float labelX = x - 12;
+                        if (freq == 1300) labelX = 2;
+                        if (freq == 1700) labelX = x - 25;
+
+                        g.DrawString($"{freq}", font, brush, labelX, 1);
 
                         // Solid vertical line down through waterfall
                         for (int y = 22; y < waterfallBitmap.Height; y += 6)
@@ -180,7 +199,6 @@ namespace WSPR_Sked
                     {
                         // Minor tick at every 10Hz
                         g.DrawLine(Pens.DarkRed, x, 18, x, 22);
-
                         // Faint dotted vertical line
                         for (int y = 22; y < waterfallBitmap.Height; y += 10)
                             g.DrawLine(new Pen(Color.FromArgb(60, 120, 0, 0)), x, y, x, y + 2);
@@ -206,23 +224,35 @@ namespace WSPR_Sked
 
         private void ResizeBitmap()
         {
-            waterfallBox.Size = new Size(this.ClientSize.Width - 30, this.ClientSize.Height - 80);
+            readTimer?.Stop();
 
-            lock (lockObj)
+            try
             {
+                waterfallBox.Size = new Size(this.ClientSize.Width - 20, this.ClientSize.Height - 50);
+               
+
                 int w = Math.Max(1, waterfallBox.Width);
                 int h = Math.Max(1, waterfallBox.Height);
                 var newBmp = new Bitmap(w, h);
                 using (var g = Graphics.FromImage(newBmp))
-                    g.Clear(Color.DarkSlateGray);
-                waterfallBitmap?.Dispose();
-                waterfallBitmap = newBmp;
+                    g.Clear(Color.Black);
+
+                lock (lockObj)
+                {
+                    waterfallBitmap?.Dispose();
+                    waterfallBitmap = newBmp;
+                }
+
                 DrawFrequencyScale();
             }
+            finally
+            {
+                readTimer?.Start();
+            }
         }
-            
 
-            private void WaterfallBox_MouseMove(object sender, MouseEventArgs e)
+
+        private void WaterfallBox_MouseMove(object sender, MouseEventArgs e)
             {
                 float freqPerPixel = (FREQ_MAX - FREQ_MIN) / waterfallBox.Width;
                 float freq = FREQ_MIN + e.X * freqPerPixel;
@@ -434,7 +464,7 @@ namespace WSPR_Sked
         {
             lock (lockObj)
             {
-                if (waterfallBitmap == null) return;
+                if (waterfallBitmap == null || waterfallBox.Width < 1 || waterfallBox.Height < 1) return;
                 int w = waterfallBitmap.Width;
                 int h = waterfallBitmap.Height;
 
