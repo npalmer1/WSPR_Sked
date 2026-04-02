@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
@@ -305,8 +305,6 @@
             label43 = new System.Windows.Forms.Label();
             PopulateFbutton = new System.Windows.Forms.Button();
             FBgroupBox = new System.Windows.Forms.GroupBox();
-            addFbutton = new System.Windows.Forms.Button();
-            deleteFbutton = new System.Windows.Forms.Button();
             editFbutton = new System.Windows.Forms.Button();
             standardFcheckBox = new System.Windows.Forms.CheckBox();
             label47 = new System.Windows.Forms.Label();
@@ -371,21 +369,27 @@
             TulistBox = new System.Windows.Forms.ListBox();
             SwlistBox = new System.Windows.Forms.ListBox();
             tabPage6 = new System.Windows.Forms.TabPage();
-            samecheckBox = new System.Windows.Forms.CheckBox();
+            RXAudiogroupBox = new System.Windows.Forms.GroupBox();
+            trackBarGain = new System.Windows.Forms.TrackBar();
+            label102 = new System.Windows.Forms.Label();
+            label107 = new System.Windows.Forms.Label();
             gainlabel = new System.Windows.Forms.Label();
             label108 = new System.Windows.Forms.Label();
-            label107 = new System.Windows.Forms.Label();
+            volumeMeter1 = new NAudio.Gui.VolumeMeter();
+            label103 = new System.Windows.Forms.Label();
+            label104 = new System.Windows.Forms.Label();
+            panel1 = new System.Windows.Forms.Panel();
+            EditRXbutton = new System.Windows.Forms.Button();
+            FreqlistBox2 = new System.Windows.Forms.ListBox();
+            label143 = new System.Windows.Forms.Label();
+            label142 = new System.Windows.Forms.Label();
+            samecheckBox = new System.Windows.Forms.CheckBox();
             label105 = new System.Windows.Forms.Label();
             wsprdbutton = new System.Windows.Forms.Button();
             label101 = new System.Windows.Forms.Label();
             wsprdtextBox = new System.Windows.Forms.TextBox();
             SaveAudiobutton = new System.Windows.Forms.Button();
-            label104 = new System.Windows.Forms.Label();
-            label103 = new System.Windows.Forms.Label();
-            label102 = new System.Windows.Forms.Label();
             button5 = new System.Windows.Forms.Button();
-            trackBarGain = new System.Windows.Forms.TrackBar();
-            volumeMeter1 = new NAudio.Gui.VolumeMeter();
             Monitorbutton = new System.Windows.Forms.Button();
             label100 = new System.Windows.Forms.Label();
             label99 = new System.Windows.Forms.Label();
@@ -451,6 +455,9 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
+            SaveRXAudiobutton = new System.Windows.Forms.Button();
+            CancelRXAudiobutton = new System.Windows.Forms.Button();
+            panel2 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -471,10 +478,13 @@
             HwSwTypegroupBox.SuspendLayout();
             HwSerialgroupBox.SuspendLayout();
             tabPage6.SuspendLayout();
+            RXAudiogroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBarGain).BeginInit();
+            panel1.SuspendLayout();
             tabPage7.SuspendLayout();
             RiggroupBox.SuspendLayout();
             rigserialgroupBox.SuspendLayout();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // monthCalendar1
@@ -507,23 +517,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle6;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -1810,10 +1820,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 22);
+            tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1177, 651);
+            tabPage2.Size = new System.Drawing.Size(1177, 649);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -2701,10 +2711,10 @@
             tabPage3.Controls.Add(label30);
             tabPage3.Controls.Add(label29);
             tabPage3.Controls.Add(label28);
-            tabPage3.Location = new System.Drawing.Point(4, 22);
+            tabPage3.Location = new System.Drawing.Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1177, 651);
+            tabPage3.Size = new System.Drawing.Size(1177, 649);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
             // 
@@ -2984,10 +2994,10 @@
             tabPage4.Controls.Add(FreqlistBox);
             tabPage4.Controls.Add(AgroupBox);
             tabPage4.Controls.Add(AntlistBox);
-            tabPage4.Location = new System.Drawing.Point(4, 22);
+            tabPage4.Location = new System.Drawing.Point(4, 24);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1177, 651);
+            tabPage4.Size = new System.Drawing.Size(1177, 649);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
@@ -3277,13 +3287,14 @@
             FreqgroupBox.Controls.Add(FtextBox);
             FreqgroupBox.Controls.Add(label44);
             FreqgroupBox.Controls.Add(label43);
-            FreqgroupBox.Location = new System.Drawing.Point(66, 139);
+            FreqgroupBox.Location = new System.Drawing.Point(73, 159);
             FreqgroupBox.Name = "FreqgroupBox";
             FreqgroupBox.Size = new System.Drawing.Size(329, 228);
             FreqgroupBox.TabIndex = 4;
             FreqgroupBox.TabStop = false;
             FreqgroupBox.Text = "WSPR Frequency";
             FreqgroupBox.Visible = false;
+            FreqgroupBox.Enter += FreqgroupBox_Enter;
             // 
             // RXonlylabel
             // 
@@ -3416,36 +3427,12 @@
             // 
             // FBgroupBox
             // 
-            FBgroupBox.Controls.Add(addFbutton);
-            FBgroupBox.Controls.Add(deleteFbutton);
             FBgroupBox.Controls.Add(editFbutton);
             FBgroupBox.Location = new System.Drawing.Point(77, 318);
             FBgroupBox.Name = "FBgroupBox";
             FBgroupBox.Size = new System.Drawing.Size(175, 40);
             FBgroupBox.TabIndex = 14;
             FBgroupBox.TabStop = false;
-            // 
-            // addFbutton
-            // 
-            addFbutton.Location = new System.Drawing.Point(11, 11);
-            addFbutton.Name = "addFbutton";
-            addFbutton.Size = new System.Drawing.Size(43, 24);
-            addFbutton.TabIndex = 11;
-            addFbutton.Text = "Add";
-            addFbutton.UseVisualStyleBackColor = true;
-            addFbutton.Visible = false;
-            addFbutton.Click += addFbutton_Click;
-            // 
-            // deleteFbutton
-            // 
-            deleteFbutton.Location = new System.Drawing.Point(111, 11);
-            deleteFbutton.Name = "deleteFbutton";
-            deleteFbutton.Size = new System.Drawing.Size(43, 23);
-            deleteFbutton.TabIndex = 13;
-            deleteFbutton.Text = "Del";
-            deleteFbutton.UseVisualStyleBackColor = true;
-            deleteFbutton.Visible = false;
-            deleteFbutton.Click += deleteFbutton_Click;
             // 
             // editFbutton
             // 
@@ -3471,11 +3458,11 @@
             // label47
             // 
             label47.AutoSize = true;
-            label47.Location = new System.Drawing.Point(189, 32);
+            label47.Location = new System.Drawing.Point(184, 20);
             label47.Name = "label47";
-            label47.Size = new System.Drawing.Size(33, 13);
+            label47.Size = new System.Drawing.Size(50, 26);
             label47.TabIndex = 8;
-            label47.Text = "Level";
+            label47.Text = "TX audio\r\nLevel";
             // 
             // label46
             // 
@@ -3510,7 +3497,7 @@
             FreqlistBox.Items.AddRange(new object[] { "0.136\t\t1.0", "0.4742\t\t1.0", "1.8366\t\t1.0", "3.5686\t\t1.0", "5.2872\t\t1.0", "5.3647\t\t1.0", "7.0386\t\t1.0", "10.1387\t\t1.0", "13.5539\t\t0.0", "14.0956\t\t1.0", "18.1046\t\t1.0", "21.0946\t\t1.0", "24.9246\t\t1.0", "28.1246\t\t1.0", "40.68\t\t0.0", "50.293\t\t1.0", "70.091\t\t1.0", "144.489\t\t1.0", "432.300\t\t1.0", "1296.500\t\t1.0" });
             FreqlistBox.Location = new System.Drawing.Point(96, 49);
             FreqlistBox.Name = "FreqlistBox";
-            FreqlistBox.Size = new System.Drawing.Size(138, 264);
+            FreqlistBox.Size = new System.Drawing.Size(135, 264);
             FreqlistBox.TabIndex = 0;
             FreqlistBox.MouseDoubleClick += FreqlistBox_MouseDoubleClick;
             // 
@@ -3584,10 +3571,10 @@
             tabPage5.Controls.Add(label42);
             tabPage5.Controls.Add(TulistBox);
             tabPage5.Controls.Add(SwlistBox);
-            tabPage5.Location = new System.Drawing.Point(4, 22);
+            tabPage5.Location = new System.Drawing.Point(4, 24);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            tabPage5.Size = new System.Drawing.Size(1177, 651);
+            tabPage5.Size = new System.Drawing.Size(1177, 649);
             tabPage5.TabIndex = 4;
             tabPage5.Text = "Switches&Tuners";
             // 
@@ -4098,21 +4085,15 @@
             // tabPage6
             // 
             tabPage6.BackColor = System.Drawing.SystemColors.Info;
+            tabPage6.Controls.Add(RXAudiogroupBox);
+            tabPage6.Controls.Add(panel1);
             tabPage6.Controls.Add(samecheckBox);
-            tabPage6.Controls.Add(gainlabel);
-            tabPage6.Controls.Add(label108);
-            tabPage6.Controls.Add(label107);
             tabPage6.Controls.Add(label105);
             tabPage6.Controls.Add(wsprdbutton);
             tabPage6.Controls.Add(label101);
             tabPage6.Controls.Add(wsprdtextBox);
             tabPage6.Controls.Add(SaveAudiobutton);
-            tabPage6.Controls.Add(label104);
-            tabPage6.Controls.Add(label103);
-            tabPage6.Controls.Add(label102);
             tabPage6.Controls.Add(button5);
-            tabPage6.Controls.Add(trackBarGain);
-            tabPage6.Controls.Add(volumeMeter1);
             tabPage6.Controls.Add(Monitorbutton);
             tabPage6.Controls.Add(label100);
             tabPage6.Controls.Add(label99);
@@ -4129,21 +4110,57 @@
             tabPage6.TabIndex = 5;
             tabPage6.Text = "RX & Sound config";
             // 
-            // samecheckBox
+            // RXAudiogroupBox
             // 
-            samecheckBox.AutoSize = true;
-            samecheckBox.Location = new System.Drawing.Point(52, 165);
-            samecheckBox.Name = "samecheckBox";
-            samecheckBox.Size = new System.Drawing.Size(183, 17);
-            samecheckBox.TabIndex = 28;
-            samecheckBox.Text = "Same device for input and output";
-            samecheckBox.UseVisualStyleBackColor = true;
-            samecheckBox.CheckedChanged += samecheckBox_CheckedChanged;
+            RXAudiogroupBox.BackColor = System.Drawing.Color.Honeydew;
+            RXAudiogroupBox.Controls.Add(panel2);
+            RXAudiogroupBox.Controls.Add(trackBarGain);
+            RXAudiogroupBox.Controls.Add(label102);
+            RXAudiogroupBox.Controls.Add(label107);
+            RXAudiogroupBox.Controls.Add(gainlabel);
+            RXAudiogroupBox.Controls.Add(label108);
+            RXAudiogroupBox.Controls.Add(volumeMeter1);
+            RXAudiogroupBox.Controls.Add(label103);
+            RXAudiogroupBox.Controls.Add(label104);
+            RXAudiogroupBox.Location = new System.Drawing.Point(363, 324);
+            RXAudiogroupBox.Name = "RXAudiogroupBox";
+            RXAudiogroupBox.Size = new System.Drawing.Size(351, 259);
+            RXAudiogroupBox.TabIndex = 33;
+            RXAudiogroupBox.TabStop = false;
+            RXAudiogroupBox.Text = "RX Audio";
+            RXAudiogroupBox.Enter += RXAudiogroupBox_Enter;
+            // 
+            // trackBarGain
+            // 
+            trackBarGain.BackColor = System.Drawing.Color.Cornsilk;
+            trackBarGain.Location = new System.Drawing.Point(24, 96);
+            trackBarGain.Name = "trackBarGain";
+            trackBarGain.Size = new System.Drawing.Size(202, 45);
+            trackBarGain.TabIndex = 15;
+            trackBarGain.ValueChanged += trackBarGain_ValueChanged;
+            // 
+            // label102
+            // 
+            label102.AutoSize = true;
+            label102.Location = new System.Drawing.Point(37, 71);
+            label102.Name = "label102";
+            label102.Size = new System.Drawing.Size(116, 13);
+            label102.TabIndex = 17;
+            label102.Text = "Fine tune mic/line level";
+            // 
+            // label107
+            // 
+            label107.AutoSize = true;
+            label107.Location = new System.Drawing.Point(24, 175);
+            label107.Name = "label107";
+            label107.Size = new System.Drawing.Size(152, 13);
+            label107.TabIndex = 25;
+            label107.Text = "Can also adjust RF gain on RX";
             // 
             // gainlabel
             // 
             gainlabel.AutoSize = true;
-            gainlabel.Location = new System.Drawing.Point(217, 398);
+            gainlabel.Location = new System.Drawing.Point(67, 146);
             gainlabel.Name = "gainlabel";
             gainlabel.Size = new System.Drawing.Size(13, 13);
             gainlabel.TabIndex = 27;
@@ -4152,25 +4169,109 @@
             // label108
             // 
             label108.AutoSize = true;
-            label108.Location = new System.Drawing.Point(174, 398);
+            label108.Location = new System.Drawing.Point(24, 146);
             label108.Name = "label108";
             label108.Size = new System.Drawing.Size(37, 13);
             label108.TabIndex = 26;
             label108.Text = "Value:";
             // 
-            // label107
+            // volumeMeter1
             // 
-            label107.AutoSize = true;
-            label107.Location = new System.Drawing.Point(174, 427);
-            label107.Name = "label107";
-            label107.Size = new System.Drawing.Size(152, 13);
-            label107.TabIndex = 25;
-            label107.Text = "Can also adjust RF gain on RX";
+            volumeMeter1.Amplitude = 0F;
+            volumeMeter1.BackColor = System.Drawing.Color.WhiteSmoke;
+            volumeMeter1.ForeColor = System.Drawing.Color.LightGreen;
+            volumeMeter1.Location = new System.Drawing.Point(283, 31);
+            volumeMeter1.MaxDb = 18F;
+            volumeMeter1.MinDb = -60F;
+            volumeMeter1.Name = "volumeMeter1";
+            volumeMeter1.Size = new System.Drawing.Size(24, 184);
+            volumeMeter1.TabIndex = 13;
+            volumeMeter1.Text = "volumeMeter1";
+            // 
+            // label103
+            // 
+            label103.AutoSize = true;
+            label103.Location = new System.Drawing.Point(310, 100);
+            label103.Margin = new System.Windows.Forms.Padding(0);
+            label103.Name = "label103";
+            label103.Size = new System.Drawing.Size(28, 13);
+            label103.TabIndex = 18;
+            label103.Text = "<-----";
+            // 
+            // label104
+            // 
+            label104.AutoSize = true;
+            label104.Location = new System.Drawing.Point(252, 100);
+            label104.Margin = new System.Windows.Forms.Padding(0);
+            label104.Name = "label104";
+            label104.Size = new System.Drawing.Size(28, 13);
+            label104.TabIndex = 19;
+            label104.Text = "----->";
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(EditRXbutton);
+            panel1.Controls.Add(FreqlistBox2);
+            panel1.Controls.Add(label143);
+            panel1.Controls.Add(label142);
+            panel1.Location = new System.Drawing.Point(26, 205);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(159, 358);
+            panel1.TabIndex = 32;
+            panel1.Visible = false;
+            // 
+            // EditRXbutton
+            // 
+            EditRXbutton.Location = new System.Drawing.Point(52, 315);
+            EditRXbutton.Name = "EditRXbutton";
+            EditRXbutton.Size = new System.Drawing.Size(59, 23);
+            EditRXbutton.TabIndex = 32;
+            EditRXbutton.Text = "Edit";
+            EditRXbutton.UseVisualStyleBackColor = true;
+            EditRXbutton.Click += EditRXbutton_Click;
+            // 
+            // FreqlistBox2
+            // 
+            FreqlistBox2.FormattingEnabled = true;
+            FreqlistBox2.Items.AddRange(new object[] { "0.136\t\t1.0", "0.4742\t\t1.0", "1.8366\t\t1.0", "3.5686\t\t1.0", "5.2872\t\t1.0", "5.3647\t\t1.0", "7.0386\t\t1.0", "10.1387\t\t1.0", "13.5539\t\t1.0", "14.0956\t\t1.0", "18.1046\t\t1.0", "21.0946\t\t1.0", "24.9246\t\t1.0", "28.1246\t\t1.0", "40.68\t\t1.0", "50.293\t\t1.0", "70.091\t\t1.0", "144.489\t\t1.0", "432.300\t\t1.0", "1296.500\t\t1.0" });
+            FreqlistBox2.Location = new System.Drawing.Point(11, 35);
+            FreqlistBox2.Name = "FreqlistBox2";
+            FreqlistBox2.Size = new System.Drawing.Size(135, 264);
+            FreqlistBox2.TabIndex = 29;
+            // 
+            // label143
+            // 
+            label143.AutoSize = true;
+            label143.Location = new System.Drawing.Point(95, 6);
+            label143.Name = "label143";
+            label143.Size = new System.Drawing.Size(51, 26);
+            label143.TabIndex = 31;
+            label143.Text = "RX audio\r\nLevel";
+            // 
+            // label142
+            // 
+            label142.AutoSize = true;
+            label142.Location = new System.Drawing.Point(11, 19);
+            label142.Name = "label142";
+            label142.Size = new System.Drawing.Size(44, 13);
+            label142.TabIndex = 30;
+            label142.Text = "F (MHz)";
+            // 
+            // samecheckBox
+            // 
+            samecheckBox.AutoSize = true;
+            samecheckBox.Location = new System.Drawing.Point(224, 161);
+            samecheckBox.Name = "samecheckBox";
+            samecheckBox.Size = new System.Drawing.Size(183, 17);
+            samecheckBox.TabIndex = 28;
+            samecheckBox.Text = "Same device for input and output";
+            samecheckBox.UseVisualStyleBackColor = true;
+            samecheckBox.CheckedChanged += samecheckBox_CheckedChanged;
             // 
             // label105
             // 
             label105.AutoSize = true;
-            label105.Location = new System.Drawing.Point(560, 29);
+            label105.Location = new System.Drawing.Point(778, 29);
             label105.Name = "label105";
             label105.Size = new System.Drawing.Size(171, 13);
             label105.TabIndex = 24;
@@ -4179,7 +4280,7 @@
             // wsprdbutton
             // 
             wsprdbutton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            wsprdbutton.Location = new System.Drawing.Point(888, 74);
+            wsprdbutton.Location = new System.Drawing.Point(1106, 74);
             wsprdbutton.Name = "wsprdbutton";
             wsprdbutton.Size = new System.Drawing.Size(27, 23);
             wsprdbutton.TabIndex = 23;
@@ -4190,7 +4291,7 @@
             // label101
             // 
             label101.AutoSize = true;
-            label101.Location = new System.Drawing.Point(582, 60);
+            label101.Location = new System.Drawing.Point(800, 60);
             label101.Name = "label101";
             label101.Size = new System.Drawing.Size(188, 13);
             label101.TabIndex = 22;
@@ -4199,53 +4300,24 @@
             // wsprdtextBox
             // 
             wsprdtextBox.Enabled = false;
-            wsprdtextBox.Location = new System.Drawing.Point(582, 76);
+            wsprdtextBox.Location = new System.Drawing.Point(800, 76);
             wsprdtextBox.Name = "wsprdtextBox";
             wsprdtextBox.Size = new System.Drawing.Size(300, 20);
             wsprdtextBox.TabIndex = 21;
             // 
             // SaveAudiobutton
             // 
-            SaveAudiobutton.Location = new System.Drawing.Point(582, 209);
+            SaveAudiobutton.Location = new System.Drawing.Point(580, 157);
             SaveAudiobutton.Name = "SaveAudiobutton";
-            SaveAudiobutton.Size = new System.Drawing.Size(90, 23);
+            SaveAudiobutton.Size = new System.Drawing.Size(121, 23);
             SaveAudiobutton.TabIndex = 20;
-            SaveAudiobutton.Text = "Save Settings";
+            SaveAudiobutton.Text = "Save Audio Devics";
             SaveAudiobutton.UseVisualStyleBackColor = true;
             SaveAudiobutton.Click += SaveAudiobutton_Click;
             // 
-            // label104
-            // 
-            label104.AutoSize = true;
-            label104.Location = new System.Drawing.Point(403, 278);
-            label104.Margin = new System.Windows.Forms.Padding(0);
-            label104.Name = "label104";
-            label104.Size = new System.Drawing.Size(28, 13);
-            label104.TabIndex = 19;
-            label104.Text = "----->";
-            // 
-            // label103
-            // 
-            label103.AutoSize = true;
-            label103.Location = new System.Drawing.Point(461, 278);
-            label103.Margin = new System.Windows.Forms.Padding(0);
-            label103.Name = "label103";
-            label103.Size = new System.Drawing.Size(28, 13);
-            label103.TabIndex = 18;
-            label103.Text = "<-----";
-            // 
-            // label102
-            // 
-            label102.AutoSize = true;
-            label102.Location = new System.Drawing.Point(187, 323);
-            label102.Name = "label102";
-            label102.Size = new System.Drawing.Size(116, 13);
-            label102.TabIndex = 17;
-            label102.Text = "Fine tune mic/line level";
-            // 
             // button5
             // 
-            button5.Location = new System.Drawing.Point(61, 388);
+            button5.Location = new System.Drawing.Point(233, 384);
             button5.Name = "button5";
             button5.Size = new System.Drawing.Size(61, 23);
             button5.TabIndex = 16;
@@ -4253,31 +4325,9 @@
             button5.UseVisualStyleBackColor = true;
             button5.Click += button5_Click;
             // 
-            // trackBarGain
-            // 
-            trackBarGain.BackColor = System.Drawing.Color.Cornsilk;
-            trackBarGain.Location = new System.Drawing.Point(174, 348);
-            trackBarGain.Name = "trackBarGain";
-            trackBarGain.Size = new System.Drawing.Size(202, 45);
-            trackBarGain.TabIndex = 15;
-            trackBarGain.ValueChanged += trackBarGain_ValueChanged;
-            // 
-            // volumeMeter1
-            // 
-            volumeMeter1.Amplitude = 0F;
-            volumeMeter1.BackColor = System.Drawing.Color.WhiteSmoke;
-            volumeMeter1.ForeColor = System.Drawing.Color.LightGreen;
-            volumeMeter1.Location = new System.Drawing.Point(434, 209);
-            volumeMeter1.MaxDb = 18F;
-            volumeMeter1.MinDb = -60F;
-            volumeMeter1.Name = "volumeMeter1";
-            volumeMeter1.Size = new System.Drawing.Size(24, 184);
-            volumeMeter1.TabIndex = 13;
-            volumeMeter1.Text = "volumeMeter1";
-            // 
             // Monitorbutton
             // 
-            Monitorbutton.Location = new System.Drawing.Point(45, 339);
+            Monitorbutton.Location = new System.Drawing.Point(217, 335);
             Monitorbutton.Name = "Monitorbutton";
             Monitorbutton.Size = new System.Drawing.Size(92, 23);
             Monitorbutton.TabIndex = 12;
@@ -4288,7 +4338,7 @@
             // label100
             // 
             label100.AutoSize = true;
-            label100.Location = new System.Drawing.Point(41, 296);
+            label100.Location = new System.Drawing.Point(213, 292);
             label100.Name = "label100";
             label100.Size = new System.Drawing.Size(112, 13);
             label100.TabIndex = 10;
@@ -4297,7 +4347,7 @@
             // label99
             // 
             label99.AutoSize = true;
-            label99.Location = new System.Drawing.Point(41, 130);
+            label99.Location = new System.Drawing.Point(213, 126);
             label99.Name = "label99";
             label99.Size = new System.Drawing.Size(123, 13);
             label99.TabIndex = 9;
@@ -4306,7 +4356,7 @@
             // AudioInlabel
             // 
             AudioInlabel.AutoSize = true;
-            AudioInlabel.Location = new System.Drawing.Point(170, 296);
+            AudioInlabel.Location = new System.Drawing.Point(342, 292);
             AudioInlabel.Name = "AudioInlabel";
             AudioInlabel.Size = new System.Drawing.Size(13, 13);
             AudioInlabel.TabIndex = 8;
@@ -4315,7 +4365,7 @@
             // AudioOutlabel
             // 
             AudioOutlabel.AutoSize = true;
-            AudioOutlabel.Location = new System.Drawing.Point(170, 130);
+            AudioOutlabel.Location = new System.Drawing.Point(342, 126);
             AudioOutlabel.Name = "AudioOutlabel";
             AudioOutlabel.Size = new System.Drawing.Size(13, 13);
             AudioOutlabel.TabIndex = 7;
@@ -4323,7 +4373,7 @@
             // 
             // audioUpdatebutton
             // 
-            audioUpdatebutton.Location = new System.Drawing.Point(368, 45);
+            audioUpdatebutton.Location = new System.Drawing.Point(540, 41);
             audioUpdatebutton.Name = "audioUpdatebutton";
             audioUpdatebutton.Size = new System.Drawing.Size(75, 23);
             audioUpdatebutton.TabIndex = 6;
@@ -4334,7 +4384,7 @@
             // label98
             // 
             label98.AutoSize = true;
-            label98.Location = new System.Drawing.Point(45, 193);
+            label98.Location = new System.Drawing.Point(217, 189);
             label98.Name = "label98";
             label98.Size = new System.Drawing.Size(241, 13);
             label98.TabIndex = 5;
@@ -4343,7 +4393,7 @@
             // label97
             // 
             label97.AutoSize = true;
-            label97.Location = new System.Drawing.Point(41, 29);
+            label97.Location = new System.Drawing.Point(213, 25);
             label97.Name = "label97";
             label97.Size = new System.Drawing.Size(244, 13);
             label97.TabIndex = 4;
@@ -4352,7 +4402,7 @@
             // audioOutlistBox
             // 
             audioOutlistBox.FormattingEnabled = true;
-            audioOutlistBox.Location = new System.Drawing.Point(41, 45);
+            audioOutlistBox.Location = new System.Drawing.Point(213, 41);
             audioOutlistBox.Name = "audioOutlistBox";
             audioOutlistBox.Size = new System.Drawing.Size(307, 82);
             audioOutlistBox.TabIndex = 3;
@@ -4361,7 +4411,7 @@
             // audioInlistBox
             // 
             audioInlistBox.FormattingEnabled = true;
-            audioInlistBox.Location = new System.Drawing.Point(41, 209);
+            audioInlistBox.Location = new System.Drawing.Point(213, 205);
             audioInlistBox.Name = "audioInlistBox";
             audioInlistBox.Size = new System.Drawing.Size(307, 82);
             audioInlistBox.TabIndex = 2;
@@ -4377,10 +4427,10 @@
             tabPage7.Controls.Add(riglistBox);
             tabPage7.Controls.Add(RiggroupBox);
             tabPage7.Controls.Add(label122);
-            tabPage7.Location = new System.Drawing.Point(4, 22);
+            tabPage7.Location = new System.Drawing.Point(4, 24);
             tabPage7.Name = "tabPage7";
             tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            tabPage7.Size = new System.Drawing.Size(1177, 651);
+            tabPage7.Size = new System.Drawing.Size(1177, 649);
             tabPage7.TabIndex = 6;
             tabPage7.Text = "Non Rigctl TX";
             // 
@@ -4869,6 +4919,34 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
+            // SaveRXAudiobutton
+            // 
+            SaveRXAudiobutton.Location = new System.Drawing.Point(7, 9);
+            SaveRXAudiobutton.Name = "SaveRXAudiobutton";
+            SaveRXAudiobutton.Size = new System.Drawing.Size(58, 23);
+            SaveRXAudiobutton.TabIndex = 28;
+            SaveRXAudiobutton.Text = "Save";
+            SaveRXAudiobutton.UseVisualStyleBackColor = true;
+            // 
+            // CancelRXAudiobutton
+            // 
+            CancelRXAudiobutton.Location = new System.Drawing.Point(79, 9);
+            CancelRXAudiobutton.Name = "CancelRXAudiobutton";
+            CancelRXAudiobutton.Size = new System.Drawing.Size(58, 23);
+            CancelRXAudiobutton.TabIndex = 29;
+            CancelRXAudiobutton.Text = "Cancel";
+            CancelRXAudiobutton.UseVisualStyleBackColor = true;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(SaveRXAudiobutton);
+            panel2.Controls.Add(CancelRXAudiobutton);
+            panel2.Location = new System.Drawing.Point(89, 202);
+            panel2.Name = "panel2";
+            panel2.Size = new System.Drawing.Size(150, 37);
+            panel2.TabIndex = 30;
+            panel2.Visible = false;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4924,13 +5002,18 @@
             HwSerialgroupBox.PerformLayout();
             tabPage6.ResumeLayout(false);
             tabPage6.PerformLayout();
+            RXAudiogroupBox.ResumeLayout(false);
+            RXAudiogroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)trackBarGain).EndInit();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             tabPage7.ResumeLayout(false);
             tabPage7.PerformLayout();
             RiggroupBox.ResumeLayout(false);
             RiggroupBox.PerformLayout();
             rigserialgroupBox.ResumeLayout(false);
             rigserialgroupBox.PerformLayout();
+            panel2.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -5048,9 +5131,7 @@
         private System.Windows.Forms.ListBox FstandardtlistBox;
         private System.Windows.Forms.Label label47;
         private System.Windows.Forms.Label label46;
-        private System.Windows.Forms.Button deleteFbutton;
         private System.Windows.Forms.Button editFbutton;
-        private System.Windows.Forms.Button addFbutton;
         private System.Windows.Forms.CheckBox newFcheckBox;
         private System.Windows.Forms.GroupBox FBgroupBox;
         private System.Windows.Forms.GroupBox AntgroupBox;
@@ -5357,6 +5438,15 @@
         private System.Windows.Forms.Label label140;
         private System.Windows.Forms.Label slotlabel;
         private System.Windows.Forms.Label rangelabel;
+        private System.Windows.Forms.ListBox FreqlistBox2;
+        private System.Windows.Forms.Label label143;
+        private System.Windows.Forms.Label label142;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.GroupBox RXAudiogroupBox;
+        private System.Windows.Forms.Button EditRXbutton;
+        private System.Windows.Forms.Button CancelRXAudiobutton;
+        private System.Windows.Forms.Button SaveRXAudiobutton;
+        private System.Windows.Forms.Panel panel2;
     }
 }
 
