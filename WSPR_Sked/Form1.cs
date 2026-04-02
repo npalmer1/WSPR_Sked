@@ -317,8 +317,9 @@ namespace WSPR_Sked
         MessageClass Msg = new MessageClass();
 
         private bool? _hasNewSlotColumns = null;
+        private bool? _hasNewFrequencyColumns = null;
 
-       
+
         public Form1()
         {
             KeyPreview = true;
@@ -333,6 +334,13 @@ namespace WSPR_Sked
             if (_hasNewSlotColumns.HasValue) return _hasNewSlotColumns.Value;
             _hasNewSlotColumns = checkNewSlotColumns();  // only hits DB once ever
             return _hasNewSlotColumns.Value;
+        }
+
+        private bool HasNewFrequencyColumns()
+        {
+            if (_hasNewFrequencyColumns.HasValue) return _hasNewFrequencyColumns.Value;
+            _hasNewFrequencyColumns = checkNewFrequencyColumns();  // only hits DB once ever
+            return _hasNewFrequencyColumns.Value;
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -357,7 +365,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.36";
+            string ver = "0.1.37";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -688,7 +696,7 @@ namespace WSPR_Sked
         }
 
 
-        private  async Task<bool> findSlot(int slot, string date, string time) //find a slot in the database corresponding to the date/time from the slot to transmit/receive
+        private async Task<bool> findSlot(int slot, string date, string time) //find a slot in the database corresponding to the date/time from the slot to transmit/receive
         //private bool findSlot(int slot, string date, string time)
         {
 
@@ -1636,7 +1644,7 @@ namespace WSPR_Sked
                     return false;
                 }
             }
-                return true;
+            return true;
         }
 
         private async void SaveSlotbutton_Click(object sender, EventArgs e)
@@ -1653,7 +1661,7 @@ namespace WSPR_Sked
             {
                 if (validateSlot()) //check all fields ok
                 {
-                   
+
                     //MessageForm mForm = new MessageForm();
 
                     if (Type2checkBox.Checked)
@@ -1676,7 +1684,7 @@ namespace WSPR_Sked
                             msgTlabel.Text = "Message type 2";
                         }
                     }
-                
+
                     int oldR = rptType;
                     int R = findRptType(); //get new repeat type  
                     if (repeatcheckBox.Checked && editslotcheckBox.Checked)
@@ -1720,7 +1728,7 @@ namespace WSPR_Sked
                     {
                         timeout = 5000;
                     }
-                    if (asOnecheckBox.Checked && (msgT ==2 || msgT == 3))
+                    if (asOnecheckBox.Checked && (msgT == 2 || msgT == 3))
                     {
                         Msg.TMessageBox("Saving (message type " + msgT + ") .. please wait", "Save slot", timeout);
                     }
@@ -1870,7 +1878,7 @@ namespace WSPR_Sked
         private async Task SaveSlot(bool slot2, int msgT, bool this_slot, int editrow) //update the gridview
         {
             int i = editrow;
-            
+
             DataGridViewRow DataRow = dataGridView1.Rows[i];
 
             saveslotlabel.Visible = true;
@@ -1889,7 +1897,7 @@ namespace WSPR_Sked
                             dt = dt.AddDays(1);
                             dt = dt.AddHours(-23);
                         }
-                     
+
                         dt = dt.AddMinutes(-58);
                     }
                     else
@@ -2437,7 +2445,7 @@ namespace WSPR_Sked
                             string newdate = dt.ToString(dateformat);
                             time1 = T.ToString("HH:mm"); //update time by one hour
                             bool ok = await SaveSlotData(newdate, time1);
-                        
+
                             /*bool ok = await Task.Run(() =>
                             {
                                 return SaveSlotData(newdate, time);
@@ -2475,7 +2483,7 @@ namespace WSPR_Sked
                         return false;
                     }*/
                     bool ok = await SaveSlotData(newdate, time1);
-                                      
+
                     if (!ok)
                     {
                         return false;
@@ -2659,7 +2667,7 @@ namespace WSPR_Sked
                             {
                                 return SaveSlotData(newdate, time);
                             });*/
-                           
+
                             bool ok = await SaveSlotData(newdate, time1);
                             if (!ok)
                             {
@@ -2770,10 +2778,10 @@ namespace WSPR_Sked
         //private bool SaveSlotData(string d, string t)  //to database
         private async Task<bool> SaveSlotData(string d, string t)  //to database
         {
-           
+
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
             myConnectionString += ";Pooling=true;Min Pool Size=1;Max Pool Size=10";
-            
+
             //MySqlConnection connection = new MySqlConnection(myConnectionString);
             DateTime date = new DateTime();
             //string d = "";
@@ -2800,51 +2808,51 @@ namespace WSPR_Sked
                 N3 = "";
             }
 
-                try
+            try
+            {
+
+                endslot = Convert.ToString(Slot.Endslot);
+                bool Active = false; ;
+                if (cells[15].Contains(tick))
                 {
-
-                    endslot = Convert.ToString(Slot.Endslot);
-                    bool Active = false; ;
-                    if (cells[15].Contains(tick))
-                    {
-                        Active = true;
-                    }
-                    bool Repeat = false;
-                    if (cells[10].Contains(tick))
-                    {
-                        Repeat = true;
-                    }
-                    string dte = Convert.ToString(cells[0]);
+                    Active = true;
+                }
+                bool Repeat = false;
+                if (cells[10].Contains(tick))
+                {
+                    Repeat = true;
+                }
+                string dte = Convert.ToString(cells[0]);
 
 
-                    parent = dte + " " + cells[1]; //date and time of parent of this slot
-                    if (orig_parents != parent & editslotcheckBox.Checked) //if parent has changed and editing slot
-                    {
-                        parent = orig_parents; //if editing save original slot parent
-                    }
-                    if (rptType == 4)
-                    {
-                        parent = dte + "00:00"; //all day slots parent is date and 00:00
-                    }
+                parent = dte + " " + cells[1]; //date and time of parent of this slot
+                if (orig_parents != parent & editslotcheckBox.Checked) //if parent has changed and editing slot
+                {
+                    parent = orig_parents; //if editing save original slot parent
+                }
+                if (rptType == 4)
+                {
+                    parent = dte + "00:00"; //all day slots parent is date and 00:00
+                }
 
-                    if (Type2checkBox.Checked)
-                    {
-                        msgT = checkCall(callsign, location);
-                    }
-                    else
-                    {
-                        msgT = 1;
-                    }
-             
-                      
+                if (Type2checkBox.Checked)
+                {
+                    msgT = checkCall(callsign, location);
+                }
+                else
+                {
+                    msgT = 1;
+                }
 
-                    string c = "";
-                
+
+
+                string c = "";
+
                 c = "INSERT INTO slots(Date,Time,Frequency,Offset,Power,PowerW,Antenna,Tuner,Switch,SwitchPort,End,Active,Repeating,TimeEnd,RptTime,Parent,SlotNo,MsgType,RptType,GreyOffset" + N;
                 c += "VALUES(@Date,@Time,@Frequency,@Offset,@Power,@PowerW,@Antenna,@Tuner,@Switch,@SwitchPort,@End,@Active,@Repeating,@TimeEnd,@RptTime,@Parent,@SlotNo,@MsgType,@RptType,@GreyOffset" + N2;
 
 
-                
+
                 c += " ON DUPLICATE KEY UPDATE Frequency = " + Slot.Freq + ", Offset = " + Slot.Offset + ", Power = " + Slot.PowerdB;
                 c = c + ", PowerW = " + Slot.PowerW + ", Antenna = '" + Slot.Ant + "', Tuner = " + Slot.Tuner + ", Switch = " + Slot.Switch;
                 c = c + ", SwitchPort = " + Slot.SwPort + ", End = '" + endslot + "', Active = " + Active + ", Repeating = " + Repeat + ", TimeEnd = '" + Slot.EndTime;
@@ -2855,11 +2863,11 @@ namespace WSPR_Sked
 
 
                 using (var connection = new MySqlConnection(myConnectionString))
-                  {
-                      connection.Open();
-                      using (var command = connection.CreateCommand())
-                      {
-                          command.CommandText += c;
+                {
+                    connection.Open();
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.CommandText += c;
                         command.Parameters.AddWithValue("@Date", d);
                         command.Parameters.AddWithValue("@Time", t);
                         command.Parameters.AddWithValue("@Frequency", Slot.Freq);
@@ -2901,20 +2909,20 @@ namespace WSPR_Sked
                         }
                         await command.ExecuteNonQueryAsync();
 
-                      }
-                  }
+                    }
+                }
 
                 return true;
-                }
-                catch
-                {         //if row already exists then try updating it in database
-                 
-                    return false;
-                    //return UpdateSlotData(d, t, e, p, msgT);
+            }
+            catch
+            {         //if row already exists then try updating it in database
 
-                }            
+                return false;
+                //return UpdateSlotData(d, t, e, p, msgT);
+
+            }
         }
-       
+
         private string dBtoWatts(string db)
         {
             string W = "";
@@ -3037,7 +3045,7 @@ namespace WSPR_Sked
                             {
                                 if (slot < 29)
                                 {
-                                    DeleteSlot(true, slot + 1, parents[slot+1]);  //if type 2
+                                    DeleteSlot(true, slot + 1, parents[slot + 1]);  //if type 2
                                     parents[slot + 1] = "";
                                 }
                                 else
@@ -3222,7 +3230,7 @@ namespace WSPR_Sked
                 {
                     time = "00:00";
                 }
-            
+
             }
             string date = dataGridView1.Rows[slot].Cells[0].Value.ToString();
             if (s2 == 30 && time == "00:00")
@@ -3401,7 +3409,7 @@ namespace WSPR_Sked
 
         private void repeatcheckBox_CheckedChanged(object sender, EventArgs e)
         {
-           
+
             if (!repeatcheckBox.Checked && repeatStatus)
             {
                 var res = Msg.ynMessageBox("Only modify this slot (Y/N)?", "Modify slots");
@@ -3423,8 +3431,8 @@ namespace WSPR_Sked
             else
             {
                 greygroupBox.Visible = false;
-            }            
-                checkPeriod();            
+            }
+            checkPeriod();
         }
 
         //--------------------------------WSPR Sharp encoding------------------------------------
@@ -3961,13 +3969,13 @@ namespace WSPR_Sked
                     rxForm.setLabel("idle");
 
                 }
-                else 
+                else
                 {
                     countdownlabel.Text = "RX start";
                     countdownlabel2.Text = "RX start";
                     if (!rigctldcheckBox.Checked)
                     { getRigF(); }
-                    
+
                 }
                 //await StartTX(false);
                 WSPRtimer.Stop();
@@ -4073,7 +4081,7 @@ namespace WSPR_Sked
                 if (R.Length > 0 && ok)
                 {
                     f = (freq1 + 1400 + Slot.Offset).ToString();
-                  
+
                     R = R.Replace("freq", f);
                     R = R.Replace("grid", L);
                     R = R.Replace("call", C);
@@ -4081,7 +4089,7 @@ namespace WSPR_Sked
 
                 }
                 sendOtherTXRigCommand(rig, R);
-              
+
                 Msg.TMessageBox("Changed to: " + freq.ToString() + " MHz", "", 1000);
             }
             if (ok) { rxForm.set_frequency(freq.ToString("F6")); return true; }
@@ -4608,7 +4616,7 @@ namespace WSPR_Sked
                 c = c + "Power = " + defaultdB + ", PowerW = " + defaultW + ", Locator = '" + full_location + "', LocatorLong = " + L + ", DefaultAnt = '" + defaultAnt + "'";
                 c = c + ", Alpha = " + defaultAlpha + ", DefaultAudio = " + defA + ", HamlibPath = '" + HL + "', MsgType = " + msgT;
                 c = c + ", AllowType2 = " + Type2checkBox.Checked + ", oneMsg = " + asOnecheckBox.Checked + ", WsprmsgPath = '" + wsprmsgP + "', TimeZone = '" + zone + "'";
-                c = c+ ", stopsolar = " + stopSolar + ", stopRX = " + stopRX + ", SlotDB = '" + slot_dbname + "', selectedFilter = " + selectedFilter+" WHERE settings.ConfigID = " + configID;
+                c = c + ", stopsolar = " + stopSolar + ", stopRX = " + stopRX + ", SlotDB = '" + slot_dbname + "', selectedFilter = " + selectedFilter + " WHERE settings.ConfigID = " + configID;
                 command.CommandText = c;
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -4788,8 +4796,8 @@ namespace WSPR_Sked
 
                     if (checkNewSlotColumns())
                     {
-                        N = "Switch2,SwitchPort2)";
-                        N2 = "@Switch2,@SwitchPort2)";
+                        N = ",Switch2,SwitchPort2)";
+                        N2 = ",@Switch2,@SwitchPort2)";
                     }
                     else
                     {
@@ -5087,6 +5095,7 @@ namespace WSPR_Sked
                 connection.Open();
                 double freq;
                 double level;
+                double RXlevel = 1.0;
                 string antenna;
 
                 MySqlCommand command = connection.CreateCommand();
@@ -5111,6 +5120,26 @@ namespace WSPR_Sked
                             FreqlistBox.Items[i] = F;
                         }
                     }
+                    if (checkNewFrequencyColumns())
+                    {
+                        try
+                        {
+                            RXlevel = (double)Reader["RXAudioLevel"];
+                        }
+                        catch
+                        {
+                            RXlevel = 1.0;
+                        }
+                    }
+                    lvl = RXlevel.ToString();
+                    F = f + "\t\t" + RXlevel;
+                    for (int i = 0; i < FreqlistBox2.Items.Count; i++)
+                    {
+                        if (FreqlistBox2.Items[i].ToString().StartsWith(f))
+                        {
+                            FreqlistBox2.Items[i] = F;
+                        }
+                    }
 
                 }
                 Reader.Close();
@@ -5126,32 +5155,57 @@ namespace WSPR_Sked
         {
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
+            string N = "";
+            string N2 = "";
+
             lock (_lock)
             {
                 try
                 {
 
+                    if (HasNewFrequencyColumns())
+                    {
+                        N = ",RXAudioLevel)";
+                        N2 = ",@RXAudioiLevel)";
+                    }
+                    else
+                    {
+                        N = ") ";
+                        N2 = ")";
+                    }
                     MySqlCommand command = connection.CreateCommand();
                     connection.Open();
-                    command.CommandText = "INSERT INTO frequencies(Frequency,AudioLevel) ";
-                    command.CommandText += "VALUES(@Frequency,@AudioLevel)";
+                    command.CommandText = "INSERT INTO frequencies(Frequency,AudioLevel" + N + ") ";
+                    command.CommandText += "VALUES(@Frequency,@AudioLevel" + N2 + ")";
 
                     double f;
                     double value;
+                    double value2;
                     if (freq == "")
                     {
                         f = Convert.ToDouble(FtextBox.Text.Trim());
                         value = Convert.ToDouble(Levellabel.Text);
+                        value2 = 1.0;
                     }
                     else
                     {
                         f = Convert.ToDouble(freq);
                         value = 1.0;
+                        value2 = 1.0;
                     }
 
 
                     command.Parameters.AddWithValue("@Frequency", f);
                     command.Parameters.AddWithValue("@AudioLevel", value);
+                    if (N2 == ")")
+                    {
+                        //do nothing
+                    }
+                    else
+                    {
+                        command.Parameters.AddWithValue("@RXAudioLevel", Slot.Switch2);
+
+                    }
 
 
                     command.ExecuteNonQuery();
@@ -5180,6 +5234,18 @@ namespace WSPR_Sked
             string c = "";
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
+            string N3 = "";
+            if (HasNewFrequencyColumns())
+            {
+
+                N3 = ", RXAudioLevel = " +"1.0";
+
+            }
+            else
+            {
+
+                N3 = "";
+            }
             try
             {
                 double freq = Convert.ToDouble(FtextBox.Text.Trim());
@@ -5189,8 +5255,8 @@ namespace WSPR_Sked
 
                 MySqlCommand command = connection.CreateCommand();
 
-                c = "UPDATE frequencies SET Frequency = " + freq + ", AudioLevel = " + value + " WHERE frequencies.Frequency = " + freq;
-                //UPDATE `slots` SET `Antenna` = 'GP' WHERE `slots`.`Date` = '2025-02-28' AND `slots`.`Time` = '16:02:00'; 
+                c = "UPDATE frequencies SET Frequency = " + freq + ", AudioLevel = " + value + N3 + " WHERE frequencies.Frequency = " + freq;
+
                 command.CommandText = c;
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -5410,7 +5476,7 @@ namespace WSPR_Sked
                 databaseError = false;
                 slotFound = false;
                 bool slotok = await (findSlot(-1, date, nexttime));
-               
+
                 if (slotok)
                 {
                     if (!noSkedcheckBox.Checked)
@@ -5988,7 +6054,7 @@ namespace WSPR_Sked
             testPTTtimer.Enabled = false;
             slotActive = false;
             flashTX(false);
-            stopPlay = true;         
+            stopPlay = true;
 
         }
 
@@ -6014,7 +6080,7 @@ namespace WSPR_Sked
                         TXrunbutton2.BackColor = flashOn;
                     }
                 }
-                else 
+                else
                 {
                     if (noRigctld)
                     {
@@ -6032,7 +6098,7 @@ namespace WSPR_Sked
                         TXrunbutton2.BackColor = Color.Olive;
 
                     }
-                        TXRX = "RX: ";
+                    TXRX = "RX: ";
                 }
 
                 if (slotActive)
@@ -6050,7 +6116,7 @@ namespace WSPR_Sked
                 }
                 countdown++;
             }
-            else 
+            else
             {
                 TXrunbutton.BackColor = Color.Olive;
                 TXrunbutton.Text = "TX/RX idle";
@@ -6472,7 +6538,7 @@ namespace WSPR_Sked
                 bool high = LEDcheckBox.Checked;
                 await Task.Run(() =>
                 {
-                    ArduinoComms ard = new ArduinoComms(ip, port, pin, high,"","");
+                    ArduinoComms ard = new ArduinoComms(ip, port, pin, high, "", "");
                     reply = ard.response;
                     ok = ard.ok;
                 });
@@ -6638,49 +6704,8 @@ namespace WSPR_Sked
             FtextBox.Enabled = false; //default - don't allow editing of the frequency
         }
 
-        private void addF()
-        {
-            //FreqlistBox.Enabled = false;
-            trackBar1.Value = 100;
-            Levellabel.Text = "1.0";
-            FtextBox.Enabled = true;
-            FtextBox.Text = "";
-            newFcheckBox.Checked = true;
 
 
-            FreqgroupBox.Visible = true;
-            FBgroupBox.Visible = false;
-        }
-
-        private void deleteF()
-        {
-            if (FreqlistBox.SelectedIndex < 0)
-            {
-                Msg.OKMessageBox("No frequency selected", "");
-                return;
-            }
-            FreqlistBox.Enabled = false;
-            string del = FreqlistBox.SelectedItem.ToString();
-            string[] F = del.Split('\t');
-            DialogResult res;
-            if (FstandardtlistBox.Items.Contains(F[0]))
-            {
-                res = Msg.ynMessageBox("Standard WSPR frequency - go ahead?: " + F[0], "Standard F");
-                if (res == DialogResult.No)
-                {
-                    return;
-                }
-            }
-            res = Msg.ynMessageBox("Delete frequency: " + F[0], "Delete F");
-            if (res == DialogResult.Yes)
-            {
-                if (DeleteFrequency(""))
-                {
-                    FreqlistBox.Items.Remove(del);
-                }
-            }
-            FreqlistBox.Enabled = true;
-        }
 
         private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
@@ -6689,11 +6714,6 @@ namespace WSPR_Sked
             string lvl = v.ToString();
             Levellabel.Text = lvl;
             Volume = (float)(v); //dymamic volume that allows signal to be adjusted whilst in TX
-        }
-
-        private void addFbutton_Click(object sender, EventArgs e)
-        {
-            addF();
         }
 
 
@@ -6782,12 +6802,6 @@ namespace WSPR_Sked
         {
 
         }
-
-        private void deleteFbutton_Click(object sender, EventArgs e)
-        {
-            deleteF();
-        }
-
         private void FtextBox_TextChanged(object sender, EventArgs e)
         {
             if (!double.TryParse(FtextBox.Text, out double result) && FtextBox.Text != "")
@@ -7617,12 +7631,12 @@ namespace WSPR_Sked
                                 TulistBox.Items[hwId] = hwId.ToString() + "\t" + hw;
                                 ShowTulistBox.Items[hwId] = hwId.ToString() + "\t" + hw;
                             }
-                           else 
+                            else
                             {
                                 FilistBox.Items[hwId] = hwId.ToString() + "\t" + hw;
-                               
+
                             }
-                                AddtoHwList(hwId, hw, protocol, port, IP, baud, serial, type, channels, table);
+                            AddtoHwList(hwId, hw, protocol, port, IP, baud, serial, type, channels, table);
                         }
                     }
                     catch
@@ -7782,7 +7796,7 @@ namespace WSPR_Sked
                                 string[] f = fi.Split('\t');
                                 type = f[0];
                             }
-                            
+
                         }
                     }
                     catch
@@ -8230,7 +8244,7 @@ namespace WSPR_Sked
                 if (t > 0)
                 {
                     //Msg.TMessageBox("Selecting dates >" + t + " days not advised (slow)", "Range " + t + " days", 2500);
-                    rangelabel.Text = "Note: saving the slots may be slower if the date range is more than "+t+ " days";
+                    rangelabel.Text = "Note: saving the slots may be slower if the date range is more than " + t + " days";
                     rangelabel.Visible = true;
                 }
             }
@@ -8240,12 +8254,12 @@ namespace WSPR_Sked
         {
 
             if (repeatTimecheckBox.Checked)
-            {               
+            {
                 DaycheckBox.Checked = false;
                 NightcheckBox.Checked = false;
                 greygroupBox.Visible = false;
                 AllcheckBox.Checked = false;
-               
+
 
             }
             timeEnd.Enabled = repeatTimecheckBox.Checked;
@@ -8262,9 +8276,9 @@ namespace WSPR_Sked
             {
                 //Msg.OKMessageBox("Note: Date before today", "");
             }
-           
-                checkPeriod();
-            
+
+            checkPeriod();
+
         }
 
 
@@ -8386,12 +8400,12 @@ namespace WSPR_Sked
 
                     Save_Audio();
                     saveAllRigs();
-                    saveUserandPassword(db_user,db_pass);
+                    saveUserandPassword(db_user, db_pass);
                 }
 
                 Task.Delay(1000);
             }
-           
+
         }
 
 
@@ -8605,7 +8619,7 @@ namespace WSPR_Sked
             changeAntenna(TXAntenna, sw, sw2, tu, ch, ch2);
 
         }
-       
+
         private async void set410Mode()
         {
             var ret = "";
@@ -8786,7 +8800,7 @@ namespace WSPR_Sked
                         });
                         if (ret == "ok")
                         {
-                          
+
                         }
                         else
                         {
@@ -8845,7 +8859,7 @@ namespace WSPR_Sked
         private async Task<string> Arduino_Comms_Filter(int fi, string freq)
         {
             string ip = "192.168.0.208";
-          
+
             int port = 5000;
             bool high = true;
             ip = FIL[fi].IP;
@@ -8861,7 +8875,7 @@ namespace WSPR_Sked
 
             await Task.Run(() =>
             {
-                ArduinoComms ard = new ArduinoComms(ip, port, 0, high, "filter", freq); 
+                ArduinoComms ard = new ArduinoComms(ip, port, 0, high, "filter", freq);
                 reply = ard.response;
                 if (!ard.ok)
                 {
@@ -9000,7 +9014,7 @@ namespace WSPR_Sked
             {
 
                 await changeFilter(freq);
-            
+
             }
         }
 
@@ -10175,9 +10189,10 @@ namespace WSPR_Sked
         {       //retrieves times as LocalConstant not UTC
             DateTime sunrise = DateTime.MinValue;
             DateTime sunset = DateTime.MinValue;
-            try { 
+            try
+            {
                 //this method uses the REST API courtesy of sunrise-sunset.org
-                            
+
                 string date = Date.ToString("yyyy-MM-dd");
 
                 string url = $"https://api.sunrise-sunset.org/json?lat={latitude}&lng={longitude}&date={date}&formatted=0";
@@ -10196,7 +10211,7 @@ namespace WSPR_Sked
                 }
                 string responseStr = response.ToString();
                 JObject json = JObject.Parse(response);
-               
+
                 var results = json["results"];
 
                 sunrise = DateTime.Parse(results["sunrise"].ToString());
@@ -10220,21 +10235,21 @@ namespace WSPR_Sked
         {
             if (DaycheckBox.Checked)
             {
-                
+
                 NightcheckBox.Checked = false;
                 repeatTimecheckBox.Checked = false;
                 AllcheckBox.Checked = false;
                 timeEnd.Enabled = false;
                 greygroupBox.Visible = true;
                 greylistBox.Text = "1";
-               
+
 
             }
             else
             {
                 greygroupBox.Visible = false;
             }
-                checkPeriod();
+            checkPeriod();
 
         }
 
@@ -10242,7 +10257,7 @@ namespace WSPR_Sked
         {
             if (NightcheckBox.Checked)
             {
-               
+
                 DaycheckBox.Checked = false;
 
                 repeatTimecheckBox.Checked = false;
@@ -10250,7 +10265,7 @@ namespace WSPR_Sked
                 AllcheckBox.Checked = false;
                 greygroupBox.Visible = true;
                 greylistBox.Text = "1";
-               
+
 
             }
             else
@@ -10264,13 +10279,13 @@ namespace WSPR_Sked
         {
             if (AllcheckBox.Checked)
             {
-               
+
                 DaycheckBox.Checked = false;
                 NightcheckBox.Checked = false;
                 repeatTimecheckBox.Checked = false;
                 timeEnd.Enabled = false;
                 greygroupBox.Visible = false;
-                
+
 
             }
             checkPeriod();
@@ -10769,43 +10784,35 @@ namespace WSPR_Sked
             }
         }
 
-        /* private bool checkNewSlotColumns_2()
-         {
-             bool exists = false;
-             string ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
+        private bool checkNewFrequencyColumns()
+        {
+            bool exists = false;
+            string ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
 
 
-             using (MySqlConnection conn = new MySqlConnection(ConnectionString))
-             {
-                 conn.Open();
+            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            {
+                conn.Open();
 
-                 exists = CheckIfColumnExists(conn, "slots", "Filter");
-                 if (!exists)
-                 {
-                     return false;
-                 }
+                exists = CheckIfColumnExists(conn, "frequencies", "RXAudioLevel");
+                if (!exists)
+                {
+                    return false;
+                }
 
-             }
-             ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
-             using (MySqlConnection conn = new MySqlConnection(ConnectionString))
-             {
-                 conn.Open();
+            }
 
-                 exists = CheckIfColumnExists(conn, "antennas", "Filter");
-                 if (!exists)
-                 {
-                     return false;
-                 }
-             }
-             if (exists)
-             {
-                 return true;
-             }
-             else
-             {
-                 return false;
-             }
-         }*/
+            if (exists)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
         private bool CheckIfColumnExists(MySqlConnection conn, string table, string column)
         {
             bool exists = false;
@@ -11683,6 +11690,33 @@ namespace WSPR_Sked
                     selFiltertextBox.Text = old;
                 }
             }
+        }
+
+        private void FreqgroupBox_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Fsavebutton2_Click(object sender, EventArgs e)
+        {
+            saveFreq();
+        }
+
+       
+
+        private void newFcheckBox2_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void EditRXbutton_Click(object sender, EventArgs e)
+        {
+            RXAudiogroupBox.Visible = true;
+        }
+
+        private void RXAudiogroupBox_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 
