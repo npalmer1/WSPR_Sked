@@ -9992,20 +9992,12 @@ namespace WSPR_Sked
 
         private void AntnametextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // Allow only letters, digits, and basic punctuation
-            if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
-            {
-                e.Handled = true; // Block the character
-            }
+           
         }
 
         private void AntdesctextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // Allow only letters, digits, and basic punctuation
-            if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
-            {
-                e.Handled = true; // Block the character
-            }
+          
         }
 
         private void HwtextBox_KeyPress(object sender, KeyPressEventArgs e)
