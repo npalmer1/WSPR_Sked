@@ -365,7 +365,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.37";
+            string ver = "0.1.38";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -608,13 +608,23 @@ namespace WSPR_Sked
 
         private void Form1_Shown(object sender, EventArgs e)
         {
+            string nl = Environment.NewLine;
 
             if (!checkSlotDB("wspr_slots"))
             {
+                LoadError loadError = new LoadError();
+                if (!IsMySqlRunning())
+                {
+                    Msg.TMessageBox("MySQL server not running", "Check mySQL", 4000);
+                    loadError.labelText = "MySQL server not running" + nl + "...if it isn't installed then you should run wspr_mysql_setup.exe" + nl;
+                    loadError.labelText += "This will install and start MySQL and import the databases." + nl;
+                    loadError.labelText += "...You should then restart WSPR_Scheduler";
+                }
+                
                 this.Hide();
                 //Msg.TMessageBox("Unable to connect to mySQL", "Check mySQL", 4000);
                 savePrompt = false;
-                LoadError loadError = new LoadError();
+                
                 loadError.Show();
             }
 
@@ -673,8 +683,24 @@ namespace WSPR_Sked
             }
             return null;
         }
+        
 
-        private bool checkSlotDB(string slotdb)
+    private bool IsMySqlRunning()
+    {
+        try
+        {
+            var conn = new MySqlConnection("Server=localhost;Uid=root;Pwd=;");
+            conn.Open();
+            conn.Close();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private bool checkSlotDB(string slotdb)
         {
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slotdb;
 

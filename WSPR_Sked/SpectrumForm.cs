@@ -330,7 +330,7 @@ namespace WSPR_Sked
             try
             {
                 statusLabel.Text = "Idle";
-                cycleTimeLabel.Text = DateTime.Now.ToString("HH:mm:ss");
+                cycleTimeLabel.Text = DateTime.Now.ToUniversalTime().ToString("HH:mm:ss");
                 if (string.IsNullOrEmpty(wavPath) || !File.Exists(wavPath))
                 {
                     statusLabel.Text = "Waiting for WAV file...";

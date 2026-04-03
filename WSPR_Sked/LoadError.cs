@@ -12,6 +12,7 @@ namespace WSPR_Sked
 {
     public partial class LoadError : Form
     {
+        public string labelText ="";
         public LoadError()
         {
             InitializeComponent();
@@ -25,6 +26,10 @@ namespace WSPR_Sked
 
         private void LoadError_Load(object sender, EventArgs e)
         {
+            if (labelText == "")
+            {
+                label1.Text = labelText;
+            }
             this.BringToFront();
         }
     }
