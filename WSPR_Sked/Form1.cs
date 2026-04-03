@@ -605,7 +605,6 @@ namespace WSPR_Sked
             AllcheckBox.Checked = false;
             dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
         }
-
         private void Form1_Shown(object sender, EventArgs e)
         {
             string nl = Environment.NewLine;
