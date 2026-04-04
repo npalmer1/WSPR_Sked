@@ -635,9 +635,10 @@ namespace WSPR_Sked
                     loadError.labelText = "MySQL server not running" + nl + "...if it isn't installed then you should run wspr_mysql_setup.exe" + nl;
                     loadError.labelText += "This will install and start MySQL and import the databases." + nl;
                     loadError.labelText += "...You should then restart WSPR_Scheduler";*/
-                    string sqlFile = @"C:\WSPR_Sked\wspr_db.sql"; //<- probably need to be C:/WSPR_Sked/wspr_db.sql
-                                                                  // Returns true = OK to proceed with install, false = exit
-
+                    //string installFile = @"C:\WSPR_Sked\wspr_db.sql"; //<- probably need to be C:/WSPR_Sked/wspr_db.sql
+                                                                      // Returns true = OK to proceed with install, false = exit
+                    string installFile = @"C:\Program Files\WSPRinstaller\wspr_mysql_setup.exe";
+                  
                     bool check = await CheckXamppBeforeInstall();
 
                     if (check)
@@ -646,7 +647,7 @@ namespace WSPR_Sked
                     }
 
                     // No XAMPP issue — run the installer
-                    result = RunInstaller(sqlFile);
+                    result = RunInstaller(installFile);
                 }
 
                 this.Hide();
@@ -667,18 +668,25 @@ namespace WSPR_Sked
 
         public static int RunInstaller(string installerPath)
         {
-
-            var psi = new ProcessStartInfo
+            try
             {
-                FileName = installerPath,
-                Arguments = "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART",
-                UseShellExecute = true,
-                Verb = "runas"   // triggers UAC elevation
-            };
+                var psi = new ProcessStartInfo
+                {
+                    FileName = installerPath,
+                    Arguments = "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART",
+                    UseShellExecute = true,
+                    Verb = "runas"   // triggers UAC elevation
+                };
 
-            using var process = Process.Start(psi);
-            process.WaitForExit();
-            return process.ExitCode;  // 0 = success
+                using var process = Process.Start(psi);
+                process.WaitForExit();
+                return process.ExitCode;  // 0 = success
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to run installer: " + ex.Message, "Installer Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return -1;  // indicate failure
+            }
         }
 
         private static string GetXamppBase()
