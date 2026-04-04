@@ -7,6 +7,7 @@ using Maidenhead;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using MathNet.Numerics.Providers.LinearAlgebra;
+using Microsoft.VisualBasic;
 using MySql.Data.MySqlClient;
 using Mysqlx;
 using Mysqlx.Crud;
@@ -327,8 +328,15 @@ namespace WSPR_Sked
             KeyPreview = true;
             KeyDown += Form1_KeyDown;
             this.Shown += Form1_Shown;
-            InitializeComponent();
-
+            if (checkSlotDB("wspr_slots"))
+            {
+                InitializeComponent();
+            }
+            else
+            {
+                MessageBox.Show("Unable to connect to database. Please check your MySQL server and database settings.", "Database Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Windows.Forms.Application.Exit();
+            }
         }
 
         private bool HasNewSlotColumns()
