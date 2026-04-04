@@ -30,6 +30,7 @@ using System.Linq;
 using System.Management;
 using System.Net.Http;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.Pkcs;
@@ -612,7 +613,7 @@ namespace WSPR_Sked
             //checkMySQLDatabases();
         }
 
-        private void checkMySQLDatabases()
+        private async void checkMySQLDatabases()
         {
             string nl = Environment.NewLine;
 
@@ -628,7 +629,10 @@ namespace WSPR_Sked
                     loadError.labelText += "...You should then restart WSPR_Scheduler";*/
                     string sqlFile = @"C:\WSPR_Sked\wspr_db.sql"; //<- probably need to be C:/WSPR_Sked/wspr_db.sql
                                                                   // Returns true = OK to proceed with install, false = exit
-                    if (CheckXamppBeforeInstall())
+
+                    bool check = await CheckXamppBeforeInstall();
+
+                    if (check)
                     {
                         return;
                     }
@@ -688,13 +692,39 @@ namespace WSPR_Sked
             return null;
         }
 
-        private static void StartXamppMySQL(string xamppBase)
+        private static async Task<bool> WaitForMySqlAsync(string host = "127.0.0.1",int port = 3306,int timeoutMs = 8000)
+        {
+                var sw = Stopwatch.StartNew();
+
+                while (sw.ElapsedMilliseconds < timeoutMs)
+                {
+                    try
+                    {
+                        using var client = new TcpClient();
+                        var connectTask = client.ConnectAsync(host, port);
+                        var delayTask = Task.Delay(500);
+
+                        var completed = await Task.WhenAny(connectTask, delayTask);
+
+                        if (completed == connectTask && client.Connected)
+                            return true;
+                    }
+                    catch
+                    { }
+
+                    await Task.Delay(300);
+                }
+
+                return false;            
+        }
+
+        private async Task<bool> StartXamppMySQL(string xamppBase)
         {
             string mysqld = Path.Combine(xamppBase, @"mysql\bin\mysqld.exe");
             string myIni = Path.Combine(xamppBase, @"mysql\bin\my.ini");
 
             if (!File.Exists(mysqld))
-                return;
+                return false;
 
             var psi = new ProcessStartInfo
             {
@@ -705,9 +735,19 @@ namespace WSPR_Sked
             };
 
             Process.Start(psi);
+            bool ready = await WaitForMySqlAsync();
+
+            if (!ready)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
 
             // Give MySQL time to come up
-            System.Threading.Thread.Sleep(8000);
+            System.Threading.Thread.Sleep(1000);
         }
 
         private static bool WsprDatabaseExists(string mysqlBinPath)
@@ -743,7 +783,7 @@ namespace WSPR_Sked
             }
         }
 
-        public static bool CheckXamppBeforeInstall()
+        private async Task<bool> CheckXamppBeforeInstall()
         {
             string xamppBase = GetXamppBase();
 
@@ -760,7 +800,17 @@ namespace WSPR_Sked
             }
 
             // Step 2 — try starting XAMPP MySQL then recheck
-            StartXamppMySQL(xamppBase);
+            var result = await StartXamppMySQL(xamppBase);
+            if ((bool)result == false)
+            {
+                MessageBox.Show(
+                    "XAMPP has been detected but MySQL could not be started automatically.\n\n" +
+                    "Please start MySQL manually via the XAMPP Control Panel and then restart WSPR Scheduler.\n\n Is another instance of MySQL or another app using port 3306?",
+                    "XAMPP MySQL Start Failed",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return true;  // exit — user needs to fix manually
+            }
 
             if (WsprDatabaseExists(mysqlBin))
             {               
