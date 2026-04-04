@@ -8668,12 +8668,18 @@ namespace WSPR_Sked
                 res = Msg.ynMessageBox("Save all settings before exit (y/n)?", "Save Settings");
                 if (res == DialogResult.Yes)
                 {
-                    SaveAll();
-                    SaveRigctl();
-
-                    Save_Audio();
-                    saveAllRigs();
-                    saveUserandPassword(db_user, db_pass);
+                    if (checkSlotDB("wspr_slots"))
+                    {
+                        SaveAll();
+                        SaveRigctl();
+                        Save_Audio();
+                        saveAllRigs();
+                        saveUserandPassword(db_user, db_pass);
+                    }
+                    else
+                    {
+                          Msg.OKMessageBox("Unable to save settings to database", "Check database");
+                    }
                 }
 
                 Task.Delay(1000);
