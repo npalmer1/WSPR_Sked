@@ -21,12 +21,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_0CB46502C1414FA5994F7B7A8D1C5EA5"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_10C593D447874D00A9DF3322110A5517"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -88,6 +82,12 @@
         "Entry"
         {
         "MsmKey" = "8:_BF608FB736DD47AE9507F53F29A79533"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D8E5668BF8F1475D94B57BFFF36C7216"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -210,26 +210,6 @@
             {
             "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libgcc_s_seh-1.dll"
             "TargetName" = "8:libgcc_s_seh-1.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0CB46502C1414FA5994F7B7A8D1C5EA5"
-            {
-            "SourcePath" = "8:wspr_mysql_setup.exe"
-            "TargetName" = "8:wspr_mysql_setup.exe"
             "Tag" = "8:"
             "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
             "Condition" = "8:"
@@ -466,6 +446,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D8E5668BF8F1475D94B57BFFF36C7216"
+            {
+            "SourcePath" = "8:C:\\WSPR_Setup\\wspr_mysql_setup.exe"
+            "TargetName" = "8:wspr_mysql_setup.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E3ACF6EC8E2C4995AC49A0DAD91BB116"
             {
             "SourcePath" = "8:..\\rigctl.exe"
@@ -575,7 +575,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:WSPRSked"
         "ProductCode" = "8:{8FC60B61-C4F5-4FBE-B042-842D926409F1}"
-        "PackageCode" = "8:{1E166A61-72F7-49E5-827C-B3B35A1DE7FF}"
+        "PackageCode" = "8:{90079556-14B8-4B58-88F9-5EEF680A6FF1}"
         "UpgradeCode" = "8:{ECFB22B5-B0E1-41CD-ACDD-002824EF3F6D}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
@@ -1110,7 +1110,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F3F030A295CD4092B8B6D1E734EA79A5"
             {
-            "SourcePath" = "8:..\\WSPR_Sked\\obj\\Debug\\net9.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\WSPR_Sked\\obj\\Release\\net9.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B121CBA499204C9D896DB0279EAFA74E"

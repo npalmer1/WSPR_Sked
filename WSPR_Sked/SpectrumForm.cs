@@ -80,7 +80,7 @@ namespace WSPR_Sked
 
             // Status label
             statusLabel = new Label();
-            statusLabel.Location = new Point(300, 10);
+            statusLabel.Location = new Point(340, 10);
             statusLabel.Font = new Font(statusLabel.Font, FontStyle.Bold);
             statusLabel.ForeColor = Color.Yellow;
             statusLabel.BackColor = Color.DarkSlateGray;
@@ -117,7 +117,7 @@ namespace WSPR_Sked
             this.Controls.Add(gainControl);
 
             cycleTimeLabel = new Label();
-            cycleTimeLabel.Location = new Point(170, 10);
+            cycleTimeLabel.Location = new Point(160, 10);
             cycleTimeLabel.Width = 80;
             //cycleTimeLabel.Height = 20;
             cycleTimeLabel.Font = new Font(cycleTimeLabel.Font, FontStyle.Bold);
@@ -330,7 +330,8 @@ namespace WSPR_Sked
             try
             {
                 statusLabel.Text = "Idle";
-                cycleTimeLabel.Text = DateTime.Now.ToUniversalTime().ToString("HH:mm:ss");
+                cycleTimeLabel.Text = DateTime.Now.ToUniversalTime().ToString("HH:mm:ss") + " utc   (" + DateTime.Now.ToString("HH:mm") + " lt)";
+
                 if (string.IsNullOrEmpty(wavPath) || !File.Exists(wavPath))
                 {
                     statusLabel.Text = "Waiting for WAV file...";

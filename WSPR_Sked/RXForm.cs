@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Drawing;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WSPR_Sked
 {
@@ -211,9 +212,16 @@ namespace WSPR_Sked
             Spectrumform.freq = Freq;
         }
 
-        public async Task set_time(string time)
+        public async Task set_time(string time, string lt)
         {
-            Timelabel.Text = time;
+            if (!time.StartsWith(lt))
+            {
+                Timelabel.Text = time + " UTC    (" + lt + " LT)";
+            }
+            else
+            {
+                Timelabel.Text = time + " UTC";
+            }
 
         }
 

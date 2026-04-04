@@ -89,7 +89,7 @@
             // button1
             // 
             button1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            button1.Location = new System.Drawing.Point(770, 9);
+            button1.Location = new System.Drawing.Point(882, 9);
             button1.Margin = new System.Windows.Forms.Padding(0);
             button1.Name = "button1";
             button1.Size = new System.Drawing.Size(140, 20);
@@ -226,7 +226,7 @@
             // 
             OSDlistBox.FormattingEnabled = true;
             OSDlistBox.Items.AddRange(new object[] { "Off", "1", "2", "3", "4", "5" });
-            OSDlistBox.Location = new System.Drawing.Point(711, 10);
+            OSDlistBox.Location = new System.Drawing.Point(823, 10);
             OSDlistBox.Name = "OSDlistBox";
             OSDlistBox.Size = new System.Drawing.Size(43, 19);
             OSDlistBox.TabIndex = 7;
@@ -235,7 +235,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(638, 11);
+            label3.Location = new System.Drawing.Point(750, 11);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(67, 15);
             label3.TabIndex = 8;
@@ -245,7 +245,7 @@
             // 
             DeepcheckBox.AutoSize = true;
             DeepcheckBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            DeepcheckBox.Location = new System.Drawing.Point(527, 9);
+            DeepcheckBox.Location = new System.Drawing.Point(639, 9);
             DeepcheckBox.Name = "DeepcheckBox";
             DeepcheckBox.Size = new System.Drawing.Size(89, 17);
             DeepcheckBox.TabIndex = 9;
@@ -257,7 +257,7 @@
             // 
             QuickcheckBox.AutoSize = true;
             QuickcheckBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            QuickcheckBox.Location = new System.Drawing.Point(527, 32);
+            QuickcheckBox.Location = new System.Drawing.Point(639, 32);
             QuickcheckBox.Name = "QuickcheckBox";
             QuickcheckBox.Size = new System.Drawing.Size(91, 17);
             QuickcheckBox.TabIndex = 10;
@@ -268,7 +268,7 @@
             // OSDlabel
             // 
             OSDlabel.AutoSize = true;
-            OSDlabel.Location = new System.Drawing.Point(638, 32);
+            OSDlabel.Location = new System.Drawing.Point(750, 32);
             OSDlabel.Name = "OSDlabel";
             OSDlabel.Size = new System.Drawing.Size(48, 15);
             OSDlabel.TabIndex = 11;
@@ -277,7 +277,7 @@
             // uploadcheckBox
             // 
             uploadcheckBox.AutoSize = true;
-            uploadcheckBox.Location = new System.Drawing.Point(794, 40);
+            uploadcheckBox.Location = new System.Drawing.Point(906, 40);
             uploadcheckBox.Name = "uploadcheckBox";
             uploadcheckBox.Size = new System.Drawing.Size(95, 19);
             uploadcheckBox.TabIndex = 12;
@@ -515,7 +515,7 @@
             // 
             Timelabel.AutoSize = true;
             Timelabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            Timelabel.Location = new System.Drawing.Point(358, 11);
+            Timelabel.Location = new System.Drawing.Point(417, 11);
             Timelabel.Name = "Timelabel";
             Timelabel.Size = new System.Drawing.Size(35, 15);
             Timelabel.TabIndex = 48;

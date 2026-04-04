@@ -5574,10 +5574,11 @@ namespace WSPR_Sked
             string time = hourmin.ToString("HH:mm");
 
             string fulltime = now.ToString("HH:mm:ss");
+            string lt = LT.ToString("HH:mm");
 
             CurrTime = fulltime;
             Timelabel.Text = fulltime;
-            rxForm.set_time(fulltime);
+            rxForm.set_time(fulltime, lt);
 
 
             /*if (s == 19)
@@ -6819,8 +6820,9 @@ namespace WSPR_Sked
             string fulltime = time + ":" + Convert.ToString(s).PadLeft(2, '0');
             CurrTime = fulltime;
             Timelabel.Text = CurrTime;
+            string lt = LT.ToString("HH:mm");
 
-            await rxForm.set_time(fulltime);
+            await rxForm.set_time(fulltime, lt);
 
             LTlabel.Text = LT.ToString("HH:mm").Trim();
 
