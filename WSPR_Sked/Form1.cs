@@ -612,7 +612,6 @@ namespace WSPR_Sked
             //checkMySQLDatabases();
         }
 
-
         private void checkMySQLDatabases()
         {
             string nl = Environment.NewLine;
