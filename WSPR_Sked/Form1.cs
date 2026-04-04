@@ -637,7 +637,7 @@ namespace WSPR_Sked
                     loadError.labelText += "...You should then restart WSPR_Scheduler";*/
                     //string installFile = @"C:\WSPR_Sked\wspr_db.sql"; //<- probably need to be C:/WSPR_Sked/wspr_db.sql
                                                                       // Returns true = OK to proceed with install, false = exit
-                    string installFile = @"C:\Program Files\WSPRinstaller\wspr_mysql_setup.exe";
+                    string installFile = @"C:\WSPR_Sked\wspr_mysql_setup.exe";
                   
                     bool check = await CheckXamppBeforeInstall();
 
