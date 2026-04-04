@@ -322,6 +322,7 @@ namespace WSPR_Sked
 
         public Form1()
         {
+            checkMySQLDatabases();
             KeyPreview = true;
             KeyDown += Form1_KeyDown;
             this.Shown += Form1_Shown;
@@ -607,27 +608,222 @@ namespace WSPR_Sked
         }
         private void Form1_Shown(object sender, EventArgs e)
         {
+           
+            //checkMySQLDatabases();
+        }
+
+        private void checkMySQLDatabases()
+        {
             string nl = Environment.NewLine;
 
             if (!checkSlotDB("wspr_slots"))
             {
+                int result = 1;
                 LoadError loadError = new LoadError();
                 if (!IsMySqlRunning())
                 {
-                    Msg.TMessageBox("MySQL server not running", "Check mySQL", 4000);
+                    /*Msg.TMessageBox("MySQL server not running", "Check mySQL", 4000);
                     loadError.labelText = "MySQL server not running" + nl + "...if it isn't installed then you should run wspr_mysql_setup.exe" + nl;
                     loadError.labelText += "This will install and start MySQL and import the databases." + nl;
-                    loadError.labelText += "...You should then restart WSPR_Scheduler";
+                    loadError.labelText += "...You should then restart WSPR_Scheduler";*/
+                    string sqlFile = @"C:\WSPR_Sked\wspr_db.sql"; //<- probably need to be C:/WSPR_Sked/wspr_db.sql
+                                                                  // Returns true = OK to proceed with install, false = exit
+                    if (CheckXamppBeforeInstall())
+                    {
+                        return;
+                    }
+
+                    // No XAMPP issue — run the installer
+                    result = RunInstaller(sqlFile);
                 }
-                
+
                 this.Hide();
                 //Msg.TMessageBox("Unable to connect to mySQL", "Check mySQL", 4000);
                 savePrompt = false;
-                
-                loadError.Show();
+                if (result == 0)
+                {
+                    Msg.TMessageBox("MySQL installed - please restart WSPR Scheduler", "MySQL Installed", 4000);
+                    System.Windows.Forms.Application.Exit();
+                }
+                else
+                {
+
+                    loadError.Show();
+                }
+            }
+        }
+
+        public static int RunInstaller(string installerPath)
+        {
+
+            var psi = new ProcessStartInfo
+            {
+                FileName = installerPath,
+                Arguments = "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART",
+                UseShellExecute = true,
+                Verb = "runas"   // triggers UAC elevation
+            };
+
+            using var process = Process.Start(psi);
+            process.WaitForExit();
+            return process.ExitCode;  // 0 = success
+        }
+
+        private static string GetXamppBase()
+        {
+            string[] locations = new[]
+            {
+            @"C:\xampp",
+            @"C:\Program Files\xampp",
+            @"C:\Program Files (x86)\xampp",
+            @"D:\xampp"
+        };
+
+            foreach (var path in locations)
+            {
+                if (File.Exists(Path.Combine(path, @"mysql\bin\mysql.exe")))
+                    return path;
             }
 
+            return null;
         }
+
+        private static void StartXamppMySQL(string xamppBase)
+        {
+            string mysqld = Path.Combine(xamppBase, @"mysql\bin\mysqld.exe");
+            string myIni = Path.Combine(xamppBase, @"mysql\bin\my.ini");
+
+            if (!File.Exists(mysqld))
+                return;
+
+            var psi = new ProcessStartInfo
+            {
+                FileName = mysqld,
+                Arguments = $"--defaults-file=\"{myIni}\" --standalone",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            Process.Start(psi);
+
+            // Give MySQL time to come up
+            System.Threading.Thread.Sleep(8000);
+        }
+
+        private static bool WsprDatabaseExists(string mysqlBinPath)
+        {
+            string mysql = Path.Combine(mysqlBinPath, "mysql.exe");
+
+            if (!File.Exists(mysql))
+                return false;
+
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = mysql,
+                    Arguments = "-u root --silent --skip-column-names " +
+                                             "-e \"SELECT COUNT(*) FROM information_schema.SCHEMATA " +
+                                             "WHERE SCHEMA_NAME='wspr';\"",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                };
+
+                using var process = Process.Start(psi);
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+
+                return output.Trim() == "1";
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool CheckXamppBeforeInstall()
+        {
+            string xamppBase = GetXamppBase();
+
+            // No XAMPP — proceed with normal install
+            if (xamppBase == null)
+                return false;
+
+            string mysqlBin = Path.Combine(xamppBase, @"mysql\bin");
+
+            // Step 1 — check if DB already accessible (MySQL may already be running)
+            if (WsprDatabaseExists(mysqlBin))
+            {               
+                return true;  // exit — nothing to do
+            }
+
+            // Step 2 — try starting XAMPP MySQL then recheck
+            StartXamppMySQL(xamppBase);
+
+            if (WsprDatabaseExists(mysqlBin))
+            {               
+                return true;  // exit — nothing to do
+            }
+
+            // Still not accessible — warn user of DB error
+            MessageBox.Show(
+                "XAMPP is installed and MySQL is running, but the WSPR database could not be accessed.\n\n" +               
+                "Please check XAMPP MySQL and import the database manually via phpMyAdmin:\n" +
+                " from C:\\WSPR_Sked\\wspr_db.sql",
+                "XAMPP Database Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+            return true;  // exit — user needs to fix manually
+        }
+
+
+      
+
+        public static bool IsXamppInstalled()
+        {
+            // XAMPP is almost always in one of these locations
+            string[] commonPaths = new[]
+            {
+                 @"C:\xampp\mysql\bin\mysqld.exe",
+                 @"C:\xampp\mysql\bin\mysql.exe",
+                 @"C:\Program Files\xampp\mysql\bin\mysqld.exe",
+                 @"C:\Program Files (x86)\xampp\mysql\bin\mysqld.exe",
+                 @"D:\xampp\mysql\bin\mysqld.exe"
+            };
+
+            foreach (var path in commonPaths)
+            {
+                if (File.Exists(path))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static bool CheckXamppAndWarn(string sqlFilePath)
+        {
+            if (!IsXamppInstalled())
+                return false;   // no XAMPP, carry on with normal install
+
+            string message =
+                "XAMPP has been detected on this machine.\r\n\r\n" +
+                "WSPR uses its own MySQL installation which may conflict with XAMPP's MySQL.\r\n\r\n" +
+                "Please import the database manually using phpMyAdmin or the XAMPP MySQL shell:\r\n\r\n" +
+                $"    {sqlFilePath}\r\n\r\n" +
+                "Click OK to continue once you have imported the database, or Cancel to abort.";
+
+            var result = MessageBox.Show(
+                message,
+                "XAMPP Detected — Manual Import Required",
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Warning);
+
+            return true; ;  // true = user wants to abort
+        }
+
+
 
         private void EnsureIndexes()
         {
