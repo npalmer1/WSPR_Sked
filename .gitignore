@@ -370,3 +370,8 @@ FodyWeavers.xsd
 !LICENSE.TXT
 *.out
 *.bak
+
+#ignore the release folder
+WSPRSked/
+#ignore this as its too large for Github >100Mb
+wspr_mysql_setup.exe
