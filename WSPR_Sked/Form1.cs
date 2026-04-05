@@ -335,7 +335,7 @@ namespace WSPR_Sked
             else
             {
                 MessageBox.Show("Unable to connect to database. Please check your MySQL server and database settings.", "Database Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                System.Windows.Forms.Application.Exit();
+                this.BeginInvoke(new Action(() => System.Windows.Forms.Application.Exit()));
             }
         }
 
@@ -647,7 +647,7 @@ namespace WSPR_Sked
                     }
 
                     // No XAMPP issue — run the installer
-                    result = RunInstaller(installFile);
+                    //result = RunInstaller(installFile);   //don't run instalelr - prompt to exit and run externally
                 }
 
                 this.Hide();
@@ -656,7 +656,7 @@ namespace WSPR_Sked
                 if (result == 0)
                 {
                     Msg.TMessageBox("MySQL installed - please restart WSPR Scheduler", "MySQL Installed", 4000);
-                    System.Windows.Forms.Application.Exit();
+                    this.BeginInvoke(new Action(() => System.Windows.Forms.Application.Exit()));
                 }
                 else
                 {
@@ -963,7 +963,7 @@ namespace WSPR_Sked
 
     private bool checkSlotDB(string slotdb)
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slotdb;
+            string myConnectionString = "server=" + serverName + ";Port=3306; user id=" + db_user + ";password=" + db_pass + ";database=" + slotdb + ";SslMode=None;"; 
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
