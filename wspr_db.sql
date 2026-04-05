@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 05, 2026 at 01:39 PM
+-- Generation Time: Apr 02, 2026 at 10:40 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,7 +32,7 @@ USE `wspr`;
 CREATE TABLE `antennas` (
   `AntNo` int(11) NOT NULL,
   `Antenna` varchar(50) NOT NULL,
-  `Description` varchar(250) NOT NULL,
+  `Description` text NOT NULL,
   `Switch` int(11) NOT NULL,
   `Tuner` int(11) NOT NULL,
   `Rotator` tinyint(1) NOT NULL,
@@ -52,14 +52,14 @@ CREATE TABLE `antennas` (
 CREATE TABLE `filters` (
   `Id` int(11) NOT NULL,
   `Name` varchar(50) NOT NULL,
-  `Protocol` varchar(50) NOT NULL,
-  `Port` varchar(50) NOT NULL,
-  `IP` varchar(50) NOT NULL,
-  `Baud` varchar(50) NOT NULL,
-  `Serial` varchar(50) NOT NULL,
+  `Protocol` text NOT NULL,
+  `Port` text NOT NULL,
+  `IP` text NOT NULL,
+  `Baud` text NOT NULL,
+  `Serial` text NOT NULL,
   `Channels` int(11) NOT NULL,
-  `ChannelType` varchar(50) NOT NULL,
-  `Type` varchar(50) NOT NULL
+  `ChannelType` text NOT NULL,
+  `Type` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -83,11 +83,11 @@ CREATE TABLE `frequencies` (
 
 CREATE TABLE `rigctl` (
   `RigctlID` smallint(3) NOT NULL,
-  `Radio` varchar(500) NOT NULL,
-  `COMport` varchar(50) NOT NULL,
-  `Baud` varchar(50) NOT NULL,
-  `IPv4` varchar(50) NOT NULL,
-  `Port` varchar(50) NOT NULL,
+  `Radio` text NOT NULL,
+  `COMport` text NOT NULL,
+  `Baud` text NOT NULL,
+  `IPv4` text NOT NULL,
+  `Port` text NOT NULL,
   `norigctld` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -99,25 +99,25 @@ CREATE TABLE `rigctl` (
 
 CREATE TABLE `rigs` (
   `id` int(11) NOT NULL,
-  `rigname` varchar(500) NOT NULL,
+  `rigname` text NOT NULL,
   `type` int(11) NOT NULL,
   `selected` int(11) NOT NULL,
-  `TXcommand` varchar(500) NOT NULL,
-  `RXcommand` varchar(500) NOT NULL,
-  `TXptt` varchar(500) DEFAULT NULL,
-  `command1` varchar(500) DEFAULT NULL,
-  `command2` varchar(500) DEFAULT NULL,
-  `command3` varchar(500) DEFAULT NULL,
-  `command4` varchar(500) DEFAULT NULL,
-  `reply1` varchar(500) NOT NULL,
-  `reply2` varchar(500) NOT NULL,
-  `reply3` varchar(500) NOT NULL,
-  `reply4` varchar(500) NOT NULL,
-  `Protocol` varchar(50) DEFAULT NULL,
-  `Port` varchar(50) DEFAULT NULL,
-  `IP` varchar(50) DEFAULT NULL,
-  `Baud` varchar(50) DEFAULT NULL,
-  `Serial` varchar(50) DEFAULT NULL
+  `TXcommand` text NOT NULL,
+  `RXcommand` text NOT NULL,
+  `TXptt` text DEFAULT NULL,
+  `command1` text DEFAULT NULL,
+  `command2` text DEFAULT NULL,
+  `command3` text DEFAULT NULL,
+  `command4` text DEFAULT NULL,
+  `reply1` text NOT NULL,
+  `reply2` text NOT NULL,
+  `reply3` text NOT NULL,
+  `reply4` text NOT NULL,
+  `Protocol` text DEFAULT NULL,
+  `Port` text DEFAULT NULL,
+  `IP` text DEFAULT NULL,
+  `Baud` text DEFAULT NULL,
+  `Serial` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -129,14 +129,14 @@ CREATE TABLE `rigs` (
 CREATE TABLE `switches` (
   `Id` int(11) NOT NULL,
   `Name` varchar(50) NOT NULL,
-  `Protocol` varchar(50) NOT NULL,
-  `Port` varchar(50) NOT NULL,
-  `IP` varchar(50) NOT NULL,
-  `Baud` varchar(50) NOT NULL,
-  `Serial` varchar(50) NOT NULL,
+  `Protocol` text NOT NULL,
+  `Port` text NOT NULL,
+  `IP` text NOT NULL,
+  `Baud` text NOT NULL,
+  `Serial` text NOT NULL,
   `Channels` int(11) NOT NULL,
-  `ChannelType` varchar(50) NOT NULL,
-  `Type` varchar(50) NOT NULL
+  `ChannelType` text NOT NULL,
+  `Type` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -148,14 +148,14 @@ CREATE TABLE `switches` (
 CREATE TABLE `tuners` (
   `Id` int(11) NOT NULL,
   `Name` varchar(50) NOT NULL,
-  `Protocol` varchar(50) NOT NULL,
-  `Port` varchar(50) NOT NULL,
-  `IP` varchar(50) NOT NULL,
-  `Baud` varchar(50) NOT NULL,
-  `Serial` varchar(50) NOT NULL,
+  `Protocol` text NOT NULL,
+  `Port` text NOT NULL,
+  `IP` text NOT NULL,
+  `Baud` text NOT NULL,
+  `Serial` text NOT NULL,
   `Channels` int(11) NOT NULL,
-  `ChannelType` varchar(50) NOT NULL,
-  `Type` varchar(50) NOT NULL
+  `ChannelType` text NOT NULL,
+  `Type` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -223,7 +223,7 @@ CREATE TABLE `rxsettings` (
   `inputdevice` int(11) NOT NULL,
   `outlevel` int(11) NOT NULL,
   `inlevel` int(11) NOT NULL,
-  `wsprdpath` varchar(500) NOT NULL,
+  `wsprdpath` text NOT NULL,
   `samedev` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -235,31 +235,31 @@ CREATE TABLE `rxsettings` (
 
 CREATE TABLE `settings` (
   `ConfigID` int(3) NOT NULL,
-  `Callsign` varchar(250) NOT NULL,
-  `BaseCall` varchar(250) NOT NULL,
+  `Callsign` text NOT NULL,
+  `BaseCall` text NOT NULL,
   `Offset` int(4) NOT NULL,
   `DefaultF` double NOT NULL,
   `Power` int(10) NOT NULL,
   `PowerW` int(5) NOT NULL,
-  `FList` varchar(1024) NOT NULL,
-  `Locator` varchar(50) NOT NULL,
+  `FList` text NOT NULL,
+  `Locator` text NOT NULL,
   `LocatorLong` tinyint(1) NOT NULL,
-  `DefaultAnt` varchar(250) NOT NULL,
+  `DefaultAnt` text NOT NULL,
   `Alpha` double NOT NULL,
   `DefaultAudio` int(11) NOT NULL,
-  `HamlibPath` varchar(500) NOT NULL,
+  `HamlibPath` text NOT NULL,
   `MsgType` int(11) NOT NULL,
-  `TimeZone` varchar(250) NOT NULL,
+  `TimeZone` text NOT NULL,
   `AllowType2` tinyint(1) NOT NULL,
   `oneMsg` tinyint(1) NOT NULL,
-  `WsprmsgPath` varchar(500) NOT NULL,
+  `WsprmsgPath` text NOT NULL,
   `VolumeLevel` int(11) NOT NULL,
   `stopsolar` tinyint(1) NOT NULL,
   `stopRX` tinyint(1) NOT NULL,
   `Riseoff` int(11) NOT NULL,
   `Setoff` int(11) NOT NULL,
   `RXonly` tinyint(1) NOT NULL,
-  `SlotDB` varchar(250) NOT NULL,
+  `SlotDB` text NOT NULL,
   `selectedFilter` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -435,7 +435,7 @@ CREATE TABLE `slots` (
   `Offset` int(11) NOT NULL,
   `Power` int(11) NOT NULL,
   `PowerW` double NOT NULL,
-  `Antenna` varchar(250) NOT NULL,
+  `Antenna` text NOT NULL,
   `Tuner` int(3) NOT NULL,
   `Switch` int(3) NOT NULL,
   `SwitchPort` int(11) NOT NULL,
@@ -447,7 +447,7 @@ CREATE TABLE `slots` (
   `Repeating` tinyint(1) NOT NULL,
   `TimeEnd` time NOT NULL,
   `RptTime` tinyint(1) NOT NULL,
-  `Parent` varchar(250) NOT NULL,
+  `Parent` text NOT NULL,
   `Audio` int(11) NOT NULL,
   `SlotNo` int(11) NOT NULL,
   `MsgType` int(11) NOT NULL,
@@ -468,7 +468,7 @@ ALTER TABLE `slots`
   ADD PRIMARY KEY (`Date`,`Time`),
   ADD KEY `idx_slots_date` (`Date`),
   ADD KEY `idx_slots_datetime` (`Date`,`Time`),
-  ADD KEY `idx_slots_parent` (`Parent`);
+  ADD KEY `idx_slots_parent` (`Parent`(768));
 --
 -- Database: `wspr_slots_test`
 --
@@ -488,7 +488,7 @@ CREATE TABLE `slots` (
   `offset` int(11) NOT NULL,
   `power` int(11) NOT NULL,
   `powerw` double DEFAULT NULL,
-  `antenna` varchar(250) NOT NULL,
+  `antenna` text NOT NULL,
   `tuner` int(3) NOT NULL,
   `switch` int(3) NOT NULL,
   `switchport` int(11) NOT NULL,
@@ -500,7 +500,7 @@ CREATE TABLE `slots` (
   `repeating` tinyint(1) NOT NULL,
   `timeend` time NOT NULL,
   `rpttime` tinyint(1) NOT NULL,
-  `parent` varchar(250) NOT NULL,
+  `parent` text NOT NULL,
   `audio` int(11) NOT NULL,
   `slotno` int(11) NOT NULL,
   `msgtype` int(11) NOT NULL,
