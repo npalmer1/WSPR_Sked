@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
@@ -370,6 +370,9 @@
             SwlistBox = new System.Windows.Forms.ListBox();
             tabPage6 = new System.Windows.Forms.TabPage();
             RXAudiogroupBox = new System.Windows.Forms.GroupBox();
+            panel2 = new System.Windows.Forms.Panel();
+            SaveRXAudiobutton = new System.Windows.Forms.Button();
+            CancelRXAudiobutton = new System.Windows.Forms.Button();
             trackBarGain = new System.Windows.Forms.TrackBar();
             label102 = new System.Windows.Forms.Label();
             label107 = new System.Windows.Forms.Label();
@@ -455,9 +458,6 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
-            SaveRXAudiobutton = new System.Windows.Forms.Button();
-            CancelRXAudiobutton = new System.Windows.Forms.Button();
-            panel2 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -479,12 +479,12 @@
             HwSerialgroupBox.SuspendLayout();
             tabPage6.SuspendLayout();
             RXAudiogroupBox.SuspendLayout();
+            panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBarGain).BeginInit();
             panel1.SuspendLayout();
             tabPage7.SuspendLayout();
             RiggroupBox.SuspendLayout();
             rigserialgroupBox.SuspendLayout();
-            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // monthCalendar1
@@ -517,23 +517,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle4;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -2994,10 +2994,10 @@
             tabPage4.Controls.Add(FreqlistBox);
             tabPage4.Controls.Add(AgroupBox);
             tabPage4.Controls.Add(AntlistBox);
-            tabPage4.Location = new System.Drawing.Point(4, 24);
+            tabPage4.Location = new System.Drawing.Point(4, 22);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1177, 649);
+            tabPage4.Size = new System.Drawing.Size(1177, 651);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
@@ -3287,7 +3287,7 @@
             FreqgroupBox.Controls.Add(FtextBox);
             FreqgroupBox.Controls.Add(label44);
             FreqgroupBox.Controls.Add(label43);
-            FreqgroupBox.Location = new System.Drawing.Point(73, 159);
+            FreqgroupBox.Location = new System.Drawing.Point(83, 197);
             FreqgroupBox.Name = "FreqgroupBox";
             FreqgroupBox.Size = new System.Drawing.Size(329, 228);
             FreqgroupBox.TabIndex = 4;
@@ -4104,9 +4104,9 @@
             tabPage6.Controls.Add(label97);
             tabPage6.Controls.Add(audioOutlistBox);
             tabPage6.Controls.Add(audioInlistBox);
-            tabPage6.Location = new System.Drawing.Point(4, 22);
+            tabPage6.Location = new System.Drawing.Point(4, 24);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new System.Drawing.Size(1177, 651);
+            tabPage6.Size = new System.Drawing.Size(1177, 649);
             tabPage6.TabIndex = 5;
             tabPage6.Text = "RX & Sound config";
             // 
@@ -4129,6 +4129,34 @@
             RXAudiogroupBox.TabStop = false;
             RXAudiogroupBox.Text = "RX Audio";
             RXAudiogroupBox.Enter += RXAudiogroupBox_Enter;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(SaveRXAudiobutton);
+            panel2.Controls.Add(CancelRXAudiobutton);
+            panel2.Location = new System.Drawing.Point(89, 202);
+            panel2.Name = "panel2";
+            panel2.Size = new System.Drawing.Size(150, 37);
+            panel2.TabIndex = 30;
+            panel2.Visible = false;
+            // 
+            // SaveRXAudiobutton
+            // 
+            SaveRXAudiobutton.Location = new System.Drawing.Point(7, 9);
+            SaveRXAudiobutton.Name = "SaveRXAudiobutton";
+            SaveRXAudiobutton.Size = new System.Drawing.Size(58, 23);
+            SaveRXAudiobutton.TabIndex = 28;
+            SaveRXAudiobutton.Text = "Save";
+            SaveRXAudiobutton.UseVisualStyleBackColor = true;
+            // 
+            // CancelRXAudiobutton
+            // 
+            CancelRXAudiobutton.Location = new System.Drawing.Point(79, 9);
+            CancelRXAudiobutton.Name = "CancelRXAudiobutton";
+            CancelRXAudiobutton.Size = new System.Drawing.Size(58, 23);
+            CancelRXAudiobutton.TabIndex = 29;
+            CancelRXAudiobutton.Text = "Cancel";
+            CancelRXAudiobutton.UseVisualStyleBackColor = true;
             // 
             // trackBarGain
             // 
@@ -4919,34 +4947,6 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
-            // SaveRXAudiobutton
-            // 
-            SaveRXAudiobutton.Location = new System.Drawing.Point(7, 9);
-            SaveRXAudiobutton.Name = "SaveRXAudiobutton";
-            SaveRXAudiobutton.Size = new System.Drawing.Size(58, 23);
-            SaveRXAudiobutton.TabIndex = 28;
-            SaveRXAudiobutton.Text = "Save";
-            SaveRXAudiobutton.UseVisualStyleBackColor = true;
-            // 
-            // CancelRXAudiobutton
-            // 
-            CancelRXAudiobutton.Location = new System.Drawing.Point(79, 9);
-            CancelRXAudiobutton.Name = "CancelRXAudiobutton";
-            CancelRXAudiobutton.Size = new System.Drawing.Size(58, 23);
-            CancelRXAudiobutton.TabIndex = 29;
-            CancelRXAudiobutton.Text = "Cancel";
-            CancelRXAudiobutton.UseVisualStyleBackColor = true;
-            // 
-            // panel2
-            // 
-            panel2.Controls.Add(SaveRXAudiobutton);
-            panel2.Controls.Add(CancelRXAudiobutton);
-            panel2.Location = new System.Drawing.Point(89, 202);
-            panel2.Name = "panel2";
-            panel2.Size = new System.Drawing.Size(150, 37);
-            panel2.TabIndex = 30;
-            panel2.Visible = false;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -5004,6 +5004,7 @@
             tabPage6.PerformLayout();
             RXAudiogroupBox.ResumeLayout(false);
             RXAudiogroupBox.PerformLayout();
+            panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)trackBarGain).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
@@ -5013,7 +5014,6 @@
             RiggroupBox.PerformLayout();
             rigserialgroupBox.ResumeLayout(false);
             rigserialgroupBox.PerformLayout();
-            panel2.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }

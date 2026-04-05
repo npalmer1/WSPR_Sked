@@ -334,9 +334,11 @@ namespace WSPR_Sked
             }
             else
             {
+
                 MessageBox.Show("Unable to connect to database. Please check your MySQL server and database settings.", "Database Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.BeginInvoke(new Action(() => System.Windows.Forms.Application.Exit()));
+                this.Close();
             }
+            
         }
 
         private bool HasNewSlotColumns()
@@ -372,6 +374,25 @@ namespace WSPR_Sked
             }
         }
 
+        private void setDefaults()
+        {
+            RigCtlPathtextBox.Text = HamlibPath;
+            CalltextBox.Text = "G4GCI";
+            baseCalltextBox.Text = "G4GCI";
+            defaultOfftextBox.Text = "50";
+            defaultpwrcomboBox.Text = "0";
+            defaultFcomboBox.SelectedIndex = 6;
+            LocatortextBox.Text = "IO90";
+            FreqcomboBox.SelectedIndex = 6;
+            OffsettextBox.Text = "50";
+            dBmcomboBox.SelectedIndex = 0;
+            selSwitchtextBox.Text = "0";
+            selSwitchtextBox2.Text = "0";
+            selSwPorttextBox.Text = "0";
+            selSwPorttextBox2.Text = "0";
+            selTunertextBox.Text = "0";
+        }
+
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -381,8 +402,8 @@ namespace WSPR_Sked
             OpSystem = 0; //default to Windows
             slash = "\\"; //default to Windows
             root = "C:\\";
-            RigCtlPathtextBox.Text = HamlibPath;
 
+            setDefaults();
             getUserandPassword();
             rig.Name = "";
             rig.Type = 0;
@@ -648,6 +669,17 @@ namespace WSPR_Sked
 
                     // No XAMPP issue — run the installer
                     //result = RunInstaller(installFile);   //don't run instalelr - prompt to exit and run externally
+                    
+                    MessageBox.Show(
+                        "MySQL server is not running. You can either install Xampp and import the databases" + 
+                        "...see the installation instructions to configure Xampp. \n\n"+
+                        "OR you can use MySQL Community as an alternative "+
+                        "...you can run the 'wspr_mysql_setup.exe' installer to do this.\n\n" +
+                        "Once you have done this, please restart WSPR Scheduler.",
+                        "MySQL Not Running",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    result = -1;
                 }
 
                 this.Hide();
@@ -660,8 +692,10 @@ namespace WSPR_Sked
                 }
                 else
                 {
-
-                    loadError.Show();
+                    /*loadError.Show();
+                    loadError.BringToFront();
+                    loadError.Activate();*/
+                   
                 }
             }
         }
@@ -802,6 +836,7 @@ namespace WSPR_Sked
         private async Task<bool> CheckXamppBeforeInstall()
         {
             string xamppBase = GetXamppBase();
+            xamppBase = null; //force xampp path for testing
 
             // No XAMPP — proceed with normal install
             if (xamppBase == null)
@@ -811,7 +846,7 @@ namespace WSPR_Sked
 
             // Step 1 — check if DB already accessible (MySQL may already be running)
             if (WsprDatabaseExists(mysqlBin))
-            {               
+            {                     
                 return true;  // exit — nothing to do
             }
 
@@ -2209,11 +2244,13 @@ namespace WSPR_Sked
                 Slot.PowerdB = Convert.ToInt32(dBmcomboBox.Text);
                 cells[5] = PowertextBox.Text;
                 Slot.PowerW = Convert.ToDouble(PowertextBox.Text);
+                Slot.Ant = "";
                 if (AntselcomboBox.SelectedIndex > -1)
                 {
                     cells[6] = AntselcomboBox.SelectedItem.ToString();
+                    Slot.Ant = AntselcomboBox.SelectedItem.ToString();
                 }
-                Slot.Ant = AntselcomboBox.SelectedItem.ToString();
+               
 
                 cells[7] = selTunertextBox.Text;
                 Slot.Tuner = Convert.ToInt32(selTunertextBox.Text);
@@ -3067,7 +3104,7 @@ namespace WSPR_Sked
         {
 
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
-            myConnectionString += ";Pooling=true;Min Pool Size=1;Max Pool Size=10";
+            //ConnectionString += ";Pooling=true;Min Pool Size=1;Max Pool Size=10";
 
             //MySqlConnection connection = new MySqlConnection(myConnectionString);
             DateTime date = new DateTime();
@@ -3135,15 +3172,15 @@ namespace WSPR_Sked
 
                 string c = "";
 
-                c = "INSERT INTO slots(Date,Time,Frequency,Offset,Power,PowerW,Antenna,Tuner,Switch,SwitchPort,End,Active,Repeating,TimeEnd,RptTime,Parent,SlotNo,MsgType,RptType,GreyOffset" + N;
-                c += "VALUES(@Date,@Time,@Frequency,@Offset,@Power,@PowerW,@Antenna,@Tuner,@Switch,@SwitchPort,@End,@Active,@Repeating,@TimeEnd,@RptTime,@Parent,@SlotNo,@MsgType,@RptType,@GreyOffset" + N2;
+                c = "INSERT INTO slots(Date,Time,Frequency,Offset,Power,PowerW,Antenna,Tuner,Rotator, Azimuth, Elevation,Switch,SwitchPort,End,Active,Repeating,TimeEnd,RptTime,Parent,Audio,SlotNo,MsgType,RptType,GreyOffset" + N;
+                c += "VALUES(@Date,@Time,@Frequency,@Offset,@Power,@PowerW,@Antenna,@Tuner,@Rotator, @Azimuth, @Elevation,@Switch,@SwitchPort,@End,@Active,@Repeating,@TimeEnd,@RptTime,@Parent,@Audio,@SlotNo,@MsgType,@RptType,@GreyOffset" + N2;
 
 
 
                 c += " ON DUPLICATE KEY UPDATE Frequency = " + Slot.Freq + ", Offset = " + Slot.Offset + ", Power = " + Slot.PowerdB;
-                c = c + ", PowerW = " + Slot.PowerW + ", Antenna = '" + Slot.Ant + "', Tuner = " + Slot.Tuner + ", Switch = " + Slot.Switch;
+                c = c + ", PowerW = " + Slot.PowerW + ", Antenna = '" + Slot.Ant + "', Tuner = " + Slot.Tuner + ", Rotator = '0', Azimuth = 0, Elevation = 0, Switch = " + Slot.Switch;
                 c = c + ", SwitchPort = " + Slot.SwPort + ", End = '" + endslot + "', Active = " + Active + ", Repeating = " + Repeat + ", TimeEnd = '" + Slot.EndTime;
-                c = c + "', RptTime = " + Slot.RptTime + ", Parent = '" + parent + "'";
+                c = c + "', RptTime = " + Slot.RptTime + ", Parent = '" + parent + "', Audio =1.0";
                 c = c + ", SlotNo = " + slotNo + ", MsgType = " + msgT + ", RptType = " + Slot.RptType + ", GreyOffset = " + Slot.GreyOffset + N3;
 
                 //TimeSpan time = Convert.ToDateTime(cells[1]);
@@ -3163,6 +3200,9 @@ namespace WSPR_Sked
                         command.Parameters.AddWithValue("@PowerW", Slot.PowerW);
                         command.Parameters.AddWithValue("@Antenna", Slot.Ant);
                         command.Parameters.AddWithValue("@Tuner", Slot.Tuner);
+                        command.Parameters.AddWithValue("@Rotator", "0");
+                        command.Parameters.AddWithValue("@Azimuth", 0);
+                        command.Parameters.AddWithValue("@Elevation", 0);
                         command.Parameters.AddWithValue("@Switch", Slot.Switch);
                         command.Parameters.AddWithValue("@SwitchPort", Slot.SwPort);
 
@@ -3178,6 +3218,7 @@ namespace WSPR_Sked
 
                         Slot.Parent = parent;
                         command.Parameters.AddWithValue("@Parent", parent);
+                        command.Parameters.AddWithValue("@Audio", 0);
                         command.Parameters.AddWithValue("@SlotNo", slotNo);
 
 
@@ -5091,8 +5132,8 @@ namespace WSPR_Sked
                         N = ") ";
                         N2 = ")";
                     }
-                    command.CommandText = "INSERT INTO antennas(AntNo,Antenna,Description,Switch,Tuner,SwitchPort" + N;
-                    command.CommandText += "VALUES(@AntNo,@Antenna,@Description,@Switch,@Tuner,@SwitchPort" + N2;
+                    command.CommandText = "INSERT INTO antennas(AntNo,Antenna,Description,Switch,Tuner,Rotator,SwitchPort,TunerPort,Azimuth" + N;
+                    command.CommandText += "VALUES(@AntNo,@Antenna,@Description,@Switch,@Tuner,@Rotator,@SwitchPort,@TunerPort,@Azimuth" + N2;
 
                     connection.Open();
 
@@ -5150,7 +5191,10 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@Description", desc);
                     command.Parameters.AddWithValue("@Switch", sw);
                     command.Parameters.AddWithValue("@Tuner", tu);
+                    command.Parameters.AddWithValue("@Rotator", 0);
                     command.Parameters.AddWithValue("@SwitchPort", swP);
+                    command.Parameters.AddWithValue("@TunerPort", 0);
+                    command.Parameters.AddWithValue("@Azimuth", 0);
                     if (N == ") ")
                     {
                         //do nothing
@@ -5248,7 +5292,7 @@ namespace WSPR_Sked
                 else { N = ""; }
                 MySqlCommand command = connection.CreateCommand();
                 c = "UPDATE antennas SET Antenna = '" + ant + "', Description = '" + desc + "', Switch = " + sw + ", ";
-                c = c + "Tuner = " + tu + ", SwitchPort = " + swP + N;
+                c = c + "Tuner = " + tu + ", Rotator = 0, SwitchPort = " + swP +",TunerPort = 0, Azimuth = 0" + N;
                 c = c + " WHERE antennas.AntNo = " + antNo;
 
                 command.CommandText = c;
@@ -5412,6 +5456,7 @@ namespace WSPR_Sked
                         try
                         {
                             RXlevel = (double)Reader["RXAudioLevel"];
+                            int R = (int)Reader["Region"];
                         }
                         catch
                         {
@@ -5452,8 +5497,8 @@ namespace WSPR_Sked
 
                     if (HasNewFrequencyColumns())
                     {
-                        N = ",RXAudioLevel)";
-                        N2 = ",@RXAudioiLevel)";
+                        N = ",RXAudioLevel,Region";
+                        N2 = ",@RXAudioLevel,@Region";
                     }
                     else
                     {
@@ -5491,6 +5536,7 @@ namespace WSPR_Sked
                     else
                     {
                         command.Parameters.AddWithValue("@RXAudioLevel", Slot.Switch2);
+                        command.Parameters.AddWithValue("@Region", 0);
 
                     }
 
@@ -5525,7 +5571,7 @@ namespace WSPR_Sked
             if (HasNewFrequencyColumns())
             {
 
-                N3 = ", RXAudioLevel = " +"1.0";
+                N3 = ", RXAudioLevel = " +"1.0, Region = 0";
 
             }
             else
@@ -7322,15 +7368,37 @@ namespace WSPR_Sked
 
         }
 
+        private void setDefaultSwitchesandTuners()
+        { 
+            ShowSwlistBox.SelectedIndex = 0;
+            ShowSwlistBox2.SelectedIndex = 0;
+            ShowTulistBox.SelectedIndex = 0;
+        }
         private void AddAbutton_Click(object sender, EventArgs e)
         {
+            setDefaultSwitchesandTuners();
             addAnt();
         }
 
+        private void updateDefaultAnt()
+        {
+            string ant = DefaultAntcomboBox.SelectedItem.ToString();
+            DefaultAntcomboBox.Items.Clear();
+            for (int i = 0; i < AntlistBox.Items.Count; i++)
+            {
+                DefaultAntcomboBox.Items.Add(AntlistBox.Items[i]);
+            }
+            if (DefaultAntcomboBox.SelectedIndex > -1)
+            {
+                DefaultAntcomboBox.SelectedItem = ant;
+            }
+            else { DefaultAntcomboBox.SelectedItem = 0; }
+        }
         private void SaveAbutton_Click(object sender, EventArgs t)
         {
             if (saveAnt() && (!newAcheckBox.Checked))
             {
+                updateDefaultAnt();
                 DialogResult res = Msg.ynMessageBox("Update all slots from now with new name (Y/N)?", "Update slots?");
                 if (res == DialogResult.Yes)
                 {
@@ -7398,6 +7466,7 @@ namespace WSPR_Sked
 
         private void EditAbutton_Click(object sender, EventArgs e)
         {
+            setDefaultSwitchesandTuners();
             editAnt();
         }
 
@@ -7564,20 +7633,34 @@ namespace WSPR_Sked
         {
             editButtonAction("switch");
         }
+
+        private void setBoxDefaults()
+        {
+            HwDatacomboBox.SelectedIndex = 0;
+            HwParitycomboBox.SelectedIndex = 0;
+            HwStopcomboBox.SelectedIndex = 0;
+            HwParitycomboBox.SelectedIndex = 0;
+            HwBaudcomboBox.SelectedItem = "9600";
+        }
         private void editButtonAction(string hwtype)
         {
+            setBoxDefaults();
+
             int sel = 0;
             if (hwtype == "switch")
             {
                 sel = SwlistBox.SelectedIndex;
+                HwAntportstextBox.Text = "4";
             }
             else if (hwtype == "tuner")
             {
                 sel = TulistBox.SelectedIndex;
+                HwAntportstextBox.Text = "1";
             }
             else
             {
                 sel = FilistBox.SelectedIndex;
+                HwAntportstextBox.Text = "4";
             }
             if (sel == 0)
             {
@@ -7998,8 +8081,8 @@ namespace WSPR_Sked
 
                     MySqlCommand command = connection.CreateCommand();
                     connection.Open();
-                    command.CommandText = "INSERT INTO " + table + "(Id,Name,Protocol,Port,IP,Baud,Serial,Type,Channels) ";
-                    command.CommandText += "VALUES(@Id,@Name,@Protocol,@Port,@IP,@Baud,@Serial,@Type,@Channels)";
+                    command.CommandText = "INSERT INTO " + table + "(Id,Name,Protocol,Port,IP,Baud,Serial,Type,Channels,ChannelType) ";
+                    command.CommandText += "VALUES(@Id,@Name,@Protocol,@Port,@IP,@Baud,@Serial,@Type,@Channels,@ChannelType)";
 
                     hw = HwtextBox.Text.Trim();
                     no = Convert.ToInt32(Hwnolabel.Text);
@@ -8102,6 +8185,7 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@Serial", serial);
                     command.Parameters.AddWithValue("@Type", type);
                     command.Parameters.AddWithValue("@Channels", channels);
+                    command.Parameters.AddWithValue("@ChannelType", "");
 
 
                     command.ExecuteNonQuery();
@@ -8142,7 +8226,7 @@ namespace WSPR_Sked
 
                 c = "UPDATE " + table + " SET Name = '" + hw + "', ";
                 c = c + "Protocol = '" + protocol + "', Port = '" + port + "', IP = '" + IP + "', ";
-                c = c + "Baud = '" + baud + "', Serial = '" + serial + "', Type = '" + type + "', Channels = " + channels + " WHERE " + table + ".Id = " + no; //oldhw[1].Trim();
+                c = c + "Baud = '" + baud + "', Serial = '" + serial + "', Type = '" + type + "', Channels = " + channels + ", ChannelType = '0' WHERE " + table + ".Id = " + no; //oldhw[1].Trim();
 
                 command.CommandText = c;
                 connection.Open();
@@ -9228,6 +9312,10 @@ namespace WSPR_Sked
 
         private async Task<string> W410A_setMode(int swno, int mode)
         {
+            if (AntlistBox.Items.Count <0)
+            {
+                return "";
+            }
             try
             {
                 string reply = "";
@@ -11086,7 +11174,11 @@ namespace WSPR_Sked
                 {
                     return false;
                 }
-
+                exists = CheckIfColumnExists(conn, "frequencies", "Region");
+                if (!exists)
+                {
+                    return false;
+                }
             }
 
             if (exists)

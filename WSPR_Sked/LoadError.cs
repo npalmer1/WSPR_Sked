@@ -15,7 +15,9 @@ namespace WSPR_Sked
         public string labelText ="";
         public LoadError()
         {
+           
             InitializeComponent();
+            label1.BringToFront();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -30,7 +32,8 @@ namespace WSPR_Sked
             {
                 label1.Text = labelText;
             }
-            this.BringToFront();
+           
+            label1.BringToFront();
         }
     }
 }
