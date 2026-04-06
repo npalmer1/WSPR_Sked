@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 06, 2026 at 02:52 PM
+-- Generation Time: Apr 06, 2026 at 04:02 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -948,42 +948,42 @@ USE `wspr_sol`;
 
 CREATE TABLE `weather` (
   `datetime` datetime NOT NULL,
-  `Ap` int(11) DEFAULT NULL,
-  `Kp00` float DEFAULT NULL,
-  `Kp03` float DEFAULT NULL,
-  `Kp06` float DEFAULT NULL,
-  `Kp09` float DEFAULT NULL,
-  `Kp12` float DEFAULT NULL,
-  `Kp15` float DEFAULT NULL,
-  `Kp18` float DEFAULT NULL,
-  `Kp21` float DEFAULT NULL,
-  `flux` float DEFAULT NULL,
-  `SSN` int(11) DEFAULT NULL,
-  `Xray` varchar(10) DEFAULT NULL,
-  `pf00` varchar(25) DEFAULT NULL,
-  `pf03` varchar(25) DEFAULT NULL,
-  `pf06` varchar(25) DEFAULT NULL,
-  `pf09` varchar(25) DEFAULT NULL,
-  `pf12` varchar(25) DEFAULT NULL,
-  `pf15` varchar(25) DEFAULT NULL,
-  `pf18` varchar(25) DEFAULT NULL,
-  `pf21` varchar(25) DEFAULT NULL,
-  `fl00` varchar(300) DEFAULT NULL,
-  `fl03` varchar(300) DEFAULT NULL,
-  `fl06` varchar(300) DEFAULT NULL,
-  `fl09` varchar(300) DEFAULT NULL,
-  `fl12` varchar(300) DEFAULT NULL,
-  `fl15` varchar(300) DEFAULT NULL,
-  `fl18` varchar(180) DEFAULT NULL,
-  `fl21` varchar(300) DEFAULT NULL,
-  `s00` varchar(300) DEFAULT NULL,
-  `s03` varchar(300) DEFAULT NULL,
-  `s06` varchar(300) DEFAULT NULL,
-  `s09` varchar(300) DEFAULT NULL,
-  `s12` varchar(300) DEFAULT NULL,
-  `s15` varchar(300) DEFAULT NULL,
-  `s18` varchar(300) DEFAULT NULL,
-  `s21` varchar(300) DEFAULT NULL
+  `Ap` int(11) DEFAULT 0,
+  `Kp00` float DEFAULT 0,
+  `Kp03` float DEFAULT 0,
+  `Kp06` float DEFAULT 0,
+  `Kp09` float DEFAULT 0,
+  `Kp12` float DEFAULT 0,
+  `Kp15` float DEFAULT 0,
+  `Kp18` float DEFAULT 0,
+  `Kp21` float DEFAULT 0,
+  `flux` float DEFAULT 0,
+  `SSN` int(11) DEFAULT 0,
+  `Xray` varchar(10) DEFAULT '',
+  `pf00` varchar(25) DEFAULT '',
+  `pf03` varchar(25) DEFAULT '',
+  `pf06` varchar(25) DEFAULT '',
+  `pf09` varchar(25) DEFAULT '',
+  `pf12` varchar(25) DEFAULT '',
+  `pf15` varchar(25) DEFAULT '',
+  `pf18` varchar(25) DEFAULT '',
+  `pf21` varchar(25) DEFAULT '',
+  `fl00` varchar(25) DEFAULT '',
+  `fl03` varchar(25) DEFAULT '',
+  `fl06` varchar(25) DEFAULT '',
+  `fl09` varchar(25) DEFAULT '',
+  `fl12` varchar(25) DEFAULT '',
+  `fl15` varchar(25) DEFAULT '',
+  `fl18` varchar(25) DEFAULT '',
+  `fl21` varchar(25) DEFAULT '',
+  `s00` varchar(25) DEFAULT '',
+  `s03` varchar(25) DEFAULT '',
+  `s06` varchar(25) DEFAULT '',
+  `s09` varchar(25) DEFAULT '',
+  `s12` varchar(25) DEFAULT '',
+  `s15` varchar(25) DEFAULT '',
+  `s18` varchar(25) DEFAULT '',
+  `s21` varchar(25) DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
