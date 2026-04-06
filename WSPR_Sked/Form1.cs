@@ -10729,10 +10729,16 @@ namespace WSPR_Sked
 
                 connection.Open();
                 MySqlCommand command = connection.CreateCommand();
-                command.CommandText = "INSERT IGNORE INTO sunrise_sunset(locator,date,sunrise,sunset) ";
+               command.CommandText = "INSERT IGNORE INTO sunrise_sunset(locator,date,sunrise,sunset) ";
                 command.CommandText += "VALUES(@locator,@date,@sunrise,@sunset)";
-                command.CommandText += " ON DUPLICATE KEY UPDATE sunrise = '" + sunrise + "', sunset = '" + sunset + "'";
+                command.CommandText += " ON DUPLICATE KEY UPDATE locator = '" + locator + "', sunrise = '" + sunrise + "', sunset = '" + sunset + "'";
 
+               /* command.CommandText = "INSERT INTO sunrise_sunset(locator, date, sunrise, sunset) ";
+                command.CommandText += "VALUES(@locator, @date, @sunrise, @sunset)";
+                command.CommandText += " ON DUPLICATE KEY UPDATE ";
+                command.CommandText += "locator = VALUES(locator), ";
+                command.CommandText += "sunrise = VALUES(sunrise), ";
+                command.CommandText += "sunset = VALUES(sunset)";*/
 
 
                 command.Parameters.AddWithValue("@locator", locator);
@@ -10851,8 +10857,12 @@ namespace WSPR_Sked
                 connection.Open();
 
                 MySqlCommand command = connection.CreateCommand();
-
-                command.CommandText = "SELECT sunrise, sunset FROM sunrise_sunset WHERE locator LIKE '" + location + "%'";
+                string locator = "0";
+                if (location.Length > 0)
+                {
+                    locator = location.Substring(0, 4);
+                }
+                command.CommandText = "SELECT sunrise, sunset FROM sunrise_sunset WHERE locator LIKE '" + locator + "%'";
                 MySqlDataReader Reader;
                 Reader = command.ExecuteReader();
 

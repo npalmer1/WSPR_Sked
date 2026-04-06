@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 06, 2026 at 02:01 PM
+-- Generation Time: Apr 06, 2026 at 02:52 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -713,7 +713,7 @@ INSERT INTO `sunrise_sunset` (`locator`, `date`, `sunrise`, `sunset`) VALUES
 -- Indexes for table `sunrise_sunset`
 --
 ALTER TABLE `sunrise_sunset`
-  ADD PRIMARY KEY (`locator`,`date`);
+  ADD PRIMARY KEY (`date`);
 --
 -- Database: `wspr_rpt`
 --
