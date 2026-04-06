@@ -458,6 +458,7 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
+            sunlabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -1732,6 +1733,7 @@
             // tabPage2
             // 
             tabPage2.BackColor = System.Drawing.SystemColors.Info;
+            tabPage2.Controls.Add(sunlabel);
             tabPage2.Controls.Add(label73);
             tabPage2.Controls.Add(overcheckBox);
             tabPage2.Controls.Add(stopRXcheckBox);
@@ -1820,10 +1822,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 24);
+            tabPage2.Location = new System.Drawing.Point(4, 22);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1177, 649);
+            tabPage2.Size = new System.Drawing.Size(1177, 651);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -2994,10 +2996,10 @@
             tabPage4.Controls.Add(FreqlistBox);
             tabPage4.Controls.Add(AgroupBox);
             tabPage4.Controls.Add(AntlistBox);
-            tabPage4.Location = new System.Drawing.Point(4, 22);
+            tabPage4.Location = new System.Drawing.Point(4, 24);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1177, 651);
+            tabPage4.Size = new System.Drawing.Size(1177, 649);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
@@ -4947,6 +4949,17 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
+            // sunlabel
+            // 
+            sunlabel.AutoSize = true;
+            sunlabel.BackColor = System.Drawing.Color.FromArgb(255, 224, 192);
+            sunlabel.Location = new System.Drawing.Point(48, 611);
+            sunlabel.Name = "sunlabel";
+            sunlabel.Padding = new System.Windows.Forms.Padding(2);
+            sunlabel.Size = new System.Drawing.Size(151, 17);
+            sunlabel.TabIndex = 110;
+            sunlabel.Text = "sunrise/sunset not configured";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -5447,6 +5460,7 @@
         private System.Windows.Forms.Button CancelRXAudiobutton;
         private System.Windows.Forms.Button SaveRXAudiobutton;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label sunlabel;
     }
 }
 

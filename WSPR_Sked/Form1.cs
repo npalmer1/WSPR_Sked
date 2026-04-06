@@ -563,9 +563,10 @@ namespace WSPR_Sked
                 string loc = LocatortextBox.Text.Trim().Substring(0, 4);
                 ll = MaidenheadLocator.LocatorToLatLng(loc);
 
+                int greycount = await check_Sunrise_Sunset_data();
                 try
                 {
-                    Sunrise_Sunset(ll.Lat, ll.Long, dt);
+                    Sunrise_Sunset(ll.Lat, ll.Long, dt, false,false);
 
                     if (sunTimes.R == DateTime.MinValue)
                     {
@@ -612,12 +613,22 @@ namespace WSPR_Sked
                     Msg.TMessageBox("Check locator", "Sunrise/Sunset Error", 2500);
                 }
 
-                if (grey_table_count() < 365)
+                //if (grey_table_count() < 365)
+                if (greycount <160)
                 {
                     Msg.TMessageBox("No sunrise/sunset times - building table - please wait", "Sunrise/sunset Times", 4000);
+                    sunlabel.Text = "No sunrise/sunset times - building table - please wait";
                     updateSunriseSunset();
                 }
-                rig = ReadRigs(true, 0);
+                else if (greycount <365)
+                {                   
+                    sunlabel.Text = "Sunrise/set times only correct for " +greycount+ " days - update required";
+                }
+                else
+                {
+                    sunlabel.Text = "Sunrise/sunset times correct for this location";
+                }
+                    rig = ReadRigs(true, 0);
                 selectedRig = rig.Selected;
                 //saveUserandPassword(db_user,db_pass);
 
@@ -7373,6 +7384,8 @@ namespace WSPR_Sked
             ShowSwlistBox.SelectedIndex = 0;
             ShowSwlistBox2.SelectedIndex = 0;
             ShowTulistBox.SelectedIndex = 0;
+            AntPortlistBox.SelectedIndex = 0;
+            AntPortlistBox2.SelectedIndex = 0;
         }
         private void AddAbutton_Click(object sender, EventArgs e)
         {
@@ -7382,7 +7395,11 @@ namespace WSPR_Sked
 
         private void updateDefaultAnt()
         {
-            string ant = DefaultAntcomboBox.SelectedItem.ToString();
+            string ant = "";
+            if (DefaultAntcomboBox.SelectedIndex > -1)
+            {
+                ant = DefaultAntcomboBox.SelectedItem.ToString();
+            }
             DefaultAntcomboBox.Items.Clear();
             for (int i = 0; i < AntlistBox.Items.Count; i++)
             {
@@ -7392,7 +7409,7 @@ namespace WSPR_Sked
             {
                 DefaultAntcomboBox.SelectedItem = ant;
             }
-            else { DefaultAntcomboBox.SelectedItem = 0; }
+            else if (ant != "") { DefaultAntcomboBox.SelectedItem = 0; }
         }
         private void SaveAbutton_Click(object sender, EventArgs t)
         {
@@ -7636,11 +7653,12 @@ namespace WSPR_Sked
 
         private void setBoxDefaults()
         {
-            HwDatacomboBox.SelectedIndex = 0;
+            HwDatacomboBox.SelectedIndex = 1; //8
             HwParitycomboBox.SelectedIndex = 0;
             HwStopcomboBox.SelectedIndex = 0;
             HwParitycomboBox.SelectedIndex = 0;
             HwBaudcomboBox.SelectedItem = "9600";
+            HwFlowcomboBox.SelectedIndex = 0;
         }
         private void editButtonAction(string hwtype)
         {
@@ -8185,7 +8203,7 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@Serial", serial);
                     command.Parameters.AddWithValue("@Type", type);
                     command.Parameters.AddWithValue("@Channels", channels);
-                    command.Parameters.AddWithValue("@ChannelType", "");
+                    command.Parameters.AddWithValue("@ChannelType", "0");
 
 
                     command.ExecuteNonQuery();
@@ -10513,6 +10531,7 @@ namespace WSPR_Sked
             string sunrise = "";
             string sunset = "";
             int daysOK = 0;
+            bool ErrorShown = false;
             string locator = LocatortextBox.Text.Trim().Substring(0, 4).ToUpper();
             Msg.TMessageBox("Updating sunrise/set times ..please wait", "Sunrise/set", 6000);
             try
@@ -10523,12 +10542,17 @@ namespace WSPR_Sked
                 {
                     //if (i % 7 == 0) //get sunrise/set every week
                     //{
-                    gotTime = await Sunrise_Sunset(ll.Lat, ll.Long, date);
+                    gotTime = await Sunrise_Sunset(ll.Lat, ll.Long, date,ErrorShown, true);
+                   
                     if (gotTime)
                     {
                         daysOK++;
                     }
-                    sunrise = sunTimes.R.ToString("HH:mm");
+                    else
+                    {
+                        ErrorShown = true;
+                    }
+                     sunrise = sunTimes.R.ToString("HH:mm");
                     sunset = sunTimes.S.ToString("HH:mm");
                     //}
                     string Date = date.ToString("MM-dd");
@@ -10546,59 +10570,84 @@ namespace WSPR_Sked
             catch
             {
 
-                Msg.TMessageBox("Error while saving sunrise/sunset times", "Sunrise/set", 2000);
+                Msg.TMessageBox("Error while saving sunrise/sunset times", "Sunrise/set", 3000);
+                sunlabel.Text = "Sunrise/sunset times not up to date for this location";
             }
             if (daysOK < days)
             {
-                Msg.TMessageBox("Unable to get sunrise/set times for all days", "Sunrise/set", 3000);
+                Msg.TMessageBox("Only able to get sunrise/set times for " + daysOK +" days", "Sunrise/set", 4000);
+                sunlabel.Text = "Sunrise/sunset times updated for " + daysOK + " days";
             }
             else
             {
-                Msg.TMessageBox("Sunrise/set times updated successfully", "Sunrise/set", 2000);
+                Msg.TMessageBox("Sunrise/set times updated successfully", "Sunrise/set", 3000);
+                sunlabel.Text = "Sunrise/sunset times correct for this location";
             }
 
         }
 
         //static async Task<(DateTime R, DateTime S)> Sunrise_Sunset(double latitude, double longitude, DateTime Date)
-        private async Task<bool> Sunrise_Sunset(double latitude, double longitude, DateTime Date)
+        private async Task<bool> Sunrise_Sunset(double latitude, double longitude, DateTime Date, bool ErrorShown, bool showLabel)
         {       //retrieves times as LocalConstant not UTC
             DateTime sunrise = DateTime.MinValue;
             DateTime sunset = DateTime.MinValue;
-            try
+            bool tryAgain = true;
+            int attempts = 0;
+            while (tryAgain)
             {
-                //this method uses the REST API courtesy of sunrise-sunset.org
-
-                string date = Date.ToString("yyyy-MM-dd");
-
-                string url = $"https://api.sunrise-sunset.org/json?lat={latitude}&lng={longitude}&date={date}&formatted=0";
-
-                using HttpClient client = new HttpClient();
-                //var response = await client.GetStringAsync(url);
-                var response = await client.GetStringAsync(url);
-                if (!response.TrimStart().StartsWith("{") && !response.TrimStart().StartsWith("["))
+                try
                 {
-                    // Not JSON – handle the status message
+                    //this method uses the REST API courtesy of sunrise-sunset.org
+
+                    string date = Date.ToString("yyyy-MM-dd");
+
+                    string url = $"https://api.sunrise-sunset.org/json?lat={latitude}&lng={longitude}&date={date}&formatted=0";
+
+                    using HttpClient client = new HttpClient();
+
+                    var response = await client.GetStringAsync(url);
+                    if (!response.TrimStart().StartsWith("{") && !response.TrimStart().StartsWith("["))
+                    {
+                        // Not JSON – handle the status message
+                        sunrise = DateTime.MinValue;
+                        sunset = DateTime.MinValue;
+                        sunTimes.R = sunrise;
+                        sunTimes.S = sunset;
+                        return false;
+                    }
+                    string responseStr = response.ToString();
+                    JObject json = JObject.Parse(response);
+
+                    var results = json["results"];
+
+                    sunrise = DateTime.Parse(results["sunrise"].ToString());
+                    sunset = DateTime.Parse(results["sunset"].ToString());
+                    tryAgain = false;
+                    if (showLabel) { sunlabel.Text = "Updating sunrise/sunset times... please wait"; }
+                }
+                catch
+                {
                     sunrise = DateTime.MinValue;
                     sunset = DateTime.MinValue;
                     sunTimes.R = sunrise;
                     sunTimes.S = sunset;
-                    return false;
+                    sunlabel.Text = "Unable to connect to sunrise/sunset service on port 443";
+                    if (!ErrorShown)
+                    {
+                        ErrorShown = true;
+                        //Msg.TMessageBox("Unable to contact sunrise/set service on port 443", "Error contacting sunrise/set", 4000);
+                    }
+                    attempts++;
+                    if (attempts <2)
+                    {
+                        tryAgain = true;
+                    }
+                    else
+                    {
+                        tryAgain = false;
+                        return false;
+                    }
                 }
-                string responseStr = response.ToString();
-                JObject json = JObject.Parse(response);
-
-                var results = json["results"];
-
-                sunrise = DateTime.Parse(results["sunrise"].ToString());
-                sunset = DateTime.Parse(results["sunset"].ToString());
-            }
-            catch
-            {
-                sunrise = DateTime.MinValue;
-                sunset = DateTime.MinValue;
-                sunTimes.R = sunrise;
-                sunTimes.S = sunset;
-                return false;
             }
             sunTimes.R = sunrise;
             sunTimes.S = sunset;
@@ -10760,17 +10809,19 @@ namespace WSPR_Sked
 
         }
 
+        
         private async void sunrisebutton_Click(object sender, EventArgs e)
         {
             updateSunriseSunset();
         }
         private async void updateSunriseSunset()
         {
+            sunlabel.Text = "Updating sunrise/sunset times... please wait";
             Msg.TMessageBox("Sunrise and sunset times updating", "Sunrise/set", 3000);
             LatLng ll;
             ll = MaidenheadLocator.LocatorToLatLng(LocatortextBox.Text.Trim());
             DateTime today = DateTime.Now.ToUniversalTime();
-            Sunrise_Sunset(ll.Lat, ll.Long, today);
+            //Sunrise_Sunset(ll.Lat, ll.Long, today, false, false);
             utcriselabel.Text = sunTimes.R.ToString("HH:mm");
             utcsetlabel.Text = sunTimes.S.ToString("HH:mm");
             DateTime janone = new DateTime(DateTime.Now.Year, 1, 1);    //start at jan 1st this year
@@ -10788,6 +10839,46 @@ namespace WSPR_Sked
 
         }
 
+        private async Task<int> check_Sunrise_Sunset_data()
+        {
+            int count =0;
+            string connectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
+            var connection = new MySqlConnection(connectionString);
+            string rise = "";
+            string set = "";
+            try
+            {
+                connection.Open();
+
+                MySqlCommand command = connection.CreateCommand();
+
+                command.CommandText = "SELECT sunrise, sunset FROM sunrise_sunset WHERE locator LIKE '" + location + "%'";
+                MySqlDataReader Reader;
+                Reader = command.ExecuteReader();
+
+                while (Reader.Read())
+                {
+                    count++;
+
+                    rise = (string)Reader["sunrise"];
+                    set = (string)Reader["sunset"];
+                    if (set == "00:00" && rise == "00:00")
+                    {
+                        //invalid entries found
+                    }
+                    else
+                    {
+                        count++;
+                    }
+                }
+                connection.Close();
+            }
+            catch
+            {
+
+            }
+            return count;
+        }
         private int grey_table_count()
         {
             int count;
