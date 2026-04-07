@@ -396,6 +396,12 @@ namespace WSPR_Sked
             root = "C:\\";
 
             this.Hide();
+            setDefaults();
+            getUserandPassword();            
+
+            File.AppendAllText(@"C:\Users\Public\crash_log.txt",
+                "Credentials after getUserandPassword: " +
+                "server=" + serverName + " user=" + db_user + " pass=" + db_pass + Environment.NewLine);
 
             try
             {
@@ -403,6 +409,7 @@ namespace WSPR_Sked
                 if (!ok)
                 {
                     System.Windows.Forms.Application.Exit();
+                    return;
                 }
             }
             catch (Exception ex)
@@ -410,11 +417,11 @@ namespace WSPR_Sked
                 File.AppendAllText(@"C:\Users\Public\crash_log.txt", "Error during startup: " + ex.ToString() + Environment.NewLine);
                 MessageBox.Show("Error during startup " + ex.Message + "\n\n" + ex.StackTrace);
                 System.Windows.Forms.Application.Exit();
+                return;
             }
             this.Show();
             this.BringToFront();
-            setDefaults();
-            getUserandPassword();
+            
             rig.Name = "";
             rig.Type = 0;
             if (checkSlotDB("wspr_slots"))
@@ -1100,7 +1107,10 @@ namespace WSPR_Sked
 
         private bool checkSlotDB(string slotdb)
         {
-            string myConnectionString = "server=" + serverName + ";Port=3306; user id=" + db_user + ";password=" + db_pass + ";database=" + slotdb + ";SslMode=None;";
+           
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slotdb + ";SslMode=None;AllowPublicKeyRetrieval=True;";
+
+            File.AppendAllText(@"C:\Users\Public\crash_log.txt", "checkSlotDB attempting: " + myConnectionString + Environment.NewLine);
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
@@ -1133,7 +1143,7 @@ namespace WSPR_Sked
 
             bool slotFound = false;
             int readcount = 0;
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             selSwitchtextBox.Text = "0";
             selSwitchtextBox2.Text = "0";
             selSwPorttextBox.Text = "0";
@@ -1412,7 +1422,7 @@ namespace WSPR_Sked
             //DateTime d = new DateTime();
 
             bool found = false;
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + ";database=" + slot_dbname;
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + ";database=" + slot_dbname +"; SslMode = None; AllowPublicKeyRetrieval = True;";
 
             if (!databaseError)
             {
@@ -3205,7 +3215,7 @@ namespace WSPR_Sked
         private async Task<bool> SaveSlotData(string d, string t)  //to database
         {
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             //ConnectionString += ";Pooling=true;Min Pool Size=1;Max Pool Size=10";
 
             //MySqlConnection connection = new MySqlConnection(myConnectionString);
@@ -3674,7 +3684,7 @@ namespace WSPR_Sked
                 parent = date + " " + time;
             }
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             try
@@ -3792,7 +3802,7 @@ namespace WSPR_Sked
         }
         private bool deleteAllSlotsBetween(string date1, string date2)
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             string arrow = ">";
             string c = "";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
@@ -4572,7 +4582,7 @@ namespace WSPR_Sked
         private async Task setDBPassword(string password, string database)
         {
             string c = "";
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + database;
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + database + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             try
@@ -4953,7 +4963,7 @@ namespace WSPR_Sked
 
         private bool SaveConfig(int msgT) //save configuration settings
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             lock (_lock)
             {
@@ -5026,7 +5036,7 @@ namespace WSPR_Sked
         {
             string c = "";
             int defA = 1;
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             try
             {
@@ -5092,7 +5102,7 @@ namespace WSPR_Sked
         }
         private void ReadConfig()
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             try
@@ -5212,7 +5222,7 @@ namespace WSPR_Sked
 
         private bool SaveAntenna(int antNo) //save configuration settings
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             string N = "";
             string N2 = "";
@@ -5330,7 +5340,7 @@ namespace WSPR_Sked
         private bool UpdateAntenna(int antNo)
         {
             string c = "";
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             try
             {
@@ -5414,7 +5424,7 @@ namespace WSPR_Sked
         }
         private void ReadAntennas()
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             try
@@ -5491,7 +5501,7 @@ namespace WSPR_Sked
         {
             string c = "";
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             try
@@ -5520,7 +5530,7 @@ namespace WSPR_Sked
 
         private void ReadFrequencies()
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             try
@@ -5587,7 +5597,7 @@ namespace WSPR_Sked
         }
         private bool SaveFrequency(string freq) //save configuration settings
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             string N = "";
             string N2 = "";
@@ -5667,7 +5677,7 @@ namespace WSPR_Sked
         {
 
             string c = "";
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             string N3 = "";
             if (HasNewFrequencyColumns())
@@ -5711,7 +5721,7 @@ namespace WSPR_Sked
         {
             string c = "";
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             try
@@ -6716,7 +6726,7 @@ namespace WSPR_Sked
                 }
             }
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             lock (_lock)
             {
@@ -6752,7 +6762,7 @@ namespace WSPR_Sked
         private bool UpdateRigctl()
         {
             string c = "";
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             try
             {
@@ -6777,7 +6787,7 @@ namespace WSPR_Sked
         }
         private bool readRigctl()
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
@@ -7550,7 +7560,7 @@ namespace WSPR_Sked
             string act = "0";
             string r = "0";
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname;
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slot_dbname + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             try
             {
@@ -8015,7 +8025,7 @@ namespace WSPR_Sked
 
         private void ReadHardware(string table)
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             try
@@ -8165,7 +8175,7 @@ namespace WSPR_Sked
 
         private bool SaveHardware(string table) //save hw settings
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             string hw = HwtextBox.Text.Trim();
@@ -8325,7 +8335,7 @@ namespace WSPR_Sked
         {
 
             string c = "";
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             try
             {
@@ -10240,7 +10250,7 @@ namespace WSPR_Sked
         public void Save_Audio()
         {
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             DateTime date = new DateTime();
 
@@ -10275,7 +10285,7 @@ namespace WSPR_Sked
         private void Read_Audio()
         {
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
 
 
             try
@@ -10811,7 +10821,7 @@ namespace WSPR_Sked
         private async Task<bool> Save_SunSet_SunRise(string locator, string date, string sunrise, string sunset)
         {   //note these are saved as local times not UTC
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
 
@@ -10865,7 +10875,7 @@ namespace WSPR_Sked
 
             DateTime sunriseT = DateTime.MinValue;
             DateTime sunsetT = DateTime.MinValue;
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
@@ -11529,7 +11539,7 @@ namespace WSPR_Sked
         }
         private void SaveDBName() //save configuration settings
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_configs" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             lock (_lock)
             {
@@ -11609,7 +11619,7 @@ namespace WSPR_Sked
         {
             string c = "";
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             try
@@ -11877,7 +11887,7 @@ namespace WSPR_Sked
         }
         private bool SaveRigInfo(Rigs N) //save rig settings
         {
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             //Rigs N = new Rigs();
@@ -11964,7 +11974,7 @@ namespace WSPR_Sked
 
             rig = N; //global rig info
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
             try

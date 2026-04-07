@@ -1021,7 +1021,7 @@ namespace WSPR_Sked
         public async Task Save_Received_DB(string serverName, string db_user, string db_pass)
         {
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_rpt";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_rpt" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             DateTime date = new DateTime();
             if (DX.tx_sign == "")
@@ -1075,7 +1075,7 @@ namespace WSPR_Sked
             //DateTime d = new DateTime();
             int i = 0;
             bool found = false;
-            string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_rpt";
+            string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_rpt" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             try
@@ -1297,7 +1297,7 @@ namespace WSPR_Sked
         public void Save_Config(string serverName, string db_user, string db_pass)
         {
 
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_rpt";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_rpt" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             DateTime date = new DateTime();
             MySqlCommand command = connection.CreateCommand();
@@ -1330,7 +1330,7 @@ namespace WSPR_Sked
         private void Read_Config()
         {
 
-            string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_rpt";
+            string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_rpt" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             try
@@ -1488,7 +1488,7 @@ namespace WSPR_Sked
             //DateTime d = new DateTime();
             int i = 0;
             bool found = false;
-            string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_rpt";
+            string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_rpt" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
 
             string and = "";
             string bandstr = "";
@@ -2053,7 +2053,7 @@ namespace WSPR_Sked
             string call = dataGridView1.Rows[row].Cells[1].Value.ToString();
             string freq = dataGridView1.Rows[row].Cells[2].Value.ToString();
 
-            string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_rpt";
+            string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_rpt" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             try
             {
