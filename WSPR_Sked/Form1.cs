@@ -291,6 +291,7 @@ namespace WSPR_Sked
 
         RXForm rxForm = new RXForm();
 
+        bool _forceClose = false;
 
 
         int keypresses = 0;
@@ -395,11 +396,20 @@ namespace WSPR_Sked
             root = "C:\\";
 
             this.Hide();
-            bool ok = await checkMySQLDatabases();
-            if (!ok)
+
+            try
             {
+                bool ok = await checkMySQLDatabases();
+                if (!ok)
+                {
+                    System.Windows.Forms.Application.Exit();
+                }
+            }
+            catch (Exception ex)
+            {
+                File.AppendAllText(@"C:\Users\Public\crash_log.txt", "Error during startup: " + ex.ToString() + Environment.NewLine);
+                MessageBox.Show("Error during startup " + ex.Message + "\n\n" + ex.StackTrace);
                 System.Windows.Forms.Application.Exit();
-                return;
             }
             this.Show();
             this.BringToFront();
@@ -649,18 +659,64 @@ namespace WSPR_Sked
         }
         private async void Form1_Shown(object sender, EventArgs e)
         {
-           
+            
+            try
+            {
+                //this.Hide();
+                bool ok = await checkMySQLDatabases();
+                if (!ok)
+                {                    
+                    var res = MessageBox.Show(
+                    "MySQL server is not running. You can either install XAMPP and import the databases\n" +
+                    "...see the installation instructions to configure XAMPP.\n\n" +
+                    "OR you can use MySQL Community as an alternative\n" +
+                    "...you can run the 'wspr_mysql_setup.exe' installer to do this.\n\n" +
+                    "Once you have done this, please restart WSPR Scheduler.",
+                    "MySQL Not Running",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                    
+                    if (res == DialogResult.OK)
+                    {
+                        _forceClose = true;
+                        System.Windows.Forms.Application.Exit();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var res = DialogResult.OK;
+                if (!_forceClose)
+                {
+                    res = MessageBox.Show(
+                   "MySQL server is not running. You can either install XAMPP and import the databases\n" +
+                   "...see the installation instructions to configure XAMPP.\n\n" +
+                   "OR you can use MySQL Community as an alternative\n" +
+                   "...you can run the 'wspr_mysql_setup.exe' installer to do this.\n\n" +
+                   "Once you have done this, please restart WSPR Scheduler.",
+                   "MySQL Not Running",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                }
+                
+                if (res == DialogResult.OK)
+                {
+                    _forceClose = true;
+                    System.Windows.Forms.Application.Exit();
+                }
+            }
         }
 
         private async Task<bool> checkMySQLDatabases()
         {
             string nl = Environment.NewLine;
 
+            int result = 1;
             if (!checkSlotDB("wspr_slots"))
             {
-                int result = 1;
+               
                 LoadError loadError = new LoadError();
-                if (!IsMySqlRunning())
+                if (!await IsMySqlRunning())
                 {
                     /*Msg.TMessageBox("MySQL server not running", "Check mySQL", 4000);
                     loadError.labelText = "MySQL server not running" + nl + "...if it isn't installed then you should run wspr_mysql_setup.exe" + nl;
@@ -689,7 +745,7 @@ namespace WSPR_Sked
                         "MySQL Not Running",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
-                    result = -1;
+                    result = 1;
                     return false;
                 }
 
@@ -735,16 +791,17 @@ namespace WSPR_Sked
         {
             string[] locations = new[]
             {
-            @"C:\xampp",
-            @"C:\Program Files\xampp",
-            @"C:\Program Files (x86)\xampp",
-            @"D:\xampp"
-        };
+                @"C:\xampp",
+                @"C:\Program Files\xampp",
+                @"C:\Program Files (x86)\xampp",
+                @"D:\xampp"
+            };
 
-            foreach (var path in locations)
+            foreach (string location in locations)
             {
-                if (File.Exists(Path.Combine(path, @"mysql\bin\mysql.exe")))
-                    return path;
+                // Check for the actual MySQL executable, not just the folder
+                if (File.Exists(Path.Combine(location, @"mysql\bin\mysqld.exe")))
+                    return location;
             }
 
             return null;
@@ -1025,14 +1082,15 @@ namespace WSPR_Sked
         }
 
 
-        private bool IsMySqlRunning()
+        private async Task<bool> IsMySqlRunning()
         {
             try
             {
-                var conn = new MySqlConnection("Server=localhost;Uid=root;Pwd=;");
-                conn.Open();
-                conn.Close();
-                return true;
+                using (var conn = new MySqlConnection("Server=localhost;Uid=root;Pwd=;"))
+                {
+                    await conn.OpenAsync();
+                    return true;
+                }
             }
             catch
             {
@@ -8806,6 +8864,8 @@ namespace WSPR_Sked
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (_forceClose)
+                return; // skip save prompt and any other closing logic
             var res = Msg.ynMessageBox("Exit app (y/n)?", "Exit");
             if (res == DialogResult.No)
             {
