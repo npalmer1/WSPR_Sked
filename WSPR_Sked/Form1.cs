@@ -1105,6 +1105,7 @@ namespace WSPR_Sked
             }
         }
 
+
         private bool checkSlotDB(string slotdb)
         {
            
