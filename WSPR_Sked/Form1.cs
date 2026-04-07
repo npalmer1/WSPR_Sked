@@ -35,6 +35,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.Pkcs;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Channels;
@@ -324,21 +325,11 @@ namespace WSPR_Sked
 
         public Form1()
         {
-            checkMySQLDatabases();
+
             KeyPreview = true;
             KeyDown += Form1_KeyDown;
             this.Shown += Form1_Shown;
-            if (checkSlotDB("wspr_slots"))
-            {
-                InitializeComponent();
-            }
-            else
-            {
-
-                MessageBox.Show("Unable to connect to database. Please check your MySQL server and database settings.", "Database Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Close();
-            }
-            
+            InitializeComponent();
         }
 
         private bool HasNewSlotColumns()
@@ -403,6 +394,15 @@ namespace WSPR_Sked
             slash = "\\"; //default to Windows
             root = "C:\\";
 
+            this.Hide();
+            bool ok = await checkMySQLDatabases();
+            if (!ok)
+            {
+                System.Windows.Forms.Application.Exit();
+                return;
+            }
+            this.Show();
+            this.BringToFront();
             setDefaults();
             getUserandPassword();
             rig.Name = "";
@@ -566,7 +566,7 @@ namespace WSPR_Sked
                 int greycount = await check_Sunrise_Sunset_data();
                 try
                 {
-                    Sunrise_Sunset(ll.Lat, ll.Long, dt, false,false);
+                    Sunrise_Sunset(ll.Lat, ll.Long, dt, false, false);
 
                     if (sunTimes.R == DateTime.MinValue)
                     {
@@ -614,21 +614,21 @@ namespace WSPR_Sked
                 }
 
                 //if (grey_table_count() < 365)
-                if (greycount <160)
+                if (greycount < 160)
                 {
                     Msg.TMessageBox("No sunrise/sunset times - building table - please wait", "Sunrise/sunset Times", 4000);
                     sunlabel.Text = "No sunrise/sunset times - building table - please wait";
                     updateSunriseSunset();
                 }
-                else if (greycount <365)
-                {                   
-                    sunlabel.Text = "Sunrise/set times only correct for " +greycount+ " days - update required";
+                else if (greycount < 365)
+                {
+                    sunlabel.Text = "Sunrise/set times only correct for " + greycount + " days - update required";
                 }
                 else
                 {
                     sunlabel.Text = "Sunrise/sunset times correct for this location";
                 }
-                    rig = ReadRigs(true, 0);
+                rig = ReadRigs(true, 0);
                 selectedRig = rig.Selected;
                 //saveUserandPassword(db_user,db_pass);
 
@@ -647,13 +647,12 @@ namespace WSPR_Sked
             AllcheckBox.Checked = false;
             dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
         }
-        private void Form1_Shown(object sender, EventArgs e)
+        private async void Form1_Shown(object sender, EventArgs e)
         {
            
-            //checkMySQLDatabases();
         }
 
-        private async void checkMySQLDatabases()
+        private async Task<bool> checkMySQLDatabases()
         {
             string nl = Environment.NewLine;
 
@@ -668,47 +667,45 @@ namespace WSPR_Sked
                     loadError.labelText += "This will install and start MySQL and import the databases." + nl;
                     loadError.labelText += "...You should then restart WSPR_Scheduler";*/
                     //string installFile = @"C:\WSPR_Sked\wspr_db.sql"; //<- probably need to be C:/WSPR_Sked/wspr_db.sql
-                                                                      // Returns true = OK to proceed with install, false = exit
+                    // Returns true = OK to proceed with install, false = exit
                     string installFile = @"C:\WSPR_Sked\wspr_mysql_setup.exe";
-                  
+
                     bool check = await CheckXamppBeforeInstall();
 
                     if (check)
                     {
-                        return;
+                        return true;
                     }
 
                     // No XAMPP issue — run the installer
                     //result = RunInstaller(installFile);   //don't run instalelr - prompt to exit and run externally
-                    
+
                     MessageBox.Show(
-                        "MySQL server is not running. You can either install Xampp and import the databases" + 
-                        "...see the installation instructions to configure Xampp. \n\n"+
-                        "OR you can use MySQL Community as an alternative "+
+                        "MySQL server is not running. You can either install Xampp and import the databases" +
+                        "...see the installation instructions to configure Xampp. \n\n" +
+                        "OR you can use MySQL Community as an alternative " +
                         "...you can run the 'wspr_mysql_setup.exe' installer to do this.\n\n" +
                         "Once you have done this, please restart WSPR Scheduler.",
                         "MySQL Not Running",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     result = -1;
+                    return false;
                 }
 
-                this.Hide();
                 //Msg.TMessageBox("Unable to connect to mySQL", "Check mySQL", 4000);
                 savePrompt = false;
                 if (result == 0)
                 {
                     Msg.TMessageBox("MySQL installed - please restart WSPR Scheduler", "MySQL Installed", 4000);
-                    this.BeginInvoke(new Action(() => System.Windows.Forms.Application.Exit()));
+                    return false;
                 }
                 else
                 {
-                    /*loadError.Show();
-                    loadError.BringToFront();
-                    loadError.Activate();*/
-                   
+
                 }
             }
+            return true;
         }
 
         public static int RunInstaller(string installerPath)
@@ -753,33 +750,41 @@ namespace WSPR_Sked
             return null;
         }
 
-        private static async Task<bool> WaitForMySqlAsync(string host = "127.0.0.1",int port = 3306,int timeoutMs = 8000)
+        private async Task<bool> WaitForMySqlAsync(int maxAttempts = 20, int delayMs = 500)
         {
-                var sw = Stopwatch.StartNew();
-
-                while (sw.ElapsedMilliseconds < timeoutMs)
+            for (int i = 0; i < maxAttempts; i++)
+            {
+                try
                 {
-                    try
-                    {
-                        using var client = new TcpClient();
-                        var connectTask = client.ConnectAsync(host, port);
-                        var delayTask = Task.Delay(500);
-
-                        var completed = await Task.WhenAny(connectTask, delayTask);
-
-                        if (completed == connectTask && client.Connected)
-                            return true;
-                    }
-                    catch
-                    { }
-
-                    await Task.Delay(300);
+                    using var conn = new MySqlConnection("server=localhost;user id=root;password=;");
+                    await conn.OpenAsync();
+                    return true;
                 }
-
-                return false;            
+                catch
+                {
+                    await Task.Delay(delayMs);
+                }
+            }
+            return false; // timed out after 10 seconds
         }
 
-        private async Task<bool> StartXamppMySQL(string xamppBase)
+
+
+        private bool IsMySqlServiceInstalled(string serviceName = "mysql")
+        {
+            try
+            {
+                using var sc = new ServiceController(serviceName);
+                var status = sc.Status;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool InstallMySqlService(string xamppBase)
         {
             string mysqld = Path.Combine(xamppBase, @"mysql\bin\mysqld.exe");
             string myIni = Path.Combine(xamppBase, @"mysql\bin\my.ini");
@@ -790,27 +795,59 @@ namespace WSPR_Sked
             var psi = new ProcessStartInfo
             {
                 FileName = mysqld,
-                Arguments = $"--defaults-file=\"{myIni}\" --standalone",
+                Arguments = $"--install mysql --defaults-file=\"{myIni}\"",
                 UseShellExecute = false,
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                Verb = "runas"
             };
 
-            Process.Start(psi);
-            bool ready = await WaitForMySqlAsync();
-
-            if (!ready)
+            try
+            {
+                var p = Process.Start(psi);
+                p?.WaitForExit(5000);
+                return p?.ExitCode == 0;
+            }
+            catch
             {
                 return false;
             }
-            else
-            {
-                return true;
-            }
-
-            // Give MySQL time to come up
-            System.Threading.Thread.Sleep(1000);
         }
 
+        private async Task<bool> StartXamppMySQL(string xamppBase)
+        {
+            //string xamppBase = GetXamppBase();
+            if (xamppBase == null)
+            {
+                MessageBox.Show("Could not find a valid XAMPP installation.");
+                return false;
+            }
+
+            if (!IsMySqlServiceInstalled())
+            {
+                bool installed = InstallMySqlService(xamppBase);
+                if (!installed)
+                {
+                    MessageBox.Show("Failed to install MySQL service - try running as administrator.");
+                    return false;
+                }
+                await Task.Delay(1000);
+            }
+
+            try
+            {
+                using var sc = new ServiceController("mysql");
+                if (sc.Status != ServiceControllerStatus.Running)
+                {
+                    sc.Start();
+                    sc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(15));
+                }
+                return await WaitForMySqlAsync();
+            }
+            catch
+            {
+                return false;
+            }
+        }
         private static bool WsprDatabaseExists(string mysqlBinPath)
         {
             string mysql = Path.Combine(mysqlBinPath, "mysql.exe");
@@ -847,17 +884,13 @@ namespace WSPR_Sked
         private async Task<bool> CheckXamppBeforeInstall()
         {
             string xamppBase = GetXamppBase();
-            xamppBase = null; //force xampp path for testing
 
-            // No XAMPP — proceed with normal install
-            if (xamppBase == null)
-                return false;
 
             string mysqlBin = Path.Combine(xamppBase, @"mysql\bin");
 
             // Step 1 — check if DB already accessible (MySQL may already be running)
             if (WsprDatabaseExists(mysqlBin))
-            {                     
+            {
                 return true;  // exit — nothing to do
             }
 
@@ -875,13 +908,13 @@ namespace WSPR_Sked
             }
 
             if (WsprDatabaseExists(mysqlBin))
-            {               
+            {
                 return true;  // exit — nothing to do
             }
 
             // Still not accessible — warn user of DB error
             MessageBox.Show(
-                "XAMPP is installed and MySQL is running, but the WSPR database could not be accessed.\n\n" +               
+                "XAMPP is installed and MySQL is running, but the WSPR database could not be accessed.\n\n" +
                 "Please check XAMPP MySQL and import the database manually via phpMyAdmin:\n" +
                 " from C:\\WSPR_Sked\\wspr_db.sql",
                 "XAMPP Database Error",
@@ -891,7 +924,7 @@ namespace WSPR_Sked
         }
 
 
-      
+
 
         public static bool IsXamppInstalled()
         {
@@ -914,26 +947,26 @@ namespace WSPR_Sked
             return false;
         }
 
-        public static bool CheckXamppAndWarn(string sqlFilePath)
-        {
-            if (!IsXamppInstalled())
-                return false;   // no XAMPP, carry on with normal install
+        /* public static bool CheckXamppAndWarn(string sqlFilePath)
+         {
+             if (!IsXamppInstalled())
+                 return false;   // no XAMPP, carry on with normal install
 
-            string message =
-                "XAMPP has been detected on this machine.\r\n\r\n" +
-                "WSPR uses its own MySQL installation which may conflict with XAMPP's MySQL.\r\n\r\n" +
-                "Please import the database manually using phpMyAdmin or the XAMPP MySQL shell:\r\n\r\n" +
-                $"    {sqlFilePath}\r\n\r\n" +
-                "Click OK to continue once you have imported the database, or Cancel to abort.";
+             string message =
+                 "XAMPP has been detected on this machine.\r\n\r\n" +
+                 "WSPR uses its own MySQL installation which may conflict with XAMPP's MySQL.\r\n\r\n" +
+                 "Please import the database manually using phpMyAdmin or the XAMPP MySQL shell:\r\n\r\n" +
+                 $"    {sqlFilePath}\r\n\r\n" +
+                 "Click OK to continue once you have imported the database, or Cancel to abort.";
 
-            var result = MessageBox.Show(
-                message,
-                "XAMPP Detected — Manual Import Required",
-                MessageBoxButtons.OKCancel,
-                MessageBoxIcon.Warning);
+             var result = MessageBox.Show(
+                 message,
+                 "XAMPP Detected — Manual Import Required",
+                 MessageBoxButtons.OKCancel,
+                 MessageBoxIcon.Warning);
 
-            return true; ;  // true = user wants to abort
-        }
+             return true; ;  // true = user wants to abort
+         }*/
 
 
 
@@ -990,26 +1023,26 @@ namespace WSPR_Sked
             }
             return null;
         }
-        
 
-    private bool IsMySqlRunning()
-    {
-        try
-        {
-            var conn = new MySqlConnection("Server=localhost;Uid=root;Pwd=;");
-            conn.Open();
-            conn.Close();
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
 
-    private bool checkSlotDB(string slotdb)
+        private bool IsMySqlRunning()
         {
-            string myConnectionString = "server=" + serverName + ";Port=3306; user id=" + db_user + ";password=" + db_pass + ";database=" + slotdb + ";SslMode=None;"; 
+            try
+            {
+                var conn = new MySqlConnection("Server=localhost;Uid=root;Pwd=;");
+                conn.Open();
+                conn.Close();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool checkSlotDB(string slotdb)
+        {
+            string myConnectionString = "server=" + serverName + ";Port=3306; user id=" + db_user + ";password=" + db_pass + ";database=" + slotdb + ";SslMode=None;";
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
@@ -2261,7 +2294,7 @@ namespace WSPR_Sked
                     cells[6] = AntselcomboBox.SelectedItem.ToString();
                     Slot.Ant = AntselcomboBox.SelectedItem.ToString();
                 }
-               
+
 
                 cells[7] = selTunertextBox.Text;
                 Slot.Tuner = Convert.ToInt32(selTunertextBox.Text);
@@ -5303,7 +5336,7 @@ namespace WSPR_Sked
                 else { N = ""; }
                 MySqlCommand command = connection.CreateCommand();
                 c = "UPDATE antennas SET Antenna = '" + ant + "', Description = '" + desc + "', Switch = " + sw + ", ";
-                c = c + "Tuner = " + tu + ", Rotator = 0, SwitchPort = " + swP +",TunerPort = 0, Azimuth = 0" + N;
+                c = c + "Tuner = " + tu + ", Rotator = 0, SwitchPort = " + swP + ",TunerPort = 0, Azimuth = 0" + N;
                 c = c + " WHERE antennas.AntNo = " + antNo;
 
                 command.CommandText = c;
@@ -5582,7 +5615,7 @@ namespace WSPR_Sked
             if (HasNewFrequencyColumns())
             {
 
-                N3 = ", RXAudioLevel = " +"1.0, Region = 0";
+                N3 = ", RXAudioLevel = " + "1.0, Region = 0";
 
             }
             else
@@ -7380,7 +7413,7 @@ namespace WSPR_Sked
         }
 
         private void setDefaultSwitchesandTuners()
-        { 
+        {
             ShowSwlistBox.SelectedIndex = 0;
             ShowSwlistBox2.SelectedIndex = 0;
             ShowTulistBox.SelectedIndex = 0;
@@ -8796,7 +8829,7 @@ namespace WSPR_Sked
                     }
                     else
                     {
-                          Msg.OKMessageBox("Unable to save settings to database", "Check database");
+                        Msg.OKMessageBox("Unable to save settings to database", "Check database");
                     }
                 }
 
@@ -9330,7 +9363,7 @@ namespace WSPR_Sked
 
         private async Task<string> W410A_setMode(int swno, int mode)
         {
-            if (AntlistBox.Items.Count <0)
+            if (AntlistBox.Items.Count < 0)
             {
                 return "";
             }
@@ -10393,12 +10426,12 @@ namespace WSPR_Sked
 
         private void AntnametextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-           
+
         }
 
         private void AntdesctextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-          
+
         }
 
         private void HwtextBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -10542,8 +10575,8 @@ namespace WSPR_Sked
                 {
                     //if (i % 7 == 0) //get sunrise/set every week
                     //{
-                    gotTime = await Sunrise_Sunset(ll.Lat, ll.Long, date,ErrorShown, true);
-                   
+                    gotTime = await Sunrise_Sunset(ll.Lat, ll.Long, date, ErrorShown, true);
+
                     if (gotTime)
                     {
                         daysOK++;
@@ -10552,7 +10585,7 @@ namespace WSPR_Sked
                     {
                         ErrorShown = true;
                     }
-                     sunrise = sunTimes.R.ToString("HH:mm");
+                    sunrise = sunTimes.R.ToString("HH:mm");
                     sunset = sunTimes.S.ToString("HH:mm");
                     //}
                     string Date = date.ToString("MM-dd");
@@ -10575,7 +10608,7 @@ namespace WSPR_Sked
             }
             if (daysOK < days)
             {
-                Msg.TMessageBox("Only able to get sunrise/set times for " + daysOK +" days", "Sunrise/set", 4000);
+                Msg.TMessageBox("Only able to get sunrise/set times for " + daysOK + " days", "Sunrise/set", 4000);
                 sunlabel.Text = "Sunrise/sunset times updated for " + daysOK + " days";
             }
             else
@@ -10638,7 +10671,7 @@ namespace WSPR_Sked
                         //Msg.TMessageBox("Unable to contact sunrise/set service on port 443", "Error contacting sunrise/set", 4000);
                     }
                     attempts++;
-                    if (attempts <2)
+                    if (attempts < 2)
                     {
                         tryAgain = true;
                     }
@@ -10729,16 +10762,16 @@ namespace WSPR_Sked
 
                 connection.Open();
                 MySqlCommand command = connection.CreateCommand();
-               command.CommandText = "INSERT IGNORE INTO sunrise_sunset(locator,date,sunrise,sunset) ";
+                command.CommandText = "INSERT IGNORE INTO sunrise_sunset(locator,date,sunrise,sunset) ";
                 command.CommandText += "VALUES(@locator,@date,@sunrise,@sunset)";
                 command.CommandText += " ON DUPLICATE KEY UPDATE locator = '" + locator + "', sunrise = '" + sunrise + "', sunset = '" + sunset + "'";
 
-               /* command.CommandText = "INSERT INTO sunrise_sunset(locator, date, sunrise, sunset) ";
-                command.CommandText += "VALUES(@locator, @date, @sunrise, @sunset)";
-                command.CommandText += " ON DUPLICATE KEY UPDATE ";
-                command.CommandText += "locator = VALUES(locator), ";
-                command.CommandText += "sunrise = VALUES(sunrise), ";
-                command.CommandText += "sunset = VALUES(sunset)";*/
+                /* command.CommandText = "INSERT INTO sunrise_sunset(locator, date, sunrise, sunset) ";
+                 command.CommandText += "VALUES(@locator, @date, @sunrise, @sunset)";
+                 command.CommandText += " ON DUPLICATE KEY UPDATE ";
+                 command.CommandText += "locator = VALUES(locator), ";
+                 command.CommandText += "sunrise = VALUES(sunrise), ";
+                 command.CommandText += "sunset = VALUES(sunset)";*/
 
 
                 command.Parameters.AddWithValue("@locator", locator);
@@ -10815,7 +10848,7 @@ namespace WSPR_Sked
 
         }
 
-        
+
         private async void sunrisebutton_Click(object sender, EventArgs e)
         {
             updateSunriseSunset();
@@ -10847,7 +10880,7 @@ namespace WSPR_Sked
 
         private async Task<int> check_Sunrise_Sunset_data()
         {
-            int count =0;
+            int count = 0;
             string connectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_grey";
             var connection = new MySqlConnection(connectionString);
             string rise = "";
@@ -12182,7 +12215,7 @@ namespace WSPR_Sked
             saveFreq();
         }
 
-       
+
 
         private void newFcheckBox2_CheckedChanged(object sender, EventArgs e)
         {
@@ -12198,6 +12231,8 @@ namespace WSPR_Sked
         {
 
         }
+
+      
     }
 
 }
