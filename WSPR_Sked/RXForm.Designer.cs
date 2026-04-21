@@ -597,11 +597,11 @@
             // 
             owncheckBox.AutoSize = true;
             owncheckBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            owncheckBox.Location = new System.Drawing.Point(996, 39);
+            owncheckBox.Location = new System.Drawing.Point(999, 34);
             owncheckBox.Name = "owncheckBox";
-            owncheckBox.Size = new System.Drawing.Size(109, 17);
+            owncheckBox.Size = new System.Drawing.Size(97, 30);
             owncheckBox.TabIndex = 56;
-            owncheckBox.Text = "upload own call";
+            owncheckBox.Text = "allow upload \r\nown call";
             owncheckBox.UseVisualStyleBackColor = true;
             // 
             // RXForm
