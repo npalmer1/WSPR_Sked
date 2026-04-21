@@ -812,6 +812,14 @@ namespace WSPR_Sked
             {
                 return;
             }
+            if (uploadcheckBox.Checked == false)
+            {
+                return;
+            }
+            if (DX.tx_sign == "nil rcvd" || DX.tx_sign == "" || DX.tx_sign == Callsign)
+            {
+                return;
+            }
             var formData = new Dictionary<string, string>
             {
                 { "function", "wspr" },
