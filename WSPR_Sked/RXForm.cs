@@ -816,7 +816,7 @@ namespace WSPR_Sked
             {
                 return;
             }
-            if (DX.tx_sign == "nil rcvd" || DX.tx_sign == "" || DX.tx_sign == Callsign)
+            if (DX.tx_sign == "nil rcvd" || DX.tx_sign == "" || (DX.tx_sign == Callsign && !owncheckBox.Checked))
             {
                 return;
             }

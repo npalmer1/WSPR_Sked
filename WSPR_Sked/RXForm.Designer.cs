@@ -83,6 +83,7 @@
             label13 = new System.Windows.Forms.Label();
             cwssblistBox = new System.Windows.Forms.ListBox();
             Spectrumbutton = new System.Windows.Forms.Button();
+            owncheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -277,9 +278,10 @@
             // uploadcheckBox
             // 
             uploadcheckBox.AutoSize = true;
-            uploadcheckBox.Location = new System.Drawing.Point(906, 40);
+            uploadcheckBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            uploadcheckBox.Location = new System.Drawing.Point(882, 39);
             uploadcheckBox.Name = "uploadcheckBox";
-            uploadcheckBox.Size = new System.Drawing.Size(95, 19);
+            uploadcheckBox.Size = new System.Drawing.Size(95, 17);
             uploadcheckBox.TabIndex = 12;
             uploadcheckBox.Text = "Upload spots";
             uploadcheckBox.UseVisualStyleBackColor = true;
@@ -591,6 +593,17 @@
             Spectrumbutton.UseVisualStyleBackColor = true;
             Spectrumbutton.Click += Spectrumbutton_Click;
             // 
+            // owncheckBox
+            // 
+            owncheckBox.AutoSize = true;
+            owncheckBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            owncheckBox.Location = new System.Drawing.Point(996, 39);
+            owncheckBox.Name = "owncheckBox";
+            owncheckBox.Size = new System.Drawing.Size(109, 17);
+            owncheckBox.TabIndex = 56;
+            owncheckBox.Text = "upload own call";
+            owncheckBox.UseVisualStyleBackColor = true;
+            // 
             // RXForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -598,6 +611,7 @@
             AutoScroll = true;
             BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             ClientSize = new System.Drawing.Size(1117, 620);
+            Controls.Add(owncheckBox);
             Controls.Add(Spectrumbutton);
             Controls.Add(cwssblistBox);
             Controls.Add(label13);
@@ -705,5 +719,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column11;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column12;
         private System.Windows.Forms.Button Spectrumbutton;
+        private System.Windows.Forms.CheckBox owncheckBox;
     }
 }
