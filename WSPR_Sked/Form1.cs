@@ -2746,10 +2746,11 @@ namespace WSPR_Sked
                 cells[11] = Slot.RptType.ToString();
                 cells[14] = Slot.GreyOffset.ToString();
 
+                string Off = greylistBox.Text;
                 var ok = false;
                 ok = await Task.Run(() =>
                 {
-                    return locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot);
+                    return locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot,Off);
                 });
                 //ok =  await locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot);
 
@@ -2936,7 +2937,7 @@ namespace WSPR_Sked
         }
 
 
-        private async Task<bool> locateSlotMembersDT_Sun(string date1, string time1, string enddate, string endtime, bool this_slot)
+        private async Task<bool> locateSlotMembersDT_Sun(string date1, string time1, string enddate, string endtime, bool this_slot, string Off)
         //private bool locateSlotMembersDT_Sun(string date1, string time1, string enddate, string endtime, bool this_slot)
         {
             DateTime dt;
@@ -2956,9 +2957,9 @@ namespace WSPR_Sked
 
             try
             {
-                string o = greylistBox.Text;
-                sunriseoffset = Convert.ToInt32(o);
-                sunsetoffset = Convert.ToInt32(o);
+                
+                sunriseoffset = Convert.ToInt32(Off);
+                sunsetoffset = Convert.ToInt32(Off);
             }
             catch
             {
