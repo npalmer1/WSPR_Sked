@@ -49,6 +49,7 @@ using static Mysqlx.Expect.Open.Types.Condition.Types;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 
@@ -388,7 +389,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.39";
+            string ver = "0.1.40";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -397,7 +398,7 @@ namespace WSPR_Sked
 
             this.Hide();
             setDefaults();
-            getUserandPassword();            
+            getUserandPassword();
 
             File.AppendAllText(@"C:\Users\Public\crash_log.txt",
                 "Credentials after getUserandPassword: " +
@@ -421,7 +422,7 @@ namespace WSPR_Sked
             }
             this.Show();
             this.BringToFront();
-            
+
             rig.Name = "";
             rig.Type = 0;
             if (checkSlotDB("wspr_slots"))
@@ -666,13 +667,13 @@ namespace WSPR_Sked
         }
         private async void Form1_Shown(object sender, EventArgs e)
         {
-            
+
             try
             {
                 //this.Hide();
                 bool ok = await checkMySQLDatabases();
                 if (!ok)
-                {                    
+                {
                     var res = MessageBox.Show(
                     "MySQL server is not running. You can either install XAMPP and import the databases\n" +
                     "...see the installation instructions to configure XAMPP.\n\n" +
@@ -682,7 +683,7 @@ namespace WSPR_Sked
                     "MySQL Not Running",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
-                    
+
                     if (res == DialogResult.OK)
                     {
                         _forceClose = true;
@@ -705,7 +706,7 @@ namespace WSPR_Sked
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 }
-                
+
                 if (res == DialogResult.OK)
                 {
                     _forceClose = true;
@@ -721,7 +722,7 @@ namespace WSPR_Sked
             int result = 1;
             if (!checkSlotDB("wspr_slots"))
             {
-               
+
                 LoadError loadError = new LoadError();
                 if (!await IsMySqlRunning())
                 {
@@ -1108,7 +1109,7 @@ namespace WSPR_Sked
 
         private bool checkSlotDB(string slotdb)
         {
-           
+
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slotdb + ";SslMode=None;AllowPublicKeyRetrieval=True;";
 
             File.AppendAllText(@"C:\Users\Public\crash_log.txt", "checkSlotDB attempting: " + myConnectionString + Environment.NewLine);
@@ -1423,7 +1424,7 @@ namespace WSPR_Sked
             //DateTime d = new DateTime();
 
             bool found = false;
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + ";database=" + slot_dbname +"; SslMode = None; AllowPublicKeyRetrieval = True;";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + ";database=" + slot_dbname + "; SslMode = None; AllowPublicKeyRetrieval = True;";
 
             if (!databaseError)
             {
@@ -3413,21 +3414,43 @@ namespace WSPR_Sked
                 }
                 return;
             }
+
             // Allow only letters, digits, and basic punctuation
             if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && !"-".Contains(e.KeyChar))
             {
                 e.Handled = true; // Block the character
+                return;
             }
-            else
-            {
+            overWrite(sender, e);
+            
                 int.TryParse(OffsettextBox.Text + e.KeyChar, out t);
                 if (t > 220 || t < -20)
                 {
                     Msg.OKMessageBox("Error: range 0-200 Hz", "");
                     e.Handled = true;
                 }
-            }
+            
+            
 
+        }
+
+        private void overWrite(object sender, KeyPressEventArgs e)
+        {
+            System.Windows.Forms.TextBox tb = (System.Windows.Forms.TextBox)sender;
+
+            // Ignore control keys (Backspace, Delete, arrows, etc.)
+            if (char.IsControl(e.KeyChar))
+                return;
+
+            // If text is selected, replace it
+            if (tb.SelectionLength > 0)
+            {
+                int start = tb.SelectionStart;
+                tb.Text = tb.Text.Remove(start, tb.SelectionLength)
+                                 .Insert(start, e.KeyChar.ToString());
+                tb.SelectionStart = start + 1;
+               
+            }           
         }
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
@@ -5093,6 +5116,7 @@ namespace WSPR_Sked
             }
             else
             {
+                overWrite(sender, e);
                 int.TryParse(defaultOfftextBox.Text + e.KeyChar, out t);
                 if (t > 220 || t < -20)
                 {
@@ -12303,7 +12327,10 @@ namespace WSPR_Sked
 
         }
 
-      
+        private void OffsettextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 
 }

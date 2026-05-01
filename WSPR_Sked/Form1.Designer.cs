@@ -1128,6 +1128,7 @@
             OffsettextBox.Name = "OffsettextBox";
             OffsettextBox.Size = new System.Drawing.Size(51, 20);
             OffsettextBox.TabIndex = 2;
+            OffsettextBox.TextChanged += OffsettextBox_TextChanged;
             OffsettextBox.KeyPress += OffsettextBox_KeyPress;
             // 
             // label11
