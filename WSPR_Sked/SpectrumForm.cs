@@ -570,7 +570,7 @@ namespace WSPR_Sked
         }
         private string GetWsprTime()
         {
-            DateTime now = DateTime.Now;
+            DateTime now = DateTime.Now.ToUniversalTime();
             int minute = now.Minute;
 
             if (minute % 2 != 0)
