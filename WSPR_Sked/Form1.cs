@@ -389,7 +389,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.41";
+            string ver = "0.1.42";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -400,9 +400,9 @@ namespace WSPR_Sked
             setDefaults();
             getUserandPassword();
 
-            File.AppendAllText(@"C:\Users\Public\crash_log.txt",
-                "Credentials after getUserandPassword: " +
-                "server=" + serverName + " user=" + db_user + " pass=" + db_pass + Environment.NewLine);
+            //File.AppendAllText(@"C:\Users\Public\crash_log.txt",
+            //    "Credentials after getUserandPassword: " +
+            //    "server=" + serverName + " user=" + db_user + " pass=" + db_pass + Environment.NewLine);
 
             try
             {
@@ -1112,7 +1112,7 @@ namespace WSPR_Sked
 
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + slotdb + ";SslMode=None;AllowPublicKeyRetrieval=True;";
 
-            File.AppendAllText(@"C:\Users\Public\crash_log.txt", "checkSlotDB attempting: " + myConnectionString + Environment.NewLine);
+            //File.AppendAllText(@"C:\Users\Public\crash_log.txt", "checkSlotDB attempting: " + myConnectionString + Environment.NewLine);
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
 
@@ -4426,6 +4426,10 @@ namespace WSPR_Sked
 
             if ((down == 1 || down >= 120))
             {
+                //debugging timing errors:
+                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                        $"{now:HH:mm:ss} WSPRtimer down==1, slotActive={slotActive}, enableTX={enableTXcheckBox.Checked}\n");
+
                 if (slotActive && enableTXcheckBox.Checked)
                 {
                     countdownlabel.Text = "TX start";
@@ -5916,8 +5920,11 @@ namespace WSPR_Sked
                 Flag = false;
             }
 
+          
             if ((m % 2 == 1 && (s == 52 || s == 53 || s == 54) && !Flag) || justLoaded)
             {
+
+                
                 // Calculate next even minute correctly
 
                 // On startup, only act if we're in the normal trigger window
@@ -5927,6 +5934,7 @@ namespace WSPR_Sked
                     justLoaded = false;
                     return;
                 }
+                Flag = true;
 
                 if (justLoaded)
                 {
@@ -5938,7 +5946,11 @@ namespace WSPR_Sked
                 }
                 string nexttime = nextT.ToString("HH:mm:00");
 
-                Flag = true;
+                //debug timing:
+                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                    $"{now:HH:mm:ss} trigger fired, Flag={Flag}, nexttime={nexttime}\n");
+
+              
                 DateTime d = now.Date;
 
                 string date = d.ToString("yyyy-MM-dd");
@@ -5948,6 +5960,11 @@ namespace WSPR_Sked
                 databaseError = false;
                 slotFound = false;
                 bool slotok = await (findSlot(-1, date, nexttime));
+                slotFound = slotok;
+
+                //debig timing:
+                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                    $"{now:HH:mm:ss} findSlot returned={slotok}, slotActive={slotActive}\n");
 
                 if (slotok)
                 {
@@ -6071,8 +6088,18 @@ namespace WSPR_Sked
                 }
                 else
                 {
-                    btnText = "RX: " + MHz + " MHz";
-                    //rxForm.set_frequency(MHz);
+                    if (slotFound && !slotActive)
+                    {
+                        btnText = "RX: " + MHz + " MHz";
+                        TXrunbutton.BackColor = Color.RoyalBlue;
+                        TXrunbutton2.BackColor = Color.RoyalBlue;
+                    }
+                    else
+                    {
+                        btnText = "RX: " + MHz + " MHz";
+                        TXrunbutton.BackColor = Color.Olive;
+                        TXrunbutton2.BackColor = Color.Olive;
+                    }                   
                 }
 
                 if (!noRigctld)
@@ -6554,15 +6581,16 @@ namespace WSPR_Sked
                 }
                 else
                 {
-                    if (noRigctld)
-                    {
-                        TXrunbutton.BackColor = Color.DarkKhaki;
-                        TXrunbutton2.BackColor = Color.DarkKhaki;
-                    }
-                    else if (!slotActive)
+                    
+                    if (!slotActive)
                     {
                         TXrunbutton.BackColor = Color.RoyalBlue;
                         TXrunbutton2.BackColor = Color.RoyalBlue;
+                    }
+                    else if (noRigctld)
+                    {
+                        TXrunbutton.BackColor = Color.DarkKhaki;
+                        TXrunbutton2.BackColor = Color.DarkKhaki;
                     }
                     else
                     {
