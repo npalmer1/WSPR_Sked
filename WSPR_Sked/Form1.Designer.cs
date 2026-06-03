@@ -4980,6 +4980,7 @@
             FormClosing += Form1_FormClosing;
             Load += Form1_Load;
             Shown += Form1_Shown;
+            KeyDown += Form1_KeyDown_1;
             MouseClick += Form1_MouseClick;
             MouseDoubleClick += Form1_MouseDoubleClick;
             MouseMove += Form1_MouseMove;

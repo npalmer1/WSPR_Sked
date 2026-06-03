@@ -389,7 +389,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.42";
+            string ver = "0.1.43";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -2750,7 +2750,7 @@ namespace WSPR_Sked
                 var ok = false;
                 ok = await Task.Run(() =>
                 {
-                    return locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot,Off);
+                    return locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot, Off);
                 });
                 //ok =  await locateSlotMembersDT_Sun(date1, time1, enddate, endtime, this_slot);
 
@@ -2957,7 +2957,7 @@ namespace WSPR_Sked
 
             try
             {
-                
+
                 sunriseoffset = Convert.ToInt32(Off);
                 sunsetoffset = Convert.ToInt32(Off);
             }
@@ -3423,15 +3423,15 @@ namespace WSPR_Sked
                 return;
             }
             overWrite(sender, e);
-            
-                int.TryParse(OffsettextBox.Text + e.KeyChar, out t);
-                if (t > 220 || t < -20)
-                {
-                    Msg.OKMessageBox("Error: range 0-200 Hz", "");
-                    e.Handled = true;
-                }
-            
-            
+
+            int.TryParse(OffsettextBox.Text + e.KeyChar, out t);
+            if (t > 220 || t < -20)
+            {
+                Msg.OKMessageBox("Error: range 0-200 Hz", "");
+                e.Handled = true;
+            }
+
+
 
         }
 
@@ -3450,8 +3450,8 @@ namespace WSPR_Sked
                 tb.Text = tb.Text.Remove(start, tb.SelectionLength)
                                  .Insert(start, e.KeyChar.ToString());
                 tb.SelectionStart = start + 1;
-               
-            }           
+
+            }
         }
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
@@ -4424,7 +4424,7 @@ namespace WSPR_Sked
 
             }
 
-            if ((down == 1 || down >= 120))
+            if ((down == 1))
             {
                 //debugging timing errors:
                 File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
@@ -5809,13 +5809,18 @@ namespace WSPR_Sked
             int s = now.Second;
 
             keypresses++;
-            if (keypresses > 180 && (s == 4) && !slotgroupBox.Visible) //if 3 minutes passed without keypress and not editing a slot 
+            /*if (keypresses > 180 && (s == 4) && !slotgroupBox.Visible) //if 3 minutes passed without keypress and not editing a slot 
             {
                 currHour(true, trackSlotscheckBox.Checked); // update the date/time if no-one has been working in the app in 5 minutes
                 if (!trackSlotscheckBox.Checked) { keypresses = 0; } // update the date/time if no-one has been working in the app in 5 minutes (track exact slot time if no activity)
                 //noSkedcheckBox.Checked = false;
+            }*/
+            bool nearTrigger = (m % 2 == 1 && s >= 48) || (m % 2 == 0 && s <= 6);
+            if (keypresses > 180 && (s == 4) && !slotgroupBox.Visible && !nearTrigger)
+            {
+                currHour(true, trackSlotscheckBox.Checked);
+                if (!trackSlotscheckBox.Checked) { keypresses = 0; }
             }
-
 
 
             DateTime nextT;
@@ -5915,16 +5920,16 @@ namespace WSPR_Sked
 
 
 
-            if (m % 2 == 0 && (s > 2 && s < 5))
+            if (m % 2 == 0 && (s > 2 && s < 10))
             {
                 Flag = false;
             }
 
-          
+
             if ((m % 2 == 1 && (s == 52 || s == 53 || s == 54) && !Flag) || justLoaded)
             {
 
-                
+
                 // Calculate next even minute correctly
 
                 // On startup, only act if we're in the normal trigger window
@@ -5950,7 +5955,7 @@ namespace WSPR_Sked
                 File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
                     $"{now:HH:mm:ss} trigger fired, Flag={Flag}, nexttime={nexttime}\n");
 
-              
+
                 DateTime d = now.Date;
 
                 string date = d.ToString("yyyy-MM-dd");
@@ -5959,14 +5964,17 @@ namespace WSPR_Sked
                 showmsg = true;
                 databaseError = false;
                 slotFound = false;
+                
+
                 bool slotok = await (findSlot(-1, date, nexttime));
                 slotFound = slotok;
+                bool capturedSlotActive = slotActive; // capture immediately after findSlot
 
                 //debig timing:
                 File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
                     $"{now:HH:mm:ss} findSlot returned={slotok}, slotActive={slotActive}\n");
 
-                if (slotok)
+                /*if (slotok)
                 {
                     if (!noSkedcheckBox.Checked)
                     {
@@ -5992,6 +6000,31 @@ namespace WSPR_Sked
                             WSPRtimer.Start(); //start the time to starty the TX 
                             prepDone = false;
 
+                        }
+                    }
+                }*/
+
+               
+                // use capturedSlotActive for the WSPRtimer decision:
+                if (slotok)
+                {
+                    if (!noSkedcheckBox.Checked)
+                    {
+                        if (!enableTXcheckBox.Checked && capturedSlotActive)
+                        {
+                            Msg.TMessageBox("Warning: TX not enabled", "TX Status", 4000);
+                            slotActive = false;
+                        }
+                        if (!checkRigctld() && !justLoaded)
+                        {
+                            Msg.TMessageBox("Error: RigCtld not running", "", 3000);
+                        }                                
+                        else
+                        {
+                            blockTXonErr = false; //unblock old errors
+                            WSPRtimer.Enabled = true;
+                            WSPRtimer.Start();  //start the time to start the TX 
+                            prepDone = false;
                         }
                     }
                 }
@@ -6099,7 +6132,7 @@ namespace WSPR_Sked
                         btnText = "RX: " + MHz + " MHz";
                         TXrunbutton.BackColor = Color.Olive;
                         TXrunbutton2.BackColor = Color.Olive;
-                    }                   
+                    }
                 }
 
                 if (!noRigctld)
@@ -6581,7 +6614,7 @@ namespace WSPR_Sked
                 }
                 else
                 {
-                    
+
                     if (!slotActive)
                     {
                         TXrunbutton.BackColor = Color.RoyalBlue;
@@ -7086,11 +7119,18 @@ namespace WSPR_Sked
             int s = now.Second;
             keypresses++;
             startCount++;  //count to X mins to update received database
-            if (keypresses > 180 && s == 5 && !slotgroupBox.Visible) //if 3 minutes passed without keypress or slot editing box not opened - change current time
+            /* if (keypresses > 180 && s == 5 && !slotgroupBox.Visible) //if 3 minutes passed without keypress or slot editing box not opened - change current time
+             {
+                 currHour(true, trackSlotscheckBox.Checked); // update the date/time if no-one has been working in the app in 5 minutes (track exect slot time if no activity)
+                 if (!trackSlotscheckBox.Checked) { keypresses = 0; }
+                 //noSkedcheckBox.Checked = false;
+             }*/
+
+            bool nearTrigger = (m % 2 == 1 && s >= 48) || (m % 2 == 0 && s <= 6);
+            if (keypresses > 180 && s == 5 && !slotgroupBox.Visible && !nearTrigger)
             {
-                currHour(true, trackSlotscheckBox.Checked); // update the date/time if no-one has been working in the app in 5 minutes (track exect slot time if no activity)
+                currHour(true, trackSlotscheckBox.Checked);
                 if (!trackSlotscheckBox.Checked) { keypresses = 0; }
-                //noSkedcheckBox.Checked = false;
             }
 
             string time = Convert.ToString(h).PadLeft(2, '0');
@@ -7144,10 +7184,11 @@ namespace WSPR_Sked
             {
                 Flag = false;   //use flag to account for possible missed timer ticks
             }
-            if (m % 2 == 0 && (s > 2 && s < 5))
+            if (m % 2 == 0 && (s > 2 && s < 10))
             {
                 Flag = false;
             }
+
 
         }
 
@@ -10084,7 +10125,11 @@ namespace WSPR_Sked
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            keypresses = 0;
+            int m = DateTime.Now.Minute;
+            int s = DateTime.Now.Second;
+            bool nearTrigger = (m % 2 == 1 && s >= 48) || (m % 2 == 0 && s <= 6);
+            if (!nearTrigger)
+                keypresses = 0;
         }
 
         async void testFreq(bool change_IdleF)
@@ -12359,6 +12404,15 @@ namespace WSPR_Sked
         private void OffsettextBox_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void Form1_KeyDown_1(object sender, KeyEventArgs e)
+        {
+            int m = DateTime.Now.Minute;
+            int s = DateTime.Now.Second;
+            bool nearTrigger = (m % 2 == 1 && s >= 48) || (m % 2 == 0 && s <= 6);
+            if (!nearTrigger)
+                keypresses = 0;
         }
     }
 
