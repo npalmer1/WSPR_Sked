@@ -4441,11 +4441,13 @@ namespace WSPR_Sked
                 }
             }
 
-            if ((down == 1))
+
+            // Fire when we're at :00 or :01 seconds
+            if ((m % 2 == 0 && s == 0) || (m % 2 == 0 && s == 1))
             {
                 //debugging timing errors:
                 File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
-                        $"{now:HH:mm:ss} WSPRtimer down==1, slotActive={slotActive}, enableTX={enableTXcheckBox.Checked}\n");
+                        $"{now:HH:mm:ss} WSPRtimer firing TX, slotActive={slotActive}, enableTX={enableTXcheckBox.Checked}, down={down}\n");
 
                 if (slotActive && enableTXcheckBox.Checked)
                 {
@@ -4461,7 +4463,6 @@ namespace WSPR_Sked
                     if (!rigctldcheckBox.Checked)
                     { getRigF(); }
                 }
-                //await StartTX(false);
                 WSPRtimer.Stop();
                 WSPRtimer.Enabled = false;
             }
@@ -5916,48 +5917,109 @@ namespace WSPR_Sked
             }
         }
 
+        private bool IsRunningAsAdmin()
+        {
+            try
+            {
+                System.Security.Principal.WindowsIdentity identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+                System.Security.Principal.WindowsPrincipal principal = new System.Security.Principal.WindowsPrincipal(identity);
+                return principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         private async Task SyncSystemClockWithNTP()
         {
             try
             {
+                if (!IsRunningAsAdmin())
+                {
+                    Msg.TMessageBox("Clock sync requires Administrator privileges.",
+                        "Admin Required", 5000);
+                    return;
+                }
+
+                // Ensure Windows Time service is running
+                try
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo
+                    {
+                        FileName = "cmd.exe",
+                        Arguments = "/C net start w32time",
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        CreateNoWindow = true
+                    };
+
+                    using (Process process = Process.Start(psi))
+                    {
+                        process.WaitForExit();
+                    }
+
+                    await Task.Delay(500);
+                }
+                catch { }
+
+                // Now check NTP and sync
                 using (var ntpClient = new System.Net.Sockets.UdpClient())
                 {
                     ntpClient.Connect("pool.ntp.org", 123);
-
                     byte[] ntpData = new byte[48];
-                    ntpData[0] = 0x1B; // NTP version 3, client mode
+                    ntpData[0] = 0x1B;
 
                     await ntpClient.SendAsync(ntpData, ntpData.Length);
                     var result = await ntpClient.ReceiveAsync();
-
                     byte[] responseData = result.Buffer;
-                    ulong intPart = BitConverter.ToUInt32(responseData, 40);
-                    ulong fractPart = BitConverter.ToUInt32(responseData, 44);
 
+                    ulong intPart = BitConverter.ToUInt32(responseData, 40);
                     intPart = (intPart >> 24) | ((intPart & 0xFF0000) >> 8) | ((intPart & 0xFF00) << 8) | ((intPart & 0xFF) << 24);
 
                     DateTime ntpTime = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(intPart);
                     double clockDrift = Math.Abs((DateTime.UtcNow - ntpTime).TotalSeconds);
 
                     File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
-                        $"{DateTime.Now:HH:mm:ss} NTP sync: drift={clockDrift:F2} seconds, NTP time={ntpTime:HH:mm:ss}\n");
+                        $"{DateTime.Now:HH:mm:ss} NTP check: drift={clockDrift:F2} sec\n");
 
-                    if (clockDrift > 2)
+                    if (clockDrift > 1)
                     {
-                        Msg.TMessageBox($"Warning: System clock is {clockDrift:F1} seconds off. Consider syncing system time.",
-                            "Clock Drift Detected", 3000);
+                        ProcessStartInfo psi2 = new ProcessStartInfo
+                        {
+                            FileName = "cmd.exe",
+                            Arguments = "/C w32tm /resync /force",
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            CreateNoWindow = true
+                        };
+
+                        using (Process process = Process.Start(psi2))
+                        {
+                            process.WaitForExit();
+                        }
+
+                        await Task.Delay(1000);
+
+                        Msg.TMessageBox($"System clock synced (was {clockDrift:F1} seconds off).",
+                            "Clock Synced", 3000);
+
+                        File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                            $"{DateTime.Now:HH:mm:ss} System clock synced\n");
+                    }
+                    else 
+                    {
+                        Msg.TMessageBox($"System clock synced",
+                           "Clock Synced", 3000);
                     }
                 }
             }
             catch (Exception ex)
             {
                 File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
-                    $"{DateTime.Now:HH:mm:ss} NTP sync failed: {ex.Message}\n");
+                    $"{DateTime.Now:HH:mm:ss} Sync error: {ex.Message}\n");
             }
         }
-
-
 
         private void daytimer_Tick(object sender, EventArgs e)
         {
@@ -6098,7 +6160,7 @@ namespace WSPR_Sked
                 Flag = false;
             }
 
-            if (now.Hour == 3 && m == 15 && s == 0)  // Every day at 03:15 UTC
+            if ((now.Hour == 3 || now.Hour == 12) && m == 15 && s == 0)  // Every day at 03:15 UTC and 12.00 UTC, check system clock against NTP and log the drift. Warn if drift is large.
             {
                 await SyncSystemClockWithNTP();
             }
@@ -6142,7 +6204,7 @@ namespace WSPR_Sked
                 showmsg = true;
                 databaseError = false;
                 slotFound = false;
-                
+
 
                 bool slotok = await (findSlot(-1, date, nexttime));
                 slotFound = slotok;
@@ -6182,7 +6244,7 @@ namespace WSPR_Sked
                     }
                 }*/
 
-               
+
                 // use capturedSlotActive for the WSPRtimer decision:
                 if (slotok)
                 {
@@ -6196,7 +6258,7 @@ namespace WSPR_Sked
                         if (!checkRigctld() && !justLoaded)
                         {
                             Msg.TMessageBox("Error: RigCtld not running", "", 3000);
-                        }                                
+                        }
                         else
                         {
                             blockTXonErr = false; //unblock old errors
@@ -12591,6 +12653,12 @@ namespace WSPR_Sked
             bool nearTrigger = (m % 2 == 1 && s >= 48) || (m % 2 == 0 && s <= 6);
             if (!nearTrigger)
                 keypresses = 0;
+        }
+
+        private async void syncbutton_Click(object sender, EventArgs e)
+        {
+            await SyncSystemClockWithNTP(); 
+
         }
     }
 
