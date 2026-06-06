@@ -6050,8 +6050,8 @@ namespace WSPR_Sked
                 if (!trackSlotscheckBox.Checked) { keypresses = 0; } // update the date/time if no-one has been working in the app in 5 minutes (track exact slot time if no activity)
                 //noSkedcheckBox.Checked = false;
             }*/
-            bool nearTrigger = (m % 2 == 1 && s >= 48) || (m % 2 == 0 && s <= 6);
-            if (keypresses > 180 && (s == 4) && !slotgroupBox.Visible && !nearTrigger)
+            bool nearTrigger = (m % 2 == 1 && s >= 48) || (m % 2 == 0 && s <= 5);
+            if (keypresses > 180 && (s == 6) && !slotgroupBox.Visible && !nearTrigger)
             {
                 currHour(true, trackSlotscheckBox.Checked);
                 if (!trackSlotscheckBox.Checked) { keypresses = 0; }
