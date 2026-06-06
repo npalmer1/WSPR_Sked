@@ -389,7 +389,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.43";
+            string ver = "0.1.44";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -4359,7 +4359,116 @@ namespace WSPR_Sked
 
         }
 
-        private async void WSPRtimer_Action()
+        private async void WSPRtimer_Action() //updated timer logic
+        {
+            DateTime now;
+
+            if (LTcheckBox.Checked)
+            {
+                now = DateTime.Now;
+            }
+            else
+            {
+                now = DateTime.Now.ToUniversalTime();
+            }
+            int h = now.Hour;
+            int m = now.Minute;
+            int s = now.Second;
+
+            int down = 0;
+            string TXRX = "TX in ";
+
+            /*if (!slotActive)
+            {
+                return;
+            }*/
+
+            // FIX: Calculate seconds until the START of the next even minute (:00 seconds)
+            // This ensures transmission happens at the correct slot boundary
+            int nextEvenMinute;
+            if (m % 2 == 0 && s == 0)
+            {
+                // Already at start of an even minute
+                down = 120;  // Full 2-minute slot
+            }
+            else if (m % 2 == 0)
+            {
+                // In an even minute but not at :00 - wait for next even minute
+                nextEvenMinute = m + 2;
+                if (nextEvenMinute >= 60) nextEvenMinute -= 60;
+                down = (nextEvenMinute * 60) - (m * 60 + s);
+                if (down <= 0) down += 120;
+            }
+            else
+            {
+                // In an odd minute - next even minute is m+1
+                nextEvenMinute = m + 1;
+                if (nextEvenMinute >= 60) nextEvenMinute -= 60;
+                down = (nextEvenMinute * 60) - (m * 60 + s);
+                if (down <= 0) down += 120;
+            }
+
+            if (down < 120)
+            {
+                if (slotActive)
+                {
+                    TXRX = "TX in ";
+                }
+                else
+                {
+                    TXRX = "RX in: ";
+                }
+                countdownlabel.Text = TXRX + down.ToString() + " seconds";
+                countdownlabel2.Text = TXRX + down.ToString() + " seconds";
+            }
+
+            if (down > 4)
+            {
+                prepDone = false;
+            }
+            if (down <= 5 && !prepDone)
+            {
+                prepDone = true;
+                await activateAntSwitch(TXAntenna);
+                await changeFilter(TXFrequency);
+                await Task.Delay(100);
+                await activateTX(TXFrequency);
+                double freq = Convert.ToDouble(TXFrequency);
+                freq = freq / 1000000;
+                if (!noRigctld)
+                {
+                    await rxForm.set_frequency(freq.ToString("F6"));
+                }
+            }
+
+            if ((down == 1))
+            {
+                //debugging timing errors:
+                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                        $"{now:HH:mm:ss} WSPRtimer down==1, slotActive={slotActive}, enableTX={enableTXcheckBox.Checked}\n");
+
+                if (slotActive && enableTXcheckBox.Checked)
+                {
+                    countdownlabel.Text = "TX start";
+                    countdownlabel2.Text = "TX start";
+                    await StartTX(false);
+                    rxForm.setLabel("idle");
+                }
+                else
+                {
+                    countdownlabel.Text = "RX start";
+                    countdownlabel2.Text = "RX start";
+                    if (!rigctldcheckBox.Checked)
+                    { getRigF(); }
+                }
+                //await StartTX(false);
+                WSPRtimer.Stop();
+                WSPRtimer.Enabled = false;
+            }
+        }
+
+
+        /*private async void WSPRtimer_Action_OLD()
         {
             DateTime now;
 
@@ -4379,16 +4488,42 @@ namespace WSPR_Sked
             int even = 0;
             string TXRX = "TX in ";
 
-            /*if (!slotActive)
+
+            //if (m % 2 == 0)
+            //{
+            //    even = 60;
+            //}
+            //else { even = 0; }
+            //down = 60 + even - s;
+
+            //new logic:
+            // Calculate seconds until next even minute boundary (at :00 seconds)
+            int nextEvenMinute;
+            if (m % 2 == 0 && s == 0)
             {
-                return;
-            }*/
-            if (m % 2 == 0)
-            {
-                even = 60;
+                // Already at start of even minute
+                nextEvenMinute = m;
             }
-            else { even = 0; }
-            down = 60 + even - s;
+            else if (m % 2 == 0)
+            {
+                // In an even minute, wait for next even minute
+                nextEvenMinute = m + 2;
+            }
+            else
+            {
+                // In an odd minute, next even minute is +1
+                nextEvenMinute = m + 1;
+            }
+            if (nextEvenMinute >= 60) nextEvenMinute -= 60;
+
+            // Calculate seconds until that minute at :00
+            int currentMinuteSeconds = m * 60 + s;
+            int targetMinuteSeconds = nextEvenMinute * 60;
+            down = targetMinuteSeconds - currentMinuteSeconds;
+            if (down <= 0) down += 120;  // If negative, add 2 minutes
+            //end new logic
+
+
             if (down < 120)
             {
 
@@ -4451,7 +4586,7 @@ namespace WSPR_Sked
                 WSPRtimer.Enabled = false;
 
             }
-        }
+        }*/
 
 
         private async Task activateTX(string TXFrequency)
@@ -5782,7 +5917,45 @@ namespace WSPR_Sked
         }
 
 
+        private async Task SyncSystemClockWithNTP()
+        {
+            try
+            {
+                using (var ntpClient = new System.Net.Sockets.UdpClient())
+                {
+                    ntpClient.Connect("pool.ntp.org", 123);
 
+                    byte[] ntpData = new byte[48];
+                    ntpData[0] = 0x1B; // NTP version 3, client mode
+
+                    await ntpClient.SendAsync(ntpData, ntpData.Length);
+                    var result = await ntpClient.ReceiveAsync();
+
+                    byte[] responseData = result.Buffer;
+                    ulong intPart = BitConverter.ToUInt32(responseData, 40);
+                    ulong fractPart = BitConverter.ToUInt32(responseData, 44);
+
+                    intPart = (intPart >> 24) | ((intPart & 0xFF0000) >> 8) | ((intPart & 0xFF00) << 8) | ((intPart & 0xFF) << 24);
+
+                    DateTime ntpTime = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(intPart);
+                    double clockDrift = Math.Abs((DateTime.UtcNow - ntpTime).TotalSeconds);
+
+                    File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                        $"{DateTime.Now:HH:mm:ss} NTP sync: drift={clockDrift:F2} seconds, NTP time={ntpTime:HH:mm:ss}\n");
+
+                    if (clockDrift > 2)
+                    {
+                        Msg.TMessageBox($"Warning: System clock is {clockDrift:F1} seconds off. Consider syncing system time.",
+                            "Clock Drift Detected", 3000);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                    $"{DateTime.Now:HH:mm:ss} NTP sync failed: {ex.Message}\n");
+            }
+        }
 
 
 
@@ -5923,6 +6096,11 @@ namespace WSPR_Sked
             if (m % 2 == 0 && (s > 2 && s < 10))
             {
                 Flag = false;
+            }
+
+            if (now.Hour == 3 && m == 15 && s == 0)  // Every day at 03:15 UTC
+            {
+                await SyncSystemClockWithNTP();
             }
 
 
