@@ -296,6 +296,7 @@ namespace WSPR_Sked
 
 
         int keypresses = 0;
+        bool currslotmoved = true;
 
 
         private static readonly object _lock = new object();
@@ -6051,8 +6052,9 @@ namespace WSPR_Sked
                 //noSkedcheckBox.Checked = false;
             }*/
             bool nearTrigger = (m % 2 == 1 && s >= 49) || (m % 2 == 0 && s <= 4);
-            if (keypresses > 90 && (s == 6) && !slotgroupBox.Visible && !nearTrigger)
+            if (keypresses > 90 && (s == 6 || s == 7) && !currslotmoved && !slotgroupBox.Visible && !nearTrigger)
             {
+                currslotmoved = true; //just in case it misses second 6
                 currHour(true, trackSlotscheckBox.Checked);
                 if (!trackSlotscheckBox.Checked) { keypresses = 0; }
             }
@@ -6129,6 +6131,7 @@ namespace WSPR_Sked
 
             if (((m % 2 == 1 && s == 59) || (m % 2 == 0 && s == 0)) || (m % 2 == 0 && s == 1))
             {
+                currslotmoved = false;
                 if (!recordFlag)
                 {
                     recordFlag = true;
@@ -7368,8 +7371,9 @@ namespace WSPR_Sked
              }*/
 
             bool nearTrigger = (m % 2 == 1 && s >= 49) || (m % 2 == 0 && s <= 4);
-            if (keypresses > 90 && s == 6 && !slotgroupBox.Visible && !nearTrigger)
+            if (keypresses > 90 && (s == 6 || s== 7) && !currslotmoved  && !slotgroupBox.Visible && !nearTrigger)
             {
+                currslotmoved = true;
                 currHour(true, trackSlotscheckBox.Checked);
                 if (!trackSlotscheckBox.Checked) { keypresses = 0; }
             }
@@ -7398,6 +7402,7 @@ namespace WSPR_Sked
             }
             if (m % 2 == 1 && s == 59 || (m % 2 == 0 && s == 0) || (m % 2 == 0 && s == 1))
             {
+                currslotmoved = false;
                 if (!recordFlag)
                 {
                     recordFlag = true;
