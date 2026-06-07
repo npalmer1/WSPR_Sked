@@ -6051,7 +6051,7 @@ namespace WSPR_Sked
                 //noSkedcheckBox.Checked = false;
             }*/
             bool nearTrigger = (m % 2 == 1 && s >= 49) || (m % 2 == 0 && s <= 4);
-            if (keypresses > 150 && (s == 6) && !slotgroupBox.Visible && !nearTrigger)
+            if (keypresses > 120 && (s == 6) && !slotgroupBox.Visible && !nearTrigger)
             {
                 currHour(true, trackSlotscheckBox.Checked);
                 if (!trackSlotscheckBox.Checked) { keypresses = 0; }
@@ -7341,6 +7341,7 @@ namespace WSPR_Sked
         {
             daytimer2_Action(); //keep displaying time, but don't process anythign else
         }
+       
         private async void daytimer2_Action()
         {
             DateTime now;
@@ -7367,7 +7368,7 @@ namespace WSPR_Sked
              }*/
 
             bool nearTrigger = (m % 2 == 1 && s >= 49) || (m % 2 == 0 && s <= 4);
-            if (keypresses > 150 && s == 6 && !slotgroupBox.Visible && !nearTrigger)
+            if (keypresses > 120 && s == 6 && !slotgroupBox.Visible && !nearTrigger)
             {
                 currHour(true, trackSlotscheckBox.Checked);
                 if (!trackSlotscheckBox.Checked) { keypresses = 0; }
