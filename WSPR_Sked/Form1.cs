@@ -390,7 +390,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.44";
+            string ver = "0.1.45";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -3972,7 +3972,14 @@ namespace WSPR_Sked
             {
                 if (slotActive && enableTXcheckBox.Checked)
                 {
-                    PTT(true);
+                    if (!VoxcheckBox.Checked)
+                    {
+                        PTT(true);
+                    }
+                    else
+                    {
+                        Msg.TMessageBox("Using VOX to start TX", "VOX", 3000);
+                    }
 
                 }
                 wsprTXtimer.Enabled = true;
@@ -6008,7 +6015,7 @@ namespace WSPR_Sked
                         File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
                             $"{DateTime.Now:HH:mm:ss} System clock synced\n");
                     }
-                    else 
+                    else
                     {
                         Msg.TMessageBox($"System clock synced",
                            "Clock Synced", 3000);
@@ -6052,7 +6059,7 @@ namespace WSPR_Sked
                 //noSkedcheckBox.Checked = false;
             }*/
             bool nearTrigger = (m % 2 == 1 && s >= 49) || (m % 2 == 0 && s <= 4);
-            if (keypresses > 90 && (s == 6 || s == 7 || s ==8) && !currslotmoved && !slotgroupBox.Visible && !nearTrigger)
+            if (keypresses > 90 && (s == 6 || s == 7 || s == 8) && !currslotmoved && !slotgroupBox.Visible && !nearTrigger)
             {
                 currslotmoved = true; //just in case it misses second 6
                 currHour(true, trackSlotscheckBox.Checked);
@@ -6572,7 +6579,10 @@ namespace WSPR_Sked
             {
                 string rpath = RigCtlPathtextBox.Text.Trim();
                 string content = rpath + slash + "rigctld";
-                string args = "-m " + Radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort;
+                string catdev = " -r " + RigctlCOM;
+                string baud = " -s " + Rigctlbaud;
+            
+                string args = "-m " + Radio + catdev + baud + " -T " + RigctlIPv4 + " -t " + RigctlPort;
 
 
                 await Task.Run(() =>
@@ -6621,7 +6631,10 @@ namespace WSPR_Sked
                 string[] str = radio.Split(' ');
                 radio = str[0].Trim(' ');
                 string rigctld = "rigctld";
-                string args = "-m " + radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort + " &";
+                string catdev = " -r " + RigctlCOM;
+                string baud = " -s " + Rigctlbaud;
+                
+                string args = "-m " + radio +  catdev + baud + " -T " + RigctlIPv4 + " -t " + RigctlPort + " &";
                 await Task.Run(() =>
                 {
 
@@ -6660,6 +6673,7 @@ namespace WSPR_Sked
 
         private async Task runAsyncProcess(string cmd, string args)
         {
+            string test;
             try
             {
 
@@ -6685,6 +6699,8 @@ namespace WSPR_Sked
 
 
                 process.WaitForExit();
+                test = "test";
+
 
                 //return true;
             }
@@ -7007,11 +7023,13 @@ namespace WSPR_Sked
         }
         private async void SaveRigctlButton_Action()
         {
+            addRigctlField();
+            await Task.Delay(600);
             if (SaveRigctl())
             {
                 if (!rigctldcheckBox.Checked)
                 {
-                    RigctlCOM = COMcomboBox.SelectedItem.ToString();
+                    
                     Rigctlbaud = baudcomboBox.SelectedItem.ToString();
                     RigctlPort = PorttextBox.Text;
                     RigctlIPv4 = IPtextBox.Text;
@@ -7021,25 +7039,29 @@ namespace WSPR_Sked
                     string content = "";
                     string args = "";
                     string rpath = RigCtlPathtextBox.Text.Trim();
+
+                    string catdev = " -r " + RigctlCOM;
+                    string baud = " -s " + Rigctlbaud;
+                 
                     if (OpSystem == 0)
                     {
                         content = rpath + slash + "rigctld";
-                        args = "-m " + Radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort;
+                        args = "-m " + Radio + catdev + baud + " -T " + RigctlIPv4 + " -t " + RigctlPort;
                     }
                     else
                     {
                         //Linux etc.
                         content = "rigctld";
-                        args = "-m " + Radio + " -r " + RigctlCOM + " -s " + Rigctlbaud + " -T " + RigctlIPv4 + " -t " + RigctlPort + " &";
+                        args = "-m " + Radio + catdev + baud + " -T " + RigctlIPv4 + " -t " + RigctlPort + " &";
                     }
-
+                    Msg.TMessageBox("Settings saved", "rigctld", 2000);
                     await Task.Run(() =>    //update rigctld file and run it
                     {
                         runAsyncProcess(content, args);
 
                     });
                 }
-                Msg.TMessageBox("Settings saved", "rigctld", 2000);
+                
             }
         }
 
@@ -7048,7 +7070,8 @@ namespace WSPR_Sked
 
             if (!rigctldcheckBox.Checked)
             {
-                if (RigcomboBox.SelectedIndex < 0 || COMcomboBox.SelectedIndex < 0 || baudcomboBox.SelectedIndex < 0 || IPtextBox.Text == "" || PorttextBox.Text == "")
+                bool noselCOM = (COMcomboBox.SelectedIndex < 0) || (baudcomboBox.SelectedIndex <0 );
+                if (RigcomboBox.SelectedIndex < 0 || noselCOM || IPtextBox.Text == "" || PorttextBox.Text == "")
                 {
                     Msg.OKMessageBox("Error: some items not selected", "");
                     return false;
@@ -7058,23 +7081,31 @@ namespace WSPR_Sked
 
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
             MySqlConnection connection = new MySqlConnection(myConnectionString);
+            string comport = "";
+            string baud = "";
+           
+                comport = COMcomboBox.SelectedItem.ToString();
+                baud = baudcomboBox.SelectedItem.ToString();
+            
             lock (_lock)
             {
                 try
-                {
+                { 
+                   
                     MySqlCommand command = connection.CreateCommand();
-                    command.CommandText = "INSERT INTO rigctl(RigctlID, Radio, COMport, Baud, IPv4, Port,norigctld) ";
-                    command.CommandText += "VALUES(@RigctlID, @Radio, @COMport, @Baud, @IPv4, @Port,@norigctld)";
+                    command.CommandText = "INSERT INTO rigctl(RigctlID, Radio, COMport, Baud, IPv4, Port,norigctld,VOX) ";
+                    command.CommandText += "VALUES(@RigctlID, @Radio, @COMport, @Baud, @IPv4, @Port,@norigctld,@VOX)";
 
                     connection.Open();
 
                     command.Parameters.AddWithValue("@RigctlID", 0);
                     command.Parameters.AddWithValue("@Radio", RigcomboBox.SelectedItem);
-                    command.Parameters.AddWithValue("@COMport", COMcomboBox.SelectedItem);
-                    command.Parameters.AddWithValue("@Baud", baudcomboBox.SelectedItem);
+                    command.Parameters.AddWithValue("@COMport", comport);
+                    command.Parameters.AddWithValue("@Baud", baud);
                     command.Parameters.AddWithValue("@IPv4", IPtextBox.Text);
                     command.Parameters.AddWithValue("@Port", PorttextBox.Text);
                     command.Parameters.AddWithValue("@norigctld", noRigctld);
+                    command.Parameters.AddWithValue("@VOX", VoxcheckBox.Checked);
 
 
                     command.ExecuteNonQuery();
@@ -7084,12 +7115,12 @@ namespace WSPR_Sked
                 catch
                 {         //if already exists then try updating it in database
                     connection.Close();
-                    return UpdateRigctl();
+                    return UpdateRigctl(comport, baud);
 
                 }
             }
         }
-        private bool UpdateRigctl()
+        private bool UpdateRigctl(string comport, string baud)
         {
             string c = "";
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
@@ -7097,8 +7128,8 @@ namespace WSPR_Sked
             try
             {
                 MySqlCommand command = connection.CreateCommand();
-                c = "UPDATE rigctl SET Radio = '" + RigcomboBox.SelectedItem + "', COMport = '" + COMcomboBox.SelectedItem + "', ";
-                c = c + "Baud = '" + baudcomboBox.SelectedItem + "', IPv4 = '" + IPtextBox.Text + "', Port = '" + PorttextBox.Text + "', norigctld = " + noRigctld;
+                c = "UPDATE rigctl SET Radio = '" + RigcomboBox.SelectedItem + "', COMport = '" + comport + "', ";
+                c = c + "Baud = '" + baud + "', IPv4 = '" + IPtextBox.Text + "', Port = '" + PorttextBox.Text + "', norigctld = " + noRigctld + ", VOX = "+VoxcheckBox.Checked;
                 c = c + " WHERE RigctlID = 0";
 
                 command.CommandText = c;
@@ -7120,8 +7151,11 @@ namespace WSPR_Sked
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
 
             MySqlConnection connection = new MySqlConnection(myConnectionString);
-
-
+            try
+            {
+                addRigctlField();
+            }
+            catch { }
             try
             {
                 connection.Open();
@@ -7141,13 +7175,20 @@ namespace WSPR_Sked
                     RigctlIPv4 = (string)Reader["IPv4"];
                     RigctlPort = (string)Reader["Port"];
                     rigctldcheckBox.Checked = (bool)Reader["norigctld"];
+                  
                     RigcomboBox.SelectedItem = Radio;
                     RigcomboBox.Text = Radio;
-
-                    COMcomboBox.SelectedItem = RigctlCOM;
+                  
+                        COMcomboBox.SelectedItem = RigctlCOM;
+                    
                     baudcomboBox.SelectedItem = Rigctlbaud;
                     IPtextBox.Text = RigctlIPv4;
                     PorttextBox.Text = RigctlPort;
+                    try
+                    {
+                        VoxcheckBox.Checked = (bool)Reader["VOX"];
+                    }
+                    catch { VoxcheckBox.Checked = false; }
 
                 }
                 Reader.Close();
@@ -7344,7 +7385,7 @@ namespace WSPR_Sked
         {
             daytimer2_Action(); //keep displaying time, but don't process anythign else
         }
-       
+
         private async void daytimer2_Action()
         {
             DateTime now;
@@ -7371,7 +7412,7 @@ namespace WSPR_Sked
              }*/
 
             bool nearTrigger = (m % 2 == 1 && s >= 49) || (m % 2 == 0 && s <= 4);
-            if (keypresses > 90 && (s == 6 || s== 7 || s ==8) && !currslotmoved  && !slotgroupBox.Visible && !nearTrigger)
+            if (keypresses > 90 && (s == 6 || s == 7 || s == 8) && !currslotmoved && !slotgroupBox.Visible && !nearTrigger)
             {
                 currslotmoved = true;
                 currHour(true, trackSlotscheckBox.Checked);
@@ -11649,6 +11690,11 @@ namespace WSPR_Sked
         {
             addNewField("wspr_configs", "settings", "selectedFilter", "INT NOT NULL");
         }
+
+        private void addRigctlField()
+        {
+            addNewField("wspr", "rigctl", "VOX", "BOOLEAN NOT NULL");
+        }
         private void addNewField(string dbname, string table, string field, string type) //add new databse field if doesnt exist 
         {
             bool ok = false;
@@ -12663,10 +12709,24 @@ namespace WSPR_Sked
 
         private async void syncbutton_Click(object sender, EventArgs e)
         {
-            await SyncSystemClockWithNTP(); 
+            await SyncSystemClockWithNTP();
 
         }
+
+        private void tabPage3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void VoxcheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (VoxcheckBox.Checked)
+            {
+           
+            }
+        }
     }
+    
 
 }
 

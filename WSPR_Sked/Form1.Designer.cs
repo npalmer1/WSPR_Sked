@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
@@ -97,6 +97,7 @@
             label13 = new System.Windows.Forms.Label();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            syncbutton = new System.Windows.Forms.Button();
             dbbutton = new System.Windows.Forms.Button();
             label121 = new System.Windows.Forms.Label();
             label119 = new System.Windows.Forms.Label();
@@ -237,6 +238,13 @@
             label14 = new System.Windows.Forms.Label();
             CalltextBox = new System.Windows.Forms.TextBox();
             tabPage3 = new System.Windows.Forms.TabPage();
+            catgroupBox = new System.Windows.Forms.GroupBox();
+            label28 = new System.Windows.Forms.Label();
+            label32 = new System.Windows.Forms.Label();
+            COMcomboBox = new System.Windows.Forms.ComboBox();
+            baudcomboBox = new System.Windows.Forms.ComboBox();
+            comRbutton = new System.Windows.Forms.Button();
+            VoxcheckBox = new System.Windows.Forms.CheckBox();
             label112 = new System.Windows.Forms.Label();
             rigsearchbutton = new System.Windows.Forms.Button();
             rigtextBox = new System.Windows.Forms.TextBox();
@@ -254,16 +262,10 @@
             PorttextBox = new System.Windows.Forms.TextBox();
             RigcomboBox = new System.Windows.Forms.ComboBox();
             SaveRigctlbutton = new System.Windows.Forms.Button();
-            baudcomboBox = new System.Windows.Forms.ComboBox();
-            COMcomboBox = new System.Windows.Forms.ComboBox();
             label34 = new System.Windows.Forms.Label();
-            label33 = new System.Windows.Forms.Label();
-            label32 = new System.Windows.Forms.Label();
-            comRbutton = new System.Windows.Forms.Button();
             label31 = new System.Windows.Forms.Label();
             label30 = new System.Windows.Forms.Label();
             label29 = new System.Windows.Forms.Label();
-            label28 = new System.Windows.Forms.Label();
             tabPage4 = new System.Windows.Forms.TabPage();
             label120 = new System.Windows.Forms.Label();
             label69 = new System.Windows.Forms.Label();
@@ -459,7 +461,6 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
-            syncbutton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -467,6 +468,7 @@
             tabPage1.SuspendLayout();
             tabPage2.SuspendLayout();
             tabPage3.SuspendLayout();
+            catgroupBox.SuspendLayout();
             tabPage4.SuspendLayout();
             AntgroupBox.SuspendLayout();
             FreqgroupBox.SuspendLayout();
@@ -519,23 +521,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -1242,6 +1244,16 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Slots";
             tabPage1.Click += tabPage1_Click;
+            // 
+            // syncbutton
+            // 
+            syncbutton.Location = new System.Drawing.Point(209, 608);
+            syncbutton.Name = "syncbutton";
+            syncbutton.Size = new System.Drawing.Size(67, 20);
+            syncbutton.TabIndex = 107;
+            syncbutton.Text = "sync clock";
+            syncbutton.UseVisualStyleBackColor = true;
+            syncbutton.Click += syncbutton_Click;
             // 
             // dbbutton
             // 
@@ -2700,6 +2712,9 @@
             // tabPage3
             // 
             tabPage3.BackColor = System.Drawing.SystemColors.Info;
+            tabPage3.Controls.Add(catgroupBox);
+            tabPage3.Controls.Add(comRbutton);
+            tabPage3.Controls.Add(VoxcheckBox);
             tabPage3.Controls.Add(label112);
             tabPage3.Controls.Add(rigsearchbutton);
             tabPage3.Controls.Add(rigtextBox);
@@ -2717,22 +2732,90 @@
             tabPage3.Controls.Add(PorttextBox);
             tabPage3.Controls.Add(RigcomboBox);
             tabPage3.Controls.Add(SaveRigctlbutton);
-            tabPage3.Controls.Add(baudcomboBox);
-            tabPage3.Controls.Add(COMcomboBox);
             tabPage3.Controls.Add(label34);
-            tabPage3.Controls.Add(label33);
-            tabPage3.Controls.Add(label32);
-            tabPage3.Controls.Add(comRbutton);
             tabPage3.Controls.Add(label31);
             tabPage3.Controls.Add(label30);
             tabPage3.Controls.Add(label29);
-            tabPage3.Controls.Add(label28);
-            tabPage3.Location = new System.Drawing.Point(4, 24);
+            tabPage3.Location = new System.Drawing.Point(4, 22);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(1177, 649);
+            tabPage3.Size = new System.Drawing.Size(1177, 651);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Rigctl rigs";
+            tabPage3.Click += tabPage3_Click;
+            // 
+            // catgroupBox
+            // 
+            catgroupBox.Controls.Add(label28);
+            catgroupBox.Controls.Add(label32);
+            catgroupBox.Controls.Add(COMcomboBox);
+            catgroupBox.Controls.Add(baudcomboBox);
+            catgroupBox.Location = new System.Drawing.Point(12, 53);
+            catgroupBox.Name = "catgroupBox";
+            catgroupBox.Size = new System.Drawing.Size(204, 202);
+            catgroupBox.TabIndex = 77;
+            catgroupBox.TabStop = false;
+            catgroupBox.Text = "Serial comms with radio:";
+            // 
+            // label28
+            // 
+            label28.AutoSize = true;
+            label28.Location = new System.Drawing.Point(18, 26);
+            label28.Name = "label28";
+            label28.Size = new System.Drawing.Size(54, 26);
+            label28.TabIndex = 43;
+            label28.Text = "COM port\r\nfor rig cat:";
+            // 
+            // label32
+            // 
+            label32.AutoSize = true;
+            label32.Location = new System.Drawing.Point(115, 26);
+            label32.Name = "label32";
+            label32.Size = new System.Drawing.Size(48, 26);
+            label32.TabIndex = 50;
+            label32.Text = "Baud\r\nrate bps:";
+            // 
+            // COMcomboBox
+            // 
+            COMcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
+            COMcomboBox.FormattingEnabled = true;
+            COMcomboBox.Location = new System.Drawing.Point(18, 62);
+            COMcomboBox.Name = "COMcomboBox";
+            COMcomboBox.Size = new System.Drawing.Size(56, 127);
+            COMcomboBox.TabIndex = 53;
+            COMcomboBox.KeyPress += COMcomboBox_KeyPress;
+            // 
+            // baudcomboBox
+            // 
+            baudcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
+            baudcomboBox.FormattingEnabled = true;
+            baudcomboBox.Items.AddRange(new object[] { "110", "300", "600", "1200", "2400", "4800", "9600", "14400", "19200", "28800", "38400", "57600", "115200", "128000", "256000", "512000", "1000000" });
+            baudcomboBox.Location = new System.Drawing.Point(115, 62);
+            baudcomboBox.Name = "baudcomboBox";
+            baudcomboBox.Size = new System.Drawing.Size(72, 140);
+            baudcomboBox.TabIndex = 54;
+            baudcomboBox.KeyPress += baudcomboBox_KeyPress;
+            // 
+            // comRbutton
+            // 
+            comRbutton.Location = new System.Drawing.Point(236, 232);
+            comRbutton.Name = "comRbutton";
+            comRbutton.Size = new System.Drawing.Size(53, 23);
+            comRbutton.TabIndex = 48;
+            comRbutton.Text = "Refresh";
+            comRbutton.UseVisualStyleBackColor = true;
+            comRbutton.Click += comRbutton_Click;
+            // 
+            // VoxcheckBox
+            // 
+            VoxcheckBox.AutoSize = true;
+            VoxcheckBox.Location = new System.Drawing.Point(25, 283);
+            VoxcheckBox.Name = "VoxcheckBox";
+            VoxcheckBox.Size = new System.Drawing.Size(122, 17);
+            VoxcheckBox.TabIndex = 76;
+            VoxcheckBox.Text = "Use VOX to start TX";
+            VoxcheckBox.UseVisualStyleBackColor = true;
+            VoxcheckBox.CheckedChanged += VoxcheckBox_CheckedChanged;
             // 
             // label112
             // 
@@ -2850,7 +2933,7 @@
             // label36
             // 
             label36.AutoSize = true;
-            label36.Location = new System.Drawing.Point(28, 413);
+            label36.Location = new System.Drawing.Point(28, 449);
             label36.Name = "label36";
             label36.Size = new System.Drawing.Size(53, 13);
             label36.TabIndex = 61;
@@ -2858,7 +2941,7 @@
             // 
             // IPtextBox
             // 
-            IPtextBox.Location = new System.Drawing.Point(84, 371);
+            IPtextBox.Location = new System.Drawing.Point(84, 407);
             IPtextBox.Name = "IPtextBox";
             IPtextBox.ReadOnly = true;
             IPtextBox.Size = new System.Drawing.Size(67, 20);
@@ -2867,7 +2950,7 @@
             // 
             // PorttextBox
             // 
-            PorttextBox.Location = new System.Drawing.Point(84, 410);
+            PorttextBox.Location = new System.Drawing.Point(84, 446);
             PorttextBox.Name = "PorttextBox";
             PorttextBox.ReadOnly = true;
             PorttextBox.Size = new System.Drawing.Size(45, 20);
@@ -2879,7 +2962,7 @@
             RigcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
             RigcomboBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
             RigcomboBox.FormattingEnabled = true;
-            RigcomboBox.Location = new System.Drawing.Point(270, 37);
+            RigcomboBox.Location = new System.Drawing.Point(313, 31);
             RigcomboBox.Name = "RigcomboBox";
             RigcomboBox.Size = new System.Drawing.Size(713, 242);
             RigcomboBox.TabIndex = 58;
@@ -2895,68 +2978,19 @@
             SaveRigctlbutton.UseVisualStyleBackColor = true;
             SaveRigctlbutton.Click += SaveRigctlbutton_Click;
             // 
-            // baudcomboBox
-            // 
-            baudcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
-            baudcomboBox.FormattingEnabled = true;
-            baudcomboBox.Items.AddRange(new object[] { "110", "300", "600", "1200", "2400", "4800", "9600", "14400", "19200", "28800", "38400", "57600", "115200", "128000", "256000", "512000", "1000000" });
-            baudcomboBox.Location = new System.Drawing.Point(122, 122);
-            baudcomboBox.Name = "baudcomboBox";
-            baudcomboBox.Size = new System.Drawing.Size(72, 140);
-            baudcomboBox.TabIndex = 54;
-            baudcomboBox.KeyPress += baudcomboBox_KeyPress;
-            // 
-            // COMcomboBox
-            // 
-            COMcomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
-            COMcomboBox.FormattingEnabled = true;
-            COMcomboBox.Location = new System.Drawing.Point(25, 122);
-            COMcomboBox.Name = "COMcomboBox";
-            COMcomboBox.Size = new System.Drawing.Size(56, 127);
-            COMcomboBox.TabIndex = 53;
-            COMcomboBox.KeyPress += COMcomboBox_KeyPress;
-            // 
             // label34
             // 
             label34.AutoSize = true;
-            label34.Location = new System.Drawing.Point(24, 338);
+            label34.Location = new System.Drawing.Point(24, 374);
             label34.Name = "label34";
             label34.Size = new System.Drawing.Size(146, 13);
             label34.TabIndex = 52;
             label34.Text = "IP settings for rigctld daemon:";
             // 
-            // label33
-            // 
-            label33.AutoSize = true;
-            label33.Location = new System.Drawing.Point(25, 64);
-            label33.Name = "label33";
-            label33.Size = new System.Drawing.Size(112, 13);
-            label33.TabIndex = 51;
-            label33.Text = "Serial coms with radio:";
-            // 
-            // label32
-            // 
-            label32.AutoSize = true;
-            label32.Location = new System.Drawing.Point(122, 86);
-            label32.Name = "label32";
-            label32.Size = new System.Drawing.Size(48, 26);
-            label32.TabIndex = 50;
-            label32.Text = "Baud\r\nrate bps:";
-            // 
-            // comRbutton
-            // 
-            comRbutton.Location = new System.Drawing.Point(84, 268);
-            comRbutton.Name = "comRbutton";
-            comRbutton.Size = new System.Drawing.Size(53, 23);
-            comRbutton.TabIndex = 48;
-            comRbutton.Text = "Refresh";
-            comRbutton.UseVisualStyleBackColor = true;
-            comRbutton.Click += comRbutton_Click;
-            // 
             // label31
             // 
             label31.AutoSize = true;
-            label31.Location = new System.Drawing.Point(194, 37);
+            label31.Location = new System.Drawing.Point(1042, 392);
             label31.Name = "label31";
             label31.Size = new System.Drawing.Size(70, 13);
             label31.TabIndex = 47;
@@ -2965,7 +2999,7 @@
             // label30
             // 
             label30.AutoSize = true;
-            label30.Location = new System.Drawing.Point(25, 374);
+            label30.Location = new System.Drawing.Point(25, 410);
             label30.Name = "label30";
             label30.Size = new System.Drawing.Size(63, 13);
             label30.TabIndex = 45;
@@ -2979,15 +3013,6 @@
             label29.Size = new System.Drawing.Size(109, 13);
             label29.TabIndex = 44;
             label29.Text = "Hamlib rigctld settings";
-            // 
-            // label28
-            // 
-            label28.AutoSize = true;
-            label28.Location = new System.Drawing.Point(25, 86);
-            label28.Name = "label28";
-            label28.Size = new System.Drawing.Size(54, 26);
-            label28.TabIndex = 43;
-            label28.Text = "COM port\r\nfor rig cat:";
             // 
             // tabPage4
             // 
@@ -4963,16 +4988,6 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
-            // syncbutton
-            // 
-            syncbutton.Location = new System.Drawing.Point(209, 608);
-            syncbutton.Name = "syncbutton";
-            syncbutton.Size = new System.Drawing.Size(67, 20);
-            syncbutton.TabIndex = 107;
-            syncbutton.Text = "sync clock";
-            syncbutton.UseVisualStyleBackColor = true;
-            syncbutton.Click += syncbutton_Click;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -5007,6 +5022,8 @@
             tabPage2.PerformLayout();
             tabPage3.ResumeLayout(false);
             tabPage3.PerformLayout();
+            catgroupBox.ResumeLayout(false);
+            catgroupBox.PerformLayout();
             tabPage4.ResumeLayout(false);
             tabPage4.PerformLayout();
             AntgroupBox.ResumeLayout(false);
@@ -5116,7 +5133,6 @@
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.Label label32;
         private System.Windows.Forms.Label label34;
-        private System.Windows.Forms.Label label33;
         private System.Windows.Forms.ComboBox COMcomboBox;
         private System.Windows.Forms.ComboBox baudcomboBox;
         private System.Windows.Forms.Button SaveRigctlbutton;
@@ -5477,6 +5493,8 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label sunlabel;
         private System.Windows.Forms.Button syncbutton;
+        private System.Windows.Forms.GroupBox catgroupBox;
+        private System.Windows.Forms.CheckBox VoxcheckBox;
     }
 }
 
