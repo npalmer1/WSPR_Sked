@@ -6176,7 +6176,7 @@ namespace WSPR_Sked
             }
 
 
-            if ((m % 2 == 1 && (s == 52 || s == 53 || s == 54) && !Flag) || justLoaded)
+            if ((m % 2 == 1 && (s == 53 || s == 54 || s == 55 || s == 56) && !Flag) || justLoaded)
             {
 
 
