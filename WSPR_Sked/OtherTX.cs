@@ -43,6 +43,49 @@ namespace Other_TX
             }
         }
         private void runIP(string ip, string port, string message)
+        {
+            reply = "error";
+            int portno = 0;
+            try
+            {
+                portno = Convert.ToInt32(port);
+            }
+            catch
+            {
+                reply = "error";
+                return;
+            }
+
+            using (TcpClient client = new TcpClient())
+            {
+                try
+                {
+                    var connectTask = client.ConnectAsync(ip, portno);
+                    if (!connectTask.Wait(2000)) // 2 second timeout
+                    {
+                        ErrorMessage = "Connection timed out";
+                        reply = "error";
+                        return;
+                    }
+
+                    NetworkStream stream = client.GetStream();
+                    byte[] dataToSend = Encoding.ASCII.GetBytes(message + "\n");
+                    stream.Write(dataToSend, 0, dataToSend.Length);
+
+                    stream.ReadTimeout = 2000; // also guard the read
+
+                    byte[] buffer = new byte[1024];
+                    int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                    reply = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                }
+                catch (Exception e)
+                {
+                    ErrorMessage = e.Message;
+                    reply = "error";
+                }
+            }
+        }
+        /*private void runIP_OLD(string ip, string port, string message)
         {          
             reply = "error";
             int portno = 0;
@@ -96,7 +139,8 @@ namespace Other_TX
                 reply = "error";
                 return;
             }
-        }
+        }*/
+
         private void runSerial(string port, string serial, string baud, string message)
         {
             string parity = "none";
@@ -128,6 +172,10 @@ namespace Other_TX
                 int baudrate = 9600;
                 baudrate = Convert.ToInt32(baud);
                 sendSerial(port, baudrate, bits, parity, stop, handshake, message);
+                if (reply =="error")
+                {
+                    return;
+                }
             }
             catch (Exception ex)
             {
@@ -203,8 +251,8 @@ namespace Other_TX
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
-                reply = ex.Message;
-              
+                //reply = ex.Message;
+                reply = "error";
 
             }
             finally

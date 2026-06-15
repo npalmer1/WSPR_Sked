@@ -390,7 +390,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.45";
+            string ver = "0.1.46";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -3974,7 +3974,11 @@ namespace WSPR_Sked
                 {
                     if (!VoxcheckBox.Checked)
                     {
-                        PTT(true);
+                        var ok = await PTT(true);
+                        if (!ok)
+                        {
+                            return;
+                        }
                     }
                     else
                     {
@@ -4701,9 +4705,16 @@ namespace WSPR_Sked
                     R = R.Replace("pwr", Slot.PowerdB.ToString());
 
                 }
-                sendOtherTXRigCommand(rig, R);
-
-                Msg.TMessageBox("Changed to: " + freq.ToString() + " MHz", "", 1000);
+                var ret = await sendOtherTXRigCommand(rig, R);
+                if (ret == "error")
+                {
+                    Msg.TMessageBox("Error sending TX command to rig", "Rig connection", 3000);
+                    ok = false;
+                }
+                else
+                {
+                    Msg.TMessageBox("Changed to: " + freq.ToString() + " MHz", "", 1000);
+                }
             }
             if (ok) { rxForm.set_frequency(freq.ToString("F6")); return true; }
             else
@@ -6411,7 +6422,7 @@ namespace WSPR_Sked
         }
 
 
-        private async void PTT(bool TX)
+        private async Task<bool> PTT(bool TX)
         {
             // PTT is a value: ‘0’ (RX), ‘1’ (TX), ‘2’ (TX mic), or ‘3’ (TX data). 
             if (!noRigctld)
@@ -6431,18 +6442,37 @@ namespace WSPR_Sked
                     }
                     else if (R == "error")
                     {
-                        blockTXonErr = true;
+                        blockTXonErr = true;                       
                     }
 
                 });
+                if (blockTXonErr)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
             }
             else if (selectedRig > 0)
             {
-                sendOtherTXRigCommand(rig, rig.TXptt); //already have rig from changefreq()
+                var ret = await sendOtherTXRigCommand(rig, rig.TXptt); //already have rig from changefreq()
+                if (ret == "error")
+                {
+                    blockTXonErr = true;
+                    Msg.TMessageBox("Unable to key TX", "PTT Error", 4000);
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
             }
             else
             {
                 Msg.TMessageBox("PTT operated by VOX", "", 1000);
+                return false;
 
             }
         }
@@ -10934,9 +10964,16 @@ namespace WSPR_Sked
             if (rigctldcheckBox.Checked)
             {
                 noRigctld = true;
-                FlistBox2.Visible = true;
-                Flabel.Visible = true;
-                Fhelplabel.Visible = true;
+                if (selectedRig < 1)
+                {
+                    FlistBox2.Visible = true;
+                    Flabel.Visible = true;
+                    Fhelplabel.Visible = true;
+                }
+                else
+                {
+                    Msg.TMessageBox("Using rig selected from Non rigctl TX tab", "Rigctld disabled", 3500);
+                }
             }
             else
             {
