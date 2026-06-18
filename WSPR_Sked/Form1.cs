@@ -390,7 +390,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.46";
+            string ver = "0.1.47";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -6187,7 +6187,7 @@ namespace WSPR_Sked
             }
 
 
-            if ((m % 2 == 1 && (s == 54 || s == 55 || s == 56 || s == 57) && !Flag) || justLoaded)
+            if ((m % 2 == 1 && (s == 54 || s == 55 || s == 56 || s == 57) && !Flag)) // || justLoaded)
             {
 
 
@@ -6195,21 +6195,15 @@ namespace WSPR_Sked
 
                 // On startup, only act if we're in the normal trigger window
                 // otherwise just clear justLoaded and wait for normal timer
-                if (justLoaded && !(m % 2 == 1 && s >= 52))
+                /*if (justLoaded && !(m % 2 == 1 && s >= 54))
                 {
                     justLoaded = false;
                     return;
-                }
+                }*/
                 Flag = true;
 
-                if (justLoaded)
-                {
-                    nextT = now.AddMinutes(1);  // on odd minute 52-59 so +1 = correct even minute
-                }
-                else
-                {
-                    nextT = now.AddMinutes(1);
-                }
+                
+                nextT = now.AddMinutes(1);                
                 string nexttime = nextT.ToString("HH:mm:00");
 
                 //debug timing:
@@ -6289,7 +6283,7 @@ namespace WSPR_Sked
                         }
                     }
                 }
-                justLoaded = false;
+                //justLoaded = false;
 
             }
 
@@ -7497,10 +7491,7 @@ namespace WSPR_Sked
                 rxForm.set_prev_frequency();
             }
 
-            if ((m % 2 == 1 && (s >= 56 && s < 58) && Flag))
-            {
-                Flag = false;   //use flag to account for possible missed timer ticks
-            }
+           
             if (m % 2 == 0 && (s > 2 && s < 10))
             {
                 Flag = false;
@@ -12518,15 +12509,18 @@ namespace WSPR_Sked
             rigbaudcomboBox.Visible = serial;
             rigporttextBox.Visible = !serial;
             rigiptextBox.Visible = !serial;
+            APIURLtextBox.Visible = !serial;
+            APIlabel.Visible = !serial;
 
             if (serial)
             {
                 rigBPlabel.Text = "Baud:";
                 getrigComports();
+
             }
             else
             {
-                rigBPlabel.Text = "IP:";
+                rigBPlabel.Text = "IP:";              
             }
             rigBPlabel.Visible = true;
             rigportlabel.Visible = true;
