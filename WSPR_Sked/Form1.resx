@@ -165,14 +165,26 @@
   <metadata name="Column16.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="apiinfolabel.Text" xml:space="preserve">
+    <value>Enter the full API url to be appended to 
+http://&lt;ip_address&gt;:&lt;port&gt;/
+eg. "api/cmd?c=" 
+- to give: http://&lt;ip address&gt;/api/cmd?c=
+and the TX commands are then added to this, eg.
+http://&lt;ip address&gt;/api/cmd?c=TXNOW
+
+</value>
+  </data>
   <data name="label123.Text" xml:space="preserve">
     <value>Enter the command to set callsign, grid, power (dBm) and frequency:
 Use the following variables in places of actual values: call, grid, pwr, freq
 For example: CONFIG:call,grid,pwr,freq
 Where: call = G4GCI, grid = IO90, pwr = 23, freq = 14097100
 This example will send: CONFIG:G4GCI,IO90,23,14097100
+
 OR commands separated by semi-colon (";") eg.:
-SET BAND &lt;band&gt;; SET POWER &lt;dBm&gt;; SET LOC &lt;locator&gt;; SET CALL &lt;call&gt;; SET OFFSET &lt;offset Hz&gt;</value>
+SET FREQ freq; SET POWER pwr; SET LOC grid; SET CALL call; SET OFFSET offset
+</value>
   </data>
   <metadata name="WSPRtimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
@@ -407,15 +407,19 @@
             audioOutlistBox = new System.Windows.Forms.ListBox();
             audioInlistBox = new System.Windows.Forms.ListBox();
             tabPage7 = new System.Windows.Forms.TabPage();
+            label33 = new System.Windows.Forms.Label();
             editrigbutton = new System.Windows.Forms.Button();
             selrigtextBox = new System.Windows.Forms.TextBox();
             label137 = new System.Windows.Forms.Label();
             addrigbutton = new System.Windows.Forms.Button();
             riglistBox = new System.Windows.Forms.ListBox();
             RiggroupBox = new System.Windows.Forms.GroupBox();
+            APIgroupBox = new System.Windows.Forms.GroupBox();
+            httpscheckBox = new System.Windows.Forms.CheckBox();
+            APIstartlabel = new System.Windows.Forms.Label();
             APIURLtextBox = new System.Windows.Forms.TextBox();
-            APIlabel = new System.Windows.Forms.Label();
             rigPTTcmdtextBox = new System.Windows.Forms.TextBox();
+            apiinfolabel = new System.Windows.Forms.Label();
             label134 = new System.Windows.Forms.Label();
             rigeditcheckBox = new System.Windows.Forms.CheckBox();
             rigrxcmdtextBox = new System.Windows.Forms.TextBox();
@@ -463,7 +467,6 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
-            label33 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -491,6 +494,7 @@
             panel1.SuspendLayout();
             tabPage7.SuspendLayout();
             RiggroupBox.SuspendLayout();
+            APIgroupBox.SuspendLayout();
             rigserialgroupBox.SuspendLayout();
             SuspendLayout();
             // 
@@ -524,23 +528,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -1840,10 +1844,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 24);
+            tabPage2.Location = new System.Drawing.Point(4, 22);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1177, 649);
+            tabPage2.Size = new System.Drawing.Size(1177, 651);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -4507,6 +4511,16 @@
             tabPage7.TabIndex = 6;
             tabPage7.Text = "Non Rigctl TX";
             // 
+            // label33
+            // 
+            label33.AutoSize = true;
+            label33.BackColor = System.Drawing.Color.LightCyan;
+            label33.Location = new System.Drawing.Point(69, 50);
+            label33.Name = "label33";
+            label33.Size = new System.Drawing.Size(193, 26);
+            label33.TabIndex = 27;
+            label33.Text = "Note: this section is under development\r\nand expremimental - more to follow!";
+            // 
             // editrigbutton
             // 
             editrigbutton.Location = new System.Drawing.Point(202, 211);
@@ -4559,9 +4573,9 @@
             // RiggroupBox
             // 
             RiggroupBox.BackColor = System.Drawing.Color.AntiqueWhite;
-            RiggroupBox.Controls.Add(APIURLtextBox);
-            RiggroupBox.Controls.Add(APIlabel);
+            RiggroupBox.Controls.Add(APIgroupBox);
             RiggroupBox.Controls.Add(rigPTTcmdtextBox);
+            RiggroupBox.Controls.Add(apiinfolabel);
             RiggroupBox.Controls.Add(label134);
             RiggroupBox.Controls.Add(rigeditcheckBox);
             RiggroupBox.Controls.Add(rigrxcmdtextBox);
@@ -4585,41 +4599,73 @@
             RiggroupBox.Controls.Add(rigcancelbutton);
             RiggroupBox.Controls.Add(saverigbutton);
             RiggroupBox.Controls.Add(label135);
-            RiggroupBox.Location = new System.Drawing.Point(371, 64);
+            RiggroupBox.Location = new System.Drawing.Point(345, 64);
             RiggroupBox.Name = "RiggroupBox";
-            RiggroupBox.Size = new System.Drawing.Size(773, 546);
+            RiggroupBox.Size = new System.Drawing.Size(799, 571);
             RiggroupBox.TabIndex = 24;
             RiggroupBox.TabStop = false;
             RiggroupBox.Text = "Rig";
             RiggroupBox.Visible = false;
             // 
+            // APIgroupBox
+            // 
+            APIgroupBox.Controls.Add(httpscheckBox);
+            APIgroupBox.Controls.Add(APIstartlabel);
+            APIgroupBox.Controls.Add(APIURLtextBox);
+            APIgroupBox.Location = new System.Drawing.Point(26, 188);
+            APIgroupBox.Name = "APIgroupBox";
+            APIgroupBox.Size = new System.Drawing.Size(510, 74);
+            APIgroupBox.TabIndex = 30;
+            APIgroupBox.TabStop = false;
+            APIgroupBox.Text = "API URL:";
+            // 
+            // httpscheckBox
+            // 
+            httpscheckBox.AutoSize = true;
+            httpscheckBox.Location = new System.Drawing.Point(30, 42);
+            httpscheckBox.Name = "httpscheckBox";
+            httpscheckBox.Size = new System.Drawing.Size(69, 17);
+            httpscheckBox.TabIndex = 29;
+            httpscheckBox.Text = "use https";
+            httpscheckBox.UseVisualStyleBackColor = true;
+            httpscheckBox.CheckedChanged += httpscheckBox_CheckedChanged;
+            // 
+            // APIstartlabel
+            // 
+            APIstartlabel.AutoSize = true;
+            APIstartlabel.Location = new System.Drawing.Point(2, 22);
+            APIstartlabel.Name = "APIstartlabel";
+            APIstartlabel.Size = new System.Drawing.Size(139, 13);
+            APIstartlabel.TabIndex = 28;
+            APIstartlabel.Text = "http://<ip_address>:<port>/";
+            // 
             // APIURLtextBox
             // 
-            APIURLtextBox.Location = new System.Drawing.Point(101, 227);
+            APIURLtextBox.Location = new System.Drawing.Point(145, 19);
             APIURLtextBox.Name = "APIURLtextBox";
-            APIURLtextBox.Size = new System.Drawing.Size(360, 20);
+            APIURLtextBox.Size = new System.Drawing.Size(356, 20);
             APIURLtextBox.TabIndex = 26;
-            // 
-            // APIlabel
-            // 
-            APIlabel.AutoSize = true;
-            APIlabel.Location = new System.Drawing.Point(43, 230);
-            APIlabel.Name = "APIlabel";
-            APIlabel.Size = new System.Drawing.Size(52, 13);
-            APIlabel.TabIndex = 25;
-            APIlabel.Text = "API URL:";
             // 
             // rigPTTcmdtextBox
             // 
-            rigPTTcmdtextBox.Location = new System.Drawing.Point(123, 399);
+            rigPTTcmdtextBox.Location = new System.Drawing.Point(123, 421);
             rigPTTcmdtextBox.Name = "rigPTTcmdtextBox";
             rigPTTcmdtextBox.Size = new System.Drawing.Size(360, 20);
             rigPTTcmdtextBox.TabIndex = 24;
             // 
+            // apiinfolabel
+            // 
+            apiinfolabel.AutoSize = true;
+            apiinfolabel.Location = new System.Drawing.Point(552, 188);
+            apiinfolabel.Name = "apiinfolabel";
+            apiinfolabel.Size = new System.Drawing.Size(241, 91);
+            apiinfolabel.TabIndex = 27;
+            apiinfolabel.Text = resources.GetString("apiinfolabel.Text");
+            // 
             // label134
             // 
             label134.AutoSize = true;
-            label134.Location = new System.Drawing.Point(17, 393);
+            label134.Location = new System.Drawing.Point(17, 415);
             label134.Name = "label134";
             label134.Size = new System.Drawing.Size(109, 26);
             label134.TabIndex = 23;
@@ -4628,7 +4674,7 @@
             // rigeditcheckBox
             // 
             rigeditcheckBox.AutoSize = true;
-            rigeditcheckBox.Location = new System.Drawing.Point(689, 518);
+            rigeditcheckBox.Location = new System.Drawing.Point(686, 512);
             rigeditcheckBox.Name = "rigeditcheckBox";
             rigeditcheckBox.Size = new System.Drawing.Size(57, 17);
             rigeditcheckBox.TabIndex = 22;
@@ -4638,7 +4684,7 @@
             // 
             // rigrxcmdtextBox
             // 
-            rigrxcmdtextBox.Location = new System.Drawing.Point(97, 461);
+            rigrxcmdtextBox.Location = new System.Drawing.Point(97, 483);
             rigrxcmdtextBox.Name = "rigrxcmdtextBox";
             rigrxcmdtextBox.Size = new System.Drawing.Size(361, 20);
             rigrxcmdtextBox.TabIndex = 21;
@@ -4646,7 +4692,7 @@
             // label136
             // 
             label136.AutoSize = true;
-            label136.Location = new System.Drawing.Point(17, 464);
+            label136.Location = new System.Drawing.Point(17, 486);
             label136.Name = "label136";
             label136.Size = new System.Drawing.Size(75, 13);
             label136.TabIndex = 20;
@@ -4654,7 +4700,7 @@
             // 
             // rigtxcmdtextBox
             // 
-            rigtxcmdtextBox.Location = new System.Drawing.Point(122, 357);
+            rigtxcmdtextBox.Location = new System.Drawing.Point(122, 379);
             rigtxcmdtextBox.Name = "rigtxcmdtextBox";
             rigtxcmdtextBox.Size = new System.Drawing.Size(605, 20);
             rigtxcmdtextBox.TabIndex = 19;
@@ -4662,7 +4708,7 @@
             // label125
             // 
             label125.AutoSize = true;
-            label125.Location = new System.Drawing.Point(17, 432);
+            label125.Location = new System.Drawing.Point(17, 454);
             label125.Name = "label125";
             label125.Size = new System.Drawing.Size(220, 26);
             label125.TabIndex = 18;
@@ -4671,7 +4717,7 @@
             // label124
             // 
             label124.AutoSize = true;
-            label124.Location = new System.Drawing.Point(43, 360);
+            label124.Location = new System.Drawing.Point(43, 382);
             label124.Name = "label124";
             label124.Size = new System.Drawing.Size(74, 13);
             label124.TabIndex = 17;
@@ -4680,9 +4726,9 @@
             // label123
             // 
             label123.AutoSize = true;
-            label123.Location = new System.Drawing.Point(44, 263);
+            label123.Location = new System.Drawing.Point(43, 265);
             label123.Name = "label123";
-            label123.Size = new System.Drawing.Size(520, 91);
+            label123.Size = new System.Drawing.Size(418, 104);
             label123.TabIndex = 16;
             label123.Text = resources.GetString("label123.Text");
             // 
@@ -4696,7 +4742,7 @@
             rigserialgroupBox.Controls.Add(rigparitycomboBox);
             rigserialgroupBox.Controls.Add(label128);
             rigserialgroupBox.Controls.Add(label129);
-            rigserialgroupBox.Location = new System.Drawing.Point(44, 160);
+            rigserialgroupBox.Location = new System.Drawing.Point(56, 147);
             rigserialgroupBox.Name = "rigserialgroupBox";
             rigserialgroupBox.Size = new System.Drawing.Size(390, 40);
             rigserialgroupBox.TabIndex = 15;
@@ -4882,7 +4928,7 @@
             // 
             // rigcancelbutton
             // 
-            rigcancelbutton.Location = new System.Drawing.Point(650, 467);
+            rigcancelbutton.Location = new System.Drawing.Point(647, 461);
             rigcancelbutton.Name = "rigcancelbutton";
             rigcancelbutton.Size = new System.Drawing.Size(48, 23);
             rigcancelbutton.TabIndex = 2;
@@ -4892,7 +4938,7 @@
             // 
             // saverigbutton
             // 
-            saverigbutton.Location = new System.Drawing.Point(650, 427);
+            saverigbutton.Location = new System.Drawing.Point(647, 421);
             saverigbutton.Name = "saverigbutton";
             saverigbutton.Size = new System.Drawing.Size(48, 23);
             saverigbutton.TabIndex = 1;
@@ -4912,7 +4958,7 @@
             // label122
             // 
             label122.AutoSize = true;
-            label122.Location = new System.Drawing.Point(55, 32);
+            label122.Location = new System.Drawing.Point(18, 19);
             label122.Name = "label122";
             label122.Size = new System.Drawing.Size(613, 13);
             label122.TabIndex = 0;
@@ -5010,16 +5056,6 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
-            // label33
-            // 
-            label33.AutoSize = true;
-            label33.BackColor = System.Drawing.Color.Moccasin;
-            label33.Location = new System.Drawing.Point(55, 64);
-            label33.Name = "label33";
-            label33.Size = new System.Drawing.Size(284, 13);
-            label33.TabIndex = 27;
-            label33.Text = "Note: this section is under development - come back soon!";
-            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -5089,6 +5125,8 @@
             tabPage7.PerformLayout();
             RiggroupBox.ResumeLayout(false);
             RiggroupBox.PerformLayout();
+            APIgroupBox.ResumeLayout(false);
+            APIgroupBox.PerformLayout();
             rigserialgroupBox.ResumeLayout(false);
             rigserialgroupBox.PerformLayout();
             ResumeLayout(false);
@@ -5527,9 +5565,12 @@
         private System.Windows.Forms.Button syncbutton;
         private System.Windows.Forms.GroupBox catgroupBox;
         private System.Windows.Forms.CheckBox VoxcheckBox;
-        private System.Windows.Forms.Label APIlabel;
         private System.Windows.Forms.TextBox APIURLtextBox;
         private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Label APIstartlabel;
+        private System.Windows.Forms.Label apiinfolabel;
+        private System.Windows.Forms.GroupBox APIgroupBox;
+        private System.Windows.Forms.CheckBox httpscheckBox;
     }
 }
 

@@ -45,6 +45,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using W410A;
 using WsprSharp;
+using static Mysqlx.Datatypes.Scalar.Types;
 using static Mysqlx.Expect.Open.Types.Condition.Types;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using static System.Net.Mime.MediaTypeNames;
@@ -258,6 +259,7 @@ namespace WSPR_Sked
             public string reply2;
             public string reply3;
             public string reply4;
+            public string URL;
         }
         Rigs rig = new Rigs();
         int selectedRig = 0;
@@ -272,8 +274,6 @@ namespace WSPR_Sked
 
         string db_pass = "wspr";
         string db_user = "admin";
-
-
 
         public struct Antenna
         {
@@ -429,6 +429,7 @@ namespace WSPR_Sked
             if (checkSlotDB("wspr_slots"))
             {
                 EnsureIndexes();
+                createRigTable();
                 addNewSlotColumns();
                 addFilterField(); //add filter field to wspr settings
                 CopyTable("wspr", "tuners", "filters");
@@ -4697,13 +4698,30 @@ namespace WSPR_Sked
                 }
                 if (R.Length > 0 && ok)
                 {
-                    f = (freq1 + 1400 + Slot.Offset).ToString();
+                    string f1 = (freq1 + 1400 + Slot.Offset).ToString();
 
-                    R = R.Replace("freq", f);
+                    if (noRigctld && selectedRig > 0)
+                    {
+                        if (double.TryParse(f, out double fHz))
+                        {
+                            FlistBox2.SelectedItem = (fHz/1000000).ToString();
+                        }
+                       
+                        
+                    }
+                    R = R.Replace("freq", f1);
                     R = R.Replace("grid", L);
                     R = R.Replace("call", C);
-                    R = R.Replace("pwr", Slot.PowerdB.ToString());
-
+                    if (noSkedcheckBox.Checked)
+                    {
+                        R = R.Replace("pwr", defaultdB.ToString());
+                        R.Replace("offset", defaultoffset.ToString());
+                    }
+                    else
+                    {
+                        R = R.Replace("pwr", Slot.PowerdB.ToString());
+                        R = R.Replace("offset", Slot.Offset.ToString());
+                    }
                 }
                 var ret = await sendOtherTXRigCommand(rig, R);
                 if (ret == "error")
@@ -4726,22 +4744,55 @@ namespace WSPR_Sked
 
         }
 
+
+     
+       
+
+        public async Task<bool> IsApiReachable(string url)
+        {
+            string result = "error";
+            try
+            {
+                using var client = new HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(3);
+
+                var response = await client.GetAsync(url);
+                result = await response.Content.ReadAsStringAsync();               
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            return true;
+        }
         private async Task<string> sendOtherTXRigCommand(Rigs N, string msg) //send a TX message to RigCtlD and wait for reply
         {
-            string ip = RigctlIPv4;
-            string port = RigctlPort;
-
+            string ip = N.IP;
+            string port = N.Port;
+            string http =APIstartlabel.Text.Replace("<ip_address>", ip).Replace("<port>", port);
+          
+            string api = APIURLtextBox.Text;
+            if (api.StartsWith("/"))
+            {
+                api = api.TrimStart('/');
+            }
+            string url = http + api;                   
+            bool reachable = await IsApiReachable(url);
+            if (!reachable)
+            {
+                return "error";
+            }
             if (!blockTXonErr)
             {
                 if (noRigctld && selectedRig > 0)
                 {
 
-                    var r = new Other_TX.OtherTX(N.Protocol, N.IP, N.Port, N.Baud, N.Serial, msg);
+                    var r = new Other_TX.OtherTX(N.Protocol, N.IP, N.Port, N.Baud, N.Serial, msg, url);
 
                     if ((r.reply == "error") && !blockTXonErr)
                     {
                         blockTXonErr = true;
-                        Msg.TMessageBox("Error contacting RigCtlD - is it running?", "Warning", 4000);
+                        Msg.TMessageBox("Error contacting rig", "Warning", 3000);
                         return r.reply;
                     }
                     else
@@ -6202,8 +6253,8 @@ namespace WSPR_Sked
                 }*/
                 Flag = true;
 
-                
-                nextT = now.AddMinutes(1);                
+
+                nextT = now.AddMinutes(1);
                 string nexttime = nextT.ToString("HH:mm:00");
 
                 //debug timing:
@@ -6229,35 +6280,7 @@ namespace WSPR_Sked
                 File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
                     $"{now:HH:mm:ss} findSlot returned={slotok}, slotActive={slotActive}\n");
 
-                /*if (slotok)
-                {
-                    if (!noSkedcheckBox.Checked)
-                    {
-                        if (noRigctld && selectedRig == 0)
-                        {
-                            Msg.TMessageBox("Ignoring slot: RigCtlD disabled or no TX selected", "Frequency", 1000);
-                        }
-
-                        if (!enableTXcheckBox.Checked && slotActive)
-                        {
-                            //do nothing
-                            Msg.TMessageBox("Warning: TX not enabled", "TX Status", 4000);
-                            slotActive = false;
-                        }
-                        if (!checkRigctld() && !justLoaded)
-                        {
-                            Msg.TMessageBox("Error: RigCtld not running", "", 3000);
-                        }
-                        else
-                        {
-                            blockTXonErr = false; //unblock old errors
-                            WSPRtimer.Enabled = true;
-                            WSPRtimer.Start(); //start the time to starty the TX 
-                            prepDone = false;
-
-                        }
-                    }
-                }*/
+              
 
 
                 // use capturedSlotActive for the WSPRtimer decision:
@@ -6436,7 +6459,7 @@ namespace WSPR_Sked
                     }
                     else if (R == "error")
                     {
-                        blockTXonErr = true;                       
+                        blockTXonErr = true;
                     }
 
                 });
@@ -6451,15 +6474,24 @@ namespace WSPR_Sked
             }
             else if (selectedRig > 0)
             {
-                var ret = await sendOtherTXRigCommand(rig, rig.TXptt); //already have rig from changefreq()
-                if (ret == "error")
+                if (TX)
                 {
-                    blockTXonErr = true;
-                    Msg.TMessageBox("Unable to key TX", "PTT Error", 4000);
-                    return false;
+                    var ret = await sendOtherTXRigCommand(rig, rig.TXptt); //already have rig from changefreq()
+
+                    if (ret == "error")
+                    {
+                        blockTXonErr = true;
+                        Msg.TMessageBox("Unable to key TX", "PTT Error", 4000);
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
                 }
                 else
                 {
+                    var ret = await sendOtherTXRigCommand(rig, rig.RXcommand); //stop tx
                     return true;
                 }
             }
@@ -6605,7 +6637,7 @@ namespace WSPR_Sked
                 string content = rpath + slash + "rigctld";
                 string catdev = " -r " + RigctlCOM;
                 string baud = " -s " + Rigctlbaud;
-            
+
                 string args = "-m " + Radio + catdev + baud + " -T " + RigctlIPv4 + " -t " + RigctlPort;
 
 
@@ -6657,8 +6689,8 @@ namespace WSPR_Sked
                 string rigctld = "rigctld";
                 string catdev = " -r " + RigctlCOM;
                 string baud = " -s " + Rigctlbaud;
-                
-                string args = "-m " + radio +  catdev + baud + " -T " + RigctlIPv4 + " -t " + RigctlPort + " &";
+
+                string args = "-m " + radio + catdev + baud + " -T " + RigctlIPv4 + " -t " + RigctlPort + " &";
                 await Task.Run(() =>
                 {
 
@@ -7053,7 +7085,7 @@ namespace WSPR_Sked
             {
                 if (!rigctldcheckBox.Checked)
                 {
-                    
+
                     Rigctlbaud = baudcomboBox.SelectedItem.ToString();
                     RigctlPort = PorttextBox.Text;
                     RigctlIPv4 = IPtextBox.Text;
@@ -7066,7 +7098,7 @@ namespace WSPR_Sked
 
                     string catdev = " -r " + RigctlCOM;
                     string baud = " -s " + Rigctlbaud;
-                 
+
                     if (OpSystem == 0)
                     {
                         content = rpath + slash + "rigctld";
@@ -7085,7 +7117,7 @@ namespace WSPR_Sked
 
                     });
                 }
-                
+
             }
         }
 
@@ -7094,7 +7126,7 @@ namespace WSPR_Sked
 
             if (!rigctldcheckBox.Checked)
             {
-                bool noselCOM = (COMcomboBox.SelectedIndex < 0) || (baudcomboBox.SelectedIndex <0 );
+                bool noselCOM = (COMcomboBox.SelectedIndex < 0) || (baudcomboBox.SelectedIndex < 0);
                 if (RigcomboBox.SelectedIndex < 0 || noselCOM || IPtextBox.Text == "" || PorttextBox.Text == "")
                 {
                     Msg.OKMessageBox("Error: some items not selected", "");
@@ -7107,15 +7139,15 @@ namespace WSPR_Sked
             MySqlConnection connection = new MySqlConnection(myConnectionString);
             string comport = "";
             string baud = "";
-           
-                comport = COMcomboBox.SelectedItem.ToString();
-                baud = baudcomboBox.SelectedItem.ToString();
-            
+
+            comport = COMcomboBox.SelectedItem.ToString();
+            baud = baudcomboBox.SelectedItem.ToString();
+
             lock (_lock)
             {
                 try
-                { 
-                   
+                {
+
                     MySqlCommand command = connection.CreateCommand();
                     command.CommandText = "INSERT INTO rigctl(RigctlID, Radio, COMport, Baud, IPv4, Port,norigctld,VOX) ";
                     command.CommandText += "VALUES(@RigctlID, @Radio, @COMport, @Baud, @IPv4, @Port,@norigctld,@VOX)";
@@ -7153,7 +7185,7 @@ namespace WSPR_Sked
             {
                 MySqlCommand command = connection.CreateCommand();
                 c = "UPDATE rigctl SET Radio = '" + RigcomboBox.SelectedItem + "', COMport = '" + comport + "', ";
-                c = c + "Baud = '" + baud + "', IPv4 = '" + IPtextBox.Text + "', Port = '" + PorttextBox.Text + "', norigctld = " + noRigctld + ", VOX = "+VoxcheckBox.Checked;
+                c = c + "Baud = '" + baud + "', IPv4 = '" + IPtextBox.Text + "', Port = '" + PorttextBox.Text + "', norigctld = " + noRigctld + ", VOX = " + VoxcheckBox.Checked;
                 c = c + " WHERE RigctlID = 0";
 
                 command.CommandText = c;
@@ -7199,12 +7231,12 @@ namespace WSPR_Sked
                     RigctlIPv4 = (string)Reader["IPv4"];
                     RigctlPort = (string)Reader["Port"];
                     rigctldcheckBox.Checked = (bool)Reader["norigctld"];
-                  
+
                     RigcomboBox.SelectedItem = Radio;
                     RigcomboBox.Text = Radio;
-                  
-                        COMcomboBox.SelectedItem = RigctlCOM;
-                    
+
+                    COMcomboBox.SelectedItem = RigctlCOM;
+
                     baudcomboBox.SelectedItem = Rigctlbaud;
                     IPtextBox.Text = RigctlIPv4;
                     PorttextBox.Text = RigctlPort;
@@ -7491,7 +7523,7 @@ namespace WSPR_Sked
                 rxForm.set_prev_frequency();
             }
 
-           
+
             if (m % 2 == 0 && (s > 2 && s < 10))
             {
                 Flag = false;
@@ -11710,6 +11742,11 @@ namespace WSPR_Sked
             }
 
         }
+
+        private void addrigDBNameField()   //add slot database name field
+        {
+            addNewField("wsprs", "rigs", "URL", "TEXT NOT NULL");
+        }
         private void addSlotDBNameField()   //add slot database name field
         {
             addNewField("wspr_configs", "settings", "SlotDB", "TEXT NOT NULL");
@@ -12097,6 +12134,11 @@ namespace WSPR_Sked
                     Msg.OKMessageBox("Invalid IP or port", "");
                     return;
                 }
+                if (APIURLtextBox.Text.StartsWith("/"))                
+                {
+                    Msg.TMessageBox("Leading / not needed", "API startswith /",2500);                    
+                }              
+              
             }   //otherwise (mostly) ok
 
 
@@ -12131,6 +12173,7 @@ namespace WSPR_Sked
             rig.reply2 = "";
             rig.reply3 = "";
             rig.reply4 = "";
+            rig.URL = "";
 
             string s1 = "";
             string s2 = "";
@@ -12181,6 +12224,7 @@ namespace WSPR_Sked
                         s4 = rigflowcomboBox.SelectedItem.ToString();
                     }
 
+
                 }
                 catch
                 {
@@ -12192,6 +12236,7 @@ namespace WSPR_Sked
             {
                 rig.Port = rigporttextBox.Text;
                 rig.IP = rigiptextBox.Text;
+                rig.URL = APIURLtextBox.Text.Trim();
             }
 
 
@@ -12289,12 +12334,13 @@ namespace WSPR_Sked
                     ok = AddColumnIfNotExists(conn, "rigs", "IP", "TEXT NULL");
                     ok = AddColumnIfNotExists(conn, "rigs", "Baud", "TEXT NULL");
                     ok = AddColumnIfNotExists(conn, "rigs", "Serial", "TEXT NULL");
+                    ok = AddColumnIfNotExists(conn, "rigs", "URL", "TEXT NULL");
 
 
                 }
                 if (ok)
                 {
-                    Msg.TMessageBox("New slot datavase created", "Database Update", 1000);
+                    Msg.TMessageBox("New slot database created", "Database Update", 1000);
                 }
             }
             catch
@@ -12323,14 +12369,14 @@ namespace WSPR_Sked
                     MySqlCommand command = connection.CreateCommand();
                     connection.Open();
 
-                    command.CommandText = "INSERT INTO rigs(id,rigname,type,selected,TXcommand,RXcommand,TXptt,command1,command2,command3,command4,reply1,reply2,reply3,reply4,Protocol,Port,IP,Baud,Serial) ";
+                    command.CommandText = "INSERT INTO rigs(id,rigname,type,selected,TXcommand,RXcommand,TXptt,command1,command2,command3,command4,reply1,reply2,reply3,reply4,Protocol,Port,IP,Baud,Serial,URL) ";
                     command.CommandText += "VALUES(@id,@rigname,@type,@selected,@TXcommand,@RXcommand,@TXptt,@command1,@command2,@command3,@command4,@reply1,@reply2,@reply3,@reply4";
-                    command.CommandText += ",@Protocol,@Port,@IP,@Baud,@Serial)";
+                    command.CommandText += ",@Protocol,@Port,@IP,@Baud,@Serial,@URL)";
                     command.CommandText += " ON DUPLICATE KEY UPDATE id = " + N.Id + ", rigname = '" + N.Name + "', type = " + N.Type + ", selected = " + N.Selected + ", TXcommand = '" + N.TXcommand + "'";
                     command.CommandText += ", RXcommand = '" + N.RXcommand + "', TXptt = '" + N.TXptt + "'";
                     command.CommandText += ", command1 = '" + N.command1 + "', command2 = '" + N.command2 + "', command3 = '" + N.command3 + "'";
                     command.CommandText += ", command4 = '" + N.command4 + "', Protocol = '" + N.Protocol + "', Port = '" + N.Port + "', IP = '" + N.IP + "'";
-                    command.CommandText += ", Baud = '" + N.Baud + "', Serial = '" + N.Serial + "'";
+                    command.CommandText += ", Baud = '" + N.Baud + "', Serial = '" + N.Serial + "', URL = '" + N.URL + "'";
 
 
                     command.Parameters.AddWithValue("@id", N.Id);
@@ -12353,7 +12399,7 @@ namespace WSPR_Sked
                     command.Parameters.AddWithValue("@IP", N.IP);
                     command.Parameters.AddWithValue("@Baud", N.Baud);
                     command.Parameters.AddWithValue("@Serial", N.Serial);
-
+                    command.Parameters.AddWithValue("@URL", N.URL);
 
                     command.ExecuteNonQuery();
                     connection.Close();
@@ -12390,6 +12436,8 @@ namespace WSPR_Sked
             N.reply2 = "";
             N.reply3 = "";
             N.reply4 = "";
+            N.URL = "";
+            APIURLtextBox.Text = "";
 
             rig = N; //global rig info
 
@@ -12445,6 +12493,14 @@ namespace WSPR_Sked
                     N.reply2 = (string)Reader["reply2"];
                     N.reply3 = (string)Reader["reply3"];
                     N.reply4 = (string)Reader["reply4"];
+                    try
+                    {
+                        N.URL = (string)Reader["URL"];
+                    }
+                    catch
+                    {
+                        N.URL = "";
+                    }
 
                     try
                     {
@@ -12461,6 +12517,15 @@ namespace WSPR_Sked
                                 rigtxcmdtextBox.Text = N.TXcommand;
                                 rigrxcmdtextBox.Text = N.RXcommand;
                                 rigPTTcmdtextBox.Text = N.TXptt;
+                                APIURLtextBox.Text = N.URL;
+                                if (N.URL.StartsWith("https"))
+                                {
+                                    httpscheckBox.Checked = true;
+                                }
+                                else
+                                {
+                                    httpscheckBox.Checked = false;
+                                }
                                 //rig = N; //global rig info
                                 //just return item
                             }
@@ -12510,7 +12575,8 @@ namespace WSPR_Sked
             rigporttextBox.Visible = !serial;
             rigiptextBox.Visible = !serial;
             APIURLtextBox.Visible = !serial;
-            APIlabel.Visible = !serial;
+            APIgroupBox.Visible = !serial;
+            apiinfolabel.Visible = !serial;
 
             if (serial)
             {
@@ -12520,7 +12586,7 @@ namespace WSPR_Sked
             }
             else
             {
-                rigBPlabel.Text = "IP:";              
+                rigBPlabel.Text = "IP:";
             }
             rigBPlabel.Visible = true;
             rigportlabel.Visible = true;
@@ -12753,11 +12819,23 @@ namespace WSPR_Sked
         {
             if (VoxcheckBox.Checked)
             {
-           
+
+            }
+        }
+
+        private void httpscheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (httpscheckBox.Checked)
+            {
+                APIstartlabel.Text = "https://<ip_address>:<port>/";
+            }
+            else
+            {
+                APIstartlabel.Text = "http://<ip_address>:<port>/";
             }
         }
     }
-    
+
 
 }
 

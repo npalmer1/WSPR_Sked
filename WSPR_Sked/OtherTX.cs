@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace Other_TX
         SerialPort serialPort = new SerialPort();
 
 
-        public OtherTX(string protocol, string ip, string port, string baud, string serial, string message)
+        public OtherTX(string protocol, string ip, string port, string baud, string serial, string message, string url)
         {
             if (protocol.Contains("Serial"))
             {
@@ -38,11 +39,49 @@ namespace Other_TX
             }
             else
             {
-                runIP(ip, port, message);
+                runIP(ip, port, message,url);
 
             }
         }
-        private void runIP(string ip, string port, string message)
+        private void runIP(string ip, string port, string message,string url)
+        {  // message may be single line or multiple lines separated by ";"
+
+            try
+            {
+                message.Split(";").ToList().ForEach(m =>
+                {
+                    m = m.Replace(" ", "+");
+                    sendIPMsg(ip, port, url+m);
+                });
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                reply = "error";
+                return;
+
+            }
+        }
+
+        private async Task<string> sendIPMsg(string ip, string port, string url)
+        {
+            string result = "error";
+            try
+            {
+                using var client = new HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(3);
+              
+                var response = await client.GetAsync(url);
+                result = await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception e)
+            {
+                ErrorMessage = e.Message;
+                result = "error";
+            }
+            return result;
+        }
+        private void sendIPMsg_OLD(string ip, string port, string message)
         {
             reply = "error";
             int portno = 0;
@@ -61,7 +100,7 @@ namespace Other_TX
                 try
                 {
                     var connectTask = client.ConnectAsync(ip, portno);
-                    if (!connectTask.Wait(2000)) // 2 second timeout
+                    if (!connectTask.Wait(2000)) 
                     {
                         ErrorMessage = "Connection timed out";
                         reply = "error";
@@ -72,7 +111,7 @@ namespace Other_TX
                     byte[] dataToSend = Encoding.ASCII.GetBytes(message + "\n");
                     stream.Write(dataToSend, 0, dataToSend.Length);
 
-                    stream.ReadTimeout = 2000; // also guard the read
+                    stream.ReadTimeout = 2000; 
 
                     byte[] buffer = new byte[1024];
                     int bytesRead = stream.Read(buffer, 0, buffer.Length);
@@ -85,61 +124,7 @@ namespace Other_TX
                 }
             }
         }
-        /*private void runIP_OLD(string ip, string port, string message)
-        {          
-            reply = "error";
-            int portno = 0;
-
-            try
-            {
-                portno = Convert.ToInt32(port);
-            }
-            catch
-            {
-
-                reply = "error";
-                return;
-
-            }
-            // Create a TCP client
-            TcpClient client = new TcpClient(ip, portno);
-            try
-            {
-
-
-
-                // Get the network stream for reading and writing
-                NetworkStream stream = client.GetStream();
-
-                // Send a message to the server
-
-                byte[] dataToSend = Encoding.ASCII.GetBytes(message + "\n");
-                stream.Write(dataToSend, 0, dataToSend.Length);
-
-
-                // Buffer to store the server's response
-                byte[] buffer = new byte[1024];
-                int bytesRead = stream.Read(buffer, 0, buffer.Length);
-
-                // Convert the response to a string
-                reply = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-
-
-                // Close the client connection
-                client.Close();
-                client.Dispose();
-
-
-            }
-            catch (Exception e)
-            {
-                ErrorMessage = e.Message;
-                client.Close();
-                client.Dispose();
-                reply = "error";
-                return;
-            }
-        }*/
+      
 
         private void runSerial(string port, string serial, string baud, string message)
         {
@@ -186,8 +171,8 @@ namespace Other_TX
         public void sendSerial(string port, int baudrate, int bits, string parity, int stop, string handshake, string message)
         {
 
-            serialPort.PortName = port; // Replace with your COM port name
-            serialPort.BaudRate = baudrate;   // Set the baud rate (must match the receiving device)
+            serialPort.PortName = port; 
+            serialPort.BaudRate = baudrate;  
             Parity p;
             if (parity == "none")
             {
@@ -203,7 +188,7 @@ namespace Other_TX
             }
 
             serialPort.Parity = p; // Set parity (None, Even, Odd, etc.)
-            serialPort.DataBits = bits;       // Set data bits
+            serialPort.DataBits = bits;      
             StopBits s;
             if (stop == 1)
             {
