@@ -390,7 +390,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.47";
+            string ver = "0.1.48";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -1426,7 +1426,7 @@ namespace WSPR_Sked
             //DateTime d = new DateTime();
 
             bool found = false;
-            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + ";database=" + slot_dbname + "; SslMode = None; AllowPublicKeyRetrieval = True;";
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";" + ";database=" + slot_dbname + "; SslMode = None; AllowPublicKeyRetrieval = True;";
 
             if (!databaseError)
             {
@@ -6271,45 +6271,41 @@ namespace WSPR_Sked
                 databaseError = false;
                 slotFound = false;
 
+                
+                    bool slotok = await (findSlot(-1, date, nexttime));
+                    slotFound = slotok;
+                    bool capturedSlotActive = slotActive; // capture immediately after findSlot
 
-                bool slotok = await (findSlot(-1, date, nexttime));
-                slotFound = slotok;
-                bool capturedSlotActive = slotActive; // capture immediately after findSlot
+                    //debig timing:
+                    File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                        $"{now:HH:mm:ss} findSlot returned={slotok}, slotActive={slotActive}\n");
 
-                //debig timing:
-                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
-                    $"{now:HH:mm:ss} findSlot returned={slotok}, slotActive={slotActive}\n");
-
-              
-
-
-                // use capturedSlotActive for the WSPRtimer decision:
-                if (slotok)
-                {
-                    if (!noSkedcheckBox.Checked)
+                    // use capturedSlotActive for the WSPRtimer decision:
+                    if (slotok)
                     {
-                        if (!enableTXcheckBox.Checked && capturedSlotActive)
+                        if (!noSkedcheckBox.Checked)
                         {
-                            Msg.TMessageBox("Warning: TX not enabled", "TX Status", 4000);
-                            slotActive = false;
-                        }
-                        if (!checkRigctld() && !justLoaded)
-                        {
-                            Msg.TMessageBox("Error: RigCtld not running", "", 3000);
-                        }
-                        else
-                        {
-                            blockTXonErr = false; //unblock old errors
-                            WSPRtimer.Enabled = true;
-                            WSPRtimer.Start();  //start the time to start the TX 
-                            prepDone = false;
+                            if (!enableTXcheckBox.Checked && capturedSlotActive)
+                            {
+                                Msg.TMessageBox("Warning: TX not enabled", "TX Status", 4000);
+                                slotActive = false;
+                            }
+                            if (!checkRigctld() && !justLoaded)
+                            {
+                                Msg.TMessageBox("Error: RigCtld not running", "", 3000);
+                            }
+                            else
+                            {
+                                blockTXonErr = false; //unblock old errors
+                                WSPRtimer.Enabled = true;
+                                WSPRtimer.Start();  //start the time to start the TX 
+                                prepDone = false;
+                            }
                         }
                     }
-                }
-                //justLoaded = false;
+                    //justLoaded = false;                
 
             }
-
 
         }
 
@@ -10074,6 +10070,12 @@ namespace WSPR_Sked
         {
             //selectedTime = listBox1.Text;
             int slot = 0;
+            bool nearTrigger = (DateTime.Now.Minute % 2 == 1 && DateTime.Now.Second >= 49) ||
+                                   (DateTime.Now.Minute % 2 == 0 && DateTime.Now.Second <= 4);
+            if (nearTrigger)
+            {
+                return; // don't refresh grid near a TX trigger window
+            }
 
             dt = DateTime.Now;
             bool nextTX = ((dt.Minute % 2 == 1) && (dt.Second >= 52)); //don't update grid whilst countdown to next slot
@@ -10181,6 +10183,7 @@ namespace WSPR_Sked
             {
                 Msg.OKMessageBox("Error selecting date", "");
             }
+          
         }
 
         private string findendT()
