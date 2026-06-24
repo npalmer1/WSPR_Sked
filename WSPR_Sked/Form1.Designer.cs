@@ -1921,18 +1921,8 @@
             locationbutton.UseVisualStyleBackColor = true;
             locationbutton.Visible = false;
             locationbutton.Click += locationbutton_Click;
-            // 
-            // solarcheckBox
-            // 
-            solarcheckBox.AutoSize = true;
-            solarcheckBox.Location = new System.Drawing.Point(29, 289);
-            solarcheckBox.Name = "solarcheckBox";
-            solarcheckBox.Size = new System.Drawing.Size(110, 17);
-            solarcheckBox.TabIndex = 103;
-            solarcheckBox.Text = "Record solar data";
-            solarcheckBox.UseVisualStyleBackColor = true;
-            solarcheckBox.Visible = false;
-            solarcheckBox.CheckedChanged += solarcheckBox_CheckedChanged;
+           
+         
             // 
             // asOnecheckBox
             // 

@@ -364,7 +364,7 @@ namespace WSPR_Sked
             selectedDate = monthCalendar1.SelectionStart;
             if (prevDate.DayOfYear != selectedDate.DayOfYear)
             {
-                changeDateTimes(timelistBox.Text, selectedDate.ToString(dateformat), true);
+                changeDateTimes(timelistBox.Text, selectedDate.ToString(dateformat), true, false);
             }
         }
 
@@ -3816,9 +3816,9 @@ namespace WSPR_Sked
                 }
                 string time = h.ToString().PadLeft(2, '0');
                 time = time + ":00"; // + t[1];
-                selectDT(time, selDate, false); //select another time - don;t find slots from db
+                selectDT(time, selDate, false,false); //select another time - don;t find slots from db
 
-                selectDT(timelistBox.Text, selDate, true); //then go back to selected to flush the rows - check db
+                selectDT(timelistBox.Text, selDate, true,false); //then go back to selected to flush the rows - check db
 
                 monthCalendar1.SelectionStart = Convert.ToDateTime(currentSelectedDate);
             }
@@ -9970,21 +9970,30 @@ namespace WSPR_Sked
         {
             editAnt();
         }
-
-        private void currHourbutton_Click(object sender, EventArgs e)
+        bool currhourbuttonpressed = false;
+        private async void currHourbutton_Click(object sender, EventArgs e)
         {
-            currHour(false, true);
-        }
-        private void currHour(bool nochangeIfmatch, bool exactMin) //set time to current hour
-        {
-            string oldtime = "";
-
-            if (timelistBox.SelectedIndex > -1)
+            currhourbuttonpressed = true;
+            await currHour(false, true);
+           
+            /*dataGridView1.Refresh();
+            string timeH = (LTcheckBox.Checked ? DateTime.Now : DateTime.Now.ToUniversalTime()).Hour.ToString().PadLeft(2, '0');
+            DateTime dt = LTcheckBox.Checked ? DateTime.Now : DateTime.Now.ToUniversalTime();
+            if (dt.Minute % 2 == 1) dt = dt.AddMinutes(-1);
+            string time = timeH + ":" + dt.Minute.ToString().PadLeft(2, '0');
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
-                oldtime = timelistBox.SelectedItem.ToString();
-
-            }
-            string selDate = selectedDate.ToString("yyyy-MM-dd");
+                if (dataGridView1.Rows[i].Cells[1].Value.ToString() == time)
+                {
+                    dataGridView1.CurrentCell = dataGridView1.Rows[i].Cells[1];
+                    dataGridView1.Rows[i].Selected = true;
+                    dataGridView1.FirstDisplayedScrollingRowIndex = i;
+                    break;
+                }
+            }*/
+        }
+        private async Task currHour(bool nochangeIfmatch, bool exactMin) //set time to current hour
+        {
             DateTime dt;
             if (LTcheckBox.Checked)
             {
@@ -9995,6 +10004,28 @@ namespace WSPR_Sked
             {
                 dt = DateTime.Now.ToUniversalTime();
             }
+         
+            bool nearTrigger = (dt.Minute % 2 == 1 && dt.Second >= 49) ||
+                               (dt.Minute % 2 == 0 && dt.Second <= 4);
+            if (nearTrigger && slotFound && currhourbuttonpressed)
+            {
+               
+                currhourbuttonpressed = false;
+                Msg.TMessageBox("Please wait", "", 4000);
+                //return;
+            }
+            currhourbuttonpressed = false;
+
+
+            string oldtime = "";
+
+            if (timelistBox.SelectedIndex > -1)
+            {
+                oldtime = timelistBox.SelectedItem.ToString();
+
+            }
+            string selDate = selectedDate.ToString("yyyy-MM-dd");
+           
             string timeH = dt.Hour.ToString().PadLeft(2, '0');
             string timeM = dt.Minute.ToString().PadLeft(2, '0');
             string date = dt.ToString(dateformat);
@@ -10023,8 +10054,8 @@ namespace WSPR_Sked
             }
             timelistBox.Text = time;
 
-            selectDT(time, date, true);
-            try
+            await selectDT(time, date, true,exactMin);
+            /*try
             {
                 if (exactMin)
                 {
@@ -10033,14 +10064,17 @@ namespace WSPR_Sked
                         if (dataGridView1.Rows[i].Cells[1].Value.ToString() == (time))
                         {
                             timelistBox.Text = timeH + ":00";
+
+                            dataGridView1.CurrentCell = dataGridView1.Rows[i].Cells[1];
                             dataGridView1.Rows[i].Selected = true;
                             dataGridView1.FirstDisplayedScrollingRowIndex = i;
-
+                            currhourbuttonpressed = false;
                             break;
 
                         }
                     }
                 }
+               
                 DateTime d = new DateTime();
                 d = Convert.ToDateTime(date);
                 monthCalendar1.SetDate(d);
@@ -10048,35 +10082,30 @@ namespace WSPR_Sked
             catch
             {
 
-            }
+            }*/
 
         }
         private void timelistBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selDate = selectedDate.ToString();
-            selectDT(timelistBox.Text, selDate, true);
+            selectDT(timelistBox.Text, selDate, true,false);
 
         }
 
-        private void selectDT(string time, string date, bool find)
+        private async Task selectDT(string time, string date, bool find,bool scroll)
         {
 
             showmsg = true;
             databaseError = false;
-            changeDateTimes(time, date, find);
+            changeDateTimes(time, date, find,scroll);
 
         }
-        private async void changeDateTimes(string selTime, string selDate, bool find)
-        {
-            //selectedTime = listBox1.Text;
-            int slot = 0;
-            bool nearTrigger = (DateTime.Now.Minute % 2 == 1 && DateTime.Now.Second >= 49) ||
-                                   (DateTime.Now.Minute % 2 == 0 && DateTime.Now.Second <= 4);
-            if (nearTrigger)
-            {
-                return; // don't refresh grid near a TX trigger window
-            }
+        private async Task changeDateTimes(string selTime, string selDate, bool find, bool scroll)
+        {           
 
+           
+
+            int slot = 0;
             dt = DateTime.Now;
             bool nextTX = ((dt.Minute % 2 == 1) && (dt.Second >= 52)); //don't update grid whilst countdown to next slot
 
@@ -10176,6 +10205,20 @@ namespace WSPR_Sked
 
                     }
 
+                }
+                if (scroll)
+                {
+                    string timeH = selTime.Split(':')[0];
+                    for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                    {
+                        if (dataGridView1.Rows[i].Cells[1].Value.ToString() == selTime)
+                        {
+                            dataGridView1.CurrentCell = dataGridView1.Rows[i].Cells[1];
+                            dataGridView1.Rows[i].Selected = true;
+                            dataGridView1.FirstDisplayedScrollingRowIndex = i;
+                            break;
+                        }
+                    }
                 }
                 dataGridView1.AllowUserToAddRows = false;
             }
@@ -11028,40 +11071,7 @@ namespace WSPR_Sked
             rxForm.set_frequency(listB.SelectedItem.ToString());
         }
 
-        private async void solarcheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            /*
-            if (solarcheckBox.Checked)
-            {
-                solarStarted = false;
-                stopSolar = false;
-                solarForm.Show();
-                if (stopSolar)
-                {
-
-                    if (!stopUrl)
-                    {
-                        solarForm.stopUrl = false;
-                        solarForm.setConfig(serverName, db_user, db_pass);
-                    }
-                    else
-                    {
-                        Msg.TMessageBox("Note: internet connection is stopped", "Solar data", 1500);
-                    }
-
-
-                }
-
-            }
-            else
-            {
-                stopSolar = true;
-                solarForm.stopUrl = true;
-                solarForm.Hide();
-
-            }
-            */
-        }
+        
 
         private void rigsearchbutton_Click(object sender, EventArgs e)
         {
