@@ -1722,7 +1722,7 @@ namespace WSPR_Sked
         private void filterbutton_Click(object sender, EventArgs e)
         {
             //MessageForm nForm = new MessageForm();
-            Msg.TMessageBox("Please wait....", "", 30000);
+            Msg.TMessageBox("Please wait....", "", 10000);
             if (filterbutton.Text == "Apply")
             {
                 filter_results(server, user, pass);
@@ -1738,7 +1738,7 @@ namespace WSPR_Sked
         private void Clearbutton_Click(object sender, EventArgs e)
         {
             //MessageForm nForm = new MessageForm();
-            Msg.TMessageBox("Please wait....", "", 30000);
+            Msg.TMessageBox("Please wait....", "", 10000);
             show_results(server, user, pass);
 
             //nForm.Dispose();
