@@ -4372,6 +4372,7 @@ namespace WSPR_Sked
 
         }
 
+        bool triggered = false;
         private async void WSPRtimer_Action() //updated timer logic
         {
             DateTime now;
@@ -4456,28 +4457,38 @@ namespace WSPR_Sked
 
 
             // Fire when we're at :00 or :01 seconds
-            if ((m % 2 == 0 && s == 0) || (m % 2 == 0 && s == 1))
+            if (((m % 2 == 0 && s == 0) || (m % 2 == 0 && s == 1) || (m % 2 == 0 && s == 2)) && !triggered) //account for delay in clock
             {
-                //debugging timing errors:
-                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
-                        $"{now:HH:mm:ss} WSPRtimer firing TX, slotActive={slotActive}, enableTX={enableTXcheckBox.Checked}, down={down}\n");
-
-                if (slotActive && enableTXcheckBox.Checked)
+                if (!triggered)
                 {
-                    countdownlabel.Text = "TX start";
-                    countdownlabel2.Text = "TX start";
-                    await StartTX(false);
-                    rxForm.setLabel("idle");
+                    triggered = true;                 
                 }
                 else
                 {
-                    countdownlabel.Text = "RX start";
-                    countdownlabel2.Text = "RX start";
-                    if (!rigctldcheckBox.Checked)
-                    { getRigF(); }
+                    triggered = false;                    
                 }
-                WSPRtimer.Stop();
-                WSPRtimer.Enabled = false;
+
+                    //debugging timing errors:
+                    File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                            $"{now:HH:mm:ss} WSPRtimer firing TX, slotActive={slotActive}, enableTX={enableTXcheckBox.Checked}, down={down}\n");
+
+                    if (slotActive && enableTXcheckBox.Checked)
+                    {
+                        countdownlabel.Text = "TX start";
+                        countdownlabel2.Text = "TX start";
+                        await StartTX(false);
+                        rxForm.setLabel("idle/not receiving");
+                    }
+                    else
+                    {
+                        countdownlabel.Text = "RX start";
+                        countdownlabel2.Text = "RX start";
+                        if (!rigctldcheckBox.Checked)
+                        { getRigF(); }
+                        rxForm.setLabel("receiving");
+                    }
+                    WSPRtimer.Stop();
+                    WSPRtimer.Enabled = false;                
             }
         }
 
@@ -6305,6 +6316,7 @@ namespace WSPR_Sked
                             else
                             {
                                 blockTXonErr = false; //unblock old errors
+                                 triggered = false; //prevent double activation in wsprtimer_action
                                 WSPRtimer.Enabled = true;
                                 WSPRtimer.Start();  //start the time to start the TX 
                                 prepDone = false;
