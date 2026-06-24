@@ -84,6 +84,7 @@
             cwssblistBox = new System.Windows.Forms.ListBox();
             Spectrumbutton = new System.Windows.Forms.Button();
             owncheckBox = new System.Windows.Forms.CheckBox();
+            label14 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -227,7 +228,7 @@
             // 
             OSDlistBox.FormattingEnabled = true;
             OSDlistBox.Items.AddRange(new object[] { "Off", "1", "2", "3", "4", "5" });
-            OSDlistBox.Location = new System.Drawing.Point(823, 10);
+            OSDlistBox.Location = new System.Drawing.Point(803, 7);
             OSDlistBox.Name = "OSDlistBox";
             OSDlistBox.Size = new System.Drawing.Size(43, 19);
             OSDlistBox.TabIndex = 7;
@@ -236,7 +237,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(750, 11);
+            label3.Location = new System.Drawing.Point(730, 8);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(67, 15);
             label3.TabIndex = 8;
@@ -246,7 +247,7 @@
             // 
             DeepcheckBox.AutoSize = true;
             DeepcheckBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            DeepcheckBox.Location = new System.Drawing.Point(639, 9);
+            DeepcheckBox.Location = new System.Drawing.Point(622, 8);
             DeepcheckBox.Name = "DeepcheckBox";
             DeepcheckBox.Size = new System.Drawing.Size(89, 17);
             DeepcheckBox.TabIndex = 9;
@@ -258,7 +259,7 @@
             // 
             QuickcheckBox.AutoSize = true;
             QuickcheckBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            QuickcheckBox.Location = new System.Drawing.Point(639, 32);
+            QuickcheckBox.Location = new System.Drawing.Point(622, 31);
             QuickcheckBox.Name = "QuickcheckBox";
             QuickcheckBox.Size = new System.Drawing.Size(91, 17);
             QuickcheckBox.TabIndex = 10;
@@ -269,7 +270,7 @@
             // OSDlabel
             // 
             OSDlabel.AutoSize = true;
-            OSDlabel.Location = new System.Drawing.Point(750, 32);
+            OSDlabel.Location = new System.Drawing.Point(730, 29);
             OSDlabel.Name = "OSDlabel";
             OSDlabel.Size = new System.Drawing.Size(48, 15);
             OSDlabel.TabIndex = 11;
@@ -279,7 +280,7 @@
             // 
             uploadcheckBox.AutoSize = true;
             uploadcheckBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            uploadcheckBox.Location = new System.Drawing.Point(882, 39);
+            uploadcheckBox.Location = new System.Drawing.Point(896, 39);
             uploadcheckBox.Name = "uploadcheckBox";
             uploadcheckBox.Size = new System.Drawing.Size(95, 17);
             uploadcheckBox.TabIndex = 12;
@@ -604,6 +605,16 @@
             owncheckBox.Text = "allow upload \r\nown call";
             owncheckBox.UseVisualStyleBackColor = true;
             // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            label14.Location = new System.Drawing.Point(727, 46);
+            label14.Name = "label14";
+            label14.Size = new System.Drawing.Size(126, 13);
+            label14.TabIndex = 57;
+            label14.Text = "(depends on no. spots)";
+            // 
             // RXForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -611,6 +622,7 @@
             AutoScroll = true;
             BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             ClientSize = new System.Drawing.Size(1117, 620);
+            Controls.Add(label14);
             Controls.Add(owncheckBox);
             Controls.Add(Spectrumbutton);
             Controls.Add(cwssblistBox);
@@ -720,5 +732,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column12;
         private System.Windows.Forms.Button Spectrumbutton;
         private System.Windows.Forms.CheckBox owncheckBox;
+        private System.Windows.Forms.Label label14;
     }
 }

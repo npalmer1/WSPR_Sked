@@ -427,6 +427,27 @@ namespace WSPR_Sked
 
         public async Task SaveReceived(DateTime originalDT)
         {
+            if (stopRXcheckBox.Checked) return;
+
+            DateTime startT = new DateTime(originalDT.Year, originalDT.Month, originalDT.Day,
+                                            originalDT.Hour, originalDT.Minute, 0);
+            try
+            {
+                await save_result_lines(startT);
+                await Task.Delay(200);
+                int rows = await Task.Run(() => table_count(server, user, pass));
+                if (rows > 0)
+                {
+                    //dataGridView1.Rows.Clear();
+                    dataGridView1.Sort(dataGridView1.Columns[0], ListSortDirection.Descending);
+                    await find_reported_async(rows);
+                }
+            }
+            catch { }
+        }
+
+        /*public async Task SaveReceived(DateTime originalDT)
+        {
             if (stopRXcheckBox.Checked)
             {
                 return;
@@ -446,15 +467,37 @@ namespace WSPR_Sked
                 {
                     dataGridView1.Rows.Clear();
                     dataGridView1.Sort(dataGridView1.Columns[0], ListSortDirection.Descending);  //order by date
-                    find_reported(rows);
+                    await Task.Run(() => find_reported(rows));
 
                 }
             }
             catch { }
 
-        }
+        }*/
 
+        /*public async Task SaveReceived(DateTime originalDT)
+        {
+            if (stopRXcheckBox.Checked) return;
 
+            DateTime startT = new DateTime(originalDT.Year, originalDT.Month, originalDT.Day,
+                                            originalDT.Hour, originalDT.Minute, 0);
+            try
+            {
+                await save_result_lines(startT);
+                await Task.Delay(200);
+                int rows = table_count(server, user, pass);
+                if (rows > 0)
+                {
+                    dataGridView1.Rows.Clear();
+                    dataGridView1.Sort(dataGridView1.Columns[0], ListSortDirection.Descending);
+                    //await Task.Run(() => find_reported(rows));
+                    await find_reported_async(rows);
+                }
+            }
+            catch { }
+        }*/
+
+   
 
 
         public async Task Start_Receive(int opsys)
@@ -649,20 +692,100 @@ namespace WSPR_Sked
             return b;
         }
 
-        private void update_grid() //add rows to the datagridview
-        {
+       
 
+        private void update_grid()
+        {
+            if (dataGridView1.InvokeRequired)
+            {
+                dataGridView1.Invoke((Action)update_grid);
+                return;
+            }
             DataGridViewRow row = new DataGridViewRow();
             row.CreateCells(dataGridView1);
             for (int i = 0; i < 13; i++)
             {
-
                 row.Cells[i].Value = cells[i];
             }
-
             dataGridView1.Rows.Add(row);
         }
+
         private async Task save_result_lines(DateTime startT)
+        {
+            if (results == null || results == "") return;
+
+            bool end = false;
+            bool containsData = false;
+            using var reader = new StringReader(results);
+            string line = "";
+            string date = startT.ToString("yyMMdd");
+            string time = startT.ToString("HHmm");
+            var uploadTasks = new List<Task>();  // collect upload tasks
+
+            try
+            {
+                while (!end)
+                {
+                    line = "";
+                    line = reader.ReadLine().Trim();
+                    if (line == null || line == "")
+                    {
+                        DX.tx_sign = "nil rcvd";
+                        line = "<DecodeFinished>";
+                    }
+                    if (line.Contains("<DecodeFinished>"))
+                    {
+                        end = true;
+                        if (containsData) break;
+                    }
+                    else
+                    {
+                        containsData = true;
+                    }
+
+                    try
+                    {
+                        double f = 0;
+                        if (prevFreq != "") f = Convert.ToDouble(prevFreq);
+                        await process_decoded(line, f, startT, containsData);
+                        if (DX.tx_sign != null && !DX.tx_sign.Contains("error"))
+                        {
+                            if (DX.tx_sign.Contains("nil rcvd") && containsData)
+                            {
+                                end = true;
+                            }
+                            else
+                            {
+                                await Save_Received_DB(server, user, pass);
+                                // fire upload but don't await yet
+                                if (!DX.tx_sign.Contains("nil rcvd") && DX.tx_sign != "")
+                                {
+                                    uploadTasks.Add(Post_wsprdata(date, time));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            end = true;
+                        }
+                    }
+                    catch { end = true; }
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Error");
+            }
+
+            // now await all uploads in parallel
+            if (uploadTasks.Count > 0)
+            {
+                await Task.WhenAll(uploadTasks);
+            }
+
+            results = "";
+        }
+        /*private async Task save_result_lines(DateTime startT)
         {
             //startT is current time minuis 2 mins
             if (results == null || results == "")
@@ -768,7 +891,7 @@ namespace WSPR_Sked
 
             }
             results = ""; //nullG results
-        }
+        }*/
 
         private async Task Save_WSPR_Textfile(DateTime startT, string filepath, bool append)
         {
@@ -985,14 +1108,15 @@ namespace WSPR_Sked
 
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             int rows = table_count(server, user, pass);
             if (rows > 0)
             {
-                dataGridView1.Rows.Clear();
+                //dataGridView1.Rows.Clear();
                 dataGridView1.Sort(dataGridView1.Columns[0], ListSortDirection.Descending);  //order by date
-                find_reported(rows);
+                //await Task.Run(() => find_reported(rows));
+                await find_reported_async(rows);
 
             }
         }
@@ -1027,6 +1151,43 @@ namespace WSPR_Sked
         }
 
         public async Task Save_Received_DB(string serverName, string db_user, string db_pass)
+        {
+            if (DX.tx_sign == "") return;
+
+            string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_rpt" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
+
+            await Task.Run(() =>
+            {
+                MySqlConnection connection = new MySqlConnection(myConnectionString);
+                try
+                {
+                    connection.Open();
+                    MySqlCommand command = connection.CreateCommand();
+                    command.CommandText = "INSERT IGNORE INTO received(datetime,band,tx_sign,tx_loc,frequency,power,snr,drift,distance,azimuth,reporter,reporter_loc,dt) ";
+                    command.CommandText += "VALUES(@datetime,@band,@tx_sign,@tx_loc,@frequency,@power,@snr,@drift,@distance,@azimuth,@reporter,@reporter_loc,@dt)";
+                    command.Parameters.AddWithValue("@datetime", DX.datetime);
+                    command.Parameters.AddWithValue("@band", DX.band);
+                    command.Parameters.AddWithValue("@tx_sign", DX.tx_sign);
+                    command.Parameters.AddWithValue("@tx_loc", DX.tx_loc);
+                    command.Parameters.AddWithValue("@frequency", DX.frequency);
+                    command.Parameters.AddWithValue("@power", DX.power);
+                    command.Parameters.AddWithValue("@snr", DX.snr);
+                    command.Parameters.AddWithValue("@drift", DX.drift);
+                    command.Parameters.AddWithValue("@distance", DX.distance);
+                    command.Parameters.AddWithValue("@azimuth", DX.azimuth);
+                    command.Parameters.AddWithValue("@reporter", DX.reporter);
+                    command.Parameters.AddWithValue("@reporter_loc", my_loc);
+                    command.Parameters.AddWithValue("@dt", DX.dt);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+                catch
+                {
+                    connection.Close();
+                }
+            });
+        }
+        /*public async Task Save_Received_DB(string serverName, string db_user, string db_pass)
         {
 
             string myConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=wspr_rpt" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
@@ -1076,9 +1237,135 @@ namespace WSPR_Sked
                 }
             }
 
+        }*/
+
+        private async Task find_reported_async(int tablecount)
+        {
+            var rowData = new List<string[]>();
+
+            decoded_data DX = new decoded_data(); //use local version
+
+            string cwssbpwr = "100";
+            if (cwssblistBox.InvokeRequired)
+            {
+                cwssblistBox.Invoke((Action)(() => cwssbpwr = cwssblistBox.SelectedIndex > -1 ? cwssblistBox.SelectedItem.ToString() : "100"));
+            }
+            else
+            {
+                cwssbpwr = cwssblistBox.SelectedIndex > -1 ? cwssblistBox.SelectedItem.ToString() : "100";
+            }
+
+            int pwrW = 100;
+            int dBm = 50;
+            if (int.TryParse(cwssbpwr, out pwrW))
+            {
+                pwrW = pwrW;
+            }
+            else
+            {
+                pwrW = 100;
+            }
+            dBm = convertTodBm(pwrW);
+
+            string myConnectionString = "server=" + server + ";user id=" + user + ";password=" + pass + ";database=wspr_rpt" + "; SslMode = None; AllowPublicKeyRetrieval = True;";
+
+            await Task.Run(() =>
+            {
+                MySqlConnection connection = new MySqlConnection(myConnectionString);
+                try
+                {
+                    connection.Open();
+                    MySqlCommand command = connection.CreateCommand();
+                    command.CommandText = "SELECT * FROM received ORDER BY datetime DESC, frequency ASC LIMIT " + maxrows;
+                    MySqlDataReader Reader = command.ExecuteReader();
+
+                    int i = 0;
+                    while (Reader.Read())
+                    {
+                        if (i >= maxrows || i >= tablecount) break;
+
+                        string[] row = new string[13];
+
+                        DX.datetime = (DateTime)Reader["datetime"];
+                        DX.tx_sign = (string)Reader["tx_sign"];
+                        DX.frequency = (double)Reader["frequency"];
+                        DX.power = (Int16)Reader["power"];
+                        DX.snr = (int)Reader["snr"];
+                        DX.drift = (Int16)Reader["drift"];
+                        DX.distance = (int)Reader["distance"];
+                        DX.azimuth = (Int16)Reader["azimuth"];
+                        DX.reporter = (string)Reader["reporter"];
+                        DX.reporter_loc = (string)Reader["reporter_loc"];
+                        DX.dt = (float)Reader["dt"];
+                        DX.tx_loc = (string)Reader["tx_loc"];
+
+                        row[0] = DX.datetime.ToString("yyyy-MM-dd HH:mm");
+                        row[1] = DX.tx_sign;
+                        row[2] = DX.frequency.ToString("F6");
+
+                        if (DX.tx_sign == "nil rcvd")
+                        {
+                            for (int j = 3; j <= 12; j++) row[j] = "";
+                        }
+                        else
+                        {
+                            string snr = Convert.ToString(DX.snr);
+                            if (DX.snr > 0) snr = "+" + snr;
+                            row[3] = snr;
+                            row[4] = DX.drift.ToString();
+                            row[5] = DX.power.ToString();
+                            row[6] = dBtoWatts(DX.power.ToString());
+                            row[7] = DX.tx_loc;
+                            row[8] = DX.distance > -1 ? DX.distance.ToString() : "";
+                            row[9] = DX.distance > -1 ? convert_to_miles(DX.distance) : "";
+                            row[10] = DX.azimuth > -1 ? DX.azimuth.ToString() : "";
+                            row[11] = getCW(DX.snr, DX.power, dBm);
+                            row[12] = getSSB(DX.snr, DX.power, dBm);
+                        }
+
+                        rowData.Add(row);
+                        i++;
+                    }
+                    Reader.Close();
+                    connection.Close();
+                }
+                catch
+                {
+                    connection.Close();
+                }
+            });
+
+            // single UI thread update with all rows at once
+            dataGridView1.Rows.Clear();
+            if (dataGridView1.InvokeRequired)
+            {
+                dataGridView1.Invoke((Action)(() => addRowsToGrid(rowData)));
+            }
+            else
+            {
+                addRowsToGrid(rowData);
+            }
         }
+
+        private void addRowsToGrid(List<string[]> rowData)
+        {
+            dataGridView1.SuspendLayout();
+            foreach (var cells in rowData)
+            {
+                DataGridViewRow row = new DataGridViewRow();
+                row.CreateCells(dataGridView1);
+                for (int i = 0; i < 13; i++)
+                {
+                    row.Cells[i].Value = cells[i];
+                }
+                dataGridView1.Rows.Add(row);
+            }
+            dataGridView1.ResumeLayout();
+        }
+
         private bool find_reported(int tablecount) //find a slot row for display in grid from the database corresponding to the date/time from the slot
         {
+            decoded_data DX = new decoded_data(); //use local version
             DataTable Slots = new DataTable();
             //DateTime d = new DateTime();
             int i = 0;
@@ -1421,6 +1708,14 @@ namespace WSPR_Sked
             {
                 warn = " (slow)";
             }
+            if (OSDlistBox.SelectedIndex >3 )
+            {
+                warn = " (very slow)";
+            }
+            else
+            {
+                OSDlabel.Text = "OSD " + OSDlistBox.SelectedItem.ToString() + warn;
+            }
             OSDlabel.Text = "OSD " + OSDlistBox.SelectedItem.ToString() + warn;
         }
 
@@ -1449,23 +1744,17 @@ namespace WSPR_Sked
             //nForm.Dispose();
         }
 
-        public async Task show_results(string server, string user, string pass) // read back from the reported table to populate the datagridview
+        public async Task show_results(string server, string user, string pass)
         {
-            lock (_lock)
+            //dataGridView1.Rows.Clear();
+            dataGridView1.Sort(dataGridView1.Columns[0], ListSortDirection.Descending);
+            int rows = table_count(server, user, pass);
+            if (rows > 0)
             {
-                dataGridView1.Rows.Clear();
-                dataGridView1.Sort(dataGridView1.Columns[0], ListSortDirection.Descending);  //order by date
-                                                                                             //DateTime dt = DateTime.Now.ToUniversalTime();
-                                                                                             //dt = dt.AddHours(-2);
-                                                                                             // string date = dt.ToString("yyyy-MM-dd HH:mm:00");
-                int rows = table_count(server, user, pass);
-                if (rows > 0)
-                {
-                    find_reported(rows);
-
-                }
-                dataGridView1.Sort(dataGridView1.Columns[0], ListSortDirection.Descending);  //order by date
+                await find_reported_async(rows);
+                //await Task.Run(() => find_reported(rows));
             }
+            dataGridView1.Sort(dataGridView1.Columns[0], ListSortDirection.Descending);
         }
 
         private void filter_results(string server, string user, string pass)
