@@ -493,7 +493,7 @@
             RXofflabel.Name = "RXofflabel";
             RXofflabel.Size = new System.Drawing.Size(69, 15);
             RXofflabel.TabIndex = 45;
-            RXofflabel.Text = "RX listening";
+            RXofflabel.Text = "RX Running";
             RXofflabel.Click += RXofflabel_Click;
             // 
             // label10

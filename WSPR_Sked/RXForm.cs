@@ -2387,7 +2387,7 @@ namespace WSPR_Sked
         {
             if (!stopRXcheckBox.Checked)
             {
-                RXofflabel.Text = "RX Enabled";
+                RXofflabel.Text = "RX Running";
             }
             else
             {
