@@ -6123,9 +6123,17 @@ namespace WSPR_Sked
             bool nearTrigger = (m % 2 == 1 && s >= 49) || (m % 2 == 0 && s <= 4);
             if (keypresses > 90 && (s == 6 || s == 7 || s == 8) && !currslotmoved && !slotgroupBox.Visible && !nearTrigger)
             {
+                
                 currslotmoved = true; //just in case it misses second 6
-                currHour(true, trackSlotscheckBox.Checked);
-                if (!trackSlotscheckBox.Checked) { keypresses = 0; }
+                if (!trackSlotscheckBox.Checked)
+                {
+                    keypresses = 0;
+                }
+                else 
+                { 
+                    currHour(true, trackSlotscheckBox.Checked);
+                }
+              
             }
 
 
@@ -7467,8 +7475,15 @@ namespace WSPR_Sked
             if (keypresses > 90 && (s == 6 || s == 7 || s == 8) && !currslotmoved && !slotgroupBox.Visible && !nearTrigger)
             {
                 currslotmoved = true;
-                currHour(true, trackSlotscheckBox.Checked);
-                if (!trackSlotscheckBox.Checked) { keypresses = 0; }
+                if (!trackSlotscheckBox.Checked)
+                {
+                    keypresses = 0;
+
+                }
+                else 
+                { 
+                    currHour(true, trackSlotscheckBox.Checked);
+                }                
             }
 
             string time = Convert.ToString(h).PadLeft(2, '0');
