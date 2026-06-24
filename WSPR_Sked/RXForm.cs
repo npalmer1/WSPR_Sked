@@ -408,9 +408,9 @@ namespace WSPR_Sked
 
                 results = output;
 
-                statuslabel.Text = "saving";
+                //statuslabel.Text = "saving";
                 await SaveReceived(originalDT);
-                statuslabel.Text = "receiving";
+                //statuslabel.Text = "receiving";
             }
 
 

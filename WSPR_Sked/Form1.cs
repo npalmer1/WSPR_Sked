@@ -6225,7 +6225,7 @@ namespace WSPR_Sked
                     recordFlag = true;
                     if (enableTXcheckBox.Checked && slotActive)
                     {
-
+                        rxForm.setLabel("idle/not receiving");
                     }
                     else
                     {
