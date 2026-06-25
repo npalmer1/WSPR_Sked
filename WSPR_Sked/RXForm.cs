@@ -1790,10 +1790,12 @@ namespace WSPR_Sked
             string and = "";
             string bandstr = "";
             string q = "";
+            string where = "";
             if (mhz != "")
             {
                 bandstr = " frequency LIKE '" + mhz + "%' ";
                 and = "AND";
+                where = "WHERE ";  
             }
 
             string callstr = "";
@@ -1836,7 +1838,7 @@ namespace WSPR_Sked
                     connection.Open();
 
                     MySqlCommand command = connection.CreateCommand();
-                    string where = "";
+                   
                     if (callFiltertextBox.Text.Trim() != "")
                     {
                         if (callFiltertextBox.Text.Contains("*"))
@@ -1878,15 +1880,16 @@ namespace WSPR_Sked
                     //command.CommandText = "SELECT * FROM reported ORDER BY time WHERE time >= '" + time1 + "' AND time <= '" + time2 + "' AND band = '" + bandstr + "' DESC LIMIT " + maxrows;
                     if (datecheckBox.Checked)
                     {
-                        command.CommandText = "SELECT * FROM received " + where + " datetime >= '" + datetime1 + "' AND datetime <= '" + datetime2 + "' AND " + bandstr + callstr + fromstr + tostr + " ORDER BY datetime DESC LIMIT " + maxrows;
+                        string dateFilter = "datetime >= '" + datetime1 + "' AND datetime <= '" + datetime2 + "'";
+                        string extras = bandstr + callstr + fromstr + tostr;
+                        string andstr = extras.Trim() != "" ? " AND " : "";
+                        command.CommandText = "SELECT * FROM received WHERE " + dateFilter + andstr + extras + " ORDER BY datetime DESC LIMIT " + maxrows;
                     }
                     else
                     {
                         command.CommandText = "SELECT * FROM received " + where + " " + bandstr + callstr + fromstr + tostr + " ORDER BY datetime DESC LIMIT " + maxrows;
                     }
-
-
-
+  
                     MySqlDataReader Reader;
                     Reader = command.ExecuteReader();
 
