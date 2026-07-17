@@ -1928,6 +1928,7 @@
             solarcheckBox.Name = "solarcheckBox";
             solarcheckBox.Size = new System.Drawing.Size(104, 24);
             solarcheckBox.TabIndex = 111;
+            solarcheckBox.Visible = false;
             // 
             // asOnecheckBox
             // 
@@ -3614,10 +3615,10 @@
             tabPage5.Controls.Add(label42);
             tabPage5.Controls.Add(TulistBox);
             tabPage5.Controls.Add(SwlistBox);
-            tabPage5.Location = new System.Drawing.Point(4, 22);
+            tabPage5.Location = new System.Drawing.Point(4, 24);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            tabPage5.Size = new System.Drawing.Size(1177, 651);
+            tabPage5.Size = new System.Drawing.Size(1177, 649);
             tabPage5.TabIndex = 4;
             tabPage5.Text = "Switches&Tuners";
             // 
