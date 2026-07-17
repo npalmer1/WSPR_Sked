@@ -390,7 +390,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.48";
+            string ver = "0.1.49";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -7892,7 +7892,9 @@ namespace WSPR_Sked
                     Ant.Add(A);
                 }
                 string AN = AntnametextBox.Text.PadRight(40, ' ');
+                
                 AN = AN.Substring(0, 40);
+                string AName = AN;
                 AN = AN + "\t" + S + "\t" + S2 + "\t" + T; // + "\t" + P + "\t"+AntdesctextBox.Text;
                 if (newAcheckBox.Checked)
                 {
@@ -7959,16 +7961,22 @@ namespace WSPR_Sked
             {
                 ant = DefaultAntcomboBox.SelectedItem.ToString();
             }
+            int defaultitem = DefaultAntcomboBox.SelectedIndex;
+
             DefaultAntcomboBox.Items.Clear();
+         
             for (int i = 0; i < AntlistBox.Items.Count; i++)
             {
-                DefaultAntcomboBox.Items.Add(AntlistBox.Items[i]);
+                ant = AntlistBox.Items[i].ToString();
+                ant = ant.Substring(0,40).Trim();        //get rid of the swutch/tuner selection
+                DefaultAntcomboBox.Items.Add(ant);
             }
+            DefaultAntcomboBox.SelectedIndex = defaultitem;
             if (DefaultAntcomboBox.SelectedIndex > -1)
             {
-                DefaultAntcomboBox.SelectedItem = ant;
+                DefaultAntcomboBox.SelectedIndex = defaultitem ;
             }
-            else if (ant != "") { DefaultAntcomboBox.SelectedItem = 0; }
+            else if (ant != "") { DefaultAntcomboBox.SelectedIndex = 0; }
         }
         private void SaveAbutton_Click(object sender, EventArgs t)
         {
@@ -9556,6 +9564,7 @@ namespace WSPR_Sked
                     ch2 = Ant[i].SwitchPort2;
 
                     found = true;
+                    break;
                 }
             }
             if (!found) //use defaujlt ant instead
@@ -9569,12 +9578,12 @@ namespace WSPR_Sked
                         tu = Ant[i].Tuner;
                         ch = Ant[i].SwitchPort;
                         ch2 = Ant[i].SwitchPort2;
-
+                        break;
                     }
                 }
             }
 
-            changeAntenna(TXAntenna, sw, sw2, tu, ch, ch2);
+            await changeAntenna(TXAntenna, sw, sw2, tu, ch, ch2);
 
         }
 

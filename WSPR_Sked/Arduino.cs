@@ -20,7 +20,7 @@ namespace Arduino
         {
             //string serverIP = "192.168.0.207"; // Replace with Arduino's IP
             //int port = 5000;
-            if (type.Contains("switch)"))
+            if (type.Contains("switch"))
             {
                 response = setSWitch(serverIP, port, pin, high);
             }

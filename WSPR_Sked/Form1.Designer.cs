@@ -1921,8 +1921,13 @@
             locationbutton.UseVisualStyleBackColor = true;
             locationbutton.Visible = false;
             locationbutton.Click += locationbutton_Click;
-           
-         
+            // 
+            // solarcheckBox
+            // 
+            solarcheckBox.Location = new System.Drawing.Point(0, 0);
+            solarcheckBox.Name = "solarcheckBox";
+            solarcheckBox.Size = new System.Drawing.Size(104, 24);
+            solarcheckBox.TabIndex = 111;
             // 
             // asOnecheckBox
             // 
@@ -3609,10 +3614,10 @@
             tabPage5.Controls.Add(label42);
             tabPage5.Controls.Add(TulistBox);
             tabPage5.Controls.Add(SwlistBox);
-            tabPage5.Location = new System.Drawing.Point(4, 24);
+            tabPage5.Location = new System.Drawing.Point(4, 22);
             tabPage5.Name = "tabPage5";
             tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            tabPage5.Size = new System.Drawing.Size(1177, 649);
+            tabPage5.Size = new System.Drawing.Size(1177, 651);
             tabPage5.TabIndex = 4;
             tabPage5.Text = "Switches&Tuners";
             // 
@@ -3830,7 +3835,7 @@
             // 
             HwSwTypelistBox.AllowDrop = true;
             HwSwTypelistBox.FormattingEnabled = true;
-            HwSwTypelistBox.Items.AddRange(new object[] { "Arduino (antenna switchable on data pins)", "W-410A (antenna selectable by commands)" });
+            HwSwTypelistBox.Items.AddRange(new object[] { "Arduino R4 wifi (antenna switchable on data pins)", "W-410A (antenna selectable by commands)" });
             HwSwTypelistBox.Location = new System.Drawing.Point(83, 19);
             HwSwTypelistBox.Name = "HwSwTypelistBox";
             HwSwTypelistBox.Size = new System.Drawing.Size(284, 17);
@@ -4494,10 +4499,10 @@
             tabPage7.Controls.Add(riglistBox);
             tabPage7.Controls.Add(RiggroupBox);
             tabPage7.Controls.Add(label122);
-            tabPage7.Location = new System.Drawing.Point(4, 22);
+            tabPage7.Location = new System.Drawing.Point(4, 24);
             tabPage7.Name = "tabPage7";
             tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            tabPage7.Size = new System.Drawing.Size(1177, 651);
+            tabPage7.Size = new System.Drawing.Size(1177, 649);
             tabPage7.TabIndex = 6;
             tabPage7.Text = "Non Rigctl TX";
             // 
