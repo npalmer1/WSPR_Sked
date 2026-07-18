@@ -20,6 +20,7 @@ namespace WSPR_Sked
             private PictureBox waterfallBox;
             private Bitmap waterfallBitmap;
             private Label freqLabel;
+            private Label MHzfreqLabel;
             private Label statusLabel;
             private Timer readTimer;
            
@@ -33,6 +34,7 @@ namespace WSPR_Sked
 
             public string wavPath;
             public string freq = "";
+            private float fMHz = 0;
 
         private string lastWavPath = "";
         private long filePosition = 0;
@@ -70,13 +72,26 @@ namespace WSPR_Sked
 
             // Frequency label
             freqLabel = new Label();
-            freqLabel.Location = new Point(10, 10);
-           freqLabel.Font = new Font(freqLabel.Font, FontStyle.Bold);
+            freqLabel.Location = new Point(10, 5);
+            freqLabel.Font = new Font(freqLabel.Font.FontFamily, 8f, FontStyle.Bold);
             freqLabel.ForeColor = Color.Cyan;
             freqLabel.BackColor = Color.DarkSlateGray;
             freqLabel.Width = 140;
+            freqLabel.Height = 12;
             freqLabel.Text = "1300 - 1700 Hz  (WSPR)";
             this.Controls.Add(freqLabel);
+
+
+            // MHz Frequency label
+            MHzfreqLabel = new Label();
+            MHzfreqLabel.Location = new Point(10, 20);
+            MHzfreqLabel.Font = new Font(MHzfreqLabel.Font.FontFamily, 8f, FontStyle.Bold);
+            MHzfreqLabel.ForeColor = Color.Orange;
+            MHzfreqLabel.BackColor = Color.DarkSlateGray;
+            MHzfreqLabel.Width = 140;
+            MHzfreqLabel.Height = 12;
+            MHzfreqLabel.Text = "...";
+            this.Controls.Add(MHzfreqLabel);
 
             // Status label
             statusLabel = new Label();
@@ -186,7 +201,9 @@ namespace WSPR_Sked
         {
             try
             {
-                if (waterfallBitmap == null) return;
+                
+               
+                    if (waterfallBitmap == null) return;
                 using (var g = Graphics.FromImage(waterfallBitmap))
                 using (var font = new Font("Arial", 9, FontStyle.Bold))
                 using (var smallFont = new Font("Arial", 7, FontStyle.Regular))
@@ -196,33 +213,34 @@ namespace WSPR_Sked
                     // Background strip
                     g.FillRectangle(Brushes.DarkSlateGray, 0, 0, waterfallBitmap.Width, 22);
 
-                    for (int freq = 1300; freq <= 1700; freq += 10)
+                    for (int fHz = 1300; fHz <= 1700; fHz += 10)
                     {
-                        float x = (freq - FREQ_MIN) / (FREQ_MAX - FREQ_MIN) * waterfallBitmap.Width;
+                        float x = (fHz - FREQ_MIN) / (FREQ_MAX - FREQ_MIN) * waterfallBitmap.Width;
 
-                        if (freq % 100 == 0)
+                        if (fHz % 100 == 0)
                         {
                             // Major tick and label at 1400, 1500, 1600
                             g.DrawLine(Pens.Red, x, 14, x, 22);
 
                             // Label - full bright yellow
                             float labelX = x - 12;
-                            if (freq == 1300) labelX = 2;
-                            if (freq == 1700) labelX = x - 25;
-                            g.DrawString($"{freq}", font, brush, labelX, 1);
+                            if (fHz == 1300) labelX = 2;
+                            if (fHz == 1700) labelX = x - 25;
+                            g.DrawString($"{fHz}", font, brush, labelX, 1);
+                           
 
                             // Solid continuous bright red line through entire waterfall
                             using (var pen = new Pen(Color.FromArgb(200, 255, 0, 0)))
                                 g.DrawLine(pen, x, 22, x, waterfallBitmap.Height);
                         }
-                        else if (freq % 50 == 0)
+                        else if (fHz % 50 == 0)
                         {
                             // Medium tick at 1350, 1450, 1550, 1650
                             g.DrawLine(Pens.Red, x, 16, x, 22);
 
                             // Label - smaller and dimmer than major labels
                             float labelX = x - 10;
-                            g.DrawString($"{freq}", smallFont, brush, labelX, 3);
+                            g.DrawString($"{fHz}", smallFont, brush, labelX, 3);
 
                             // Solid but dimmer than 100Hz lines
                             using (var pen = new Pen(Color.FromArgb(120, 200, 0, 0)))
@@ -305,10 +323,17 @@ namespace WSPR_Sked
 
         private void WaterfallBox_MouseMove(object sender, MouseEventArgs e)
             {
-                float freqPerPixel = (FREQ_MAX - FREQ_MIN) / waterfallBox.Width;
-                float freq = FREQ_MIN + e.X * freqPerPixel;
-                freqLabel.Text = $"{freq:F1} Hz";
+            
+            float freqPerPixel = (FREQ_MAX - FREQ_MIN) / waterfallBox.Width;
+            float fHz = FREQ_MIN + e.X * freqPerPixel;
+            freqLabel.Text = $"{fHz:F1} Hz";
+            if (fMHz > 0)
+            {
+                float f = fMHz + fHz;
+                f = f / 1000000;
+                MHzfreqLabel.Text = $"{f:f6} MHz";
             }
+        }
 
             private void StopTimer()
             {
@@ -348,6 +373,14 @@ namespace WSPR_Sked
                     fileCompleteTime = DateTime.MinValue;
                     drawTimeOnNextLine = true;
                     pendingTimeLabel = GetWsprTime();  // ← use rounded time
+                    if (float.TryParse(freq, out fMHz))
+                    {
+                        fMHz = fMHz * 1000000; // Convert MHz to Hz
+                    }
+                    else
+                    {
+                        fMHz = 0; // Default to 0 if parsing fails
+                    }
                     pendingTimeLabel += " started on:  " + freq + " ^^";
                     DrawCycleLine();
                     statusLabel.Text = "New file: " + Path.GetFileName(wavPath);
