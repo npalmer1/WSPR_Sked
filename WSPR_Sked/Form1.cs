@@ -390,7 +390,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.49";
+            string ver = "0.1.50";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -3816,9 +3816,9 @@ namespace WSPR_Sked
                 }
                 string time = h.ToString().PadLeft(2, '0');
                 time = time + ":00"; // + t[1];
-                selectDT(time, selDate, false,false); //select another time - don;t find slots from db
+                selectDT(time, selDate, false, false); //select another time - don;t find slots from db
 
-                selectDT(timelistBox.Text, selDate, true,false); //then go back to selected to flush the rows - check db
+                selectDT(timelistBox.Text, selDate, true, false); //then go back to selected to flush the rows - check db
 
                 monthCalendar1.SelectionStart = Convert.ToDateTime(currentSelectedDate);
             }
@@ -4461,34 +4461,34 @@ namespace WSPR_Sked
             {
                 if (!triggered)
                 {
-                    triggered = true;                 
+                    triggered = true;
                 }
                 else
                 {
-                    triggered = false;                    
+                    triggered = false;
                 }
 
-                    //debugging timing errors:
-                    File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
-                            $"{now:HH:mm:ss} WSPRtimer firing TX, slotActive={slotActive}, enableTX={enableTXcheckBox.Checked}, down={down}\n");
+                //debugging timing errors:
+                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                        $"{now:HH:mm:ss} WSPRtimer firing TX, slotActive={slotActive}, enableTX={enableTXcheckBox.Checked}, down={down}\n");
 
-                    if (slotActive && enableTXcheckBox.Checked)
-                    {
-                        countdownlabel.Text = "TX start";
-                        countdownlabel2.Text = "TX start";
-                        await StartTX(false);
-                        rxForm.setLabel("idle/not receiving");
-                    }
-                    else
-                    {
-                        countdownlabel.Text = "RX start";
-                        countdownlabel2.Text = "RX start";
-                        if (!rigctldcheckBox.Checked)
-                        { getRigF(); }
-                        rxForm.setLabel("receiving");
-                    }
-                    WSPRtimer.Stop();
-                    WSPRtimer.Enabled = false;                
+                if (slotActive && enableTXcheckBox.Checked)
+                {
+                    countdownlabel.Text = "TX start";
+                    countdownlabel2.Text = "TX start";
+                    await StartTX(false);
+                    rxForm.setLabel("idle/not receiving");
+                }
+                else
+                {
+                    countdownlabel.Text = "RX start";
+                    countdownlabel2.Text = "RX start";
+                    if (!rigctldcheckBox.Checked)
+                    { getRigF(); }
+                    rxForm.setLabel("receiving");
+                }
+                WSPRtimer.Stop();
+                WSPRtimer.Enabled = false;
             }
         }
 
@@ -4715,10 +4715,10 @@ namespace WSPR_Sked
                     {
                         if (double.TryParse(f, out double fHz))
                         {
-                            FlistBox2.SelectedItem = (fHz/1000000).ToString();
+                            FlistBox2.SelectedItem = (fHz / 1000000).ToString();
                         }
-                       
-                        
+
+
                     }
                     R = R.Replace("freq", f1);
                     R = R.Replace("grid", L);
@@ -4756,8 +4756,8 @@ namespace WSPR_Sked
         }
 
 
-     
-       
+
+
 
         public async Task<bool> IsApiReachable(string url)
         {
@@ -4768,7 +4768,7 @@ namespace WSPR_Sked
                 client.Timeout = TimeSpan.FromSeconds(3);
 
                 var response = await client.GetAsync(url);
-                result = await response.Content.ReadAsStringAsync();               
+                result = await response.Content.ReadAsStringAsync();
             }
             catch (Exception e)
             {
@@ -4780,14 +4780,14 @@ namespace WSPR_Sked
         {
             string ip = N.IP;
             string port = N.Port;
-            string http =APIstartlabel.Text.Replace("<ip_address>", ip).Replace("<port>", port);
-          
+            string http = APIstartlabel.Text.Replace("<ip_address>", ip).Replace("<port>", port);
+
             string api = APIURLtextBox.Text;
             if (api.StartsWith("/"))
             {
                 api = api.TrimStart('/');
             }
-            string url = http + api;                   
+            string url = http + api;
             bool reachable = await IsApiReachable(url);
             if (!reachable)
             {
@@ -6134,17 +6134,17 @@ namespace WSPR_Sked
             bool nearTrigger = (m % 2 == 1 && s >= 49) || (m % 2 == 0 && s <= 4);
             if (keypresses > 90 && (s == 6 || s == 7 || s == 8) && !currslotmoved && !slotgroupBox.Visible && !nearTrigger)
             {
-                
+
                 currslotmoved = true; //just in case it misses second 6
                 if (!trackSlotscheckBox.Checked)
                 {
                     keypresses = 0;
                 }
-                else 
-                { 
+                else
+                {
                     currHour(true, trackSlotscheckBox.Checked);
                 }
-              
+
             }
 
 
@@ -6290,40 +6290,40 @@ namespace WSPR_Sked
                 databaseError = false;
                 slotFound = false;
 
-                
-                    bool slotok = await (findSlot(-1, date, nexttime));
-                    slotFound = slotok;
-                    bool capturedSlotActive = slotActive; // capture immediately after findSlot
 
-                    //debig timing:
-                    File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
-                        $"{now:HH:mm:ss} findSlot returned={slotok}, slotActive={slotActive}\n");
+                bool slotok = await (findSlot(-1, date, nexttime));
+                slotFound = slotok;
+                bool capturedSlotActive = slotActive; // capture immediately after findSlot
 
-                    // use capturedSlotActive for the WSPRtimer decision:
-                    if (slotok)
+                //debig timing:
+                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                    $"{now:HH:mm:ss} findSlot returned={slotok}, slotActive={slotActive}\n");
+
+                // use capturedSlotActive for the WSPRtimer decision:
+                if (slotok)
+                {
+                    if (!noSkedcheckBox.Checked)
                     {
-                        if (!noSkedcheckBox.Checked)
+                        if (!enableTXcheckBox.Checked && capturedSlotActive)
                         {
-                            if (!enableTXcheckBox.Checked && capturedSlotActive)
-                            {
-                                Msg.TMessageBox("Warning: TX not enabled", "TX Status", 4000);
-                                slotActive = false;
-                            }
-                            if (!checkRigctld() && !justLoaded)
-                            {
-                                Msg.TMessageBox("Error: RigCtld not running", "", 3000);
-                            }
-                            else
-                            {
-                                blockTXonErr = false; //unblock old errors
-                                 triggered = false; //prevent double activation in wsprtimer_action
-                                WSPRtimer.Enabled = true;
-                                WSPRtimer.Start();  //start the time to start the TX 
-                                prepDone = false;
-                            }
+                            Msg.TMessageBox("Warning: TX not enabled", "TX Status", 4000);
+                            slotActive = false;
+                        }
+                        if (!checkRigctld() && !justLoaded)
+                        {
+                            Msg.TMessageBox("Error: RigCtld not running", "", 3000);
+                        }
+                        else
+                        {
+                            blockTXonErr = false; //unblock old errors
+                            triggered = false; //prevent double activation in wsprtimer_action
+                            WSPRtimer.Enabled = true;
+                            WSPRtimer.Start();  //start the time to start the TX 
+                            prepDone = false;
                         }
                     }
-                    //justLoaded = false;                
+                }
+                //justLoaded = false;                
 
             }
 
@@ -7492,10 +7492,10 @@ namespace WSPR_Sked
                     keypresses = 0;
 
                 }
-                else 
-                { 
+                else
+                {
                     currHour(true, trackSlotscheckBox.Checked);
-                }                
+                }
             }
 
             string time = Convert.ToString(h).PadLeft(2, '0');
@@ -7892,7 +7892,7 @@ namespace WSPR_Sked
                     Ant.Add(A);
                 }
                 string AN = AntnametextBox.Text.PadRight(40, ' ');
-                
+
                 AN = AN.Substring(0, 40);
                 string AName = AN;
                 AN = AN + "\t" + S + "\t" + S2 + "\t" + T; // + "\t" + P + "\t"+AntdesctextBox.Text;
@@ -7964,17 +7964,17 @@ namespace WSPR_Sked
             int defaultitem = DefaultAntcomboBox.SelectedIndex;
 
             DefaultAntcomboBox.Items.Clear();
-         
+
             for (int i = 0; i < AntlistBox.Items.Count; i++)
             {
                 ant = AntlistBox.Items[i].ToString();
-                ant = ant.Substring(0,40).Trim();        //get rid of the swutch/tuner selection
+                ant = ant.Substring(0, 40).Trim();        //get rid of the swutch/tuner selection
                 DefaultAntcomboBox.Items.Add(ant);
             }
             DefaultAntcomboBox.SelectedIndex = defaultitem;
             if (DefaultAntcomboBox.SelectedIndex > -1)
             {
-                DefaultAntcomboBox.SelectedIndex = defaultitem ;
+                DefaultAntcomboBox.SelectedIndex = defaultitem;
             }
             else if (ant != "") { DefaultAntcomboBox.SelectedIndex = 0; }
         }
@@ -10011,7 +10011,7 @@ namespace WSPR_Sked
         {
             currhourbuttonpressed = true;
             await currHour(false, true);
-           
+
             /*dataGridView1.Refresh();
             string timeH = (LTcheckBox.Checked ? DateTime.Now : DateTime.Now.ToUniversalTime()).Hour.ToString().PadLeft(2, '0');
             DateTime dt = LTcheckBox.Checked ? DateTime.Now : DateTime.Now.ToUniversalTime();
@@ -10040,12 +10040,12 @@ namespace WSPR_Sked
             {
                 dt = DateTime.Now.ToUniversalTime();
             }
-         
+
             bool nearTrigger = (dt.Minute % 2 == 1 && dt.Second >= 49) ||
                                (dt.Minute % 2 == 0 && dt.Second <= 4);
             if (nearTrigger && slotFound && currhourbuttonpressed)
             {
-               
+
                 currhourbuttonpressed = false;
                 Msg.TMessageBox("Please wait", "", 4000);
                 //return;
@@ -10061,7 +10061,7 @@ namespace WSPR_Sked
 
             }
             string selDate = selectedDate.ToString("yyyy-MM-dd");
-           
+
             string timeH = dt.Hour.ToString().PadLeft(2, '0');
             string timeM = dt.Minute.ToString().PadLeft(2, '0');
             string date = dt.ToString(dateformat);
@@ -10090,7 +10090,7 @@ namespace WSPR_Sked
             }
             timelistBox.Text = time;
 
-            await selectDT(time, date, true,exactMin);
+            await selectDT(time, date, true, exactMin);
             /*try
             {
                 if (exactMin)
@@ -10124,22 +10124,22 @@ namespace WSPR_Sked
         private void timelistBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selDate = selectedDate.ToString();
-            selectDT(timelistBox.Text, selDate, true,false);
+            selectDT(timelistBox.Text, selDate, true, false);
 
         }
 
-        private async Task selectDT(string time, string date, bool find,bool scroll)
+        private async Task selectDT(string time, string date, bool find, bool scroll)
         {
 
             showmsg = true;
             databaseError = false;
-            changeDateTimes(time, date, find,scroll);
+            changeDateTimes(time, date, find, scroll);
 
         }
         private async Task changeDateTimes(string selTime, string selDate, bool find, bool scroll)
-        {           
+        {
 
-           
+
 
             int slot = 0;
             dt = DateTime.Now;
@@ -10262,7 +10262,7 @@ namespace WSPR_Sked
             {
                 Msg.OKMessageBox("Error selecting date", "");
             }
-          
+
         }
 
         private string findendT()
@@ -11107,7 +11107,7 @@ namespace WSPR_Sked
             rxForm.set_frequency(listB.SelectedItem.ToString());
         }
 
-        
+
 
         private void rigsearchbutton_Click(object sender, EventArgs e)
         {
@@ -12183,11 +12183,11 @@ namespace WSPR_Sked
                     Msg.OKMessageBox("Invalid IP or port", "");
                     return;
                 }
-                if (APIURLtextBox.Text.StartsWith("/"))                
+                if (APIURLtextBox.Text.StartsWith("/"))
                 {
-                    Msg.TMessageBox("Leading / not needed", "API startswith /",2500);                    
-                }              
-              
+                    Msg.TMessageBox("Leading / not needed", "API startswith /", 2500);
+                }
+
             }   //otherwise (mostly) ok
 
 
@@ -12851,6 +12851,10 @@ namespace WSPR_Sked
             bool nearTrigger = (m % 2 == 1 && s >= 49) || (m % 2 == 0 && s <= 4);
             if (!nearTrigger)
                 keypresses = 0;
+            if (e.KeyValue == (char)Keys.F1)
+            {
+                ShowHelp();
+            }
         }
 
         private async void syncbutton_Click(object sender, EventArgs e)
@@ -12881,6 +12885,34 @@ namespace WSPR_Sked
             else
             {
                 APIstartlabel.Text = "http://<ip_address>:<port>/";
+            }
+        }
+
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.F1)
+            {
+                ShowHelp();
+            }
+        }
+        HelpForm helpform = new HelpForm();
+        private void ShowHelp()
+        {
+            string helprtf = "";
+            string exeFolder = System.Windows.Forms.Application.StartupPath;
+            helprtf = "C:\\WSPR_Sked\\main_help.rtf";
+            if (!File.Exists(helprtf))
+            {
+                helprtf = exeFolder + "\\main_help.rtf";
+            }
+            if (File.Exists(helprtf))
+            {
+                helpform.helprtf = helprtf;
+                helpform.Show();
+            }
+            else
+            {
+                Msg.TMessageBox("mainhelp.rtf not found", "Help file", 3000);
             }
         }
     }

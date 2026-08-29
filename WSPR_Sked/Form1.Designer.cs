@@ -97,6 +97,7 @@
             label13 = new System.Windows.Forms.Label();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            label144 = new System.Windows.Forms.Label();
             syncbutton = new System.Windows.Forms.Button();
             dbbutton = new System.Windows.Forms.Button();
             label121 = new System.Windows.Forms.Label();
@@ -467,6 +468,7 @@
             wsprdBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
+            label145 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -1187,6 +1189,7 @@
             // tabPage1
             // 
             tabPage1.BackColor = System.Drawing.SystemColors.Info;
+            tabPage1.Controls.Add(label144);
             tabPage1.Controls.Add(syncbutton);
             tabPage1.Controls.Add(dbbutton);
             tabPage1.Controls.Add(label121);
@@ -1251,6 +1254,15 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Slots";
             tabPage1.Click += tabPage1_Click;
+            // 
+            // label144
+            // 
+            label144.AutoSize = true;
+            label144.Location = new System.Drawing.Point(1121, -13);
+            label144.Name = "label144";
+            label144.Size = new System.Drawing.Size(44, 13);
+            label144.TabIndex = 108;
+            label144.Text = "F1 Help";
             // 
             // syncbutton
             // 
@@ -1844,10 +1856,10 @@
             tabPage2.Controls.Add(TXTestbutton);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(CalltextBox);
-            tabPage2.Location = new System.Drawing.Point(4, 22);
+            tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(1177, 651);
+            tabPage2.Size = new System.Drawing.Size(1177, 649);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
             // 
@@ -3038,10 +3050,10 @@
             tabPage4.Controls.Add(FreqlistBox);
             tabPage4.Controls.Add(AgroupBox);
             tabPage4.Controls.Add(AntlistBox);
-            tabPage4.Location = new System.Drawing.Point(4, 24);
+            tabPage4.Location = new System.Drawing.Point(4, 22);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1177, 649);
+            tabPage4.Size = new System.Drawing.Size(1177, 651);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
@@ -4148,9 +4160,9 @@
             tabPage6.Controls.Add(label97);
             tabPage6.Controls.Add(audioOutlistBox);
             tabPage6.Controls.Add(audioInlistBox);
-            tabPage6.Location = new System.Drawing.Point(4, 24);
+            tabPage6.Location = new System.Drawing.Point(4, 22);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new System.Drawing.Size(1177, 649);
+            tabPage6.Size = new System.Drawing.Size(1177, 651);
             tabPage6.TabIndex = 5;
             tabPage6.Text = "RX & Sound config";
             // 
@@ -5052,6 +5064,15 @@
             idletimer.Interval = 1000;
             idletimer.Tick += idletimer_Tick;
             // 
+            // label145
+            // 
+            label145.AutoSize = true;
+            label145.Location = new System.Drawing.Point(1109, 0);
+            label145.Name = "label145";
+            label145.Size = new System.Drawing.Size(44, 13);
+            label145.TabIndex = 18;
+            label145.Text = "F1 Help";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -5059,6 +5080,7 @@
             AutoScroll = true;
             BackColor = System.Drawing.Color.Beige;
             ClientSize = new System.Drawing.Size(1185, 677);
+            Controls.Add(label145);
             Controls.Add(LTlabel2);
             Controls.Add(LTlabel);
             Controls.Add(Datelabel);
@@ -5072,6 +5094,7 @@
             Load += Form1_Load;
             Shown += Form1_Shown;
             KeyDown += Form1_KeyDown_1;
+            KeyPress += Form1_KeyPress;
             MouseClick += Form1_MouseClick;
             MouseDoubleClick += Form1_MouseDoubleClick;
             MouseMove += Form1_MouseMove;
@@ -5567,6 +5590,8 @@
         private System.Windows.Forms.Label apiinfolabel;
         private System.Windows.Forms.GroupBox APIgroupBox;
         private System.Windows.Forms.CheckBox httpscheckBox;
+        private System.Windows.Forms.Label label144;
+        private System.Windows.Forms.Label label145;
     }
 }
 
