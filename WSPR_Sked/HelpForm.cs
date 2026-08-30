@@ -25,7 +25,8 @@ namespace WSPR_Sked
 
         private void HelpForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //this.Hide();
+            e.Cancel = true;
+            this.Hide();
         }
 
         MessageClass Msg = new MessageClass();
