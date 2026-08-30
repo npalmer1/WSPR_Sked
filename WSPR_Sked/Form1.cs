@@ -12895,9 +12895,10 @@ namespace WSPR_Sked
                 ShowHelp();
             }
         }
-        HelpForm helpform = new HelpForm();
+        
         private void ShowHelp()
         {
+            HelpForm helpform = new HelpForm();
             string helprtf = "";
             string exeFolder = System.Windows.Forms.Application.StartupPath;
             helprtf = "C:\\WSPR_Sked\\main_help.rtf";
