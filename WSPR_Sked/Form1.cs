@@ -10088,7 +10088,7 @@ namespace WSPR_Sked
             {
                 return;
             }
-            timelistBox.Text = time;
+            timelistBox.Text = timeH+":00";
 
             await selectDT(time, date, true, exactMin);
             /*try
@@ -10211,6 +10211,8 @@ namespace WSPR_Sked
                     }
 
                 }
+              
+               
                 //dataGridView1.DataSource = dtable;
 
 
@@ -10255,7 +10257,7 @@ namespace WSPR_Sked
                             break;
                         }
                     }
-                }
+                }             
                 dataGridView1.AllowUserToAddRows = false;
             }
             catch
