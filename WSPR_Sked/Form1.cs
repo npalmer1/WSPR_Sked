@@ -16,6 +16,7 @@ using MySqlX.XDevAPI.Relational;
 using NAudio.Wave;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.Cms;
+using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Ocsp;
 using Other_TX;
 using Security;
@@ -10089,6 +10090,7 @@ namespace WSPR_Sked
                 return;
             }
             timelistBox.Text = timeH+":00";
+            monthCalendar1.SelectionRange = new SelectionRange(dt, dt);
 
             await selectDT(time, date, true, exactMin);
             /*try
