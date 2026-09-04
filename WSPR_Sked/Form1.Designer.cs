@@ -97,6 +97,7 @@
             label13 = new System.Windows.Forms.Label();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            label146 = new System.Windows.Forms.Label();
             label144 = new System.Windows.Forms.Label();
             syncbutton = new System.Windows.Forms.Button();
             dbbutton = new System.Windows.Forms.Button();
@@ -553,6 +554,8 @@
             dataGridView1.ReadOnly = true;
             dataGridView1.Size = new System.Drawing.Size(979, 400);
             dataGridView1.TabIndex = 7;
+            dataGridView1.CellMouseClick += dataGridView1_CellMouseClick;
+            dataGridView1.CellMouseDoubleClick += dataGridView1_CellMouseDoubleClick;
             dataGridView1.RowHeaderMouseClick += dataGridView1_RowHeaderMouseClick;
             dataGridView1.RowHeaderMouseDoubleClick += dataGridView1_RowHeaderMouseDoubleClick;
             dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
@@ -1189,6 +1192,7 @@
             // tabPage1
             // 
             tabPage1.BackColor = System.Drawing.SystemColors.Info;
+            tabPage1.Controls.Add(label146);
             tabPage1.Controls.Add(label144);
             tabPage1.Controls.Add(syncbutton);
             tabPage1.Controls.Add(dbbutton);
@@ -1254,6 +1258,17 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Slots";
             tabPage1.Click += tabPage1_Click;
+            // 
+            // label146
+            // 
+            label146.AutoSize = true;
+            label146.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            label146.Location = new System.Drawing.Point(567, 130);
+            label146.Margin = new System.Windows.Forms.Padding(0);
+            label146.Name = "label146";
+            label146.Size = new System.Drawing.Size(114, 13);
+            label146.TabIndex = 109;
+            label146.Text = "click to enable/disable";
             // 
             // label144
             // 
@@ -3050,10 +3065,10 @@
             tabPage4.Controls.Add(FreqlistBox);
             tabPage4.Controls.Add(AgroupBox);
             tabPage4.Controls.Add(AntlistBox);
-            tabPage4.Location = new System.Drawing.Point(4, 22);
+            tabPage4.Location = new System.Drawing.Point(4, 24);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(1177, 651);
+            tabPage4.Size = new System.Drawing.Size(1177, 649);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Freq&Ant";
             tabPage4.Click += tabPage4_Click;
@@ -4160,9 +4175,9 @@
             tabPage6.Controls.Add(label97);
             tabPage6.Controls.Add(audioOutlistBox);
             tabPage6.Controls.Add(audioInlistBox);
-            tabPage6.Location = new System.Drawing.Point(4, 22);
+            tabPage6.Location = new System.Drawing.Point(4, 24);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new System.Drawing.Size(1177, 651);
+            tabPage6.Size = new System.Drawing.Size(1177, 649);
             tabPage6.TabIndex = 5;
             tabPage6.Text = "RX & Sound config";
             // 
@@ -5592,6 +5607,7 @@
         private System.Windows.Forms.CheckBox httpscheckBox;
         private System.Windows.Forms.Label label144;
         private System.Windows.Forms.Label label145;
+        private System.Windows.Forms.Label label146;
     }
 }
 

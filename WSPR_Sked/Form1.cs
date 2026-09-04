@@ -1691,10 +1691,8 @@ namespace WSPR_Sked
             DeleteRow(slot);
         }
 
-        private void dataGridView1_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void slotSelected()
         {
-
-
             if (saveslotlabel.Visible)
             {
                 Msg.TMessageBox("Please wait...", "Saving slots", 1500);
@@ -1746,7 +1744,10 @@ namespace WSPR_Sked
             }
 
             EditSlot();
-
+        }
+        private void dataGridView1_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {          
+            //slotSelected();
         }
         private void EditSlot() //open groupbox to allow slot to be edited or created
         {
@@ -3464,10 +3465,10 @@ namespace WSPR_Sked
 
         private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            /*if (e.Button == MouseButtons.Right)
             {
-                deletethisRow(true);
-            }
+               deletethisRow(true);
+            }*/
         }
         private void deletethisRow(bool rightbutton)
         {
@@ -10089,7 +10090,7 @@ namespace WSPR_Sked
             {
                 return;
             }
-            timelistBox.Text = timeH+":00";
+            timelistBox.Text = timeH + ":00";
             monthCalendar1.SelectionRange = new SelectionRange(dt, dt);
 
             await selectDT(time, date, true, exactMin);
@@ -10213,8 +10214,8 @@ namespace WSPR_Sked
                     }
 
                 }
-              
-               
+
+
                 //dataGridView1.DataSource = dtable;
 
 
@@ -10259,7 +10260,7 @@ namespace WSPR_Sked
                             break;
                         }
                     }
-                }             
+                }
                 dataGridView1.AllowUserToAddRows = false;
             }
             catch
@@ -12903,7 +12904,7 @@ namespace WSPR_Sked
         HelpForm helpform = new HelpForm();
         private void ShowHelp()
         {
-            
+
             string helprtf = "";
             string exeFolder = System.Windows.Forms.Application.StartupPath;
             helprtf = "C:\\WSPR_Sked\\main_help.rtf";
@@ -12921,6 +12922,36 @@ namespace WSPR_Sked
             {
                 Msg.TMessageBox("mainhelp.rtf not found", "Help file", 3000);
             }
+        }
+
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+
+        }
+
+        private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.RowIndex < 0) return; // ignore header clicks
+
+            dataGridView1.ClearSelection();
+            int colIndex = e.ColumnIndex >= 0 ? e.ColumnIndex : 0; // row-header click → default to col 0
+            dataGridView1.CurrentCell = dataGridView1.Rows[e.RowIndex].Cells[colIndex];
+            dataGridView1.Rows[e.RowIndex].Selected = true;
+
+            if (e.Button == MouseButtons.Right)
+            {
+                deletethisRow(true);
+            }
+        }
+
+        private void dataGridView1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.RowIndex < 0) return; // ignore header clicks
+
+            dataGridView1.ClearSelection();
+            dataGridView1.Rows[e.RowIndex].Selected = true;
+            slotSelected();
         }
     }
 
