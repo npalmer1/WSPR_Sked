@@ -286,6 +286,7 @@
             uploadcheckBox.TabIndex = 12;
             uploadcheckBox.Text = "Upload spots";
             uploadcheckBox.UseVisualStyleBackColor = true;
+            uploadcheckBox.CheckedChanged += uploadcheckBox_CheckedChanged;
             // 
             // Dlabel
             // 

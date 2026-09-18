@@ -100,7 +100,7 @@ namespace WSPR_Sked
         MessageClass Msg = new MessageClass();
 
         SpectrumForm Spectrumform = new SpectrumForm();
-        
+
 
         public RXForm()
         {
@@ -256,7 +256,7 @@ namespace WSPR_Sked
             {
                 finished = false;
             }
-          
+
             string outpath = wsprdir + slash + "temp" + wavno + ".wav";
             if (File.Exists(outpath))
             {
@@ -270,12 +270,12 @@ namespace WSPR_Sked
             await Task.Delay(200);
             statuslabel.Text = "receiving";
             string wavpath = wsprdir + slash + "temp" + wavno + ".wav";
-            Msg.TMessageBox("Recording: " +wavpath, "", 3000);
+            Msg.TMessageBox("Recording: " + wavpath, "", 3000);
             if (Spectrumform != null && !Spectrumform.IsDisposed)
             {
                 Spectrumform.wavPath = wavpath;
             }
-            
+
             string args = "";
             int mS = 110000;
 
@@ -416,7 +416,7 @@ namespace WSPR_Sked
 
             //statuslabel.Text = "idle";
             finished = true;
-           
+
             started = false;
             if (dataGridView1.Rows.Count > 0)
             {
@@ -497,7 +497,7 @@ namespace WSPR_Sked
             catch { }
         }*/
 
-   
+
 
 
         public async Task Start_Receive(int opsys)
@@ -692,7 +692,7 @@ namespace WSPR_Sked
             return b;
         }
 
-       
+
 
         private void update_grid()
         {
@@ -710,7 +710,7 @@ namespace WSPR_Sked
             dataGridView1.Rows.Add(row);
         }
 
-        private async Task save_result_lines(DateTime startT)
+        /*private async Task save_result_lines(DateTime startT)
         {
             if (results == null || results == "") return;
 
@@ -784,25 +784,20 @@ namespace WSPR_Sked
             }
 
             results = "";
-        }
-        /*private async Task save_result_lines(DateTime startT)
-        {
-            //startT is current time minuis 2 mins
-            if (results == null || results == "")
-            {
-                return;
-            }
-            bool end = false;
+        }*/
 
+        private async Task save_result_lines(DateTime startT)
+        {
+            if (results == null || results == "") return;
+
+            bool end = false;
             bool containsData = false;
             using var reader = new StringReader(results);
-
             string line = "";
-
-            bool append = false;
-            bool stop = false;
             string date = startT.ToString("yyMMdd");
             string time = startT.ToString("HHmm");
+            var uploadTasks = new List<Task>();
+            var seenThisBatch = new HashSet<string>();   // NEW
 
             try
             {
@@ -812,86 +807,67 @@ namespace WSPR_Sked
                     line = reader.ReadLine().Trim();
                     if (line == null || line == "")
                     {
-                        //end = true;
-                        //stop = true;
                         DX.tx_sign = "nil rcvd";
                         line = "<DecodeFinished>";
-
                     }
                     if (line.Contains("<DecodeFinished>"))
                     {
                         end = true;
-                        if (containsData)
-                        {
-                            stop = true;
-                        }
-
+                        if (containsData) break;
                     }
                     else
                     {
                         containsData = true;
-                        stop = false;
                     }
 
-
-                    if (stop == false)
+                    try
                     {
-                        try
+                        double f = 0;
+                        if (prevFreq != "") f = Convert.ToDouble(prevFreq);
+                        await process_decoded(line, f, startT, containsData);
+                        if (DX.tx_sign != null && !DX.tx_sign.Contains("error"))
                         {
-                            double f = 0;
-                            if (prevFreq != "")
+                            if (DX.tx_sign.Contains("nil rcvd") && containsData)
                             {
-                                f = Convert.ToDouble(prevFreq);
-                            }
-                            await process_decoded(line, f, startT, containsData);
-                            if (DX.tx_sign != null)
-                            {
-                                if (!DX.tx_sign.Contains("error"))
-                                {
-                                    if (DX.tx_sign.Contains("nil rcvd") && containsData)
-                                    {
-                                        end = true;
-                                        stop = true;
-                                    }
-                                    else
-                                    {
-
-                                        append = true;
-                                        await Save_Received_DB(server, user, pass);
-                                        if (!DX.tx_sign.Contains("nil rcvd") || DX.tx_sign != "")
-                                        {
-                                            await Post_wsprdata(date, time);
-                                        }
-
-                                    }
-                                }
+                                end = true;
                             }
                             else
                             {
-                                end = true;
-                                stop = true;
-                            }
+                                // if identical decode already seen skip upload
+                                string dupKey = $"{DX.tx_sign}|{DX.tx_loc}|{DX.frequency:F6}|{DX.snr}|{DX.drift}";
+                                if (!DX.tx_sign.Contains("nil rcvd") && DX.tx_sign != "" && !seenThisBatch.Add(dupKey))
+                                {
+                                    continue; // exact repeat from wsprd's own output - drop it
+                                }
 
-                            if (end)
-                            {
-                                stop = true;
+                                await Save_Received_DB(server, user, pass);
+                                if (!DX.tx_sign.Contains("nil rcvd") && DX.tx_sign != "")
+                                {
+                                    uploadTasks.Add(Post_wsprdata(date, time));
+                                }
                             }
                         }
-                        catch { stop = true; end = true; }
-
+                        else
+                        {
+                            end = true;
+                        }
                     }
-                    //update_grid();
-
-
+                    catch { end = true; }
                 }
             }
             catch
             {
                 MessageBox.Show("Error");
-
             }
-            results = ""; //nullG results
-        }*/
+
+            if (uploadTasks.Count > 0)
+            {
+                await Task.WhenAll(uploadTasks);
+            }
+
+            results = "";
+        }
+       
 
         private async Task Save_WSPR_Textfile(DateTime startT, string filepath, bool append)
         {
@@ -1708,7 +1684,7 @@ namespace WSPR_Sked
             {
                 warn = " (slow)";
             }
-            if (OSDlistBox.SelectedIndex >3 )
+            if (OSDlistBox.SelectedIndex > 3)
             {
                 warn = " (very slow)";
             }
@@ -1795,7 +1771,7 @@ namespace WSPR_Sked
             {
                 bandstr = " frequency LIKE '" + mhz + "%' ";
                 and = "AND";
-                where = "WHERE ";  
+                where = "WHERE ";
             }
 
             string callstr = "";
@@ -1838,7 +1814,7 @@ namespace WSPR_Sked
                     connection.Open();
 
                     MySqlCommand command = connection.CreateCommand();
-                   
+
                     if (callFiltertextBox.Text.Trim() != "")
                     {
                         if (callFiltertextBox.Text.Contains("*"))
@@ -1889,7 +1865,7 @@ namespace WSPR_Sked
                     {
                         command.CommandText = "SELECT * FROM received " + where + " " + bandstr + callstr + fromstr + tostr + " ORDER BY datetime DESC LIMIT " + maxrows;
                     }
-  
+
                     MySqlDataReader Reader;
                     Reader = command.ExecuteReader();
 
@@ -2432,8 +2408,13 @@ namespace WSPR_Sked
 
         private void Spectrumbutton_Click(object sender, EventArgs e)
         {
-            
+
             Spectrumform.Show();
+        }
+
+        private void uploadcheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
