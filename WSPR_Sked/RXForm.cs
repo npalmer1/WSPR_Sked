@@ -235,195 +235,336 @@ namespace WSPR_Sked
             statuslabel.Text = label;
         }
 
+        private volatile bool _cycleInProgress = false;
+        private Task _decodeTask = Task.CompletedTask;
+
         private async void Record_Decode(int opsys)
         {
-            string wsprdir = "C:\\WSPR_Sked";
-            if (!Directory.Exists(wsprdir))
+            if (_cycleInProgress)
             {
-                // Create the folder
-                Directory.CreateDirectory(wsprdir);
-            }
-            if (prevwav == wavno)
-            {
+                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                    $"{DateTime.Now:HH:mm:ss} Record_Decode SKIPPED - previous cycle still running\n");
                 return;
             }
-            if (!File.Exists(wsprdfilepath + slash + "wsprd.exe"))
+            _cycleInProgress = true;
+            try
             {
-                Msg.TMessageBox("Error: wsprd.exe not found! - see RX & Sound", "WSPR daemon error", 2000);
-                return;
-            }
-            if (finished)
-            {
-                finished = false;
-            }
+                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                    $"{DateTime.Now:HH:mm:ss} Record_Decode START\n");
 
-            string outpath = wsprdir + slash + "temp" + wavno + ".wav";
-            if (File.Exists(outpath))
-            {
-                try
+                string wsprdir = "C:\\WSPR_Sked";
+                if (!Directory.Exists(wsprdir)) Directory.CreateDirectory(wsprdir);
+                if (!File.Exists(wsprdfilepath + slash + "wsprd.exe"))
                 {
-                    File.Delete(outpath);
+                    Msg.TMessageBox("Error: wsprd.exe not found! - see RX & Sound", "WSPR daemon error", 2000);
+                    return;
                 }
-                catch { }
-            }
+                if (finished) finished = false;
 
-            await Task.Delay(200);
-            statuslabel.Text = "receiving";
-            string wavpath = wsprdir + slash + "temp" + wavno + ".wav";
-            Msg.TMessageBox("Recording: " + wavpath, "", 3000);
-            if (Spectrumform != null && !Spectrumform.IsDisposed)
-            {
-                Spectrumform.wavPath = wavpath;
-            }
+                string outpath = wsprdir + slash + "temp" + wavno + ".wav";
+                if (File.Exists(outpath)) { try { File.Delete(outpath); } catch { } }
 
-            string args = "";
-            int mS = 110000;
+                await Task.Delay(200);
+                statuslabel.Text = "receiving";
+                if (Spectrumform != null && !Spectrumform.IsDisposed) Spectrumform.wavPath = outpath;
+              
+               
+                int mS = 110000;
 
-            DateTime now = DateTime.Now.ToUniversalTime();
-            int s = now.Second;
-            int m = now.Minute;
+                DateTime now = DateTime.Now.ToUniversalTime();
+                int s = now.Second;
+                int m = now.Minute;
 
-            if (now.Minute % 2 == 1)
-            {
-                nextDT = now.AddMinutes(-1); //about odd min+51 so make it start time of last spot
-            }
-            else
-            {
-                nextDT = now.AddMinutes(-2); //should never get here unles a delay
-            }
-
-            startTime = now;
-
-            int even = m % 2;
-            if (s == 0 && even == 0)
-            {
-                mS = 110000; //if starting at zero count for 110S
-            }
-            else if (s == 59 && even == 1)  //if starting at 59 sec count for 1 sec longer
-            {
-                mS = 111000;
-            }
-            else if (even == 0 && s == 1)
-            {
-                mS = 109000;
-                //mS = mS -(s * 1000); //if not starting at 0s deduct seconds
-            }
-            else
-            {
-                //mS = 0;
-            }
-
-
-            await RecordLineInAsync_Gain(outpath, mS);
-            DateTime originalDT = DateTime.Now.ToUniversalTime();
-            if (originalDT.Minute % 2 == 1)
-            {
-                originalDT = originalDT.AddMinutes(-1); //about odd min+51 so make it start time of last spot
-            }
-            else
-            {
-                originalDT = originalDT.AddMinutes(-2); //should never get here unles a delay
-            }
-
-            //string content = outpath;
-
-            await Task.Delay(100);
-            statuslabel.Text = "decoding";
-            string d = "";
-            if (useDeep)
-            {
-                d = " -d";
-            }
-            else if (useQuick)
-            {
-                d = " -q";
-            }
-            else //== normal depth
-            {
-                d = "";
-            }
-            string o = "";
-            if (OSD > 0)
-            {
-                o = " -o " + OSD.ToString();
-            }
-            if (finished)
-            {
-                //prevwav = wavno;
-            }
-            results = "";
-
-
-            if (wavno == 1)
-            {
-                prevwav = 1;
-                wavno = 2;
-            }
-            else if (wavno == 2)
-            {
-                prevwav = 2;
-                wavno = 3;
-            }
-            else
-            {
-                prevwav = 3;
-                wavno = 1;
-            }
-            string wavfile = wsprdir + slash + "temp" + prevwav + ".wav";
-
-            string c = "";
-            string cmd = "";
-
-            if (opsys == 0)  //windows
-            {
-                c = "/c ";
-                cmd = "cmd.exe";
-                //args = c + wsprdfilepath + slash + "wsprd.exe -a " + userdir + " -f " + Frequency + d + o + " " + wavfile;
-                args = c + wsprdfilepath + slash + "wsprd.exe -a " + wsprdir + " -f " + Frequency + d + o + " " + wavfile;
-            }
-            else
-            {
-                //Linux etc.
-                cmd = "/bin/bash";
-                c = "-c ";
-                //args = c + wsprdfilepath + slash + "wsprd -a " + userdir + " -f " + Frequency + d + o + " " + wavfile;
-                args = c + wsprdfilepath + slash + "wsprd -a " + wsprdir + " -f " + Frequency + d + o + " " + wavfile;
-
-            }
-            var fileInfo = new FileInfo(wavfile);
-
-            if (fileInfo.Exists && fileInfo.Length == 0)
-            {
-                return;
-            }
-            output = "";
-            if (!blockDecodes)    //block decodes whilst transmitting - from Wspr_transmit on form1
-            {
-                Msg.TMessageBox("Decoding: " + wsprdir + slash + "temp" + prevwav + ".wav", "", 3000);
-                await Task.Run(() =>
+                if (now.Minute % 2 == 1)
                 {
-                    runDecoder(cmd, args);
+                    nextDT = now.AddMinutes(-1); //about odd min+51 so make it start time of last spot
+                }
+                else
+                {
+                    nextDT = now.AddMinutes(-2); //should never get here unles a delay
+                }
 
-                });
+                startTime = now;
 
-                results = output;
+                int even = m % 2;
+                if (s == 0 && even == 0)
+                {
+                    mS = 110000; //if starting at zero count for 110S
+                }
+                else if (s == 59 && even == 1)  //if starting at 59 sec count for 1 sec longer
+                {
+                    mS = 111000;
+                }
+                else if (even == 0 && s == 1)
+                {
+                    mS = 109000;
+                    //mS = mS -(s * 1000); //if not starting at 0s deduct seconds
+                }
+                else
+                {
+                    //mS = 0;
+                }
+               
+                await RecordLineInAsync_Gain(outpath, mS);   // fully await - this file is now complete
 
-                //statuslabel.Text = "saving";
-                await SaveReceived(originalDT);
-                //statuslabel.Text = "receiving";
+                DateTime originalDT = DateTime.Now.ToUniversalTime();
+                if (originalDT.Minute % 2 == 1) originalDT = originalDT.AddMinutes(-1);
+                else originalDT = originalDT.AddMinutes(-2);
+
+                // rotate wavno for NEXT cycle's recording
+                int wavnoJustRecorded = wavno;
+                wavno = (wavno == 1) ? 2 : (wavno == 2) ? 3 : 1;
+
+                var fileInfo = new FileInfo(outpath);
+                if (fileInfo.Exists && fileInfo.Length == 0)
+                {
+                    File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                        $"{DateTime.Now:HH:mm:ss} Record_Decode END (empty wav, skipped decode)\n");
+                    return;
+                }
+
+                // wait for the PREVIOUS cycle's decode to be done before starting a new one
+                // (shared fields output/results/DX must not be touched by two decodes at once)
+                await _decodeTask;
+
+                string d = useDeep ? " -d" : (useQuick ? " -q" : "");
+                string o = OSD > 0 ? " -o " + OSD.ToString() : "";
+                string c, cmd;
+                string args = "";
+                if (opsys == 0) 
+                { c = "/c "; cmd = "cmd.exe"; args = c + wsprdfilepath + slash + "wsprd.exe -a " + wsprdir + " -f " + Frequency + d + o + " " + outpath; }
+                else 
+                { cmd = "/bin/bash"; c = "-c "; args = c + wsprdfilepath + slash + "wsprd -a " + wsprdir + " -f " + Frequency + d + o + " " + outpath; }
+
+                // kick off decode+save in the background - DO NOT await it here
+                _decodeTask = DecodeAndSave(cmd, args, originalDT);
+
+                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                    $"{DateTime.Now:HH:mm:ss} Record_Decode END (decode running in background)\n");
             }
-
-
-            //statuslabel.Text = "idle";
-            finished = true;
-
-            started = false;
-            if (dataGridView1.Rows.Count > 0)
+            finally
             {
-                dataGridView1.AllowUserToAddRows = false;
+                _cycleInProgress = false;
+            }
+        }
+
+        private async Task DecodeAndSave(string cmd, string args, DateTime originalDT)
+        {
+            if (blockDecodes) return;
+            statuslabel.Text = "decoding";
+            output = "";
+            await Task.Run(() => runDecoder(cmd, args));
+            results = output;
+            await SaveReceived(originalDT);
+            statuslabel.Text = "receiving";
+        }
+       
+        /*
+        private async void Record_Decode(int opsys)
+        {
+            if (_cycleInProgress)
+            {
+                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",$"{DateTime.Now:HH:mm:ss} Record_Decode SKIPPED - previous cycle still running\n");
+                return;
+            }  // stop overlap
+            _cycleInProgress = true;
+            try
+            {
+                string wsprdir = "C:\\WSPR_Sked";
+                if (!Directory.Exists(wsprdir))
+                {
+                    // Create the folder
+                    Directory.CreateDirectory(wsprdir);
+                }
+                if (prevwav == wavno)
+                {
+                    return;
+                }
+                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",$"{DateTime.Now:HH:mm:ss} Record_Decode START\n");
+                if (!File.Exists(wsprdfilepath + slash + "wsprd.exe"))
+                {
+                    Msg.TMessageBox("Error: wsprd.exe not found! - see RX & Sound", "WSPR daemon error", 2000);
+                    return;
+                }
+                if (finished)
+                {
+                    finished = false;
+                }
+
+                string outpath = wsprdir + slash + "temp" + wavno + ".wav";
+                if (File.Exists(outpath))
+                {
+                    try
+                    {
+                        File.Delete(outpath);
+                    }
+                    catch { }
+                }
+
+                await Task.Delay(200);
+                statuslabel.Text = "receiving";
+                string wavpath = wsprdir + slash + "temp" + wavno + ".wav";
+                Msg.TMessageBox("Recording: " + wavpath, "", 3000);
+                if (Spectrumform != null && !Spectrumform.IsDisposed)
+                {
+                    Spectrumform.wavPath = wavpath;
+                }
+
+                string args = "";
+                int mS = 110000;
+
+                DateTime now = DateTime.Now.ToUniversalTime();
+                int s = now.Second;
+                int m = now.Minute;
+
+                if (now.Minute % 2 == 1)
+                {
+                    nextDT = now.AddMinutes(-1); //about odd min+51 so make it start time of last spot
+                }
+                else
+                {
+                    nextDT = now.AddMinutes(-2); //should never get here unles a delay
+                }
+
+                startTime = now;
+
+                int even = m % 2;
+                if (s == 0 && even == 0)
+                {
+                    mS = 110000; //if starting at zero count for 110S
+                }
+                else if (s == 59 && even == 1)  //if starting at 59 sec count for 1 sec longer
+                {
+                    mS = 111000;
+                }
+                else if (even == 0 && s == 1)
+                {
+                    mS = 109000;
+                    //mS = mS -(s * 1000); //if not starting at 0s deduct seconds
+                }
+                else
+                {
+                    //mS = 0;
+                }
+
+                //var recordTask = RecordLineInAsync_Gain(outpath, mS);
+                await RecordLineInAsync_Gain(outpath, mS); 
+                DateTime originalDT = DateTime.Now.ToUniversalTime();
+                if (originalDT.Minute % 2 == 1)
+                {
+                    originalDT = originalDT.AddMinutes(-1); //about odd min+51 so make it start time of last spot
+                }
+                else
+                {
+                    originalDT = originalDT.AddMinutes(-2); //should never get here unles a delay
+                }
+
+                //string content = outpath;
+
+                await Task.Delay(100);
+                statuslabel.Text = "decoding";
+                string d = "";
+                if (useDeep)
+                {
+                    d = " -d";
+                }
+                else if (useQuick)
+                {
+                    d = " -q";
+                }
+                else //== normal depth
+                {
+                    d = "";
+                }
+                string o = "";
+                if (OSD > 0)
+                {
+                    o = " -o " + OSD.ToString();
+                }
+                if (finished)
+                {
+                    //prevwav = wavno;
+                }
+                results = "";
+
+
+                if (wavno == 1)
+                {
+                    prevwav = 1;
+                    wavno = 2;
+                }
+                else if (wavno == 2)
+                {
+                    prevwav = 2;
+                    wavno = 3;
+                }
+                else
+                {
+                    prevwav = 3;
+                    wavno = 1;
+                }
+                string wavfile = wsprdir + slash + "temp" + prevwav + ".wav";
+
+                string c = "";
+                string cmd = "";
+
+                if (opsys == 0)  //windows
+                {
+                    c = "/c ";
+                    cmd = "cmd.exe";
+                    //args = c + wsprdfilepath + slash + "wsprd.exe -a " + userdir + " -f " + Frequency + d + o + " " + wavfile;
+                    args = c + wsprdfilepath + slash + "wsprd.exe -a " + wsprdir + " -f " + Frequency + d + o + " " + wavfile;
+                }
+                else
+                {
+                    //Linux etc.
+                    cmd = "/bin/bash";
+                    c = "-c ";
+                    //args = c + wsprdfilepath + slash + "wsprd -a " + userdir + " -f " + Frequency + d + o + " " + wavfile;
+                    args = c + wsprdfilepath + slash + "wsprd -a " + wsprdir + " -f " + Frequency + d + o + " " + wavfile;
+
+                }
+                var fileInfo = new FileInfo(wavfile);
+
+                if (fileInfo.Exists && fileInfo.Length == 0)
+                {
+                    return;
+                }
+                output = "";
+                if (!blockDecodes)    //block decodes whilst transmitting - from Wspr_transmit on form1
+                {
+                    Msg.TMessageBox("Decoding: " + wsprdir + slash + "temp" + prevwav + ".wav", "", 3000);
+                    await Task.Run(() =>
+                    {
+                        runDecoder(cmd, args);
+
+                    });
+
+                    results = output;
+
+                    //statuslabel.Text = "saving";
+                    await SaveReceived(originalDT);
+                    File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",$"{DateTime.Now:HH:mm:ss} Record_Decode END (after SaveReceived)\n");
+                    //statuslabel.Text = "receiving";
+                }
+
+
+                //statuslabel.Text = "idle";
+                finished = true;
+
+                started = false;
+                //await recordTask;
+                if (dataGridView1.Rows.Count > 0)
+                {
+                    dataGridView1.AllowUserToAddRows = false;
+                }
+            }
+            finally 
+            { 
+                _cycleInProgress = false;
             }
 
-        }
+        }*/
 
         public async Task SaveReceived(DateTime originalDT)
         {
@@ -435,13 +576,13 @@ namespace WSPR_Sked
             {
                 await save_result_lines(startT);
                 await Task.Delay(200);
-                int rows = await Task.Run(() => table_count(server, user, pass));
+                /*int rows = await Task.Run(() => table_count(server, user, pass));
                 if (rows > 0)
                 {
                     //dataGridView1.Rows.Clear();
                     dataGridView1.Sort(dataGridView1.Columns[0], ListSortDirection.Descending);
                     await find_reported_async(rows);
-                }
+                }*/
             }
             catch { }
         }
@@ -516,7 +657,7 @@ namespace WSPR_Sked
             Record_Decode(opsys);
         }
 
-        private async Task process_decoded(string data, double TXf, DateTime startT, bool containsData)
+        private async Task process_decoded(string data, double TXf, DateTime startT, bool containsData, DateTime nextDTSnapshot)
         {
             DX.frequency = 0;
             DX.snr = 0;
@@ -530,10 +671,15 @@ namespace WSPR_Sked
             DX.azimuth = 0;
             DX.reporter = "";
             DX.reporter_loc = "";
-            if (nextDT == startT)
+
+            if (nextDTSnapshot == startT)
+            {
+                return;
+            }
+           /* if (nextDT == startT)
             {
                 return; //avoid duplication of entries
-            }
+            }*/
             try
             {
                 DX.datetime = startT;
@@ -789,6 +935,7 @@ namespace WSPR_Sked
         private async Task save_result_lines(DateTime startT)
         {
             if (results == null || results == "") return;
+            DateTime nextDTSnapshot = nextDT;
 
             bool end = false;
             bool containsData = false;
@@ -824,7 +971,7 @@ namespace WSPR_Sked
                     {
                         double f = 0;
                         if (prevFreq != "") f = Convert.ToDouble(prevFreq);
-                        await process_decoded(line, f, startT, containsData);
+                        await process_decoded(line, f, startT, containsData, nextDTSnapshot);
                         if (DX.tx_sign != null && !DX.tx_sign.Contains("error"))
                         {
                             if (DX.tx_sign.Contains("nil rcvd") && containsData)
@@ -841,9 +988,11 @@ namespace WSPR_Sked
                                 }
 
                                 await Save_Received_DB(server, user, pass);
+                                AddDecodeToGridTop(DX);
                                 if (!DX.tx_sign.Contains("nil rcvd") && DX.tx_sign != "")
                                 {
-                                    uploadTasks.Add(Post_wsprdata(date, time));
+                                    decoded_data snapshotDX = DX;
+                                    uploadTasks.Add(Post_wsprdata(date, time, snapshotDX));
                                 }
                             }
                         }
@@ -862,7 +1011,7 @@ namespace WSPR_Sked
 
             if (uploadTasks.Count > 0)
             {
-                await Task.WhenAll(uploadTasks);
+                _ = Task.WhenAll(uploadTasks); // fire-and-forget
             }
 
             results = "";
@@ -904,7 +1053,7 @@ namespace WSPR_Sked
         }
 
 
-        private async Task Post_wsprdata(string date, string time)  //uploads single spot to the new wsprnet database
+        /*private async Task Post_wsprdata(string date, string time)  //uploads single spot to the new wsprnet database
         {
             string url = "http://wsprnet.org/post/";
             if (!await Msg.IsUrlReachable(url) || stopUrl)
@@ -938,8 +1087,54 @@ namespace WSPR_Sked
                 { "rqrg", Frequency },
                 { "mode", "2" }
             };
-
             using var client = new HttpClient();
+            client.DefaultRequestHeaders.Add(Callsign, my_loc);
+
+            //client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("WS/0.1.10");
+
+            var content = new FormUrlEncodedContent(formData);
+
+            var response = await client.PostAsync(url, content);
+            var responseString = await response.Content.ReadAsStringAsync();
+           
+        }*/
+        private async Task Post_wsprdata(string date, string time, decoded_data snapshot) //uploads single spot to the new wsprnet database
+        {
+            string url = "http://wsprnet.org/post/";
+            if (!await Msg.IsUrlReachable(url) || stopUrl)
+            {
+                return;
+            }
+            if (uploadcheckBox.Checked == false)
+            {
+                return;
+            }
+            if (snapshot.tx_sign == "nil rcvd" || snapshot.tx_sign == "" || (snapshot.tx_sign == Callsign && !owncheckBox.Checked))
+            {
+                return;
+            }
+            var formData = new Dictionary<string, string>
+            {
+                { "function", "wspr" },
+                { "date",  date },
+                { "time", time },
+                { "sig", snapshot.snr.ToString() },
+                { "dt", snapshot.dt.ToString("f1") },
+                { "drift", snapshot.drift.ToString() },
+                { "tqrg", snapshot.frequency.ToString("F6") },
+                { "tcall", snapshot.tx_sign },
+                { "tgrid", snapshot.tx_loc },
+                { "dbm", snapshot.power.ToString() },
+                { "version", version },
+                { "rcall", Callsign },
+                { "rgrid", my_loc },
+                { "rqrg", Frequency },
+                { "mode", "2" }
+            };
+            using var client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(8);
+
             client.DefaultRequestHeaders.Add(Callsign, my_loc);
 
             //client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
@@ -1336,6 +1531,55 @@ namespace WSPR_Sked
                 }
                 dataGridView1.Rows.Add(row);
             }
+            dataGridView1.ResumeLayout();
+        }
+
+        private void AddDecodeToGridTop(decoded_data d)
+        {
+            if (dataGridView1.InvokeRequired)
+            {
+                dataGridView1.Invoke((Action)(() => AddDecodeToGridTop(d)));
+                return;
+            }
+
+            string cwssbpwr = "100";
+            if (cwssblistBox.SelectedIndex > -1) { cwssbpwr = cwssblistBox.SelectedItem.ToString(); }
+            int pwrW;
+            if (!int.TryParse(cwssbpwr, out pwrW)) { pwrW = 100; }
+            int dBm = convertTodBm(pwrW);
+
+            string[] row = new string[13];
+            row[0] = d.datetime.ToString("yyyy-MM-dd HH:mm");
+            row[1] = d.tx_sign;
+            row[2] = d.frequency.ToString("F6");
+
+            if (d.tx_sign == "nil rcvd")
+            {
+                for (int j = 3; j <= 12; j++) row[j] = "";
+            }
+            else
+            {
+                string snr = Convert.ToString(d.snr);
+                if (d.snr > 0) snr = "+" + snr;
+                row[3] = snr;
+                row[4] = d.drift.ToString();
+                row[5] = d.power.ToString();
+                row[6] = dBtoWatts(row[5]);
+                row[7] = d.tx_loc;
+                row[8] = d.distance > -1 ? d.distance.ToString() : "";
+                row[9] = d.distance > -1 ? convert_to_miles(d.distance) : "";
+                row[10] = d.azimuth > -1 ? d.azimuth.ToString() : "";
+                row[11] = getCW(d.snr, d.power, dBm);
+                row[12] = getSSB(d.snr, d.power, dBm);
+            }
+
+            dataGridView1.SuspendLayout();
+            DataGridViewRow newRow = new DataGridViewRow();
+            newRow.CreateCells(dataGridView1);
+            for (int i = 0; i < 13; i++) newRow.Cells[i].Value = row[i];
+            dataGridView1.Rows.Insert(0, newRow);
+            if (dataGridView1.Rows.Count > maxrows)
+                dataGridView1.Rows.RemoveAt(dataGridView1.Rows.Count - 1);
             dataGridView1.ResumeLayout();
         }
 
