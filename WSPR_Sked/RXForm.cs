@@ -998,10 +998,12 @@ namespace WSPR_Sked
                         }
                         else
                         {
-                            end = true;
+                            //end = true;
                         }
                     }
-                    catch { end = true; }
+                    catch { 
+                        //end = true;
+                    }
                 }
             }
             catch
