@@ -391,7 +391,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.51";
+            string ver = "0.1.52";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -12856,7 +12856,7 @@ namespace WSPR_Sked
             bool nearTrigger = (m % 2 == 1 && s >= 49) || (m % 2 == 0 && s <= 4);
             if (!nearTrigger)
                 keypresses = 0;
-            if (e.KeyValue == (char)Keys.F1)
+            if (e.KeyCode == Keys.F1)
             {
                 ShowHelp();
             }
@@ -12895,10 +12895,7 @@ namespace WSPR_Sked
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.F1)
-            {
-                ShowHelp();
-            }
+          
         }
 
         HelpForm helpform = new HelpForm();
