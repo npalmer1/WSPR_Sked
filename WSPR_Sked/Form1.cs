@@ -388,8 +388,7 @@ namespace WSPR_Sked
             selTunertextBox.Text = "0";
         }
 
-
-        RemoteTabWiring _remoteTab;
+    
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -571,14 +570,7 @@ namespace WSPR_Sked
                 else
                 {
                     Msg.TMessageBox("RX Disabled - enable in TX Config settings", "RX Disabled", 4000);
-                }
-                
-              
-                _remoteTab = RemoteTabWiring.Install(
-                    this, userdir,
-                    enableTx: RemoteEnableTx,
-                    disableTx: RemoteDisableTx,
-                    status: RemoteStatus);
+                }                              
 
                 startCount = startCountMax - 60;
 

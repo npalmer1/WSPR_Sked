@@ -454,22 +454,7 @@
             saverigbutton = new System.Windows.Forms.Button();
             label135 = new System.Windows.Forms.Label();
             label122 = new System.Windows.Forms.Label();
-            tabRemote = new System.Windows.Forms.TabPage();
-            remoteTitle = new System.Windows.Forms.Label();
-            remoteInfo = new System.Windows.Forms.Label();
-            remoteEnabledCheckBox = new System.Windows.Forms.CheckBox();
-            remotePortLabel = new System.Windows.Forms.Label();
-            remotePortTextBox = new System.Windows.Forms.TextBox();
-            remoteUserLabel = new System.Windows.Forms.Label();
-            remoteUserTextBox = new System.Windows.Forms.TextBox();
-            remotePasswordLabel = new System.Windows.Forms.Label();
-            remotePasswordTextBox = new System.Windows.Forms.TextBox();
-            remotePasscodeLabel = new System.Windows.Forms.Label();
-            remotePasscodeTextBox = new System.Windows.Forms.TextBox();
-            remoteNoteLabel = new System.Windows.Forms.Label();
-            remoteSaveButton = new System.Windows.Forms.Button();
-            remoteStatusButton = new System.Windows.Forms.Button();
-            remoteStatusLabel = new System.Windows.Forms.Label();
+         
             WSPRtimer = new System.Windows.Forms.Timer(components);
             daytimer = new System.Windows.Forms.Timer(components);
             Timelabel = new System.Windows.Forms.Label();
@@ -515,7 +500,7 @@
             RiggroupBox.SuspendLayout();
             APIgroupBox.SuspendLayout();
             rigserialgroupBox.SuspendLayout();
-            tabRemote.SuspendLayout();
+         
             SuspendLayout();
             // 
             // monthCalendar1
@@ -5004,163 +4989,7 @@
             label122.Size = new System.Drawing.Size(613, 13);
             label122.TabIndex = 0;
             label122.Text = "Some transceivers can be controlled by commands sent via the COM port rather then using Rigctl - these can be configured here";
-            // 
-            // tabRemote
-            // 
-            tabRemote.BackColor = System.Drawing.SystemColors.Info;
-            tabRemote.Controls.Add(remoteTitle);
-            tabRemote.Controls.Add(remoteInfo);
-            tabRemote.Controls.Add(remoteEnabledCheckBox);
-            tabRemote.Controls.Add(remotePortLabel);
-            tabRemote.Controls.Add(remotePortTextBox);
-            tabRemote.Controls.Add(remoteUserLabel);
-            tabRemote.Controls.Add(remoteUserTextBox);
-            tabRemote.Controls.Add(remotePasswordLabel);
-            tabRemote.Controls.Add(remotePasswordTextBox);
-            tabRemote.Controls.Add(remotePasscodeLabel);
-            tabRemote.Controls.Add(remotePasscodeTextBox);
-            tabRemote.Controls.Add(remoteNoteLabel);
-            tabRemote.Controls.Add(remoteSaveButton);
-            tabRemote.Controls.Add(remoteStatusButton);
-            tabRemote.Controls.Add(remoteStatusLabel);
-            tabRemote.Location = new System.Drawing.Point(4, 22);
-            tabRemote.Name = "tabRemote";
-            tabRemote.Padding = new System.Windows.Forms.Padding(16);
-            tabRemote.Size = new System.Drawing.Size(1177, 651);
-            tabRemote.TabIndex = 7;
-            tabRemote.Text = "Remote";
-            // 
-            // remoteTitle
-            // 
-            remoteTitle.AutoSize = true;
-            remoteTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            remoteTitle.Location = new System.Drawing.Point(94, 45);
-            remoteTitle.Name = "remoteTitle";
-            remoteTitle.Size = new System.Drawing.Size(145, 15);
-            remoteTitle.TabIndex = 0;
-            remoteTitle.Text = "Remote transmit control";
-            // 
-            // remoteInfo
-            // 
-            remoteInfo.Location = new System.Drawing.Point(94, 73);
-            remoteInfo.Name = "remoteInfo";
-            remoteInfo.Size = new System.Drawing.Size(420, 40);
-            remoteInfo.TabIndex = 1;
-            remoteInfo.Text = "Disable transmit (and  re-enable it) remotely over the internet, from a phone browser";
-            // 
-            // remoteEnabledCheckBox
-            // 
-            remoteEnabledCheckBox.AutoSize = true;
-            remoteEnabledCheckBox.Location = new System.Drawing.Point(94, 121);
-            remoteEnabledCheckBox.Name = "remoteEnabledCheckBox";
-            remoteEnabledCheckBox.Size = new System.Drawing.Size(131, 17);
-            remoteEnabledCheckBox.TabIndex = 2;
-            remoteEnabledCheckBox.Text = "Enable remote access";
-            // 
-            // remotePortLabel
-            // 
-            remotePortLabel.AutoSize = true;
-            remotePortLabel.Location = new System.Drawing.Point(94, 153);
-            remotePortLabel.Name = "remotePortLabel";
-            remotePortLabel.Size = new System.Drawing.Size(29, 13);
-            remotePortLabel.TabIndex = 3;
-            remotePortLabel.Text = "Port:";
-            // 
-            // remotePortTextBox
-            // 
-            remotePortTextBox.Location = new System.Drawing.Point(218, 150);
-            remotePortTextBox.Name = "remotePortTextBox";
-            remotePortTextBox.Size = new System.Drawing.Size(80, 20);
-            remotePortTextBox.TabIndex = 4;
-            // 
-            // remoteUserLabel
-            // 
-            remoteUserLabel.AutoSize = true;
-            remoteUserLabel.Location = new System.Drawing.Point(94, 189);
-            remoteUserLabel.Name = "remoteUserLabel";
-            remoteUserLabel.Size = new System.Drawing.Size(58, 13);
-            remoteUserLabel.TabIndex = 6;
-            remoteUserLabel.Text = "Username:";
-            // 
-            // remoteUserTextBox
-            // 
-            remoteUserTextBox.Location = new System.Drawing.Point(218, 186);
-            remoteUserTextBox.Name = "remoteUserTextBox";
-            remoteUserTextBox.Size = new System.Drawing.Size(200, 20);
-            remoteUserTextBox.TabIndex = 7;
-            // 
-            // remotePasswordLabel
-            // 
-            remotePasswordLabel.AutoSize = true;
-            remotePasswordLabel.Location = new System.Drawing.Point(94, 221);
-            remotePasswordLabel.Name = "remotePasswordLabel";
-            remotePasswordLabel.Size = new System.Drawing.Size(56, 13);
-            remotePasswordLabel.TabIndex = 8;
-            remotePasswordLabel.Text = "Password:";
-            // 
-            // remotePasswordTextBox
-            // 
-            remotePasswordTextBox.Location = new System.Drawing.Point(218, 218);
-            remotePasswordTextBox.Name = "remotePasswordTextBox";
-            remotePasswordTextBox.Size = new System.Drawing.Size(200, 20);
-            remotePasswordTextBox.TabIndex = 9;
-            remotePasswordTextBox.UseSystemPasswordChar = true;
-            // 
-            // remotePasscodeLabel
-            // 
-            remotePasscodeLabel.AutoSize = true;
-            remotePasscodeLabel.Location = new System.Drawing.Point(94, 253);
-            remotePasscodeLabel.Name = "remotePasscodeLabel";
-            remotePasscodeLabel.Size = new System.Drawing.Size(57, 13);
-            remotePasscodeLabel.TabIndex = 10;
-            remotePasscodeLabel.Text = "Passcode:";
-            // 
-            // remotePasscodeTextBox
-            // 
-            remotePasscodeTextBox.Location = new System.Drawing.Point(218, 250);
-            remotePasscodeTextBox.Name = "remotePasscodeTextBox";
-            remotePasscodeTextBox.Size = new System.Drawing.Size(200, 20);
-            remotePasscodeTextBox.TabIndex = 11;
-            remotePasscodeTextBox.UseSystemPasswordChar = true;
-            // 
-            // remoteNoteLabel
-            // 
-            remoteNoteLabel.AutoSize = true;
-            remoteNoteLabel.ForeColor = System.Drawing.SystemColors.GrayText;
-            remoteNoteLabel.Location = new System.Drawing.Point(94, 285);
-            remoteNoteLabel.Name = "remoteNoteLabel";
-            remoteNoteLabel.Size = new System.Drawing.Size(346, 13);
-            remoteNoteLabel.TabIndex = 12;
-            remoteNoteLabel.Text = "Leave password/passcode blank to keep the existing ones unchanged.";
-            // 
-            // remoteSaveButton
-            // 
-            remoteSaveButton.AutoSize = true;
-            remoteSaveButton.BackColor = System.Drawing.SystemColors.Control;
-            remoteSaveButton.Location = new System.Drawing.Point(94, 313);
-            remoteSaveButton.Name = "remoteSaveButton";
-            remoteSaveButton.Size = new System.Drawing.Size(88, 25);
-            remoteSaveButton.TabIndex = 13;
-            remoteSaveButton.Text = "Save";
-            remoteSaveButton.UseVisualStyleBackColor = false;
-            // 
-            // remoteStatusButton
-            // 
-            remoteStatusButton.AutoSize = true;
-            remoteStatusButton.BackColor = System.Drawing.SystemColors.Control;
-            remoteStatusButton.Location = new System.Drawing.Point(208, 313);
-            remoteStatusButton.Name = "remoteStatusButton";
-            remoteStatusButton.Size = new System.Drawing.Size(103, 25);
-            remoteStatusButton.TabIndex = 14;
-            remoteStatusButton.Text = "Show status";
-            remoteStatusButton.UseVisualStyleBackColor = false;
-            // 
-            // remoteStatusLabel
-            // 
-            remoteStatusLabel.Location = new System.Drawing.Point(94, 347);
-            remoteStatusLabel.Name = "remoteStatusLabel";
-            remoteStatusLabel.Size = new System.Drawing.Size(420, 40);
-            remoteStatusLabel.TabIndex = 15;
+          
             // 
             // WSPRtimer
             // 
@@ -5338,8 +5167,7 @@
             APIgroupBox.PerformLayout();
             rigserialgroupBox.ResumeLayout(false);
             rigserialgroupBox.PerformLayout();
-            tabRemote.ResumeLayout(false);
-            tabRemote.PerformLayout();
+          
             ResumeLayout(false);
             PerformLayout();
         }
@@ -5786,23 +5614,7 @@
         private System.Windows.Forms.Label label145;
         private System.Windows.Forms.Label label146;
 
-        internal System.Windows.Forms.TabPage tabRemote;
-        internal System.Windows.Forms.CheckBox remoteEnabledCheckBox;
-        internal System.Windows.Forms.TextBox remotePortTextBox;
-       
-        internal System.Windows.Forms.TextBox remoteUserTextBox;
-        internal System.Windows.Forms.TextBox remotePasswordTextBox;
-        internal System.Windows.Forms.TextBox remotePasscodeTextBox;
-        internal System.Windows.Forms.Button remoteSaveButton;
-        internal System.Windows.Forms.Button remoteStatusButton;
-        internal System.Windows.Forms.Label remoteStatusLabel;
-        internal System.Windows.Forms.Label remoteNoteLabel;
-        private System.Windows.Forms.Label remoteTitle;
-        private System.Windows.Forms.Label remoteInfo;
-        private System.Windows.Forms.Label remotePortLabel;
-        private System.Windows.Forms.Label remoteUserLabel;
-        private System.Windows.Forms.Label remotePasswordLabel;
-        private System.Windows.Forms.Label remotePasscodeLabel;
+     
     }
 }
 

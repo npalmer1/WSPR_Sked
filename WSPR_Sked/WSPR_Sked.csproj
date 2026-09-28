@@ -16,8 +16,10 @@
     <Compile Remove="HRDComms.cs" />
     <Compile Remove="LiveForm.cs" />
     <Compile Remove="LiveForm.Designer.cs" />
+    <Compile Remove="RemoteControlServer.cs" />
     <Compile Remove="RemoteServer.cs" />
     <Compile Remove="RemoteTabHost.cs" />
+    <Compile Remove="RemoteTabWiring.cs" />
     <Compile Remove="RigCtl.cs" />
     <Compile Remove="Solar.cs" />
     <Compile Remove="Solar.Designer.cs" />
