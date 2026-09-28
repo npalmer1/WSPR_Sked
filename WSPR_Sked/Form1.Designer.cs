@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
@@ -454,6 +454,23 @@
             saverigbutton = new System.Windows.Forms.Button();
             label135 = new System.Windows.Forms.Label();
             label122 = new System.Windows.Forms.Label();
+            tabRemote = new System.Windows.Forms.TabPage();
+            remoteTitle = new System.Windows.Forms.Label();
+            remoteInfo = new System.Windows.Forms.Label();
+            remoteEnabledCheckBox = new System.Windows.Forms.CheckBox();
+            remotePortLabel = new System.Windows.Forms.Label();
+            remotePortTextBox = new System.Windows.Forms.TextBox();
+           
+            remoteUserLabel = new System.Windows.Forms.Label();
+            remoteUserTextBox = new System.Windows.Forms.TextBox();
+            remotePasswordLabel = new System.Windows.Forms.Label();
+            remotePasswordTextBox = new System.Windows.Forms.TextBox();
+            remotePasscodeLabel = new System.Windows.Forms.Label();
+            remotePasscodeTextBox = new System.Windows.Forms.TextBox();
+            remoteNoteLabel = new System.Windows.Forms.Label();
+            remoteSaveButton = new System.Windows.Forms.Button();
+            remoteStatusButton = new System.Windows.Forms.Button();
+            remoteStatusLabel = new System.Windows.Forms.Label();
             WSPRtimer = new System.Windows.Forms.Timer(components);
             daytimer = new System.Windows.Forms.Timer(components);
             Timelabel = new System.Windows.Forms.Label();
@@ -499,6 +516,7 @@
             RiggroupBox.SuspendLayout();
             APIgroupBox.SuspendLayout();
             rigserialgroupBox.SuspendLayout();
+            tabRemote.SuspendLayout();
             SuspendLayout();
             // 
             // monthCalendar1
@@ -531,23 +549,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle6;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -1182,6 +1200,7 @@
             tabControl1.Controls.Add(tabPage5);
             tabControl1.Controls.Add(tabPage6);
             tabControl1.Controls.Add(tabPage7);
+            tabControl1.Controls.Add(tabRemote);
             tabControl1.Location = new System.Drawing.Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
@@ -4527,10 +4546,10 @@
             tabPage7.Controls.Add(riglistBox);
             tabPage7.Controls.Add(RiggroupBox);
             tabPage7.Controls.Add(label122);
-            tabPage7.Location = new System.Drawing.Point(4, 24);
+            tabPage7.Location = new System.Drawing.Point(4, 22);
             tabPage7.Name = "tabPage7";
             tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            tabPage7.Size = new System.Drawing.Size(1177, 649);
+            tabPage7.Size = new System.Drawing.Size(1177, 651);
             tabPage7.TabIndex = 6;
             tabPage7.Text = "Non Rigctl TX";
             // 
@@ -4987,6 +5006,165 @@
             label122.TabIndex = 0;
             label122.Text = "Some transceivers can be controlled by commands sent via the COM port rather then using Rigctl - these can be configured here";
             // 
+            // tabRemote
+            // 
+            tabRemote.BackColor = System.Drawing.Color.AntiqueWhite;
+            tabRemote.Controls.Add(remoteTitle);
+            tabRemote.Controls.Add(remoteInfo);
+            tabRemote.Controls.Add(remoteEnabledCheckBox);
+            tabRemote.Controls.Add(remotePortLabel);
+            tabRemote.Controls.Add(remotePortTextBox);
+           
+            tabRemote.Controls.Add(remoteUserLabel);
+            tabRemote.Controls.Add(remoteUserTextBox);
+            tabRemote.Controls.Add(remotePasswordLabel);
+            tabRemote.Controls.Add(remotePasswordTextBox);
+            tabRemote.Controls.Add(remotePasscodeLabel);
+            tabRemote.Controls.Add(remotePasscodeTextBox);
+            tabRemote.Controls.Add(remoteNoteLabel);
+            tabRemote.Controls.Add(remoteSaveButton);
+            tabRemote.Controls.Add(remoteStatusButton);
+            tabRemote.Controls.Add(remoteStatusLabel);
+            tabRemote.Location = new System.Drawing.Point(4, 22);
+            tabRemote.Name = "tabRemote";
+            tabRemote.Padding = new System.Windows.Forms.Padding(16);
+            tabRemote.Size = new System.Drawing.Size(1177, 651);
+            tabRemote.TabIndex = 7;
+            tabRemote.Text = "Remote";
+            // 
+            // remoteTitle
+            // 
+            remoteTitle.AutoSize = true;
+            remoteTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            remoteTitle.Location = new System.Drawing.Point(94, 45);
+            remoteTitle.Name = "remoteTitle";
+            remoteTitle.Size = new System.Drawing.Size(145, 15);
+            remoteTitle.TabIndex = 0;
+            remoteTitle.Text = "Remote transmit control";
+            // 
+            // remoteInfo
+            // 
+            remoteInfo.Location = new System.Drawing.Point(94, 73);
+            remoteInfo.Name = "remoteInfo";
+            remoteInfo.Size = new System.Drawing.Size(420, 40);
+            remoteInfo.TabIndex = 1;
+            remoteInfo.Text = "Disable transmit (and optionally re-enable it) remotely over the internet, from a phone browser, using HTTPS with a username, password and passcode.";
+            // 
+            // remoteEnabledCheckBox
+            // 
+            remoteEnabledCheckBox.AutoSize = true;
+            remoteEnabledCheckBox.Location = new System.Drawing.Point(94, 121);
+            remoteEnabledCheckBox.Name = "remoteEnabledCheckBox";
+            remoteEnabledCheckBox.Size = new System.Drawing.Size(131, 17);
+            remoteEnabledCheckBox.TabIndex = 2;
+            remoteEnabledCheckBox.Text = "Enable remote access";
+            // 
+            // remotePortLabel
+            // 
+            remotePortLabel.AutoSize = true;
+            remotePortLabel.Location = new System.Drawing.Point(94, 153);
+            remotePortLabel.Name = "remotePortLabel";
+            remotePortLabel.Size = new System.Drawing.Size(29, 13);
+            remotePortLabel.TabIndex = 3;
+            remotePortLabel.Text = "Port:";
+            // 
+            // remotePortTextBox
+            // 
+            remotePortTextBox.Location = new System.Drawing.Point(218, 150);
+            remotePortTextBox.Name = "remotePortTextBox";
+            remotePortTextBox.Size = new System.Drawing.Size(80, 20);
+            remotePortTextBox.TabIndex = 4;
+         
+            // 
+            // remoteUserLabel
+            // 
+            remoteUserLabel.AutoSize = true;
+            remoteUserLabel.Location = new System.Drawing.Point(94, 221);
+            remoteUserLabel.Name = "remoteUserLabel";
+            remoteUserLabel.Size = new System.Drawing.Size(58, 13);
+            remoteUserLabel.TabIndex = 6;
+            remoteUserLabel.Text = "Username:";
+            // 
+            // remoteUserTextBox
+            // 
+            remoteUserTextBox.Location = new System.Drawing.Point(218, 218);
+            remoteUserTextBox.Name = "remoteUserTextBox";
+            remoteUserTextBox.Size = new System.Drawing.Size(200, 20);
+            remoteUserTextBox.TabIndex = 7;
+            // 
+            // remotePasswordLabel
+            // 
+            remotePasswordLabel.AutoSize = true;
+            remotePasswordLabel.Location = new System.Drawing.Point(94, 253);
+            remotePasswordLabel.Name = "remotePasswordLabel";
+            remotePasswordLabel.Size = new System.Drawing.Size(56, 13);
+            remotePasswordLabel.TabIndex = 8;
+            remotePasswordLabel.Text = "Password:";
+            // 
+            // remotePasswordTextBox
+            // 
+            remotePasswordTextBox.Location = new System.Drawing.Point(218, 250);
+            remotePasswordTextBox.Name = "remotePasswordTextBox";
+            remotePasswordTextBox.Size = new System.Drawing.Size(200, 20);
+            remotePasswordTextBox.TabIndex = 9;
+            remotePasswordTextBox.UseSystemPasswordChar = true;
+            // 
+            // remotePasscodeLabel
+            // 
+            remotePasscodeLabel.AutoSize = true;
+            remotePasscodeLabel.Location = new System.Drawing.Point(94, 285);
+            remotePasscodeLabel.Name = "remotePasscodeLabel";
+            remotePasscodeLabel.Size = new System.Drawing.Size(57, 13);
+            remotePasscodeLabel.TabIndex = 10;
+            remotePasscodeLabel.Text = "Passcode:";
+            // 
+            // remotePasscodeTextBox
+            // 
+            remotePasscodeTextBox.Location = new System.Drawing.Point(218, 282);
+            remotePasscodeTextBox.Name = "remotePasscodeTextBox";
+            remotePasscodeTextBox.Size = new System.Drawing.Size(200, 20);
+            remotePasscodeTextBox.TabIndex = 11;
+            remotePasscodeTextBox.UseSystemPasswordChar = true;
+            // 
+            // remoteNoteLabel
+            // 
+            remoteNoteLabel.AutoSize = true;
+            remoteNoteLabel.ForeColor = System.Drawing.SystemColors.GrayText;
+            remoteNoteLabel.Location = new System.Drawing.Point(94, 317);
+            remoteNoteLabel.Name = "remoteNoteLabel";
+            remoteNoteLabel.Size = new System.Drawing.Size(346, 13);
+            remoteNoteLabel.TabIndex = 12;
+            remoteNoteLabel.Text = "Leave password/passcode blank to keep the existing ones unchanged.";
+            // 
+            // remoteSaveButton
+            // 
+            remoteSaveButton.AutoSize = true;
+            remoteSaveButton.BackColor = System.Drawing.SystemColors.Control;
+            remoteSaveButton.Location = new System.Drawing.Point(94, 345);
+            remoteSaveButton.Name = "remoteSaveButton";
+            remoteSaveButton.Size = new System.Drawing.Size(88, 25);
+            remoteSaveButton.TabIndex = 13;
+            remoteSaveButton.Text = "Save";
+            remoteSaveButton.UseVisualStyleBackColor = false;
+            // 
+            // remoteStatusButton
+            // 
+            remoteStatusButton.AutoSize = true;
+            remoteStatusButton.BackColor = System.Drawing.SystemColors.Control;
+            remoteStatusButton.Location = new System.Drawing.Point(208, 345);
+            remoteStatusButton.Name = "remoteStatusButton";
+            remoteStatusButton.Size = new System.Drawing.Size(103, 25);
+            remoteStatusButton.TabIndex = 14;
+            remoteStatusButton.Text = "Show status";
+            remoteStatusButton.UseVisualStyleBackColor = false;
+            // 
+            // remoteStatusLabel
+            // 
+            remoteStatusLabel.Location = new System.Drawing.Point(94, 379);
+            remoteStatusLabel.Name = "remoteStatusLabel";
+            remoteStatusLabel.Size = new System.Drawing.Size(420, 40);
+            remoteStatusLabel.TabIndex = 15;
+            // 
             // WSPRtimer
             // 
             WSPRtimer.Interval = 1000;
@@ -5163,6 +5341,8 @@
             APIgroupBox.PerformLayout();
             rigserialgroupBox.ResumeLayout(false);
             rigserialgroupBox.PerformLayout();
+            tabRemote.ResumeLayout(false);
+            tabRemote.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -5608,6 +5788,24 @@
         private System.Windows.Forms.Label label144;
         private System.Windows.Forms.Label label145;
         private System.Windows.Forms.Label label146;
+
+        internal System.Windows.Forms.TabPage tabRemote;
+        internal System.Windows.Forms.CheckBox remoteEnabledCheckBox;
+        internal System.Windows.Forms.TextBox remotePortTextBox;
+       
+        internal System.Windows.Forms.TextBox remoteUserTextBox;
+        internal System.Windows.Forms.TextBox remotePasswordTextBox;
+        internal System.Windows.Forms.TextBox remotePasscodeTextBox;
+        internal System.Windows.Forms.Button remoteSaveButton;
+        internal System.Windows.Forms.Button remoteStatusButton;
+        internal System.Windows.Forms.Label remoteStatusLabel;
+        internal System.Windows.Forms.Label remoteNoteLabel;
+        private System.Windows.Forms.Label remoteTitle;
+        private System.Windows.Forms.Label remoteInfo;
+        private System.Windows.Forms.Label remotePortLabel;
+        private System.Windows.Forms.Label remoteUserLabel;
+        private System.Windows.Forms.Label remotePasswordLabel;
+        private System.Windows.Forms.Label remotePasscodeLabel;
     }
 }
 

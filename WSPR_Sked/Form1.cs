@@ -12953,6 +12953,36 @@ namespace WSPR_Sked
             dataGridView1.Rows[e.RowIndex].Selected = true;
             slotSelected();
         }
+
+        private string RemoteEnableTx()
+        {
+            string result = "";
+            Invoke((Action)(() =>
+            {
+                enableTXcheckBox.Checked = true;
+                result = "TX enabled at " + DateTime.UtcNow.ToString("HH:mm:ss") + " UTC.";
+            }));
+            return result;
+        }
+
+        private string RemoteDisableTx()
+        {
+            string result = "";
+            Invoke((Action)(() =>
+            {
+                enableTXcheckBox.Checked = false;
+                stopTX();
+                result = "TX disabled at " + DateTime.UtcNow.ToString("HH:mm:ss") + " UTC.";
+            }));
+            return result;
+        }
+
+        private string RemoteStatus()
+        {
+            bool en = false, tx = false;
+            Invoke((Action)(() => { en = enableTXcheckBox.Checked; tx = wsprTXtimer.Enabled; }));
+            return $"{DateTime.UtcNow:HH:mm:ss} UTC - TX {(en ? "ENABLED" : "disabled")}{(tx ? " (transmitting)" : "")}";
+        }
     }
 
 
