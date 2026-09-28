@@ -1199,7 +1199,7 @@
             tabControl1.Controls.Add(tabPage5);
             tabControl1.Controls.Add(tabPage6);
             tabControl1.Controls.Add(tabPage7);
-            tabControl1.Controls.Add(tabRemote);
+            //tabControl1.Controls.Add(tabRemote);      --commented out for now
             tabControl1.Location = new System.Drawing.Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
