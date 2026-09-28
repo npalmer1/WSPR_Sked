@@ -267,8 +267,8 @@ namespace WSPR_Sked
                 await Task.Delay(200);
                 statuslabel.Text = "receiving";
                 if (Spectrumform != null && !Spectrumform.IsDisposed) Spectrumform.wavPath = outpath;
-              
-               
+
+
                 int mS = 110000;
 
                 DateTime now = DateTime.Now.ToUniversalTime();
@@ -304,7 +304,7 @@ namespace WSPR_Sked
                 {
                     //mS = 0;
                 }
-               
+
                 await RecordLineInAsync_Gain(outpath, mS);   // fully await - this file is now complete
 
                 DateTime originalDT = DateTime.Now.ToUniversalTime();
@@ -331,9 +331,9 @@ namespace WSPR_Sked
                 string o = OSD > 0 ? " -o " + OSD.ToString() : "";
                 string c, cmd;
                 string args = "";
-                if (opsys == 0) 
+                if (opsys == 0)
                 { c = "/c "; cmd = "cmd.exe"; args = c + wsprdfilepath + slash + "wsprd.exe -a " + wsprdir + " -f " + Frequency + d + o + " " + outpath; }
-                else 
+                else
                 { cmd = "/bin/bash"; c = "-c "; args = c + wsprdfilepath + slash + "wsprd -a " + wsprdir + " -f " + Frequency + d + o + " " + outpath; }
 
                 // kick off decode+save in the background - DO NOT await it here
@@ -358,7 +358,7 @@ namespace WSPR_Sked
             await SaveReceived(originalDT);
             statuslabel.Text = "receiving";
         }
-       
+
         /*
         private async void Record_Decode(int opsys)
         {
@@ -676,10 +676,10 @@ namespace WSPR_Sked
             {
                 return;
             }
-           /* if (nextDT == startT)
-            {
-                return; //avoid duplication of entries
-            }*/
+            /* if (nextDT == startT)
+             {
+                 return; //avoid duplication of entries
+             }*/
             try
             {
                 DX.datetime = startT;
@@ -1001,7 +1001,8 @@ namespace WSPR_Sked
                             //end = true;
                         }
                     }
-                    catch { 
+                    catch
+                    {
                         //end = true;
                     }
                 }
@@ -1018,7 +1019,7 @@ namespace WSPR_Sked
 
             results = "";
         }
-       
+
 
         private async Task Save_WSPR_Textfile(DateTime startT, string filepath, bool append)
         {
@@ -2662,6 +2663,7 @@ namespace WSPR_Sked
         {
 
         }
+
     }
 }
 
