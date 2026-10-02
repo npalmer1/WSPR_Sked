@@ -186,6 +186,14 @@ OR commands separated by semi-colon (";") eg.:
 SET FREQ freq; SET POWER pwr; SET LOC grid; SET CALL call; SET OFFSET offset
 </value>
   </data>
+  <data name="label147.Text" xml:space="preserve">
+    <value>In order to remote control the TX:
+1) ensure that the PC on which WSPR Scheduler is running has a static IP
+2) either: use a static IP for your router provided by your ISP
+Or: use a dynamic DNS service such as DuckDNS that keeps track of your IP
+3) either: configure a mapping from your public IP to the IP address/port of the WSPR PC
+Or: configure a VPN such as OpenVPN on your router or the WSPR PC (this is more secure)</value>
+  </data>
   <metadata name="WSPRtimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
