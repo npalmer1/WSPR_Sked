@@ -392,7 +392,11 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
+<<<<<<< HEAD
             string ver = "0.1.53";
+=======
+            string ver = "0.1.53R";
+>>>>>>> WS0153
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -570,7 +574,18 @@ namespace WSPR_Sked
                 else
                 {
                     Msg.TMessageBox("RX Disabled - enable in TX Config settings", "RX Disabled", 4000);
+<<<<<<< HEAD
                 }                              
+=======
+                }
+
+
+                _remoteTab = RemoteTabWiring.Install(
+                    this, userdir,
+                    enableTx: RemoteEnableTx,
+                    disableTx: RemoteDisableTx,
+                    status: RemoteStatus);
+>>>>>>> WS0153
 
                 startCount = startCountMax - 60;
 
@@ -1747,7 +1762,7 @@ namespace WSPR_Sked
             EditSlot();
         }
         private void dataGridView1_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
-        {          
+        {
             //slotSelected();
         }
         private void EditSlot() //open groupbox to allow slot to be edited or created
@@ -12896,7 +12911,7 @@ namespace WSPR_Sked
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
-          
+
         }
 
         HelpForm helpform = new HelpForm();
@@ -12980,6 +12995,20 @@ namespace WSPR_Sked
             bool en = false, tx = false;
             Invoke((Action)(() => { en = enableTXcheckBox.Checked; tx = wsprTXtimer.Enabled; }));
             return $"{DateTime.UtcNow:HH:mm:ss} UTC - TX {(en ? "ENABLED" : "disabled")}{(tx ? " (transmitting)" : "")}";
+        }
+
+        private void showpasscodecheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (showpasscodecheckBox.Checked)
+            {
+                remotePasscodeTextBox.UseSystemPasswordChar = false;
+                remotePasswordTextBox.UseSystemPasswordChar = false;
+            }
+            else
+            {
+                remotePasscodeTextBox.UseSystemPasswordChar = true;
+                remotePasswordTextBox.UseSystemPasswordChar = true;
+            }
         }
     }
 
