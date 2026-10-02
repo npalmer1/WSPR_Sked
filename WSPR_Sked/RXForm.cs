@@ -1056,53 +1056,7 @@ namespace WSPR_Sked
         }
 
 
-        /*private async Task Post_wsprdata(string date, string time)  //uploads single spot to the new wsprnet database
-        {
-            string url = "http://wsprnet.org/post/";
-            if (!await Msg.IsUrlReachable(url) || stopUrl)
-            {
-                return;
-            }
-            if (uploadcheckBox.Checked == false)
-            {
-                return;
-            }
-            if (DX.tx_sign == "nil rcvd" || DX.tx_sign == "" || (DX.tx_sign == Callsign && !owncheckBox.Checked))
-            {
-                return;
-            }
-            var formData = new Dictionary<string, string>
-            {
-                { "function", "wspr" },
-                { "date",  date },
-                { "time", time },
-                { "sig", DX.snr.ToString() },
-                { "dt", DX.dt.ToString("f1") },
-                { "drift", DX.drift.ToString() },
-                { "tqrg", DX.frequency.ToString("F6") },
-                { "tcall", DX.tx_sign },
-                { "tgrid", DX.tx_loc },
-                { "dbm", DX.power.ToString() },
-                { "version", version },
-                 //{ "version", "2.7.0" },
-                { "rcall", Callsign },
-                { "rgrid", my_loc },
-                { "rqrg", Frequency },
-                { "mode", "2" }
-            };
-            using var client = new HttpClient();
-            client.DefaultRequestHeaders.Add(Callsign, my_loc);
-
-            //client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("WS/0.1.10");
-
-            var content = new FormUrlEncodedContent(formData);
-
-            var response = await client.PostAsync(url, content);
-            var responseString = await response.Content.ReadAsStringAsync();
-           
-        }*/
-        private async Task Post_wsprdata(string date, string time, decoded_data snapshot) //uploads single spot to the new wsprnet database
+        /*private async Task Post_wsprdata(string date, string time, decoded_data snapshot) //uploads single spot to the new wsprnet database
         {
             string url = "http://wsprnet.org/post/";
             if (!await Msg.IsUrlReachable(url) || stopUrl)
@@ -1147,6 +1101,44 @@ namespace WSPR_Sked
 
             var response = await client.PostAsync(url, content);
             var responseString = await response.Content.ReadAsStringAsync();
+        }*/
+
+        private async Task Post_wsprdata(string date, string time, decoded_data snapshot)
+        {
+            string url = "http://wsprnet.org/post/";
+            if (stopUrl) return;
+            try
+            {
+                if (uploadcheckBox.Checked == false) return;
+                if (snapshot.tx_sign == "nil rcvd" || snapshot.tx_sign == "" || (snapshot.tx_sign == Callsign && !owncheckBox.Checked))
+                    return;
+
+                var formData = new Dictionary<string, string>
+                {
+                    { "function", "wspr" }, { "date", date }, { "time", time },
+                    { "sig", snapshot.snr.ToString() }, { "dt", snapshot.dt.ToString("f1") },
+                    { "drift", snapshot.drift.ToString() }, { "tqrg", snapshot.frequency.ToString("F6") },
+                    { "tcall", snapshot.tx_sign }, { "tgrid", snapshot.tx_loc },
+                    { "dbm", snapshot.power.ToString() }, { "version", version },
+                    { "rcall", Callsign }, { "rgrid", my_loc }, { "rqrg", Frequency }, { "mode", "2" }
+                };
+                using var client = new HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(8);
+                client.DefaultRequestHeaders.Add(Callsign, my_loc);
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("WS/0.1.10");
+
+                var response = await client.PostAsync(url, new FormUrlEncodedContent(formData));
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                    File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                        $"{DateTime.Now:HH:mm:ss} UPLOAD FAILED {snapshot.tx_sign} status={(int)response.StatusCode} body={responseString}\n");
+            }
+            catch (Exception ex)
+            {
+                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                    $"{DateTime.Now:HH:mm:ss} UPLOAD EXCEPTION {snapshot.tx_sign}: {ex.Message}\n");
+            }
         }
 
         private async Task Post_wspr(string filepath) //this will upload a file to the old database    - not used!                                         
