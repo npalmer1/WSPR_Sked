@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             timelistBox = new System.Windows.Forms.ListBox();
@@ -455,6 +455,7 @@
             label135 = new System.Windows.Forms.Label();
             label122 = new System.Windows.Forms.Label();
             tabRemote = new System.Windows.Forms.TabPage();
+            label148 = new System.Windows.Forms.Label();
             label147 = new System.Windows.Forms.Label();
             showcodecheckBox = new System.Windows.Forms.CheckBox();
             remoteTitle = new System.Windows.Forms.Label();
@@ -488,7 +489,6 @@
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
             label145 = new System.Windows.Forms.Label();
-            label148 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -551,23 +551,23 @@
             // 
             dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16 });
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView1.DefaultCellStyle = dataGridViewCellStyle4;
             dataGridView1.Location = new System.Drawing.Point(93, 203);
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
@@ -5036,13 +5036,23 @@
             tabRemote.TabIndex = 7;
             tabRemote.Text = "Remote";
             // 
+            // label148
+            // 
+            label148.AutoSize = true;
+            label148.ForeColor = System.Drawing.Color.Blue;
+            label148.Location = new System.Drawing.Point(85, 511);
+            label148.Name = "label148";
+            label148.Size = new System.Drawing.Size(261, 65);
+            label148.TabIndex = 18;
+            label148.Text = resources.GetString("label148.Text");
+            // 
             // label147
             // 
             label147.AutoSize = true;
             label147.ForeColor = System.Drawing.Color.Blue;
             label147.Location = new System.Drawing.Point(86, 404);
             label147.Name = "label147";
-            label147.Size = new System.Drawing.Size(440, 78);
+            label147.Size = new System.Drawing.Size(452, 91);
             label147.TabIndex = 17;
             label147.Text = resources.GetString("label147.Text");
             // 
@@ -5292,16 +5302,6 @@
             label145.Size = new System.Drawing.Size(44, 13);
             label145.TabIndex = 18;
             label145.Text = "F1 Help";
-            // 
-            // label148
-            // 
-            label148.AutoSize = true;
-            label148.ForeColor = System.Drawing.Color.Blue;
-            label148.Location = new System.Drawing.Point(85, 491);
-            label148.Name = "label148";
-            label148.Size = new System.Drawing.Size(261, 65);
-            label148.TabIndex = 18;
-            label148.Text = resources.GetString("label148.Text");
             // 
             // Form1
             // 
