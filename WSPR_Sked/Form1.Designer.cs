@@ -488,6 +488,7 @@
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
             label145 = new System.Windows.Forms.Label();
+            label148 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -5010,6 +5011,7 @@
             // tabRemote
             // 
             tabRemote.BackColor = System.Drawing.SystemColors.Info;
+            tabRemote.Controls.Add(label148);
             tabRemote.Controls.Add(label147);
             tabRemote.Controls.Add(showcodecheckBox);
             tabRemote.Controls.Add(remoteTitle);
@@ -5037,8 +5039,8 @@
             // label147
             // 
             label147.AutoSize = true;
-            label147.ForeColor = System.Drawing.Color.DarkGreen;
-            label147.Location = new System.Drawing.Point(86, 392);
+            label147.ForeColor = System.Drawing.Color.Blue;
+            label147.Location = new System.Drawing.Point(86, 404);
             label147.Name = "label147";
             label147.Size = new System.Drawing.Size(440, 78);
             label147.TabIndex = 17;
@@ -5072,7 +5074,7 @@
             remoteInfo.Name = "remoteInfo";
             remoteInfo.Size = new System.Drawing.Size(459, 40);
             remoteInfo.TabIndex = 1;
-            remoteInfo.Text = "Disable or enable transmit remotely over the internet, from a phone browser, using HTTPS with a username, password and passcode.";
+            remoteInfo.Text = "Disable or enable transmit remotely over the internet, from a phone, tablet or PC browser, using HTTPS with a username, password and passcode.";
             // 
             // remoteEnabledCheckBox
             // 
@@ -5290,6 +5292,16 @@
             label145.Size = new System.Drawing.Size(44, 13);
             label145.TabIndex = 18;
             label145.Text = "F1 Help";
+            // 
+            // label148
+            // 
+            label148.AutoSize = true;
+            label148.ForeColor = System.Drawing.Color.Blue;
+            label148.Location = new System.Drawing.Point(85, 491);
+            label148.Name = "label148";
+            label148.Size = new System.Drawing.Size(261, 65);
+            label148.TabIndex = 18;
+            label148.Text = resources.GetString("label148.Text");
             // 
             // Form1
             // 
@@ -5833,6 +5845,7 @@
         private System.Windows.Forms.Label remotePasscodeLabel;
         private System.Windows.Forms.CheckBox showcodecheckBox;
         private System.Windows.Forms.Label label147;
+        private System.Windows.Forms.Label label148;
     }
 }
 

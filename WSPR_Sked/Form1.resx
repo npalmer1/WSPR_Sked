@@ -186,6 +186,14 @@ OR commands separated by semi-colon (";") eg.:
 SET FREQ freq; SET POWER pwr; SET LOC grid; SET CALL call; SET OFFSET offset
 </value>
   </data>
+  <data name="label148.Text" xml:space="preserve">
+    <value>Accessing WSPR Scheduler remotely: 
+Enter: https://&lt;ip_address&gt;:&lt;port&gt; into a browser
+eg. https://192.168.10.2:5005
+Note: ignore warnings about invalid certificate
+- use a VPN (eg. OpenVPN) to access where possible
+</value>
+  </data>
   <data name="label147.Text" xml:space="preserve">
     <value>In order to remote control the TX:
 1) ensure that the PC on which WSPR Scheduler is running has a static IP
