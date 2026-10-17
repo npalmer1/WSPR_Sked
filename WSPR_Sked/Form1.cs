@@ -73,12 +73,12 @@ namespace WSPR_Sked
         string slot_dbname = "wspr_slots";
 
         int configID = 0; //primary key of config settings database table
-        string callsign = "G4GCI"; //full caLLSIGN
+        string callsign = "AZ1AAA"; //full caLLSIGN
 
 
-        string base_call = "G4GCI"; //base callsign
-        string location = "IO90";
-        string full_location = "IO90";
+        string base_call = "AZ1AAA"; //base callsign
+        string location = "IJ90";
+        string full_location = "IJ90";
 
         int msgType = 1;
         int currentMsgType = 1;
@@ -372,12 +372,12 @@ namespace WSPR_Sked
         private void setDefaults()
         {
             RigCtlPathtextBox.Text = HamlibPath;
-            CalltextBox.Text = "G4GCI";
-            baseCalltextBox.Text = "G4GCI";
+            CalltextBox.Text = "AZ1AAA";
+            baseCalltextBox.Text = "AZ1AAA";
             defaultOfftextBox.Text = "50";
             defaultpwrcomboBox.Text = "0";
             defaultFcomboBox.SelectedIndex = 6;
-            LocatortextBox.Text = "IO90";
+            LocatortextBox.Text = "IJ90";
             FreqcomboBox.SelectedIndex = 6;
             OffsettextBox.Text = "50";
             dBmcomboBox.SelectedIndex = 0;
