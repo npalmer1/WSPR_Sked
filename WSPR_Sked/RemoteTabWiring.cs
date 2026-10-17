@@ -49,7 +49,7 @@ namespace WSPR_Sked
             // password/passcode left blank - never redisplay a hash
         }
 
-        void Save()
+        /*void Save()
         {
             if (!int.TryParse(_form.remotePortTextBox.Text.Trim(), out int port) || port < 1 || port > 65535)
             {
@@ -81,6 +81,54 @@ namespace WSPR_Sked
             _form.remotePasscodeTextBox.Text = "";
 
             TryApply(announce: true);
+        }*/
+        void Save()
+        {
+            try
+            {
+                if (!int.TryParse(_form.remotePortTextBox.Text.Trim(), out int port) || port < 1 || port > 65535)
+                {
+                    MessageBox.Show("Enter a valid port number (1-65535).", "Remote access");
+                    return;
+                }
+                if (_form.remoteUserTextBox.Text.Trim() == "")
+                {
+                    MessageBox.Show("Enter a username.", "Remote access");
+                    return;
+                }
+                bool havePw = _cfg.HasCredentials;
+                if (!havePw && (_form.remotePasswordTextBox.Text == "" || _form.remotePasscodeTextBox.Text == ""))
+                {
+                    MessageBox.Show("Set a password and passcode - this is the first time remote access is being configured.",
+                                     "Remote access");
+                    return;
+                }
+
+                _cfg.Enabled = _form.remoteEnabledCheckBox.Checked;
+                _cfg.Port = port;
+                _cfg.User = _form.remoteUserTextBox.Text.Trim();
+                if (_form.remotePasswordTextBox.Text != "") _cfg.SetPassword(_form.remotePasswordTextBox.Text);
+                if (_form.remotePasscodeTextBox.Text != "") _cfg.SetPasscode(_form.remotePasscodeTextBox.Text);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(_cfgPath));
+                _cfg.Save(_cfgPath);
+                _form.remotePasswordTextBox.Text = "";
+                _form.remotePasscodeTextBox.Text = "";
+
+                TryApply(announce: true);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                        $"{DateTime.Now:HH:mm:ss} REMOTE SAVE ERROR: {ex}\n");
+                }
+                catch { }
+                _form.remoteStatusLabel.ForeColor = Color.Firebrick;
+                _form.remoteStatusLabel.Text = "Save failed: " + ex.Message;
+                MessageBox.Show("Save failed: " + ex.Message, "Remote access");
+            }
         }
 
         void TryApply(bool announce)

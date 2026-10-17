@@ -165,23 +165,6 @@
   <metadata name="Column16.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <data name="label148.Text" xml:space="preserve">
-    <value>Accessing WSPR Scheduler remotely: 
-Enter: https://&lt;ip_address&gt;:&lt;port&gt; into a browser
-eg. https://192.168.10.2:5005
-Note: ignore warnings about invalid certificate
-- use a VPN (eg. OpenVPN) to access where possible
-</value>
-  </data>
-  <data name="label147.Text" xml:space="preserve">
-    <value>In order to remote control the TX:
-1) ensure that the PC on which WSPR Scheduler is running has a static IP
-and for remote access:
-2) either: use a static IP for your router provided by your ISP
-    Or: use a dynamic DNS service such as DuckDNS that keeps track of your IP
-3) either: configure a mapping from your public IP to the IP address/port of the WSPR PC
-    Or: configure a VPN such as OpenVPN on your router or the WSPR PC (this is more secure)</value>
-  </data>
   <data name="apiinfolabel.Text" xml:space="preserve">
     <value>Enter the full API url to be appended to 
 http://&lt;ip_address&gt;:&lt;port&gt;/
@@ -202,6 +185,23 @@ This example will send: CONFIG:G4GCI,IO90,23,14097100
 OR commands separated by semi-colon (";") eg.:
 SET FREQ freq; SET POWER pwr; SET LOC grid; SET CALL call; SET OFFSET offset
 </value>
+  </data>
+  <data name="label148.Text" xml:space="preserve">
+    <value>Accessing WSPR Scheduler remotely: 
+Enter: https://&lt;ip_address&gt;:&lt;port&gt; into a browser
+eg. https://192.168.10.2:5005
+Note: ignore warnings about invalid certificate
+- use a VPN (eg. OpenVPN) to access where possible
+</value>
+  </data>
+  <data name="label147.Text" xml:space="preserve">
+    <value>In order to remote control the TX:
+1) ensure that the PC on which WSPR Scheduler is running has a static IP
+and for remote access:
+2) either: use a static IP for your router provided by your ISP
+    Or: use a dynamic DNS service such as DuckDNS that keeps track of your IP
+3) either: configure a mapping from your public IP to the IP address/port of the WSPR PC
+    Or: configure a VPN such as OpenVPN on your router or the WSPR PC (this is more secure)</value>
   </data>
   <metadata name="WSPRtimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
