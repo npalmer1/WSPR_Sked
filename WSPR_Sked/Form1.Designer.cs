@@ -456,6 +456,7 @@
             label135 = new System.Windows.Forms.Label();
             label122 = new System.Windows.Forms.Label();
             tabRemote = new System.Windows.Forms.TabPage();
+            label149 = new System.Windows.Forms.Label();
             remoteAllowTxCheckBox = new System.Windows.Forms.CheckBox();
             label148 = new System.Windows.Forms.Label();
             label147 = new System.Windows.Forms.Label();
@@ -491,7 +492,6 @@
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
             label145 = new System.Windows.Forms.Label();
-            label149 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -5054,6 +5054,15 @@
             tabRemote.TabIndex = 7;
             tabRemote.Text = "Remote";
             // 
+            // label149
+            // 
+            label149.AutoSize = true;
+            label149.Location = new System.Drawing.Point(473, 136);
+            label149.Name = "label149";
+            label149.Size = new System.Drawing.Size(285, 26);
+            label149.TabIndex = 20;
+            label149.Text = "This will allow you to remotely change frequency && antenna\r\nand transmit or receive over next WSPR timeslot";
+            // 
             // remoteAllowTxCheckBox
             // 
             remoteAllowTxCheckBox.AutoSize = true;
@@ -5331,15 +5340,6 @@
             label145.Size = new System.Drawing.Size(44, 13);
             label145.TabIndex = 18;
             label145.Text = "F1 Help";
-            // 
-            // label149
-            // 
-            label149.AutoSize = true;
-            label149.Location = new System.Drawing.Point(473, 136);
-            label149.Name = "label149";
-            label149.Size = new System.Drawing.Size(285, 26);
-            label149.TabIndex = 20;
-            label149.Text = "This will allow you to remotely change frequency && antenna\r\nand transmit or receive over next WSPR timeslot";
             // 
             // Form1
             // 

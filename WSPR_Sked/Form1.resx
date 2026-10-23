@@ -189,7 +189,7 @@ SET FREQ freq; SET POWER pwr; SET LOC grid; SET CALL call; SET OFFSET offset
   <data name="label148.Text" xml:space="preserve">
     <value>Accessing WSPR Scheduler remotely: 
 Enter: https://&lt;ip_address&gt;:&lt;port&gt; into a browser
-eg. https://192.168.10.2:5005
+eg. https://192.168.10.2:5029
 Note: ignore warnings about invalid certificate
 - use a VPN (eg. OpenVPN) to access where possible
 </value>
