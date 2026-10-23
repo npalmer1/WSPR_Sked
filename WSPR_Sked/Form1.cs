@@ -64,7 +64,7 @@ namespace WSPR_Sked
     public partial class Form1 : Form
     {
 
-
+        string debuglog = "C:\\Users\\Public\\wspr_debug.txt";
         string serverName = "127.0.0.1";
         DateTime selectedDate = new DateTime();
         DataTable dtable = new DataTable();
@@ -574,13 +574,19 @@ namespace WSPR_Sked
 
 
 
-                //allow remote control:                
-                _remoteTab = RemoteTabWiring.Install(
-                    this, userdir,
-                    enableTx: RemoteEnableTx,
-                    disableTx: RemoteDisableTx,
-                    status: RemoteStatus);
-
+                //allow remote control:                              
+                _remoteTab = RemoteTabWiring.Install(this, userdir, new RemoteCallbacks
+                {
+                    EnableTx = RemoteEnableTx,
+                    DisableTx = RemoteDisableTx,
+                    Status = RemoteStatus,
+                    DisableSked = RemoteDisableSked,
+                    EnableSked = RemoteEnableSked,
+                    GetFrequencies = RemoteGetFrequencies,
+                    GetAntennas = RemoteGetAntennas,
+                    TxNext = RemoteTxNext,
+                    IsSkedEnabled = RemoteIsSkedEnabled,
+                });
 
                 startCount = startCountMax - 60;
 
@@ -4453,6 +4459,11 @@ namespace WSPR_Sked
             {
                 prepDone = false;
             }
+            bool inFireWindow = (m % 2 == 0 && s <= 2); //00-02 sec of an even minute to allow for missed/late ticks
+            if (!inFireWindow)
+            {
+                triggered = false;
+            }
             if (down <= 5 && !prepDone)
             {
                 prepDone = true;
@@ -4468,21 +4479,13 @@ namespace WSPR_Sked
                 }
             }
 
-
-            // Fire when we're at :00 or :01 seconds
-            if (((m % 2 == 0 && s == 0) || (m % 2 == 0 && s == 1) || (m % 2 == 0 && s == 2)) && !triggered) //account for delay in clock
+            // Fire once at 00-02 sec of an even minute to allow for missed/late ticks
+            if (inFireWindow && !triggered)
             {
-                if (!triggered)
-                {
-                    triggered = true;
-                }
-                else
-                {
-                    triggered = false;
-                }
+                triggered = true;
 
                 //debugging timing errors:
-                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                File.AppendAllText(debuglog,
                         $"{now:HH:mm:ss} WSPRtimer firing TX, slotActive={slotActive}, enableTX={enableTXcheckBox.Checked}, down={down}\n");
 
                 if (slotActive && enableTXcheckBox.Checked)
@@ -6074,7 +6077,7 @@ namespace WSPR_Sked
                     DateTime ntpTime = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(intPart);
                     double clockDrift = Math.Abs((DateTime.UtcNow - ntpTime).TotalSeconds);
 
-                    File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                    File.AppendAllText(debuglog,
                         $"{DateTime.Now:HH:mm:ss} NTP check: drift={clockDrift:F2} sec\n");
 
                     if (clockDrift > 1)
@@ -6098,7 +6101,7 @@ namespace WSPR_Sked
                         Msg.TMessageBox($"System clock synced (was {clockDrift:F1} seconds off).",
                             "Clock Synced", 3000);
 
-                        File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                        File.AppendAllText(debuglog,
                             $"{DateTime.Now:HH:mm:ss} System clock synced\n");
                     }
                     else
@@ -6110,7 +6113,7 @@ namespace WSPR_Sked
             }
             catch (Exception ex)
             {
-                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                File.AppendAllText(debuglog,
                     $"{DateTime.Now:HH:mm:ss} Sync error: {ex.Message}\n");
             }
         }
@@ -6290,7 +6293,7 @@ namespace WSPR_Sked
                 string nexttime = nextT.ToString("HH:mm:00");
 
                 //debug timing:
-                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                File.AppendAllText(debuglog,
                     $"{now:HH:mm:ss} trigger fired, Flag={Flag}, nexttime={nexttime}\n");
 
 
@@ -6309,7 +6312,7 @@ namespace WSPR_Sked
                 bool capturedSlotActive = slotActive; // capture immediately after findSlot
 
                 //debig timing:
-                File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                File.AppendAllText(debuglog,
                     $"{now:HH:mm:ss} findSlot returned={slotok}, slotActive={slotActive}\n");
 
                 // use capturedSlotActive for the WSPRtimer decision:
@@ -12963,6 +12966,8 @@ namespace WSPR_Sked
         }
 
 
+        private bool remoteTxArmed = false;
+        private string remoteTxStatus = "";
         private string RemoteEnableTx()
         {
             string result = "";
@@ -13010,6 +13015,144 @@ namespace WSPR_Sked
         private void remoteSaveButton_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void logclearbutton_Click(object sender, EventArgs e)
+        {
+            if (Msg.ynMessageBox("Clear log (Y/N)?", "Clear Log") == DialogResult.Yes)
+            {
+                rxForm.ClearLog();
+                Msg.OKMessageBox("Cleared "+debuglog, "Log cleared");
+            }
+           
+        }
+
+        // ---------------- Remote web page callbacks ----------------
+        private string RemoteDisableSked()
+        {
+            string result = "";
+            Invoke((Action)(() =>
+            {
+                noSkedcheckBox.Checked = true;
+                result = "Schedule disabled at " + DateTime.UtcNow.ToString("HH:mm:ss") + " UTC.";
+            }));
+            return result;
+        }
+
+        private string RemoteEnableSked()
+        {
+            string result = "";
+            Invoke((Action)(() =>
+            {
+                noSkedcheckBox.Checked = false;
+                result = "Schedule enabled at " + DateTime.UtcNow.ToString("HH:mm:ss") + " UTC.";
+            }));
+            return result;
+        }
+
+        private List<string> RemoteGetFrequencies()
+        {
+            var list = new List<string>();
+            Invoke((Action)(() =>
+            {
+                foreach (var item in FlistBox.Items)
+                    list.Add(item.ToString().Trim());
+            }));
+            return list;
+        }
+
+        private List<string> RemoteGetAntennas()
+        {
+            var list = new List<string>();
+            Invoke((Action)(() =>
+            {
+                foreach (var a in Ant) list.Add(a.AntNo + ": " + a.AntName.Trim());
+            }));
+            return list;
+        }
+
+        private string RemoteTxNext(string freqMHz, string antenna)
+        {
+            // RemoteTxNextSlot touches UI and awaits, so run it on the UI thread and wait for its result
+            Task<string> t = null;
+            Invoke((Action)(() => { t = RemoteTxNextSlot(freqMHz, antenna); }));
+            return t.GetAwaiter().GetResult();
+        }
+      
+        public async Task<string> RemoteTxNextSlot(string freqMHz, string antenna)
+        {
+            if (!double.TryParse(freqMHz, out double f) || f <= 0) return "Invalid frequency";
+            if (!resolveAntenna(antenna, out string antName)) return "Unknown antenna: " + antenna;
+            if (!checkRigctld()) return "rigctld not running";
+            if (wsprTXtimer.Enabled) return "Transmitting now - try again after this slot";
+
+            bool txOn = enableTXcheckBox.Checked;
+            bool rxOnlyBand = freqMHz.StartsWith("13.") || freqMHz.StartsWith("40.");
+            if (txOn && rxOnlyBand) txOn = false;       // 22m / 8m: listen only
+
+            noSkedcheckBox.Checked = true;              // same as "Disable sked"
+
+            TXFrequency = Math.Round(f * 1_000_000).ToString();
+            TXAntenna = antName;
+            Slot.Offset = defaultoffset;
+            Slot.PowerdB = defaultdB;
+            slotNo = 1;
+            msgType = Type2checkBox.Checked ? 3 : 1;
+            showMsgType(msgType);
+            if (noRigctld && FlistBox2.Items.Contains(freqMHz))
+                FlistBox2.SelectedItem = freqMHz;       // changeFreq() reads this when rigctld is off
+
+            // too close to slot start, T-5 prep would be skipped, so wait for the following slot
+            DateTime now = LTcheckBox.Checked ? DateTime.Now : DateTime.UtcNow;
+            if (now.Minute % 2 == 0 && now.Second <= 3)
+                await Task.Delay((4 - now.Second) * 1000);
+
+            blockTXonErr = false;
+            triggered = false;
+            prepDone = false;
+            slotActive = txOn;                          // false = WSPRtimer takes its RX branch
+            remoteTxArmed = txOn;
+            WSPRtimer.Enabled = true;
+            WSPRtimer.Start();
+
+            now = LTcheckBox.Checked ? DateTime.Now : DateTime.UtcNow;
+            DateTime slotStart = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0)
+                                 .AddMinutes(now.Minute % 2 == 0 ? 2 : 1);
+            string tz = LTcheckBox.Checked ? "LT" : "UTC";
+
+            remoteTxStatus = txOn
+                ? $"TX armed for {slotStart:HH:mm} {tz} on {f:F4} MHz, Ant {antName.Trim()}"
+                : $"RX from {slotStart:HH:mm} {tz} on {f:F4} MHz, Ant {antName.Trim()}"
+                  + (rxOnlyBand ? " (RX-only band)" : " (TX disabled)");
+
+            File.AppendAllText(debuglog, $"{DateTime.UtcNow:HH:mm:ss} Remote {remoteTxStatus}\n");
+            return remoteTxStatus;
+        }
+
+        private bool resolveAntenna(string input, out string antName)
+        {
+            antName = "";
+            if (string.IsNullOrWhiteSpace(input)) return false;
+            string s = input.Trim();
+            int colon = s.IndexOf(':');
+            string numPart = colon > 0 ? s.Substring(0, colon).Trim() : s;
+            string namePart = colon > 0 ? s.Substring(colon + 1).Trim() : s;
+
+            if (int.TryParse(numPart, out int no))
+                foreach (var a in Ant)
+                    if (a.AntNo == no) { antName = a.AntName; return true; }
+
+            foreach (var a in Ant)
+                if (a.AntName.Trim().Equals(namePart, StringComparison.OrdinalIgnoreCase))
+                { antName = a.AntName; return true; }
+
+            return false;
+        }
+        private bool RemoteIsSkedEnabled()
+        {
+            bool enabled = false;
+            Invoke((Action)(() => { enabled = !noSkedcheckBox.Checked; }));
+            return enabled;
         }
     }
 

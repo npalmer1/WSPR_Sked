@@ -2620,6 +2620,21 @@ namespace WSPR_Sked
 
         }
 
+        private const string DebugLogPath = @"C:\Users\Public\wspr_debug.txt";
+
+        public void ClearLog()
+        {
+            lock (_logLock)
+            {
+                try
+                {
+                    File.WriteAllText(DebugLogPath,
+                        $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}Z ===== log cleared =====\n");
+                }
+                catch { }
+            }
+        }
+
     }
 }
 

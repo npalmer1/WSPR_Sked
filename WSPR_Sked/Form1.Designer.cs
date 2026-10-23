@@ -150,6 +150,7 @@
             label22 = new System.Windows.Forms.Label();
             countdownlabel2 = new System.Windows.Forms.Label();
             tabPage2 = new System.Windows.Forms.TabPage();
+            logclearbutton = new System.Windows.Forms.Button();
             sunlabel = new System.Windows.Forms.Label();
             label73 = new System.Windows.Forms.Label();
             overcheckBox = new System.Windows.Forms.CheckBox();
@@ -489,6 +490,7 @@
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
             label145 = new System.Windows.Forms.Label();
+            remoteAllowTxCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -1803,6 +1805,7 @@
             // tabPage2
             // 
             tabPage2.BackColor = System.Drawing.SystemColors.Info;
+            tabPage2.Controls.Add(logclearbutton);
             tabPage2.Controls.Add(sunlabel);
             tabPage2.Controls.Add(label73);
             tabPage2.Controls.Add(overcheckBox);
@@ -1898,6 +1901,18 @@
             tabPage2.Size = new System.Drawing.Size(1177, 649);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "TX Configuration";
+            // 
+            // logclearbutton
+            // 
+            logclearbutton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            logclearbutton.Location = new System.Drawing.Point(996, 592);
+            logclearbutton.Margin = new System.Windows.Forms.Padding(0);
+            logclearbutton.Name = "logclearbutton";
+            logclearbutton.Size = new System.Drawing.Size(88, 21);
+            logclearbutton.TabIndex = 113;
+            logclearbutton.Text = "clear debug log";
+            logclearbutton.UseVisualStyleBackColor = true;
+            logclearbutton.Click += logclearbutton_Click;
             // 
             // sunlabel
             // 
@@ -5011,6 +5026,7 @@
             // tabRemote
             // 
             tabRemote.BackColor = System.Drawing.SystemColors.Info;
+            tabRemote.Controls.Add(remoteAllowTxCheckBox);
             tabRemote.Controls.Add(label148);
             tabRemote.Controls.Add(label147);
             tabRemote.Controls.Add(showcodecheckBox);
@@ -5304,6 +5320,16 @@
             label145.TabIndex = 18;
             label145.Text = "F1 Help";
             // 
+            // remoteAllowTxCheckBox
+            // 
+            remoteAllowTxCheckBox.AutoSize = true;
+            remoteAllowTxCheckBox.Location = new System.Drawing.Point(473, 113);
+            remoteAllowTxCheckBox.Name = "remoteAllowTxCheckBox";
+            remoteAllowTxCheckBox.Size = new System.Drawing.Size(138, 17);
+            remoteAllowTxCheckBox.TabIndex = 19;
+            remoteAllowTxCheckBox.Text = "Allow remote TX control";
+            remoteAllowTxCheckBox.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -5425,6 +5451,7 @@
         internal System.Windows.Forms.Button remoteStatusButton;
         internal System.Windows.Forms.Label remoteStatusLabel;
         internal System.Windows.Forms.Label remoteNoteLabel;
+        internal System.Windows.Forms.CheckBox remoteAllowTxCheckBox;
 
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
@@ -5847,6 +5874,8 @@
         private System.Windows.Forms.CheckBox showcodecheckBox;
         private System.Windows.Forms.Label label147;
         private System.Windows.Forms.Label label148;
+        private System.Windows.Forms.Button logclearbutton;
+        
     }
 }
 

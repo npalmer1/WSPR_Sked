@@ -24,24 +24,24 @@ namespace WSPR_Sked
             _certPath = Path.Combine(userdir, "RemoteAccess.pfx");
         }
 
-        public static RemoteTabWiring Install(Form1 form, string userdir,
-                                              Func<string> enableTx, Func<string> disableTx, Func<string> status)
+        public static RemoteTabWiring Install(Form1 form, string userdir, RemoteCallbacks cb)
         {
             var w = new RemoteTabWiring(form, userdir);
             w._cfg = RemoteConfig.Load(w._cfgPath);
             w.LoadIntoUI();
 
-            w._server = new RemoteControlServer(w._certPath, enableTx, disableTx, status);
+            w._server = new RemoteControlServer(w._certPath, cb);
             w.TryApply(announce: false);
 
             form.remoteSaveButton.Click += (s, e) => w.Save();
-            form.remoteStatusButton.Click += (s, e) => MessageBox.Show(status(), "Status");
+            form.remoteStatusButton.Click += (s, e) => MessageBox.Show(cb.Status(), "Status");
             form.FormClosing += (s, e) => w._server.Dispose();
             return w;
         }
 
         void LoadIntoUI()
         {
+            _form.remoteAllowTxCheckBox.Checked = _cfg.AllowRemoteTxControl;
             _form.remoteEnabledCheckBox.Checked = _cfg.Enabled;
             _form.remotePortTextBox.Text = _cfg.Port.ToString();
          
@@ -49,39 +49,7 @@ namespace WSPR_Sked
             // password/passcode left blank - never redisplay a hash
         }
 
-        /*void Save()
-        {
-            if (!int.TryParse(_form.remotePortTextBox.Text.Trim(), out int port) || port < 1 || port > 65535)
-            {
-                MessageBox.Show("Enter a valid port number (1-65535).", "Remote access");
-                return;
-            }
-            if (_form.remoteUserTextBox.Text.Trim() == "")
-            {
-                MessageBox.Show("Enter a username.", "Remote access");
-                return;
-            }
-            bool havePw = _cfg.HasCredentials;
-            if (!havePw && (_form.remotePasswordTextBox.Text == "" || _form.remotePasscodeTextBox.Text == ""))
-            {
-                MessageBox.Show("Set a password and passcode - this is the first time remote access is being configured.",
-                                 "Remote access");
-                return;
-            }
-
-            _cfg.Enabled = _form.remoteEnabledCheckBox.Checked;
-            _cfg.Port = port;
-          
-            _cfg.User = _form.remoteUserTextBox.Text.Trim();
-            if (_form.remotePasswordTextBox.Text != "") _cfg.SetPassword(_form.remotePasswordTextBox.Text);
-            if (_form.remotePasscodeTextBox.Text != "") _cfg.SetPasscode(_form.remotePasscodeTextBox.Text);
-
-            _cfg.Save(_cfgPath);
-            _form.remotePasswordTextBox.Text = "";
-            _form.remotePasscodeTextBox.Text = "";
-
-            TryApply(announce: true);
-        }*/
+       
         void Save()
         {
             try
@@ -105,6 +73,7 @@ namespace WSPR_Sked
                 }
 
                 _cfg.Enabled = _form.remoteEnabledCheckBox.Checked;
+                _cfg.AllowRemoteTxControl = _form.remoteAllowTxCheckBox.Checked;
                 _cfg.Port = port;
                 _cfg.User = _form.remoteUserTextBox.Text.Trim();
                 if (_form.remotePasswordTextBox.Text != "") _cfg.SetPassword(_form.remotePasswordTextBox.Text);

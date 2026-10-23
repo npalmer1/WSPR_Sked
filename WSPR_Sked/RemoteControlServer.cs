@@ -15,13 +15,28 @@ using System.Threading.Tasks;
 
 namespace WSPR_Sked
 {
+    // Callbacks from the remote web page into Form1
+    public sealed class RemoteCallbacks
+    {
+        public Func<string> EnableTx;
+        public Func<string> DisableTx;
+        public Func<string> Status;
+        public Func<string> DisableSked;
+        public Func<string> EnableSked;
+        public Func<List<string>> GetFrequencies;
+        public Func<List<string>> GetAntennas;
+        public Func<string, string, string> TxNext;   // (freqMHz, antenna) -> result message
+        public Func<bool> IsSkedEnabled;
+    }
+
     // Settings stored in RemoteAccess.json. Password and passcode are stored
     // only as salted PBKDF2 hashes, never as plain text.
     public sealed class RemoteConfig
     {
         public bool Enabled { get; set; }
         public int Port { get; set; } = 5005;
-        public bool AllowRemoteEnable { get; set; }
+        public bool AllowRemoteEnable { get; set; }        // legacy - unused, kept so old JSON loads
+        public bool AllowRemoteTxControl { get; set; }     // sked on/off + TX next slot from the web page
         public string User { get; set; } = "";
         public string PwSalt { get; set; } = "";
         public string PwHash { get; set; } = "";
@@ -82,19 +97,59 @@ namespace WSPR_Sked
         static readonly TimeSpan LockTime = TimeSpan.FromMinutes(15);
 
         readonly string _certPath;
-        readonly Func<string> _enableTx, _disableTx, _status;
+        readonly RemoteCallbacks _cb;
         readonly Dictionary<string, (int fails, DateTime until)> _fails = new();
+
+        // ---------------- sessions ----------------
+        static readonly TimeSpan SessionIdle = TimeSpan.FromMinutes(30);
+        const string ClearCookie = "wsid=; Max-Age=0; Path=/; Secure; HttpOnly; SameSite=Strict";
+        readonly Dictionary<string, (string ip, string user, DateTime expires)> _sessions = new();
+
+        string NewSession(string ip, string user)
+        {
+            string sid = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
+            lock (_sessions)
+            {
+                // tidy expired sessions
+                foreach (var k in _sessions.Where(kv => kv.Value.expires < DateTime.UtcNow).Select(kv => kv.Key).ToList())
+                    _sessions.Remove(k);
+                _sessions[sid] = (ip, user, DateTime.UtcNow + SessionIdle);
+            }
+            return sid;
+        }
+
+        // returns the logged-in user for a valid session (and extends it), or null
+        string SessionUser(string sid, string ip)
+        {
+            if (string.IsNullOrEmpty(sid)) return null;
+            lock (_sessions)
+            {
+                if (_sessions.TryGetValue(sid, out var s) && s.ip == ip && s.expires > DateTime.UtcNow)
+                {
+                    _sessions[sid] = (s.ip, s.user, DateTime.UtcNow + SessionIdle);
+                    return s.user;
+                }
+                _sessions.Remove(sid);
+                return null;
+            }
+        }
+
+        void EndSession(string sid)
+        {
+            if (string.IsNullOrEmpty(sid)) return;
+            lock (_sessions) _sessions.Remove(sid);
+        }
+        // ------------------------------------------
 
         volatile RemoteConfig _cfg = new RemoteConfig();
         TcpListener _listener;
         CancellationTokenSource _cts;
         X509Certificate2 _cert;
 
-        public RemoteControlServer(string certPath, Func<string> enableTx,
-                                   Func<string> disableTx, Func<string> status)
+        public RemoteControlServer(string certPath, RemoteCallbacks cb)
         {
             _certPath = certPath;
-            _enableTx = enableTx; _disableTx = disableTx; _status = status;
+            _cb = cb;
         }
 
         public bool Listening => _listener != null;
@@ -116,7 +171,7 @@ namespace WSPR_Sked
             _cts = new CancellationTokenSource();
             var token = _cts.Token;
             _ = Task.Run(() => AcceptLoop(l, token));
-            Log($"listening on port {cfg.Port} (remote enable {(cfg.AllowRemoteEnable ? "allowed" : "off")})");
+            Log($"listening on port {cfg.Port} (remote TX control {(cfg.AllowRemoteTxControl ? "allowed" : "off")})");
         }
 
         void Stop()
@@ -169,37 +224,78 @@ namespace WSPR_Sked
                     }, cts.Token);
 
                     var cfg = _cfg;
-                    var (method, form) = await ReadRequest(ssl, cts.Token);
-                    string page = method == "POST" ? await Process(cfg, ip, form) : Page("", cfg);
-                    await Send(ssl, page, cts.Token);
+                    var (method, form, sid) = await ReadRequest(ssl, cts.Token);
+
+                    string page, setCookie = null;
+                    if (method == "POST")
+                    {
+                        (page, setCookie) = await Process(cfg, ip, form, sid);
+                    }
+                    else
+                    {
+                        string user = SessionUser(sid, ip);
+                        page = user != null ? Page("", cfg, authed: true, user: user) : Page("", cfg);
+                    }
+                    await Send(ssl, page, setCookie, cts.Token);
                 }
                 catch { /* malformed, timed out or bad TLS - just drop it */ }
             }
         }
 
-        async Task<string> Process(RemoteConfig cfg, string ip, Dictionary<string, string> f)
+        async Task<(string page, string setCookie)> Process(RemoteConfig cfg, string ip,
+                                                            Dictionary<string, string> f, string sid)
         {
-            lock (_fails)
-                if (_fails.TryGetValue(ip, out var lk) && lk.until > DateTime.UtcNow)
-                    return Page("Too many failed attempts - try later.", cfg);
+            f.TryGetValue("action", out var action);
+            string setCookie = null;
 
-            f.TryGetValue("user", out var u); f.TryGetValue("pass", out var p);
-            f.TryGetValue("code", out var c); f.TryGetValue("action", out var action);
-
-            if (!cfg.Check(u, p, c))
+            if (action == "logout")
             {
-                lock (_fails)
-                {
-                    _fails.TryGetValue(ip, out var fl);
-                    int n = fl.fails + 1;
-                    _fails[ip] = n >= MaxFails ? (0, DateTime.UtcNow + LockTime) : (n, DateTime.MinValue);
-                }
-                Log($"DENIED from {ip}");
-                await Task.Delay(1000);
-                return Page("Access denied.", cfg);
+                Log($"LOGOUT from {ip}");
+                EndSession(sid);
+                return (Page("Logged out.", cfg), ClearCookie);
             }
 
-            lock (_fails) _fails.Remove(ip);
+            string user = SessionUser(sid, ip);
+            if (user == null)
+            {
+                lock (_fails)
+                    if (_fails.TryGetValue(ip, out var lk) && lk.until > DateTime.UtcNow)
+                        return (Page("Too many failed attempts - try later.", cfg), null);
+
+                f.TryGetValue("user", out var u); f.TryGetValue("pass", out var p); f.TryGetValue("code", out var c);
+
+                // a button pressed on an expired session - not a failed login
+                if (!string.IsNullOrEmpty(sid) && string.IsNullOrEmpty(p) && string.IsNullOrEmpty(c))
+                    return (Page("Session expired - please log in again.", cfg), ClearCookie);
+
+                if (!cfg.Check(u, p, c))
+                {
+                    lock (_fails)
+                    {
+                        _fails.TryGetValue(ip, out var fl);
+                        int n = fl.fails + 1;
+                        _fails[ip] = n >= MaxFails ? (0, DateTime.UtcNow + LockTime) : (n, DateTime.MinValue);
+                    }
+                    Log($"DENIED from {ip}");
+                    await Task.Delay(1000);
+                    return (Page("Access denied.", cfg), null);
+                }
+
+                lock (_fails) _fails.Remove(ip);
+                user = u;
+                sid = NewSession(ip, u);
+                setCookie = $"wsid={sid}; Path=/; Secure; HttpOnly; SameSite=Strict";
+                Log($"LOGIN {u} from {ip}");
+            }
+
+            // sked on/off and TX next slot need "Allow remote TX control" on the Remote tab.
+            // Enable/disable TX and status are always available while remote access is on.
+            bool txControl = action == "skedoff" || action == "skedon" || action == "txnext";
+            if (txControl && !cfg.AllowRemoteTxControl)
+            {
+                Log($"BLOCKED {action} from {ip} (remote TX control off)");
+                return (Page("Remote schedule/TX control is switched off at the station.", cfg, true, f, user), setCookie);
+            }
 
             string result;
             try
@@ -208,22 +304,47 @@ namespace WSPR_Sked
                 {
                     case "disable":
                         Log($"TX DISABLE from {ip}");
-                        result = _disableTx();
+                        result = _cb.DisableTx();
                         break;
-                    case "enable":                      
-                            Log($"TX ENABLE from {ip}");
-                            result = _enableTx();
+                    case "enable":
+                        Log($"TX ENABLE from {ip}");
+                        result = _cb.EnableTx();
+                        break;
+                    case "skedoff":
+                        Log($"SKED DISABLE from {ip}");
+                        result = _cb.DisableSked();
+                        break;
+                    case "skedon":
+                        Log($"SKED ENABLE from {ip}");
+                        result = _cb.EnableSked();
+                        break;
+                    case "txnext":
+                        {
+                            f.TryGetValue("freq", out var fq);
+                            f.TryGetValue("ant", out var an);
+                            var freqs = _cb.GetFrequencies();
+                            var ants = _cb.GetAntennas();
+                            if (fq == null || !freqs.Contains(fq))
+                                result = "Select a valid frequency.";
+                            else if (an == null || !ants.Contains(an))
+                                result = "Select a valid antenna.";
+                            else
+                            {
+                                Log($"TX NEXT SLOT {fq} MHz, ant {an} from {ip}");
+                                result = _cb.TxNext(fq, an);
+                            }
                             break;
+                        }
                     default:
-                        result = _status();
+                        result = _cb.Status();
                         break;
                 }
             }
             catch (Exception ex) { result = "Error: " + ex.Message; }
-            return Page(result, cfg);
+            return (Page(result, cfg, true, f, user), setCookie);
         }
 
-        static async Task<(string, Dictionary<string, string>)> ReadRequest(Stream s, CancellationToken ct)
+        static async Task<(string, Dictionary<string, string>, string)> ReadRequest(Stream s, CancellationToken ct)
         {
             var buf = new byte[8192]; int len = 0, hdrEnd = -1;
             while (hdrEnd < 0 && len < buf.Length)
@@ -238,9 +359,18 @@ namespace WSPR_Sked
             string head = Encoding.ASCII.GetString(buf, 0, hdrEnd);
             string method = head.Split(' ')[0];
             int cl = 0;
+            string sid = null;
             foreach (var line in head.Split("\r\n"))
+            {
                 if (line.StartsWith("Content-Length:", StringComparison.OrdinalIgnoreCase))
                     int.TryParse(line.Substring(15).Trim(), out cl);
+                else if (line.StartsWith("Cookie:", StringComparison.OrdinalIgnoreCase))
+                    foreach (var part in line.Substring(7).Split(';'))
+                    {
+                        var kv = part.Trim().Split('=', 2);
+                        if (kv.Length == 2 && kv[0] == "wsid") sid = kv[1];
+                    }
+            }
             if (cl > 2048) throw new InvalidDataException();
 
             var body = new List<byte>(buf.Skip(hdrEnd + 4).Take(len - hdrEnd - 4));
@@ -260,33 +390,87 @@ namespace WSPR_Sked
                     form[Uri.UnescapeDataString(pair[0].Replace('+', ' '))] =
                          Uri.UnescapeDataString(pair[1].Replace('+', ' '));
             }
-            return (method, form);
+            return (method, form, sid);
         }
 
-        static async Task Send(Stream s, string html, CancellationToken ct)
+        static async Task Send(Stream s, string html, string setCookie, CancellationToken ct)
         {
             var body = Encoding.UTF8.GetBytes(html);
+            string cookie = setCookie != null ? $"Set-Cookie: {setCookie}\r\n" : "";
             var head = Encoding.ASCII.GetBytes(
-                "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n" +
+                "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n" + cookie +
                 $"Content-Length: {body.Length}\r\nCache-Control: no-store\r\nConnection: close\r\n\r\n");
             await s.WriteAsync(head, ct);
             await s.WriteAsync(body, ct);
             await s.FlushAsync(ct);
         }
 
-        static string Page(string msg, RemoteConfig cfg)
+        // authed = logged in (valid session or credentials on this request)
+        string Page(string msg, RemoteConfig cfg, bool authed = false,
+                    Dictionary<string, string> f = null, string user = null)
         {
-            return
-                "<html><head><meta name=viewport content='width=device-width,initial-scale=1'></head>" +
-                "<body style='font-family:sans-serif;max-width:340px;margin:2em auto'>" +
-                $"<h3>WSPR Sked remote</h3><p>{WebUtility.HtmlEncode(msg)}</p>" +
-                "<form method=post>User<br><input name=user autocomplete=username><br>" +
-                "Password<br><input type=password name=pass autocomplete=current-password><br>" +
-                "Passcode<br><input type=password name=code autocomplete=one-time-code><br><br>" +
-                "<button name=action value=status>Status</button> " +
-                "<button name=action value=enable style='background:#080;color:#fff'>ENABLE TX</button> " +
-                "<button name=action value=disable style='background:#c00;color:#fff'>DISABLE TX</button>" +
-                "</form></body></html>";
+            string selFreq = null, selAnt = null;
+            f?.TryGetValue("freq", out selFreq);
+            f?.TryGetValue("ant", out selAnt);
+
+            var sb = new StringBuilder();
+            sb.Append("<html><head><meta name=viewport content='width=device-width,initial-scale=1'></head>");
+            sb.Append("<body style='font-family:sans-serif;max-width:340px;margin:2em auto'>");
+            sb.Append($"<h3>WSPR Sked remote</h3><p>{WebUtility.HtmlEncode(msg)}</p>");
+            sb.Append("<form method=post>");
+
+            if (!authed)
+            {
+                sb.Append("User<br><input name=user autocomplete=username><br>");
+                sb.Append("Password<br><input type=password name=pass autocomplete=current-password><br>");
+                sb.Append("Passcode<br><input type=password name=code autocomplete=one-time-code><br><br>");
+                sb.Append("<button name=action value=status>Log in</button>");
+                sb.Append("</form></body></html>");
+                return sb.ToString();
+            }
+
+            sb.Append($"<p>Logged in as <b>{WebUtility.HtmlEncode(user ?? "")}</b></p>");
+            sb.Append("<button name=action value=status>Status</button> ");
+            sb.Append("<button name=action value=enable style='background:#080;color:#fff'>ENABLE TX</button> ");
+            sb.Append("<button name=action value=disable style='background:#c00;color:#fff'>DISABLE TX</button>");
+            bool? sked = null;
+            try { sked = _cb.IsSkedEnabled?.Invoke(); } catch { }
+            string skedText = sked == null ? "unknown" : sked.Value ? "ENABLED" : "DISABLED";
+            string skedColor = sked == null ? "#666" : sked.Value ? "#080" : "#c60";
+            sb.Append($"<p>Schedule: <b style='color:{skedColor}'>{skedText}</b></p>");
+
+            if (cfg.AllowRemoteTxControl)
+            {
+                List<string> freqs, ants;
+                try { freqs = _cb.GetFrequencies(); ants = _cb.GetAntennas(); }
+                catch { freqs = new List<string>(); ants = new List<string>(); }
+
+                sb.Append("<hr><b>Schedule</b><br><br>");
+                sb.Append("<button name=action value=skedoff style='background:#c60;color:#fff'>Disable sked</button> ");
+                sb.Append("<button name=action value=skedon>Enable sked</button>");
+
+                sb.Append("<hr><b>Next slot</b><br><br>Frequency (MHz)<br><select name=freq>");
+                foreach (var fr in freqs)
+                {
+                    string e = WebUtility.HtmlEncode(fr);
+                    sb.Append($"<option value='{e}'{(fr == selFreq ? " selected" : "")}>{e}</option>");
+                }
+                sb.Append("</select><br>Antenna<br><select name=ant>");
+                foreach (var an in ants)
+                {
+                    string e = WebUtility.HtmlEncode(an);
+                    sb.Append($"<option value='{e}'{(an == selAnt ? " selected" : "")}>{e}</option>");
+                }
+                sb.Append("</select><br><br>");
+                sb.Append("<button name=action value=txnext style='background:#036;color:#fff'>Go next slot</button>");
+                sb.Append("<p style='font-size:smaller'>Disables the schedule and switches frequency/antenna for the next " +
+                          "2-minute slot. Transmits once if TX is enabled, otherwise listens. " +
+                          "22m/8m are always listen-only.</p>");
+            }
+
+            sb.Append("<hr><button name=action value=logout>Log out</button>");
+            sb.Append("</form></body></html>");
+            return sb.ToString();
         }
 
         static void Log(string m)
