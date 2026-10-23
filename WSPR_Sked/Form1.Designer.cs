@@ -456,6 +456,7 @@
             label135 = new System.Windows.Forms.Label();
             label122 = new System.Windows.Forms.Label();
             tabRemote = new System.Windows.Forms.TabPage();
+            remoteAllowTxCheckBox = new System.Windows.Forms.CheckBox();
             label148 = new System.Windows.Forms.Label();
             label147 = new System.Windows.Forms.Label();
             showcodecheckBox = new System.Windows.Forms.CheckBox();
@@ -490,7 +491,7 @@
             RXblocktimer = new System.Windows.Forms.Timer(components);
             idletimer = new System.Windows.Forms.Timer(components);
             label145 = new System.Windows.Forms.Label();
-            remoteAllowTxCheckBox = new System.Windows.Forms.CheckBox();
+            label149 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             slotgroupBox.SuspendLayout();
             greygroupBox.SuspendLayout();
@@ -5026,6 +5027,7 @@
             // tabRemote
             // 
             tabRemote.BackColor = System.Drawing.SystemColors.Info;
+            tabRemote.Controls.Add(label149);
             tabRemote.Controls.Add(remoteAllowTxCheckBox);
             tabRemote.Controls.Add(label148);
             tabRemote.Controls.Add(label147);
@@ -5051,6 +5053,16 @@
             tabRemote.Size = new System.Drawing.Size(1177, 651);
             tabRemote.TabIndex = 7;
             tabRemote.Text = "Remote";
+            // 
+            // remoteAllowTxCheckBox
+            // 
+            remoteAllowTxCheckBox.AutoSize = true;
+            remoteAllowTxCheckBox.Location = new System.Drawing.Point(473, 113);
+            remoteAllowTxCheckBox.Name = "remoteAllowTxCheckBox";
+            remoteAllowTxCheckBox.Size = new System.Drawing.Size(158, 17);
+            remoteAllowTxCheckBox.TabIndex = 19;
+            remoteAllowTxCheckBox.Text = "Allow remote TX/RX control";
+            remoteAllowTxCheckBox.UseVisualStyleBackColor = true;
             // 
             // label148
             // 
@@ -5320,15 +5332,14 @@
             label145.TabIndex = 18;
             label145.Text = "F1 Help";
             // 
-            // remoteAllowTxCheckBox
+            // label149
             // 
-            remoteAllowTxCheckBox.AutoSize = true;
-            remoteAllowTxCheckBox.Location = new System.Drawing.Point(473, 113);
-            remoteAllowTxCheckBox.Name = "remoteAllowTxCheckBox";
-            remoteAllowTxCheckBox.Size = new System.Drawing.Size(138, 17);
-            remoteAllowTxCheckBox.TabIndex = 19;
-            remoteAllowTxCheckBox.Text = "Allow remote TX control";
-            remoteAllowTxCheckBox.UseVisualStyleBackColor = true;
+            label149.AutoSize = true;
+            label149.Location = new System.Drawing.Point(473, 136);
+            label149.Name = "label149";
+            label149.Size = new System.Drawing.Size(285, 26);
+            label149.TabIndex = 20;
+            label149.Text = "This will allow you to remotely change frequency && antenna\r\nand transmit or receive over next WSPR timeslot";
             // 
             // Form1
             // 
@@ -5875,7 +5886,7 @@
         private System.Windows.Forms.Label label147;
         private System.Windows.Forms.Label label148;
         private System.Windows.Forms.Button logclearbutton;
-        
+        private System.Windows.Forms.Label label149;
     }
 }
 
