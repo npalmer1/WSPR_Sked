@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -16,11 +18,10 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Drawing;
-using System.Diagnostics.CodeAnalysis;
 
 namespace WSPR_Sked
 {
@@ -240,17 +241,20 @@ namespace WSPR_Sked
 
         private async void Record_Decode(int opsys)
         {
+          
             if (_cycleInProgress)
             {
+                DateTime Now = DateTime.Now.ToUniversalTime();
                 File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
-                    $"{DateTime.Now:HH:mm:ss} Record_Decode SKIPPED - previous cycle still running\n");
+                    $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} Record_Decode SKIPPED - previous cycle still running\n");
                 return;
             }
             _cycleInProgress = true;
             try
             {
+               
                 File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
-                    $"{DateTime.Now:HH:mm:ss} Record_Decode START\n");
+                    $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} Record_Decode START\n");
 
                 string wsprdir = "C:\\WSPR_Sked";
                 if (!Directory.Exists(wsprdir)) Directory.CreateDirectory(wsprdir);
@@ -268,10 +272,9 @@ namespace WSPR_Sked
                 statuslabel.Text = "receiving";
                 if (Spectrumform != null && !Spectrumform.IsDisposed) Spectrumform.wavPath = outpath;
 
-
-                int mS = 110000;
-
                 DateTime now = DateTime.Now.ToUniversalTime();
+                int mS = 110000;
+               
                 int s = now.Second;
                 int m = now.Minute;
 
@@ -318,8 +321,9 @@ namespace WSPR_Sked
                 var fileInfo = new FileInfo(outpath);
                 if (fileInfo.Exists && fileInfo.Length == 0)
                 {
+                   
                     File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
-                        $"{DateTime.Now:HH:mm:ss} Record_Decode END (empty wav, skipped decode)\n");
+                        $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} Record_Decode END (empty wav, skipped decode)\n");
                     return;
                 }
 
@@ -338,9 +342,9 @@ namespace WSPR_Sked
 
                 // kick off decode+save in the background - DO NOT await it here
                 _decodeTask = DecodeAndSave(cmd, args, originalDT);
-
+                
                 File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
-                    $"{DateTime.Now:HH:mm:ss} Record_Decode END (decode running in background)\n");
+                    $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} Record_Decode END (decode running in background)\n");
             }
             finally
             {
@@ -856,81 +860,6 @@ namespace WSPR_Sked
             dataGridView1.Rows.Add(row);
         }
 
-        /*private async Task save_result_lines(DateTime startT)
-        {
-            if (results == null || results == "") return;
-
-            bool end = false;
-            bool containsData = false;
-            using var reader = new StringReader(results);
-            string line = "";
-            string date = startT.ToString("yyMMdd");
-            string time = startT.ToString("HHmm");
-            var uploadTasks = new List<Task>();  // collect upload tasks
-
-            try
-            {
-                while (!end)
-                {
-                    line = "";
-                    line = reader.ReadLine().Trim();
-                    if (line == null || line == "")
-                    {
-                        DX.tx_sign = "nil rcvd";
-                        line = "<DecodeFinished>";
-                    }
-                    if (line.Contains("<DecodeFinished>"))
-                    {
-                        end = true;
-                        if (containsData) break;
-                    }
-                    else
-                    {
-                        containsData = true;
-                    }
-
-                    try
-                    {
-                        double f = 0;
-                        if (prevFreq != "") f = Convert.ToDouble(prevFreq);
-                        await process_decoded(line, f, startT, containsData);
-                        if (DX.tx_sign != null && !DX.tx_sign.Contains("error"))
-                        {
-                            if (DX.tx_sign.Contains("nil rcvd") && containsData)
-                            {
-                                end = true;
-                            }
-                            else
-                            {
-                                await Save_Received_DB(server, user, pass);
-                                // fire upload but don't await yet
-                                if (!DX.tx_sign.Contains("nil rcvd") && DX.tx_sign != "")
-                                {
-                                    uploadTasks.Add(Post_wsprdata(date, time));
-                                }
-                            }
-                        }
-                        else
-                        {
-                            end = true;
-                        }
-                    }
-                    catch { end = true; }
-                }
-            }
-            catch
-            {
-                MessageBox.Show("Error");
-            }
-
-            // now await all uploads in parallel
-            if (uploadTasks.Count > 0)
-            {
-                await Task.WhenAll(uploadTasks);
-            }
-
-            results = "";
-        }*/
 
         private async Task save_result_lines(DateTime startT)
         {
@@ -1056,54 +985,9 @@ namespace WSPR_Sked
         }
 
 
-        /*private async Task Post_wsprdata(string date, string time, decoded_data snapshot) //uploads single spot to the new wsprnet database
-        {
-            string url = "http://wsprnet.org/post/";
-            if (!await Msg.IsUrlReachable(url) || stopUrl)
-            {
-                return;
-            }
-            if (uploadcheckBox.Checked == false)
-            {
-                return;
-            }
-            if (snapshot.tx_sign == "nil rcvd" || snapshot.tx_sign == "" || (snapshot.tx_sign == Callsign && !owncheckBox.Checked))
-            {
-                return;
-            }
-            var formData = new Dictionary<string, string>
-            {
-                { "function", "wspr" },
-                { "date",  date },
-                { "time", time },
-                { "sig", snapshot.snr.ToString() },
-                { "dt", snapshot.dt.ToString("f1") },
-                { "drift", snapshot.drift.ToString() },
-                { "tqrg", snapshot.frequency.ToString("F6") },
-                { "tcall", snapshot.tx_sign },
-                { "tgrid", snapshot.tx_loc },
-                { "dbm", snapshot.power.ToString() },
-                { "version", version },
-                { "rcall", Callsign },
-                { "rgrid", my_loc },
-                { "rqrg", Frequency },
-                { "mode", "2" }
-            };
-            using var client = new HttpClient();
-            client.Timeout = TimeSpan.FromSeconds(8);
 
-            client.DefaultRequestHeaders.Add(Callsign, my_loc);
 
-            //client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("WS/0.1.10");
-
-            var content = new FormUrlEncodedContent(formData);
-
-            var response = await client.PostAsync(url, content);
-            var responseString = await response.Content.ReadAsStringAsync();
-        }*/
-
-        private async Task Post_wsprdata(string date, string time, decoded_data snapshot)
+        /*private async Task Post_wsprdata(string date, string time, decoded_data snapshot)
         {
             string url = "http://wsprnet.org/post/";
             if (stopUrl) return;
@@ -1138,6 +1022,86 @@ namespace WSPR_Sked
             {
                 File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
                     $"{DateTime.Now:HH:mm:ss} UPLOAD EXCEPTION {snapshot.tx_sign}: {ex.Message}\n");
+            }
+        }*/
+
+        private static readonly HttpClient _wsprClient = new HttpClient(
+            new SocketsHttpHandler
+            {
+                UseProxy = false,
+                PooledConnectionLifetime = TimeSpan.FromMinutes(2),
+                ConnectTimeout = TimeSpan.FromSeconds(5)
+            })
+        {
+            Timeout = Timeout.InfiniteTimeSpan   // we enforce our own hard timeout below
+        };
+
+        private async Task Post_wsprdata(string date, string time, decoded_data snapshot)
+        {
+            const string url = "http://wsprnet.org/post/";
+            if (stopUrl) return;
+            if (!uploadcheckBox.Checked) 
+            { 
+                Log($"upload skipped (unchecked) {snapshot.tx_sign}"); return; 
+            }
+            if (snapshot.tx_sign == "nil rcvd" || snapshot.tx_sign == "" ||
+                (snapshot.tx_sign == Callsign && !owncheckBox.Checked)) return;
+
+            var formData = new Dictionary<string, string>
+            {
+                { "function", "wspr" }, 
+                { "date", date }, 
+                { "time", time },
+                { "sig", snapshot.snr.ToString() }, 
+                { "dt", snapshot.dt.ToString("f1") },
+                { "drift", snapshot.drift.ToString() }, 
+                { "tqrg", snapshot.frequency.ToString("F6") },
+                { "tcall", snapshot.tx_sign }, 
+                { "tgrid", snapshot.tx_loc },
+                { "dbm", snapshot.power.ToString() }, 
+                { "version", version },
+                { "rcall", Callsign }, 
+                { "rgrid", my_loc }, 
+                { "rqrg", Frequency }, 
+                { "mode", "2" }
+            };
+
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, url)
+                {
+                    Content = new FormUrlEncodedContent(formData)
+                };
+                request.Headers.UserAgent.ParseAdd(version);
+
+                // WaitAsync guarantees we get control back even if the handler ignores cancellation
+                var response = await _wsprClient.SendAsync(request, cts.Token)
+                                                .WaitAsync(TimeSpan.FromSeconds(12));
+                string body = await response.Content.ReadAsStringAsync(cts.Token)
+                                                    .WaitAsync(TimeSpan.FromSeconds(5));
+
+                string shortBody = body.Length > 120 ? body.Substring(0, 120) : body;
+                shortBody = shortBody.Replace('\r', ' ').Replace('\n', ' ');
+                Log($"UPLOAD {(int)response.StatusCode} {snapshot.tx_sign} host={response.RequestMessage?.RequestUri?.Host} body={shortBody}");
+            }
+            catch (Exception ex)
+            {
+                Log($"UPLOAD EXCEPTION {snapshot.tx_sign}: {ex.GetType().Name}: {ex.Message}");
+            }
+        }
+
+        private static readonly object _logLock = new object();
+        private void Log(string s)
+        {
+            lock (_logLock)
+            {
+                try
+                {
+                    File.AppendAllText(@"C:\Users\Public\wspr_debug.txt",
+                          $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}Z {s}\n");
+                }
+                catch { }
             }
         }
 
