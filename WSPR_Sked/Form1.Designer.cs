@@ -5079,7 +5079,7 @@
             label148.ForeColor = System.Drawing.Color.Blue;
             label148.Location = new System.Drawing.Point(85, 511);
             label148.Name = "label148";
-            label148.Size = new System.Drawing.Size(261, 65);
+            label148.Size = new System.Drawing.Size(325, 65);
             label148.TabIndex = 18;
             label148.Text = resources.GetString("label148.Text");
             // 
