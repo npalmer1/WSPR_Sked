@@ -33,13 +33,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_49652FA4F18B441486C43C1565E4F9AF"
+        "MsmKey" = "8:_2EF8ED30921545828980FB5547405EA3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_49814FEDD27E4ACB957BEFDEB38AF797"
+        "MsmKey" = "8:_49652FA4F18B441486C43C1565E4F9AF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -76,12 +76,6 @@
         "Entry"
         {
         "MsmKey" = "8:_B629558EA8F246F3B684B1BE224AA1A4"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BE1284D7B6B54CDDA015B58D8525FB25"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -266,10 +260,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_49652FA4F18B441486C43C1565E4F9AF"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2EF8ED30921545828980FB5547405EA3"
             {
-            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libwinpthread-1.dll"
-            "TargetName" = "8:libwinpthread-1.dll"
+            "SourcePath" = "8:..\\main_help.rtf"
+            "TargetName" = "8:main_help.rtf"
             "Tag" = "8:"
             "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
             "Condition" = "8:"
@@ -286,10 +280,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_49814FEDD27E4ACB957BEFDEB38AF797"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_49652FA4F18B441486C43C1565E4F9AF"
             {
-            "SourcePath" = "8:..\\main_help.rtf"
-            "TargetName" = "8:main_help.rtf"
+            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libwinpthread-1.dll"
+            "TargetName" = "8:libwinpthread-1.dll"
             "Tag" = "8:"
             "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
             "Condition" = "8:"
@@ -410,26 +404,6 @@
             {
             "SourcePath" = "8:..\\wspr_db.sql"
             "TargetName" = "8:wspr_db.sql"
-            "Tag" = "8:"
-            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BE1284D7B6B54CDDA015B58D8525FB25"
-            {
-            "SourcePath" = "8:..\\main_help.rtf"
-            "TargetName" = "8:main_help.rtf"
             "Tag" = "8:"
             "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
             "Condition" = "8:"
