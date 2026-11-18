@@ -435,6 +435,7 @@ namespace WSPR_Sked
                 createRigTable();
                 addNewSlotColumns();
                 addFilterField(); //add filter field to wspr settings
+                addSlotRigField();
                 CopyTable("wspr", "tuners", "filters");
                 DateTime localTime = DateTime.Now; // your current local time
                 DateTime utcTime = localTime.ToUniversalTime();
