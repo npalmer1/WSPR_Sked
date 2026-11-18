@@ -15,7 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_0A8C8C270E684456AADF974FCE300895"
+        "MsmKey" = "8:_0EFA96BE64DB4561BB2638D2EC3253B6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -39,19 +39,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_49652FA4F18B441486C43C1565E4F9AF"
+        "MsmKey" = "8:_456400973D5F42B0AFC6B3BF2379E357"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_69CFDA284B9140C68C6B70F0B757EADF"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6B04E402E00A4FEE8FECD0287C63E764"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -75,6 +69,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A2DF4E419D2A4CDEA41D69D0FB7BD6FD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B2E795A532024BC4B308A28DDF331518"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B629558EA8F246F3B684B1BE224AA1A4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -88,12 +94,6 @@
         "Entry"
         {
         "MsmKey" = "8:_E3ACF6EC8E2C4995AC49A0DAD91BB116"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EE25FDB97A30462C9C01DB9556601280"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -200,9 +200,9 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0A8C8C270E684456AADF974FCE300895"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0EFA96BE64DB4561BB2638D2EC3253B6"
             {
-            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libgcc_s_seh-1.dll"
+            "SourcePath" = "8:..\\libgcc_s_seh-1.dll"
             "TargetName" = "8:libgcc_s_seh-1.dll"
             "Tag" = "8:"
             "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
@@ -280,9 +280,9 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_49652FA4F18B441486C43C1565E4F9AF"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_456400973D5F42B0AFC6B3BF2379E357"
             {
-            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libwinpthread-1.dll"
+            "SourcePath" = "8:..\\libwinpthread-1.dll"
             "TargetName" = "8:libwinpthread-1.dll"
             "Tag" = "8:"
             "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
@@ -306,26 +306,6 @@
             "TargetName" = "8:wspr_sked.ico"
             "Tag" = "8:"
             "Folder" = "8:_B121CBA499204C9D896DB0279EAFA74E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6B04E402E00A4FEE8FECD0287C63E764"
-            {
-            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libfftw3f-3.dll"
-            "TargetName" = "8:libfftw3f-3.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -400,6 +380,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A2DF4E419D2A4CDEA41D69D0FB7BD6FD"
+            {
+            "SourcePath" = "8:..\\libfftw3f-3.dll"
+            "TargetName" = "8:libfftw3f-3.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B2E795A532024BC4B308A28DDF331518"
+            {
+            "SourcePath" = "8:..\\libquadmath-0.dll"
+            "TargetName" = "8:libquadmath-0.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B629558EA8F246F3B684B1BE224AA1A4"
             {
             "SourcePath" = "8:..\\wspr_db.sql"
@@ -444,26 +464,6 @@
             {
             "SourcePath" = "8:..\\rigctl.exe"
             "TargetName" = "8:rigctl.exe"
-            "Tag" = "8:"
-            "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EE25FDB97A30462C9C01DB9556601280"
-            {
-            "SourcePath" = "8:C:\\WSJT\\wsjtx\\bin\\libquadmath-0.dll"
-            "TargetName" = "8:libquadmath-0.dll"
             "Tag" = "8:"
             "Folder" = "8:_3AEA9FE6086C49F1A002AB30BC05E7A9"
             "Condition" = "8:"
@@ -1084,7 +1084,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F3F030A295CD4092B8B6D1E734EA79A5"
             {
-            "SourcePath" = "8:..\\WSPR_Sked\\obj\\Debug\\net9.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\WSPR_Sked\\obj\\Release\\net9.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B121CBA499204C9D896DB0279EAFA74E"
