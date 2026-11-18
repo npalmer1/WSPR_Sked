@@ -30,6 +30,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Management;
+using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -392,7 +393,7 @@ namespace WSPR_Sked
         private async void Form1_Load(object sender, EventArgs e)
         {
             System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string ver = "0.1.55";
+            string ver = "0.1.56";
             this.Text = "WSPR Scheduler                       V." + ver + "    GNU GPLv3 License";
             dateformat = "yyyy-MM-dd";
             OpSystem = 0; //default to Windows
@@ -11813,7 +11814,7 @@ namespace WSPR_Sked
 
         private void addrigDBNameField()   //add slot database name field
         {
-            addNewField("wsprs", "rigs", "URL", "TEXT NOT NULL");
+            addNewField("wspr", "rigs", "URL", "TEXT NOT NULL");
         }
         private void addSlotDBNameField()   //add slot database name field
         {
@@ -11828,7 +11829,42 @@ namespace WSPR_Sked
         {
             addNewField("wspr", "rigctl", "VOX", "BOOLEAN NOT NULL");
         }
-        private void addNewField(string dbname, string table, string field, string type) //add new databse field if doesnt exist 
+
+        private void addSlotRigField()   // add the Rig field to the slot tables
+        {
+            List<string> dbs = new List<string> { "wspr_slots", "wspr_slots_test" };
+            if (!string.IsNullOrWhiteSpace(slot_dbname) && !dbs.Contains(slot_dbname))   // the user's own slot database
+                dbs.Add(slot_dbname);
+
+            bool added = false;
+            foreach (string db in dbs)
+                added |= addNewField(db, "slots", "Rig", "INT NOT NULL DEFAULT 0");
+
+            if (added)
+                Msg.TMessageBox("Database updated with new columns", "Database Update", 1000);
+        }
+
+        private bool addNewField(string dbname, string table, string field, string type)   // add a field if it isn't there
+        {
+            string cs = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + dbname;
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(cs))
+                {
+                    conn.Open();
+                    bool added = AddColumnIfNotExists(conn, table, field, type);
+                    if (!added)   // already there: make sure it has the default (an earlier version added it without)
+                        using (var cmd = new MySqlCommand($"ALTER TABLE `{table}` MODIFY `{field}` {type}", conn))
+                            cmd.ExecuteNonQuery();
+                    return added;
+                }
+            }
+            catch (Exception)   // no such database or table: nothing to update
+            {
+                return false;
+            }
+        }
+        /*private void addNewField(string dbname, string table, string field, string type) //add new databse field if doesnt exist 
         {
             bool ok = false;
             string ConnectionString = "server=" + serverName + ";user id=" + db_user + ";password=" + db_pass + ";database=" + dbname;
@@ -11846,7 +11882,7 @@ namespace WSPR_Sked
             {
                 Msg.TMessageBox("Database updated with new columns", "Database Update", 1000);
             }
-        }
+        }*/
 
         private bool checkNewSlotColumns()
         {
